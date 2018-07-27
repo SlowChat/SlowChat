@@ -26,8 +26,8 @@ export default class TopTab extends Component<Props> {
               txtWrap = styles.txtWrap
               txt = styles.txt
             }
-            return (<TouchableWithoutFeedback onPress={() => {onPress && onPress(i)}}>
-              <View key={item.id} style={styles.tab}>
+            return (<TouchableWithoutFeedback key={item.id} onPress={() => {onPress && onPress(i)}}>
+              <View style={styles.tab}>
                 <View style={txtWrap}>
                   <Text style={txt}>{item.name}</Text>
                 </View>

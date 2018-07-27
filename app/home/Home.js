@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  Button,
   PixelRatio
 } from 'react-native';
 
@@ -89,6 +90,9 @@ export default class App extends Component<Props> {
     return (
       <View style={styles.container}>
         {this.renderTip()}
+        <Button title="测试" onPress={() => {
+            this.props.navigation.navigate('SendMail')
+          }}></Button>
         <HomeItem />
         <HomeItem />
         <HomeItem />

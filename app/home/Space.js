@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
 import TopTab from '../components/TopTab'
+import HeaderTip from '../components/HeaderTip'
 
 const ITEMS = [{id: 0, name: '最新发布'}, {id: 1, name: '热门'}]
 
@@ -17,17 +18,19 @@ export default class App extends Component<Props> {
     })
   }
   render() {
+
     const { activeTab } = this.state
     return (
       <View style={styles.container}>
-        <View style={styles.tipWrap}>
-          <Text style={styles.tip}>发送的邮件提交时选择公开，会在漫友圈显示</Text>
-        </View>
+        <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
+
       </View>
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
