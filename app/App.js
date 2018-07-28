@@ -5,10 +5,8 @@ import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import BottomTabs from './BottomTabs'
 
 import SendMailScreen from './scenes/SendMail'
+import MailDetailScreen from './scenes/MailDetail'
 
-// const Stack = createStackNavigator({
-//
-// })
 
 export default createStackNavigator({
   BottomTabs: {
@@ -18,7 +16,9 @@ export default createStackNavigator({
     }
   },
   SendMail: { screen: SendMailScreen },
+  MailDetail: { screen: MailDetailScreen },
 }, {
+  // initialRouteName: 'SendMail',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
@@ -30,5 +30,8 @@ export default createStackNavigator({
       fontFamily: 'PingFangSC-Regular',
       color: '#333'
     },
+    // headerStyle: {
+    //   paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
+    // }
   }
 });

@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  PixelRatio
+  PixelRatio,
+  TouchableWithoutFeedback
 } from 'react-native';
-// import Swiper from 'react-native-swiper2';
 
 const onePx = 1 / PixelRatio.get()
 
@@ -17,12 +17,21 @@ const ICONS = {
 }
 
 type Props = {};
-export default class HomeItem extends Component<Props> {
+export default class HomeItem extends PureComponent<Props> {
   render() {
+    const { onPress } = this.props
     return (
       <View style={styles.container}>
-        <Text>慢友圈</Text>
-
+        <Text style={styles.txt}>慢友圈</Text>
+        <TouchableWithoutFeedback onPress={() => {
+            onPress && onPress()
+          }}>
+          <View style={styles.search}>
+            <Text style={styles.placeholder}>查找您感兴趣的内容</Text>
+            <View style={styles.line}></View>
+            <Image style={styles.icon} source={require('../images/icon_search.png')} />
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -30,89 +39,45 @@ export default class HomeItem extends Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
+    height: 44,
+    marginTop: 20,
     fontFamily: 'PingFangSC-Regular',
-    marginBottom: 10,
-  },
-  avatarWrap: {
+    paddingLeft: 15,
+    paddingRight: 15,
     flexDirection: 'row',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-  },
-  avatarRight: {
-    flex: 1,
-  },
-  nameWrap: {
-    marginBottom: 2,
-    flexDirection: 'row',
-  },
-  name: {
-    flex: 1,
-    height: 20,
-    fontSize: 14,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#E24B92',
-    lineHeight: 20,
-  },
-  time: {
-    height: 17,
-    fontSize: 12,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#B4B4B4',
-    lineHeight: 17
-  },
-  date: {
-    height: 17,
-    fontSize: 12,
-    color: '#B4B4B4',
-    lineHeight: 17
-  },
-  content: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: onePx,
-    borderBottomColor: '#EEEEEE',
-    borderStyle: 'solid',
-  },
-  contentTxt: {
-    fontSize: 15,
-    color: '#333333',
-    lineHeight: 21,
-  },
-  attention: {
-    flexDirection: 'row',
-    marginTop: 14,
-    marginBottom: 9,
+    // justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF'
   },
-  eyeIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 2,
-    resizeMode: 'contain',
+  txt: {
+    fontSize: 18,
+    color: '#333333',
+    marginRight: 15,
   },
-  commentIcon: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-    marginRight: 2,
+  search: {
+    flex: 1,
+    alignItems: 'center',
+    paddingLeft: 15,
+    height: 30,
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
   },
-  eyeNum: {
-    marginRight: 11,
+  placeholder: {
+    flex: 1,
+    fontSize: 16,
+    color: '#D8D8D8',
   },
-  num: {
-    fontSize: 12,
-    color: '#B4B4B4',
+  line: {
+    width:1,
+    height: 22,
+    backgroundColor: '#CCCCCC',
   },
-  comment: {
-    height: 20,
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
-    marginTop: 4,
-  },
-
+  icon: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain'
+  }
 });

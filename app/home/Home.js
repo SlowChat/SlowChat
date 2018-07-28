@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   Button,
   PixelRatio
@@ -11,10 +12,36 @@ import {
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 
+import HomeList from '../components/HomeList'
+
 const onePx = 1 / PixelRatio.get()
 
 type Props = {};
 export default class App extends Component<Props> {
+  static navigationOptions = ({navigation}) => {
+    const { params = {} } = navigation.state
+    return {
+      header: params.header || null
+    }
+  }
+  componentDidMount() {
+
+  }
+
+  handleScroll = (e) => {
+    return
+    if (this.hasHeader) {
+      this.hasHeader = false
+      this.props.navigation.setParams({
+        header: null
+      })
+    } else if (!this.hasHeader) {
+      this.hasHeader = true
+      this.props.navigation.setParams({
+        header: <Text>'首页'</Text>
+      })
+    }
+  }
   renderTip() {
     return (
       <View style={styles.tipWraper}>
@@ -28,23 +55,32 @@ export default class App extends Component<Props> {
   }
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container} onScroll={this.handleScroll}>
         <Swiper />
         {this.renderTip()}
-
-        <HomeItem />
-        <HomeItem />
-        <HomeItem />
-
-      </View>
+        <View style={styles.itemWrap}>
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+          <HomeItem />
+        </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
+    flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  itemWrap: {
+    backgroundColor: '#F6F6F6',
   },
   tipWraper: {
     flexDirection: 'row',

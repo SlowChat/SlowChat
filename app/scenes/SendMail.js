@@ -11,43 +11,46 @@ import {
 import HeaderTip from '../components/HeaderTip'
 
 export default class SendMail extends Component {
-  static navigationOptions = {
-    title: '写信',
-    headerRight: (
-      <Button
-        onPress={this.send}
-        title='发送'
-      />
-    ),
+  static navigationOptions = ({navigation}) => {
+    const { params = {} } = navigation.state
+    return {
+      title: '写信',
+      headerRight: (
+        <Button
+          onPress={params.rightOnPress}
+          title='发送'
+          color={params.rightColor || '#F9DBE9'}
+        />
+      ),
+    }
   }
-  // color={this.state.sendbtnColor}
 
   state = {
     sendbtnColor: '#F9DBE9'
   }
-  send = () => {
-
+  componentDidMount() {
+    this.props.navigation.setParams({
+      rightOnPress: this.rightBtnOnPress
+    })
+  }
+  rightBtnOnPress = () => {
+    this.props.navigation.setParams({
+      rightColor: '#FFFFFF',
+    })
   }
   render() {
     return (
-      <View>
-        <HeaderTip title="爱慢邮——让我们回到未来" />
-
+      <View style={styles.container}>
+        <HeaderTip tip="爱慢邮——让我们回到未来" />
       </View>
     )
   }
 }
 
-// <View style={styles.item}>
-//   <Text style={styles.lable}></Text>
-//   <View></View>
-// </View>
-// <View style={styles.item}>
-//   <Text style={[styles.lable, styles.flex]}></Text>
-// </View>
 
 const styles = StyleSheet.create({
-  tipRight: {
+  container: {
     flex: 1,
-  }
-})
+    backgroundColor: '#FFFFFF'
+  },
+});

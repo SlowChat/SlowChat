@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, Image } from 'react-native';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import HomeScreen from './home/Home'
 import SpaceScreen from './home/Space'
@@ -28,16 +28,25 @@ const ICONS = {
   }
 }
 
+
+const HomeStack = createStackNavigator({
+  Home: HomeScreen
+})
+const SpaceStack = createStackNavigator({
+  Space: SpaceScreen
+})
+
+
 export default createBottomTabNavigator(
   {
-    Home: HomeScreen,
-    Space: SpaceScreen,
+    Home: HomeStack,
+    Space: SpaceStack,
     New: NewScreen,
     Share: ShareScreen,
     Mime: MimeScreen,
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Space',
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarIcon: ({ focused }) => {

@@ -6,7 +6,6 @@ import {
   Image,
   PixelRatio
 } from 'react-native';
-// import Swiper from 'react-native-swiper2';
 
 const onePx = 1 / PixelRatio.get()
 
@@ -51,6 +50,7 @@ const styles = StyleSheet.create({
     padding: 15,
     fontFamily: 'PingFangSC-Regular',
     marginBottom: 10,
+    backgroundColor: '#FFFFFF'
   },
   avatarWrap: {
     flexDirection: 'row',
