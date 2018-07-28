@@ -2,14 +2,31 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
 import TopTab from '../components/TopTab'
+import HeaderTip from '../components/HeaderTip'
 
 const ITEMS = [{id: 0, name: '最新发布'}, {id: 1, name: '热门'}]
 
+import SearchBox from '../components/SearchBox'
+import HomeList from '../components/HomeList'
 
 type Props = {};
-export default class App extends Component<Props> {
+export default class Space extends Component<Props> {
+  static navigationOptions = ({navigation}) => {
+    const { params = {} } = navigation.state
+    return {
+      header: () => <SearchBox onPress={params.searchBoxPress} />
+    }
+  }
+
   state = {
     activeTab: 0,
+  }
+  componentDidMount() {
+    this.props.navigation.setParams({
+      searchBoxPress: () => {
+
+      }
+    })
   }
   tabSwitch = (index) => {
     this.setState({
@@ -20,18 +37,20 @@ export default class App extends Component<Props> {
     const { activeTab } = this.state
     return (
       <View style={styles.container}>
-        <View style={styles.tipWrap}>
-          <Text style={styles.tip}>发送的邮件提交时选择公开，会在漫友圈显示</Text>
-        </View>
+        <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
+        <HomeList />
       </View>
     );
   }
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
+    flex: 1,
+    backgroundColor: '#ffffff',
     fontFamily: 'PingFangSC-Regular',
   },
   tipWrap: {

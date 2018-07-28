@@ -6,14 +6,13 @@ import {
   Image,
   PixelRatio
 } from 'react-native';
-// import Swiper from 'react-native-swiper2';
 
 const onePx = 1 / PixelRatio.get()
 
 const ICONS = {
-  head: require('../../images/head_placeholder80.png'),
-  eye: require('../../images/icon_eyes.png'),
-  comment: require('../../images/icon_comment.png'),
+  head: require('../images/head_placeholder80.png'),
+  eye: require('../images/icon_eyes.png'),
+  comment: require('../images/icon_comment.png'),
 }
 
 type Props = {};
@@ -21,8 +20,26 @@ export default class HomeItem extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Text>慢友圈</Text>
-        
+        <View style={styles.avatarWrap}>
+          <Image style={styles.avatar} source={ICONS.head} />
+          <View style={styles.avatarRight}>
+            <View style={styles.nameWrap}>
+              <Text style={styles.name}>给未来的自</Text>
+              <Text style={styles.time}>12:00</Text>
+            </View>
+            <Text style={styles.date}>发信时间：2019年1月10日</Text>
+          </View>
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTxt}>发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日</Text>
+        </View>
+        <View style={styles.attention}>
+          <Image style={styles.eyeIcon} source={ICONS.eye} /><Text style={[styles.num, styles.eyeNum]}>10</Text>
+          <Image style={styles.commentIcon} source={ICONS.comment} />
+          <Text style={styles.num}>6</Text>
+        </View>
+        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
+        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
       </View>
     );
   }
@@ -33,6 +50,7 @@ const styles = StyleSheet.create({
     padding: 15,
     fontFamily: 'PingFangSC-Regular',
     marginBottom: 10,
+    backgroundColor: '#FFFFFF'
   },
   avatarWrap: {
     flexDirection: 'row',
