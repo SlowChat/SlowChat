@@ -18,7 +18,7 @@ export default createStackNavigator({
   SendMail: { screen: SendMailScreen },
   MailDetail: { screen: MailDetailScreen },
 }, {
-  // initialRouteName: 'SendMail',
+  initialRouteName: 'SendMail',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

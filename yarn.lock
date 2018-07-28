@@ -909,16 +909,6 @@ babel-plugin-jest-hoist@^23.2.0:
   version "23.2.0"
   resolved "http://registry.npm.taobao.org/babel-plugin-jest-hoist/download/babel-plugin-jest-hoist-23.2.0.tgz#e61fae05a1ca8801aadee57a6d66b8cefaf44167"
 
-babel-plugin-module-resolver@^3.1.1:
-  version "3.1.1"
-  resolved "http://registry.npm.taobao.org/babel-plugin-module-resolver/download/babel-plugin-module-resolver-3.1.1.tgz#881cf67e3d4b8400d5eaaefc1be44d2dc1fe404f"
-  dependencies:
-    find-babel-config "^1.1.0"
-    glob "^7.1.2"
-    pkg-up "^2.0.0"
-    reselect "^3.0.1"
-    resolve "^1.4.0"
-
 babel-plugin-syntax-class-properties@^6.8.0:
   version "6.13.0"
   resolved "http://registry.npm.taobao.org/babel-plugin-syntax-class-properties/download/babel-plugin-syntax-class-properties-6.13.0.tgz#d7eb23b79a317f8543962c505b827c7d6cac27de"
@@ -2106,13 +2096,6 @@ finalhandler@1.1.0:
     statuses "~1.3.1"
     unpipe "~1.0.0"
 
-find-babel-config@^1.1.0:
-  version "1.1.0"
-  resolved "http://registry.npm.taobao.org/find-babel-config/download/find-babel-config-1.1.0.tgz#acc01043a6749fec34429be6b64f542ebb5d6355"
-  dependencies:
-    json5 "^0.5.1"
-    path-exists "^3.0.0"
-
 find-cache-dir@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/find-cache-dir/download/find-cache-dir-1.0.0.tgz#9288e3e9e3cc3748717d39eade17cf71fc30ee6f"
@@ -2424,10 +2407,6 @@ ignore-walk@^3.0.1:
 image-size@^0.6.0:
   version "0.6.3"
   resolved "http://registry.npm.taobao.org/image-size/download/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
-
-immutable@^3.8.1:
-  version "3.8.2"
-  resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
 import-local@^1.0.0:
   version "1.0.0"
@@ -4024,12 +4003,6 @@ pkg-dir@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-pkg-up@^2.0.0:
-  version "2.0.0"
-  resolved "http://registry.npm.taobao.org/pkg-up/download/pkg-up-2.0.0.tgz#c819ac728059a461cab1c3889a2be3c49a004d7f"
-  dependencies:
-    find-up "^2.1.0"
-
 plist@2.0.1:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/plist/download/plist-2.0.1.tgz#0a32ca9481b1c364e92e18dc55c876de9d01da8b"
@@ -4214,29 +4187,10 @@ react-native-safe-area-view@^0.8.0:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-react-native-swiper2@^2.0.7:
-  version "2.0.7"
-  resolved "http://registry.npm.taobao.org/react-native-swiper2/download/react-native-swiper2-2.0.7.tgz#b18458313899ed927eae28cd68355c36e3fc81d3"
-  dependencies:
-    react-timer-mixin "^0.13.3"
-
-react-native-swiper3@^2.0.6:
-  version "2.0.6"
-  resolved "http://registry.npm.taobao.org/react-native-swiper3/download/react-native-swiper3-2.0.6.tgz#6b77bfbfeee1cc6531e7a22ccd78b6161ba2679f"
-  dependencies:
-    react-timer-mixin "^0.13.3"
-
 react-native-swiper@^1.5.13:
   version "1.5.13"
   resolved "http://registry.npm.taobao.org/react-native-swiper/download/react-native-swiper-1.5.13.tgz#fa695cd4ab77b9a9df2d2bfee38ea7274dd07a2e"
   dependencies:
-    prop-types "^15.5.10"
-
-react-native-tab-navigator@^0.3.4:
-  version "0.3.4"
-  resolved "http://registry.npm.taobao.org/react-native-tab-navigator/download/react-native-tab-navigator-0.3.4.tgz#54a18f1ad06a09d4a0de81ff00416bc1b760c960"
-  dependencies:
-    immutable "^3.8.1"
     prop-types "^15.5.10"
 
 react-native-tab-view@^0.0.77:
@@ -4360,7 +4314,7 @@ react-test-renderer@16.4.1:
     prop-types "^15.6.0"
     react-is "^16.4.1"
 
-react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
+react-timer-mixin@^0.13.2:
   version "0.13.4"
   resolved "http://registry.npm.taobao.org/react-timer-mixin/download/react-timer-mixin-0.13.4.tgz#75a00c3c94c13abe29b43d63b4c65a88fc8264d3"
 
@@ -4565,10 +4519,6 @@ require-main-filename@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/require-main-filename/download/require-main-filename-1.0.1.tgz#97f717b69d48784f5f526a6c5aa8ffdda055a4d1"
 
-reselect@^3.0.1:
-  version "3.0.1"
-  resolved "http://registry.npm.taobao.org/reselect/download/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
-
 resolve-cwd@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/resolve-cwd/download/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
@@ -4587,7 +4537,7 @@ resolve@1.1.7:
   version "1.1.7"
   resolved "http://registry.npm.taobao.org/resolve/download/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
 
-resolve@^1.3.2, resolve@^1.4.0, resolve@^1.5.0:
+resolve@^1.3.2, resolve@^1.5.0:
   version "1.8.1"
   resolved "http://registry.npm.taobao.org/resolve/download/resolve-1.8.1.tgz#82f1ec19a423ac1fbd080b0bab06ba36e84a7a26"
   dependencies:

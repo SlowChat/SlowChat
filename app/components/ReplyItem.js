@@ -1,30 +1,38 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
+  Button,
   TouchableWithoutFeedback
 } from 'react-native';
 
-export default class AvatarHeader extends Component {
+const ICONS = {
+  head: require('../images/head_placeholder80.png'),
+}
+
+export default class AvatarHeader extends PureComponent {
   handleReply = () => {
-    
+
   }
   render() {
+    const { nobord } = this.props
+    const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
     return (
       <View style={styles.avatarWrap}>
         <Image style={styles.avatar} source={ICONS.head} />
-        <View style={styles.avatarRight}>
+        <View style={avatarRightClass}>
           <Text style={styles.name}>给未来的自</Text>
           <Text style={styles.reply}>给未来的自</Text>
-          <View>
+          <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：2019年1月10日</Text>
             <TouchableWithoutFeedback onPress={this.handleReply}>
-              <Text style={styles.btn}>回复</Text>
+              <View onPress={this.handleReply}>
+                <Text style={styles.btn}>回复</Text>
+              </View>
             </TouchableWithoutFeedback>
           </View>
-
         </View>
       </View>
     )
@@ -34,6 +42,8 @@ export default class AvatarHeader extends Component {
 const styles = StyleSheet.create({
   avatarWrap: {
     flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    paddingTop: 15,
   },
   avatar: {
     width: 40,
@@ -42,6 +52,22 @@ const styles = StyleSheet.create({
   },
   avatarRight: {
     flex: 1,
+    paddingBottom: 15,
+  },
+  borded: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
+  },
+  bottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reply: {
+    marginTop: 4,
+    marginBottom: 9,
+  },
+  btn: {
+    fontSize: 14,
   },
   name: {
     flex: 1,
@@ -59,15 +85,15 @@ const styles = StyleSheet.create({
     lineHeight: 17
   },
   date: {
-    height: 17,
+    flex: 1,
     fontSize: 12,
     color: '#B4B4B4',
     lineHeight: 17
   },
   btn: {
-    height: 20,
+    width: 60,
+    textAlign: 'right',
     fontSize: 14,
     color: '#999999',
-    lineHeight: 20
   }
 });

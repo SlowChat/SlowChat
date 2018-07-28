@@ -3,8 +3,16 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
+  PixelRatio
 } from 'react-native';
+
+const onePx = 1 / PixelRatio.get()
+
+const ICONS = {
+  head: require('../images/head_placeholder80.png'),
+}
+
 
 export default class AvatarHeader extends Component {
   render() {
@@ -26,6 +34,10 @@ export default class AvatarHeader extends Component {
 const styles = StyleSheet.create({
   avatarWrap: {
     flexDirection: 'row',
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
   },
   avatar: {
     width: 40,

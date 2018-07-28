@@ -4,6 +4,8 @@ import {
   Text,
   View,
   Image,
+  Button,
+  TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
 
@@ -14,10 +16,8 @@ export default class AvatarHeader extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} />
-        <TouchableWithoutFeedback>
-          <Text style={styles.btn}>回复</Text>
-        </TouchableWithoutFeedback>
+        <TextInput style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4" underlineColorAndroid="transparent" />
+        <Button style={styles.title} title="发送" color="#E24B92"></Button>
       </View>
     )
   }
@@ -25,21 +25,35 @@ export default class AvatarHeader extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    // position: 'absolute',
+    // bottom: 0,
     height: 50,
     paddingLeft: 15,
     flexDirection: 'row',
+    alignItems: 'center',
     fontFamily: 'PingFangSC-Regular',
+    backgroundColor: '#FFFFFF',
   },
   input: {
-    font-size:15,
-    color: '#B4B4B4',
-    width:300,
-    height:32,
-    backgroundColor:'rgba(246,246,246,1)',
-    borderRadius:18,
+    fontSize: 15,
+    color: '#333',
+    width: 300,
+    height: 32,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 18,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   btn: {
     fontSize: 16,
     color: '#999999',
+  },
+  title: {
+    fontSize: 16,
   }
 });
+
+
+// bottomBox: {
+//
+// }

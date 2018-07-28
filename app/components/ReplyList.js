@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
+  PixelRatio
 } from 'react-native';
 
 import ReplyItem from './ReplyItem'
-import ReplyBox from './ReplyBox'
 
-export default class AvatarHeader extends Component {
+const onePx = 1 / PixelRatio.get()
+
+
+export default class ReplyList extends PureComponent {
   handleReply = () => {
 
   }
@@ -21,7 +24,18 @@ export default class AvatarHeader extends Component {
           <Text style={styles.txt}>浏览 22</Text>
         </View>
         <ReplyItem />
-        <ReplyBox />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem />
+        <ReplyItem nobord />
       </View>
     )
   }
@@ -31,16 +45,20 @@ const styles = StyleSheet.create({
   container: {
     paddingLeft: 10,
     paddingRight: 10,
+    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 37,
+    borderBottomWidth: onePx,
+    borderBottomColor: '#EEEEEE',
   },
   txt: {
-    height: 20,
     fontSize: 14,
     fontFamily: 'PingFangSC-Regular',
-    color: '#999999';
-    lineHeight: 20,
+    color: '#999999',
   },
   leftTxt: {
     flex: 1,
