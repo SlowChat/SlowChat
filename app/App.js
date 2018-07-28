@@ -1,15 +1,23 @@
 import React, {Component} from 'react';
 import { StyleSheet } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 
 import BottomTabs from './BottomTabs'
 
 import SendMailScreen from './scenes/SendMail'
 
+// const Stack = createStackNavigator({
+//
+// })
+
 export default createStackNavigator({
-  BottomTabs: { screen: BottomTabs },
+  BottomTabs: {
+    screen: BottomTabs,
+    navigationOptions: {
+      header: null
+    }
+  },
   SendMail: { screen: SendMailScreen },
-  
 }, {
   navigationOptions: {
     headerBackTitleVisible: false,

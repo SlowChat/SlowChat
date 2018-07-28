@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,9 +7,8 @@ import {
 
 
 type Props = {};
-export default class HeaderTip extends Component<Props> {
+export default class HeaderTip extends PureComponent<Props> {
   render() {
-    console.log(this.props.tip);
     return (
       <View style={styles.container}>
         <Text style={styles.tip}>

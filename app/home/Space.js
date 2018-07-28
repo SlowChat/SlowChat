@@ -22,9 +22,9 @@ export default class App extends Component<Props> {
     const { activeTab } = this.state
     return (
       <View style={styles.container}>
+        
         <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
-
       </View>
     );
   }
@@ -34,7 +34,9 @@ export default class App extends Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: 100,
+    backgroundColor: '#ffffff',
     fontFamily: 'PingFangSC-Regular',
   },
   tipWrap: {

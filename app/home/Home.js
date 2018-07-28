@@ -8,71 +8,13 @@ import {
   PixelRatio
 } from 'react-native';
 
+import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
-// import Swiper from 'react-native-swiper2';
 
 const onePx = 1 / PixelRatio.get()
 
 type Props = {};
 export default class App extends Component<Props> {
-  // renderDot() {
-  //   return (<View style={{
-  //       backgroundColor:'#999999',
-  //       width: 13,
-  //       height: 13,
-  //       borderRadius: 7,
-  //       borderColor: "#eee",
-  //       marginLeft: 7,
-  //       marginRight: 7,
-  //       shadowColor: "#000000",
-  //       shadowOpacity: 0.8,
-  //       shadowRadius: 2,
-  //       shadowOffset: {
-  //         height: 1,
-  //         width: 0
-  //       }}} />)
-  // }
-  // renderActiveDot() {
-  //   return (<View style={{
-  //     backgroundColor: '#4d7bd6',
-  //     width: 13,
-  //     height: 13,
-  //     borderRadius: 7,
-  //     marginLeft: 7,
-  //     marginRight: 7,
-  //     shadowColor: "#000000",
-  //     shadowOpacity: 0.8,
-  //     shadowRadius: 2,
-  //     shadowOffset: {
-  //       height: 1,
-  //       width: 0
-  //     }
-  //   }} />)
-  // }
-  // renderSwiper() {
-  //   const dot = this.renderDot()
-  //   const activeDot = this.renderActiveDot()
-  //   // const { images = [] } = this.state
-  //   const images = [
-  //     'https://img.alicdn.com/imgextra/i2/1115488308/TB2VEOeCeGSBuNjSspbXXciipXa_!!1115488308-0-item_pic.jpg_760x760Q50s50.jpg',
-  //     'https://img.alicdn.com/imgextra/i1/1115488308/TB2xxQfXjfguuRjy1zeXXb0KFXa_!!1115488308.jpg_760x760Q50s50.jpg',
-  //   ]
-  //   const marginBottom = Platform.OS === 'android'? 125 : 100
-  //   return (
-  //     <Swiper style={styles.swiperWrapper}
-  //       dot={dot}
-  //       activeDot={activeDot}
-  //       paginationStyle={{ bottom: 150 }}
-  //       loop={true}>
-  //       {images.map((item, index) => (
-  //         <View style={[styles.swiperSlide, { marginBottom: marginBottom }]} key={'preview_image_'+index}>
-  //             <Image style={[styles.swiperImage]} source={{uri:item}}></Image>
-  //         </View>
-  //       ))}
-  //     </Swiper>
-  //   )
-  // }
-
   renderTip() {
     return (
       <View style={styles.tipWraper}>
@@ -85,14 +27,11 @@ export default class App extends Component<Props> {
     )
   }
   render() {
-    // {this.renderSwiper()}
-
     return (
       <View style={styles.container}>
+        <Swiper />
         {this.renderTip()}
-        <Button title="测试" onPress={() => {
-            this.props.navigation.navigate('SendMail')
-          }}></Button>
+
         <HomeItem />
         <HomeItem />
         <HomeItem />
@@ -104,23 +43,10 @@ export default class App extends Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     backgroundColor: '#FFFFFF',
   },
-
-  // swiperWrapper: {
-  //   backgroundColor: '#fff',
-  // },
-  // swiperSlide: {
-  //   flex: 1,
-  //   backgroundColor: 'transparent',
-  // },
-  // swiperImage: {
-  //   flex:1,
-  //   resizeMode:'contain'
-  // },
-
   tipWraper: {
-    marginTop: 100,
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
@@ -149,3 +75,7 @@ const styles = StyleSheet.create({
     lineHeight: 17
   },
 });
+
+// <Button title="测试" onPress={() => {
+//     this.props.navigation.navigate('SendMail')
+//   }}></Button>

@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 
 type Props = {};
-export default class New extends Component<Props> {
+export default class New extends PureComponent<Props> {
   render() {
     return null
   }
