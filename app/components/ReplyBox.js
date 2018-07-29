@@ -9,15 +9,16 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
-export default class AvatarHeader extends Component {
+export default class ReplyBox extends Component {
   handleReply = () => {
-
+    const { onPress } = this.props
+    onPress && onPress()
   }
   render() {
     return (
       <View style={styles.container}>
         <TextInput style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4" underlineColorAndroid="transparent" />
-        <Button style={styles.title} title="发送" color="#E24B92"></Button>
+        <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
       </View>
     )
   }
@@ -25,8 +26,6 @@ export default class AvatarHeader extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    // position: 'absolute',
-    // bottom: 0,
     height: 50,
     paddingLeft: 15,
     flexDirection: 'row',

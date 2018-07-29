@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     height: 44,
     flexDirection: 'row',
     fontFamily: 'PingFangSC-Regular',
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: onePx,
     borderBottomColor: '#EEEEEE',
     borderStyle: 'solid',

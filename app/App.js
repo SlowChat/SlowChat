@@ -18,6 +18,9 @@ import RuleScreen from './user/Rule'
 import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
+import DraftDetailScreen from './scenes/DraftDetail'
+import ReserveDetailScreen from './scenes/ReserveDetail'
+import ShareScreen from './scenes/Share'
 
 export default createStackNavigator({
   BottomTabs: {
@@ -40,13 +43,22 @@ export default createStackNavigator({
   FeedBack: { screen: FeedBackScreen },
   SendMail: { screen: SendMailScreen },
   MailDetail: { screen: MailDetailScreen },
+  DraftDetail: { screen: DraftDetailScreen },
+  ReserveDetail: { screen: ReserveDetailScreen },
+  Share: {
+    screen: ShareScreen,
+    navigationOptions: {
+      title: '分享'
+    }
+  }
 }, {
-  initialRouteName: 'Integral',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
-    style: {
-      backgroundColor: '#FFFFFF'
+    headerStyle: {
+      backgroundColor: '#FFFFFF',
+      borderBottomWidth: 0,
     },
     headerTitleStyle: {
       fontSize: 18,

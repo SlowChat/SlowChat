@@ -5,7 +5,7 @@ import {
   View,
   Image,
   Button,
-  TouchableWithoutFeedback
+  TouchableOpacity,
 } from 'react-native';
 
 const ICONS = {
@@ -20,18 +20,18 @@ export default class AvatarHeader extends PureComponent {
     const { nobord } = this.props
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
     return (
-      <View style={styles.avatarWrap}>
+      <View style={styles.wrap}>
         <Image style={styles.avatar} source={ICONS.head} />
         <View style={avatarRightClass}>
           <Text style={styles.name}>给未来的自</Text>
           <Text style={styles.reply}>给未来的自</Text>
           <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：2019年1月10日</Text>
-            <TouchableWithoutFeedback onPress={this.handleReply}>
+            <TouchableOpacity onPress={this.handleReply}>
               <View onPress={this.handleReply}>
                 <Text style={styles.btn}>回复</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -40,10 +40,12 @@ export default class AvatarHeader extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  avatarWrap: {
+  wrap: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     paddingTop: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   avatar: {
     width: 40,

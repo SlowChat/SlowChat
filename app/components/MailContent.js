@@ -7,21 +7,9 @@ import {
 } from 'react-native';
 
 import AvatarHeader from './AvatarHeader'
-
-
-const IMGS = [
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-]
+import Attachment from './Attachment'
 
 export default class MailContent extends Component {
-  static defaultProps = {
-    images: IMGS,
-  };
   render() {
     const { images } = this.props
     return (
@@ -33,15 +21,7 @@ export default class MailContent extends Component {
         <View>
           <Text style={styles.content}>如果你无法简洁的表达你的想法，那只说明你还不够了解它。生日快乐！</Text>
         </View>
-        <View style={styles.imageList}>
-          { images && images.map((item, index) => {
-            return (<View key={index} style={styles.imageItem}>
-              <Image source={{uri: item}} style={styles.image}></Image>
-              <Text style={styles.imageName}>图片1名图片1名图片1名.png</Text>
-              <Text style={styles.imageSize}>112.66</Text>
-            </View>)
-          })}
-        </View>
+        <Attachment />
       </View>
     )
   }
