@@ -4,6 +4,7 @@ import {
   Text,
   View,
   ScrollView,
+  FlatList,
   Image,
   Button,
   PixelRatio
@@ -53,7 +54,34 @@ export default class App extends Component<Props> {
       </View>
     )
   }
+  handleScroll = () => {
+
+  }
+  handleLoadmore = () => {
+
+  }
   render() {
+    let data = [];
+    for (let i = 0; i < 100; i++) {
+      data.push({key: i, title: i + ''});
+    }
+    return (
+      <FlatList
+        style={styles.flatlist}
+        ref={(flatList)=>this._flatList = flatList}
+        data={data}
+        renderItem={(item) => <HomeItem item={item} />}
+        initialNumToRender={10}
+        keyExtractor={(item, index) => item.key + ''}
+        onScroll={this.handleScroll}
+        onEndReachedThreshold={3}
+        onEndReached={this.handleLoadmore}
+        ListHeaderComponent={() => (<View>
+          <Swiper />
+          {this.renderTip()}
+        </View>)}
+      />
+    )
     return (
       <ScrollView style={styles.container} onScroll={this.handleScroll}>
         <Swiper />

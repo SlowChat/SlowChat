@@ -6,7 +6,10 @@ import BottomTabs from './BottomTabs'
 
 import SendMailScreen from './scenes/SendMail'
 import MailDetailScreen from './scenes/MailDetail'
+import DraftDetailScreen from './scenes/DraftDetail'
+import ReserveDetailScreen from './scenes/ReserveDetail'
 
+import ShareScreen from './scenes/Share'
 
 export default createStackNavigator({
   BottomTabs: {
@@ -17,13 +20,22 @@ export default createStackNavigator({
   },
   SendMail: { screen: SendMailScreen },
   MailDetail: { screen: MailDetailScreen },
+  DraftDetail: { screen: DraftDetailScreen },
+  ReserveDetail: { screen: ReserveDetailScreen },
+  Share: {
+    screen: ShareScreen,
+    navigationOptions: {
+      title: '分享'
+    }
+  }
 }, {
-  initialRouteName: 'SendMail',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
-    style: {
-      backgroundColor: '#FFFFFF'
+    headerStyle: {
+      backgroundColor: '#FFFFFF',
+      borderBottomWidth: 0,
     },
     headerTitleStyle: {
       fontSize: 18,

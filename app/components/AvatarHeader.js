@@ -13,7 +13,6 @@ const ICONS = {
   head: require('../images/head_placeholder80.png'),
 }
 
-
 export default class AvatarHeader extends Component {
   render() {
     return (

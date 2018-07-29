@@ -12,6 +12,8 @@ import {
   PixelRatio,
 } from 'react-native';
 
+import DatePicker from 'react-native-datepicker'
+
 import HeaderTip from '../components/HeaderTip'
 
 const onePx = 1 / PixelRatio.get()
@@ -70,10 +72,21 @@ export default class SendMail extends Component {
           <View style={styles.icons}>
             <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
           </View>
+          <Text style={styles.attachmentNum}>3个附件</Text>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
-          <View style={styles.input} />
+          <DatePicker style={styles.datepicker} date={this.state.datetime}
+            mode="datetime" format="YYYY-MM-DD HH:mm"
+            confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
+            customStyles={{
+              dateInput: {
+                borderWidth: 0,
+              }
+            }}
+            onDateChange={(datetime) => {
+              this.setState({datetime: datetime});
+            }} />
           <Image style={styles.arrow} source={require('../images/icon_forward.png')} />
         </View>
         <View style={styles.item}>
@@ -85,13 +98,16 @@ export default class SendMail extends Component {
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity>
-            <View style={styles.saveBtn}><Text style={styles.saveBtnTxt}></Text></View>
+            <View style={styles.saveBtn}>
+              <Text style={styles.saveBtnTxt}>保存草稿</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
     )
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -114,6 +130,10 @@ const styles = StyleSheet.create({
     color: '#999999',
   },
   input: {
+    flex: 1,
+    paddingRight: 15,
+  },
+  datepicker: {
     flex: 1,
     paddingRight: 15,
   },
@@ -149,6 +169,12 @@ const styles = StyleSheet.create({
     height: 30,
     resizeMode: 'contain',
   },
+  attachmentNum: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
+  },
   arrow: {
     width: 25,
     height: 25,
@@ -165,7 +191,12 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottom: {
-
+    height: 44,
+    paddingRight: 15,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    borderTopWidth: onePx,
+    borderTopColor: '#EEEEEE',
   },
   saveBtn: {
     width: 90,

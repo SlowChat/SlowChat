@@ -10,6 +10,9 @@
     "prop-types": "^15.6.2",
     "react": "16.4.1",
     "react-native": "0.56.0",
+    "react-native-datepicker": "^1.7.2",
+    "react-native-linear-gradient": "^2.4.0",
+    "react-native-qrcode": "^0.2.7",
     "react-native-swiper": "^1.5.13",
     "react-navigation": "^2.9.3"
   },
