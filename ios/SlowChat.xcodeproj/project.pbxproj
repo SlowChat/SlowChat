@@ -38,6 +38,19 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		BA54B542554148F49EF0928D /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4622180859A4736B547B583 /* libBVLinearGradient.a */; };
+		510951B8A3914A8E986CCE47 /* libRCTJCoreModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 586B0BF1B8D0470580691F45 /* libRCTJCoreModule.a */; };
+		0A70FCA385FB4014B3F0C2F2 /* libRCTJPushModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BAFEE607D6B4C62941586EC /* libRCTJPushModule.a */; };
+		47DC4C6B64C740698F533FFD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A942E674EB42442C84B05862 /* libz.tbd */; };
+		EBABF14D4A4B4A75B2881765 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87880E3B70D84426ADC1CE45 /* UserNotifications.framework */; };
+		3D3506AF5B7241AB9AEB87B5 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A528CA47816A47458AFEBFDE /* CoreTelephony.framework */; };
+		CB180923E3284D77BA9E4250 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B71EC7CEEE04A41AF8AC896 /* Security.framework */; };
+		1BD9605EB42A4C3690564E74 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3408604B5540D19D095476 /* CFNetwork.framework */; };
+		DE3E299C39184BAB8443A7D7 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA12614A3204F3CA4CE2D44 /* CoreFoundation.framework */; };
+		3199B99082934DEAA72E5782 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E54AC8CE0A03456A8546A326 /* SystemConfiguration.framework */; };
+		4A80AE0AF1DF4E51A215D553 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BFA745B5A344D08FCE0CAD /* Foundation.framework */; };
+		D1BAE542E5534663BADE83B4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04EDBD32573C4D8AAFBAED22 /* UIKit.framework */; };
+		1A25B5B4E4B446ABA6D603BC /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73396C2B6D1943A982460799 /* libresolv.tbd */; };
+		AE39814727934EC4A4EEEA01 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C3787229754295BA389557 /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -345,6 +358,21 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		35C9C767ED6B49FC96BD9971 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; name = "BVLinearGradient.xcodeproj"; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		F4622180859A4736B547B583 /* libBVLinearGradient.a */ = {isa = PBXFileReference; name = "libBVLinearGradient.a"; path = "libBVLinearGradient.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		B8BC5DD3F5014D818D28C97E /* RCTJCoreModule.xcodeproj */ = {isa = PBXFileReference; name = "RCTJCoreModule.xcodeproj"; path = "../node_modules/jcore-react-native/ios/RCTJCoreModule.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		586B0BF1B8D0470580691F45 /* libRCTJCoreModule.a */ = {isa = PBXFileReference; name = "libRCTJCoreModule.a"; path = "libRCTJCoreModule.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		2E3F11A047714FFFBD0AEB00 /* RCTJPushModule.xcodeproj */ = {isa = PBXFileReference; name = "RCTJPushModule.xcodeproj"; path = "../node_modules/jpush-react-native/ios/RCTJPushModule.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		7BAFEE607D6B4C62941586EC /* libRCTJPushModule.a */ = {isa = PBXFileReference; name = "libRCTJPushModule.a"; path = "libRCTJPushModule.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		A942E674EB42442C84B05862 /* libz.tbd */ = {isa = PBXFileReference; name = "libz.tbd"; path = "usr/lib/libz.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		87880E3B70D84426ADC1CE45 /* UserNotifications.framework */ = {isa = PBXFileReference; name = "UserNotifications.framework"; path = "System/Library/Frameworks/UserNotifications.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		A528CA47816A47458AFEBFDE /* CoreTelephony.framework */ = {isa = PBXFileReference; name = "CoreTelephony.framework"; path = "System/Library/Frameworks/CoreTelephony.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		3B71EC7CEEE04A41AF8AC896 /* Security.framework */ = {isa = PBXFileReference; name = "Security.framework"; path = "System/Library/Frameworks/Security.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		1A3408604B5540D19D095476 /* CFNetwork.framework */ = {isa = PBXFileReference; name = "CFNetwork.framework"; path = "System/Library/Frameworks/CFNetwork.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		4CA12614A3204F3CA4CE2D44 /* CoreFoundation.framework */ = {isa = PBXFileReference; name = "CoreFoundation.framework"; path = "System/Library/Frameworks/CoreFoundation.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		E54AC8CE0A03456A8546A326 /* SystemConfiguration.framework */ = {isa = PBXFileReference; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		07BFA745B5A344D08FCE0CAD /* Foundation.framework */ = {isa = PBXFileReference; name = "Foundation.framework"; path = "System/Library/Frameworks/Foundation.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		04EDBD32573C4D8AAFBAED22 /* UIKit.framework */ = {isa = PBXFileReference; name = "UIKit.framework"; path = "System/Library/Frameworks/UIKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		73396C2B6D1943A982460799 /* libresolv.tbd */ = {isa = PBXFileReference; name = "libresolv.tbd"; path = "usr/lib/libresolv.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		63C3787229754295BA389557 /* CoreGraphics.framework */ = {isa = PBXFileReference; name = "CoreGraphics.framework"; path = "System/Library/Frameworks/CoreGraphics.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -374,6 +402,19 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				BA54B542554148F49EF0928D /* libBVLinearGradient.a in Frameworks */,
+				510951B8A3914A8E986CCE47 /* libRCTJCoreModule.a in Frameworks */,
+				0A70FCA385FB4014B3F0C2F2 /* libRCTJPushModule.a in Frameworks */,
+				47DC4C6B64C740698F533FFD /* libz.tbd in Frameworks */,
+				EBABF14D4A4B4A75B2881765 /* UserNotifications.framework in Frameworks */,
+				3D3506AF5B7241AB9AEB87B5 /* CoreTelephony.framework in Frameworks */,
+				CB180923E3284D77BA9E4250 /* Security.framework in Frameworks */,
+				1BD9605EB42A4C3690564E74 /* CFNetwork.framework in Frameworks */,
+				DE3E299C39184BAB8443A7D7 /* CoreFoundation.framework in Frameworks */,
+				3199B99082934DEAA72E5782 /* SystemConfiguration.framework in Frameworks */,
+				4A80AE0AF1DF4E51A215D553 /* Foundation.framework in Frameworks */,
+				D1BAE542E5534663BADE83B4 /* UIKit.framework in Frameworks */,
+				1A25B5B4E4B446ABA6D603BC /* libresolv.tbd in Frameworks */,
+				AE39814727934EC4A4EEEA01 /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,6 +564,17 @@
 			isa = PBXGroup;
 			children = (
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
+				A942E674EB42442C84B05862 /* libz.tbd */,
+				87880E3B70D84426ADC1CE45 /* UserNotifications.framework */,
+				A528CA47816A47458AFEBFDE /* CoreTelephony.framework */,
+				3B71EC7CEEE04A41AF8AC896 /* Security.framework */,
+				1A3408604B5540D19D095476 /* CFNetwork.framework */,
+				4CA12614A3204F3CA4CE2D44 /* CoreFoundation.framework */,
+				E54AC8CE0A03456A8546A326 /* SystemConfiguration.framework */,
+				07BFA745B5A344D08FCE0CAD /* Foundation.framework */,
+				04EDBD32573C4D8AAFBAED22 /* UIKit.framework */,
+				73396C2B6D1943A982460799 /* libresolv.tbd */,
+				63C3787229754295BA389557 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -561,6 +613,8 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				35C9C767ED6B49FC96BD9971 /* BVLinearGradient.xcodeproj */,
+				B8BC5DD3F5014D818D28C97E /* RCTJCoreModule.xcodeproj */,
+				2E3F11A047714FFFBD0AEB00 /* RCTJPushModule.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1188,10 +1242,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Debug;
@@ -1213,10 +1271,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Release;
@@ -1239,6 +1301,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Debug;
@@ -1260,6 +1324,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Release;
@@ -1290,10 +1356,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Debug;
@@ -1324,10 +1394,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Release;
@@ -1357,10 +1431,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Debug;
@@ -1390,10 +1468,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
+					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 				);
 			};
 			name = Release;
