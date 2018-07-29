@@ -1,0 +1,64 @@
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  PixelRatio
+} from 'react-native';
+
+const onePx = 1 / PixelRatio.get()
+
+const ICONS = {
+  img: require('../images/head_placeholder80.png'),
+}
+
+
+export default class AvatarHeader extends Component {
+  render() {
+    return (
+      <View style={styles.avatarWrap}>
+        <Image style={styles.avatar} source={ICONS.img} />
+        <View style={styles.avatarRight}>
+          <Text style={styles.name}>Abagael</Text>
+          <Text style={styles.level}>普通会员</Text>
+        </View>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  avatarWrap: {
+    flexDirection: 'row',
+    padding: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
+    backgroundColor: '#fff'
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    marginRight: 10,
+  },
+  avatarRight: {
+    flex: 1,
+  },
+  name: {
+    height: 24,
+    marginTop: 15,
+    fontSize: 18,
+    color: '#333'
+  },
+  level: {
+    width: 70,
+    height: 20,
+    lineHeight: 20,
+    marginTop: 5,
+    fontSize: 12,
+    textAlign: 'center',
+    borderRadius: 10,
+    color: '#999',
+    backgroundColor: '#eee'
+  },
+});
