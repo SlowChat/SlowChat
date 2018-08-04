@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
 import AvatarHeader from './AvatarHeader'
 import Attachment from './Attachment'
 
-export default class MailContent extends Component {
+export default class MailContent extends PureComponent {
   render() {
     const { images } = this.props
     return (

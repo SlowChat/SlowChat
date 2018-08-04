@@ -12,7 +12,6 @@ import {
   // ScrollView,
   FlatList,
   TouchableOpacity,
-  PixelRatio,
   UIManager,
 } from 'react-native';
 
@@ -22,7 +21,8 @@ import MyMailContent from '../components/MyMailContent'
 import ReplyItem from '../components/ReplyItem'
 import ReplyBox from '../components/ReplyBox'
 
-const onePx = 1 / PixelRatio.get()
+
+import { get, post } from '../utils/request'
 
 const ICONS = {
   overt: require('../images/icon_overt.png'),
@@ -43,8 +43,9 @@ export default class ReserveDetail extends Component {
     }
   }
   state = {
-    type: 'ing',
+    status: 'ing',
     activeTab: 0,
+    data: {},
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -83,15 +84,29 @@ export default class ReserveDetail extends Component {
 
   }
 
+  handleCancel = () => {
+    const { id } = this.state.data
+    post('api/mail/cancel.html', { id, id }).then((res) => {
+      if (res.code == 0) {
+        this.refs.toast.show('取消发送成功');
+      } else {
+        this.refs.toast.show(res.msg || '取消发送失败');
+      }
+      // if (res.code == 10001) {
+      //   // 跳转到登录页面
+      // }
+    })
+  }
+
   render() {
     let data = [];
     for (let i = 0; i < 100; i++) {
       data.push({key: i, title: i + ''});
     }
-    const { type, activeTab, showTab } = this.state
+    const { status, activeTab, showTab } = this.state
     return (
       <View style={styles.container}>
-        <SendTip type={type} />
+        <SendTip type={status} onPress={this.handleCancel} />
         <View style={styles.toptab}>
           <TopTab index={activeTab} items={ITEMS} onPress={this.switchTab} />
         </View>
@@ -121,6 +136,7 @@ export default class ReserveDetail extends Component {
           </View>)}
         />
         <ReplyBox/>
+        <Toast ref="toast" position="bottom" />
       </View>
     )
   }
@@ -163,7 +179,7 @@ const styles = StyleSheet.create({
     height: 37,
     paddingLeft: 10,
     paddingRight: 10,
-    borderBottomWidth: onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
     backgroundColor: '#FFFFFF'
   },

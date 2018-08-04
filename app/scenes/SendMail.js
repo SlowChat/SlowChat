@@ -6,74 +6,171 @@ import {
   View,
   Image,
   Button,
+  Modal,
   TextInput,
   Switch,
   TouchableOpacity,
-  PixelRatio,
 } from 'react-native';
 
+import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
-
+// import RNFileSelector from 'react-native-file-selector'
 import HeaderTip from '../components/HeaderTip'
 
-const onePx = 1 / PixelRatio.get()
+import { post, upload } from '../utils/request'
+import { isEmail } from '../utils/validate'
+
+const ICONS = {
+  succeed: require('../images/icon_succeed.png'),
+  error: require('../images/icon_error.png')
+}
 
 export default class SendMail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
+    if (!params.rightOnPress) {
+      params.rightOnPress = () => {}
+    }
     return {
       title: '写信',
       headerRight: (
         <Button
-          onPress={params.rightOnPress}
           title='发送'
           color={params.rightColor || '#F9DBE9'}
+          onPress={params.rightOnPress}
         />
       ),
     }
   }
 
   state = {
-    switchBtn: true
+    isSend: true,
+    isError: false,
+    isSucc: false,
+    attachs: ['http://img.alicdn.com/bao/uploaded/i2/TB1jZYfdRjTBKNjSZFwATwG4XXa_041742.jpg'],
+    params: {
+      title: '欢迎欢迎欢迎',
+      content: '欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎',
+      email: 'test@163.com',
+      send_time: '2018-10-10 10:10',
+      type: 2,
+    }
   }
   componentDidMount() {
     this.props.navigation.setParams({
-      rightOnPress: this.rightBtnOnPress
+      rightOnPress: this.handleSend
     })
   }
-  handleSwitch = (value) => {
-    this.setState({
-      switchBtn: value
+  handleFile = () => {
+    RNFileSelector.Show({
+      title: '文件选择',
+      // filter
+      onDone: (path) => {
+        console.log('file selected: ' + path)
+        // upload(`file://${path}`)
+      },
+      onCancel: () => {
+        console.log('cancelled')
+      }
     })
   }
+  setParams(key, value) {
+    const { params } = this.state
+    params[key] = value
+    this.setState({ params })
+  }
+  checkParams() {
+    const { attachs } = this.state
+    const { title, content, email, send_time, attach } = this.state.params
+    const tips = []
+    if (!email || !isEmail(email)) tips.push('收件人')
+    if (!title) tips.push('主题')
+    if (attachs.length == 0) tips.push('附件')
+    if (!send_time) tips.push('发信时间')
+    if (!content) tips.push('内容')
+    if (tips.length > 0) {
+      const tip = '请保证' + tips.join('，') + '填写正确！'
+      this.refs.toast.show(tip);
+      return false
+    } else {
+      return true
+    }
+  }
+  handleSend = () => {
+    if (!this.checkParams()) return
+    const params = {...this.state.params}
+    params.attach = this.state.attachs.join(',')
+    post('api/mail/add.html', params).then(res => {
+      if (res.code == 10001) {
+        // 跳转到登录页面
+      } else if (res.code == 1) {
+        this.setState({ isSucc: true, isError: false, isSend: false })
+      } else {
+        this.dealError(true)
+      }
+    }).catch(e => {
+      this.dealError(true)
+    })
+  }
+  handleSave = () => {
+    if (!this.checkParams()) return
+    const params = {...this.state.params}
+    params.attach = this.state.attachs.join(',')
+    post('api/mail/save.html', params).then(res => {
+      console.log(res);
+
+      if (res.code == 10001) {
+        // 跳转到登录页面
+      } else if (res.code == 1) {
+        this.setState({ isSucc: true, isError: false, isSend: false })
+      } else {
+        this.dealError(false)
+      }
+    }).catch(e => {
+      console.log(e);
+      this.dealError(false)
+    })
+  }
+
+  dealError(isSend) {
+    this.setState({ isSucc: false, isError: true, isSend }, () => {
+      this.timer = setTimeout(() => {
+        this.setState({ isError: false })
+      }, 2000)
+    })
+  }
+
   rightBtnOnPress = () => {
     this.props.navigation.setParams({
       rightColor: '#FFFFFF',
     })
   }
   render() {
-    const { switchBtn } = this.state
+    const { params, isSend, isSucc, isError } = this.state
+    const tipTxt = isSend ? '发送' : '保存草稿'
     return (
       <View style={styles.container}>
         <HeaderTip tip="爱慢邮——让我们回到未来" />
         <View style={styles.item}>
           <Text style={styles.label}>收件人：</Text>
-          <TextInput autoFocus style={styles.input} />
-          <TouchableOpacity>
+          <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)} />
+          <TouchableOpacity onPress={() => { this.setParams('email', '') }}>
             <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
           </TouchableOpacity>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>主题：</Text>
-          <TextInput autoFocus style={styles.input} />
+          <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)} />
         </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>附件：</Text>
-          <View style={styles.icons}>
-            <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
+        <TouchableOpacity onPress={this.handleFile}>
+          <View style={styles.item}>
+            <Text style={styles.label}>附件：</Text>
+            <View style={styles.icons}>
+              <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
+            </View>
+            <Text style={styles.attachmentNum}>3个附件</Text>
           </View>
-          <Text style={styles.attachmentNum}>3个附件</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={this.state.datetime}
@@ -85,29 +182,75 @@ export default class SendMail extends Component {
               }
             }}
             onDateChange={(datetime) => {
-              this.setState({datetime: datetime});
+              console.log(datetime);
+              this.setParams('send_time', datetime)
             }} />
           <Image style={styles.arrow} source={require('../images/icon_forward.png')} />
         </View>
         <View style={styles.item}>
           <Text style={styles.txt}>信件提交后在“慢友圈”公开</Text>
-          <Switch value={switchBtn} onValueChange={this.handleSwitch} />
+          <Switch value={params.type == 2} onValueChange={(value) => {
+              this.setParams('type', value ? 2 : 1)
+            }} />
         </View>
         <View style={styles.content}>
-          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} />
+          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)} />
         </View>
         <View style={styles.bottom}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.handleSave}>
             <View style={styles.saveBtn}>
               <Text style={styles.saveBtnTxt}>保存草稿</Text>
             </View>
           </TouchableOpacity>
         </View>
+
+        <Modal
+          animationType='fade'
+          transparent={false}
+          visible={this.state.isSucc}
+          onRequestClose={() => {this.onRequestClose()}}
+        >
+          <View style={styles.succView}>
+            <Image source={ICONS.success} style={styles.succIcon} />
+            <Text style={styles.succTxt}>信件{tipTxt}成功</Text>
+            <TouchableOpacity style={styles.succBtn} onPress={() => {
+              this.props.navigation.replace('Home') // navigate
+            }}>
+              <Text style={styles.succBtnTxt}>返回首页</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType='fade'
+          transparent
+          visible={this.state.isError}
+          onRequestClose={() => {this.onRequestClose()}}
+        >
+          <View style={styles.errorView}>
+            <Image source={ICONS.error} style={styles.errorIcon} />
+            <Text style={styles.errorTxt}>{tipTxt}失败，再试一次吧</Text>
+          </View>
+        </Modal>
+        <Toast ref="toast" position="center" />
       </View>
     )
   }
 }
 
+
+// <Toast style={{backgroundColor:'red'}}
+//   position='center'
+//   fadeInDuration={750}
+//   fadeOutDuration={1000}
+//   opacity={0.8}
+//   textStyle={{color:'red'}}
+//   text={() => {
+//     return <View>
+//
+//     </View>
+//   }}
+// />
 
 const styles = StyleSheet.create({
   container: {
@@ -121,7 +264,7 @@ const styles = StyleSheet.create({
     height: 44,
     paddingLeft: 20,
     paddingRight: 15,
-    borderBottomWidth: onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },
   label: {
@@ -181,7 +324,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    borderTopWidth: onePx,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
   textarea: {
@@ -195,7 +338,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     alignItems: 'flex-end',
     justifyContent: 'center',
-    borderTopWidth: onePx,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
   saveBtn: {
@@ -210,6 +353,59 @@ const styles = StyleSheet.create({
   saveBtnTxt: {
     fontSize: 16,
     color: '#E24B92',
+  },
+
+  succView: {
+    width: 275,
+    height: 222,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  succBtn: {
+    width: 155,
+    height: 36,
+    borderRadius: 36,
+    marginBottom: 34,
+    backgroundColor: '#E24B92',
+  },
+  succBtnTxt: {
+    height: 22,
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#FFFFFF',
+    lineHeight: 22,
+  },
+  succIcon: {
+    width: 40,
+    height: 37,
+    marginTop: 40
+  },
+  succTxt: {
+    height: 22,
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#777777',
+    lineHeight: 22,
+  },
+  errorView: {
+    paddingTop: 40,
+    paddingBottom: 40,
+    width: 245,
+    // height: 167,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 10
+  },
+  errorIcon: {
+    width: 49,
+    height: 50,
+    marginBottom: 13,
+  },
+  errorTxt: {
+    height: 25,
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#FFFFFF',
+    lineHeight: 25
   },
 });
 

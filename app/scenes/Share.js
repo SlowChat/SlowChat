@@ -8,7 +8,9 @@ import {
   ImageBackground,
 } from 'react-native';
 
-// import QRCode from 'react-native-qrcode'
+import ShareUtil from '../libs/um/ShareUtil'
+import QRCode from 'react-native-qrcode'
+import ViewShot from "react-native-view-shot";
 
 import AvatarHeader from '../components/AvatarHeader'
 
@@ -21,17 +23,22 @@ const ICONS = {
   more: require('../images/icon_more.png'),
 }
 
-const QRCode_IMG = 'https://mmbiz.qpic.cn/mmbiz_jpg/oTQcjB03Y8yLqw2nfh6ibN7qJP69P4kJ5WypFmReMCEjCAYMpaiasEkQlHpx95W8Cw0BPBEEbiaB97xeYDdibjSviaw/640?wx_fmt=jpeg'
+
 
 type Props = {};
 export default class HeaderTip extends PureComponent<Props> {
-
+  state = {
+    qrcodeUrl: 'https://github.com/forrest23/ReactNativeComponents',
+  }
   handleWechat = () => {
-
+    ShareUtil.auth(5, (code,result,message) =>{
+      console.log(code,result,message)
+    });
   }
 
   handleWeibo = () => {
-
+    ShareUtil.shareboard('qwqw','', 'https://www.baidu.com','测试',[0,1,2,3,4,5,6,33],(code,message) =>{
+   });
   }
 
   handleSave = () => {
@@ -43,10 +50,11 @@ export default class HeaderTip extends PureComponent<Props> {
   }
 
   render() {
+    // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
     return (
       <View style={styles.container}>
-        <ImageBackground source={ICONS.sharebg} style={styles.wrap}>
+        <ImageBackground ref="viewShot" source={ICONS.sharebg} style={styles.wrap}>
           <View style={styles.avatarWrap}>
             <Image style={styles.avatar} source={ICONS.head} />
             <View style={styles.avatarRight}>
@@ -58,7 +66,7 @@ export default class HeaderTip extends PureComponent<Props> {
             </View>
           </View>
           <View style={styles.qrcodeWrap}>
-            <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
+            <QRCode value={this.state.qrcodeUrl} size="160" bgColor="#FFFFFF" />
           </View>
         </ImageBackground>
         <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>

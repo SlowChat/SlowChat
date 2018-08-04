@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  PixelRatio
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient'
@@ -17,20 +16,25 @@ const ICONS = {
 
 const STATUS = {
   ing: '待发送',
-  ed: '',
-  cancel: '',
+  ed: '已完成发送',
+  cancel: '已取消发送',
 }
 
 export default class SendTip extends PureComponent {
   render() {
-    const { type } = this.props
+    const { type, onPress } = this.props
     return (
       <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#D74B80', '#FB4BBA']} style={styles.container}>
         <Image style={styles.icon} source={ICONS[type]} />
         <Text style={styles.txt}>{STATUS[type]}</Text>
-        <View style={styles.btnWrap}>
-          <Text style={styles.btn}>取消发送</Text>
-        </View>
+        {
+          type == 'ing' && <TouchableOpacity onPress={onPress}>
+            <View style={styles.btnWrap}>
+              <Text style={styles.btn}>取消发送</Text>
+            </View>
+          </TouchableOpacity>
+        }
+
       </LinearGradient>
     )
   }
