@@ -7,14 +7,22 @@ const getToken = () => {
   return '217aba3196c7dd24f2a0a39c7dff4da2217aba3196c7dd24f2a0a39c7dff4da2'
 }
 
-export function get(url, params) {
+const getHeaders = (unneed) => {
+  if (unneed) {
+    return {}
+  }
+  return {
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    'MY-Token': getToken(),
+    'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
+  }
+}
+
+export function get(url, params, unneedLogin) {
   const geturl = URL.stringify(BASE_URL + url, params)
   return fetch(geturl, {
     method: 'GET',
-    headers: {
-      'MY-Token': getToken(),
-      'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
-    },
+    headers: getHeaders(unneedLogin)
   }).then((response) => {
     if (response.ok) {
       return response.json();
@@ -23,15 +31,10 @@ export function get(url, params) {
 }
 
 
-export function post(url, params) {
-  console.log(params);
+export function post(url, params, unneedLogin) {
   return fetch(BASE_URL + url, {
     method: 'POST',
-    headers: {
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-      'MY-Token': getToken(),
-      'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
-    },
+    headers: getHeaders(unneedLogin),
     body: JSON.stringify(params),
   }).then((response) => response.json()).catch((err) => {
     console.error(err);
@@ -42,17 +45,16 @@ export function post(url, params) {
 
 export function upload(uri) {
   let formData = new FormData();
-  const name = file.substring(file.lastIndexOf('/') + 1, file.length)
+  const name = uri.substring(uri.lastIndexOf('/') + 1, uri.length)
   let file = {uri: uri, type: 'multipart/form-data', name: name};
   formData.append('file', file);
   return fetch(BASE_URL + 'api/upload/image.html', {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
-      'MY-Token': getToken(),
-      'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
+      ...getHeaders()
     },
-    body: params,
+    body: formData,
   }).then((response) => {
     return response.text()
   })

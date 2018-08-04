@@ -12,18 +12,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
 // import RNFileSelector from 'react-native-file-selector'
 import HeaderTip from '../components/HeaderTip'
+import SuccessModal from '../components/SuccessModal'
+import ErrorModal from '../components/ErrorModal'
 
 import { post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
-const ICONS = {
-  succeed: require('../images/icon_succeed.png'),
-  error: require('../images/icon_error.png')
-}
 
 export default class SendMail extends Component {
   static navigationOptions = ({navigation}) => {
@@ -62,17 +61,42 @@ export default class SendMail extends Component {
     })
   }
   handleFile = () => {
-    RNFileSelector.Show({
-      title: '文件选择',
-      // filter
-      onDone: (path) => {
-        console.log('file selected: ' + path)
-        // upload(`file://${path}`)
-      },
-      onCancel: () => {
-        console.log('cancelled')
+    this.pickerAndUpload()
+  }
+  pickerAndUpload() {
+    const options = {
+      title: '选择图片',
+      cancelButtonTitle: '取消',
+      takePhotoButtonTitle: '拍照',
+      chooseFromLibraryButtonTitle: '选择照片',
+      cameraType: 'back',
+      mediaType: 'photo',
+      videoQuality: 'high',
+      durationLimit: 10,
+      maxWidth: 300,
+      maxHeight: 300,
+      quality: 0.8,
+      angle: 0,
+      allowsEditing: false,
+      noData: false,
+      storageOptions: {
+        skipBackup: true
       }
-    })
+    }
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+      } else {
+        // let source = { uri: response.uri };
+        upload(response.uri).then(res => {
+          console.log("succ", res)
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+    });
   }
   setParams(key, value) {
     const { params } = this.state
@@ -102,6 +126,7 @@ export default class SendMail extends Component {
     params.attach = this.state.attachs.join(',')
     post('api/mail/add.html', params).then(res => {
       if (res.code == 10001) {
+
         // 跳转到登录页面
       } else if (res.code == 1) {
         this.setState({ isSucc: true, isError: false, isSend: false })
@@ -145,6 +170,9 @@ export default class SendMail extends Component {
       rightColor: '#FFFFFF',
     })
   }
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
   render() {
     const { params, isSend, isSucc, isError } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
@@ -162,15 +190,15 @@ export default class SendMail extends Component {
           <Text style={styles.label}>主题：</Text>
           <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)} />
         </View>
-        <TouchableOpacity onPress={this.handleFile}>
-          <View style={styles.item}>
-            <Text style={styles.label}>附件：</Text>
+        <View style={styles.item}>
+          <Text style={styles.label}>附件：</Text>
+          <TouchableOpacity style={styles.itemTouch} onPress={this.handleFile}>
             <View style={styles.icons}>
               <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
             </View>
             <Text style={styles.attachmentNum}>3个附件</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={this.state.datetime}
@@ -204,34 +232,18 @@ export default class SendMail extends Component {
           </TouchableOpacity>
         </View>
 
-        <Modal
-          animationType='fade'
-          transparent={false}
+        <SuccessModal
+          txt={`信件${tipTxt}成功`}
           visible={this.state.isSucc}
-          onRequestClose={() => {this.onRequestClose()}}
-        >
-          <View style={styles.succView}>
-            <Image source={ICONS.success} style={styles.succIcon} />
-            <Text style={styles.succTxt}>信件{tipTxt}成功</Text>
-            <TouchableOpacity style={styles.succBtn} onPress={() => {
-              this.props.navigation.replace('Home') // navigate
-            }}>
-              <Text style={styles.succBtnTxt}>返回首页</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        <Modal
-          animationType='fade'
-          transparent
+          onPress={() => {
+            this.props.navigation.replace('Home') // navigate
+          }}
+          onRequestClose={this.onRequestClose}
+        />
+        <ErrorModal
+          txt={`${tipTxt}失败，再试一次吧`}
           visible={this.state.isError}
-          onRequestClose={() => {this.onRequestClose()}}
-        >
-          <View style={styles.errorView}>
-            <Image source={ICONS.error} style={styles.errorIcon} />
-            <Text style={styles.errorTxt}>{tipTxt}失败，再试一次吧</Text>
-          </View>
-        </Modal>
+        />
         <Toast ref="toast" position="center" />
       </View>
     )
@@ -266,6 +278,11 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
+  },
+  itemTouch: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   label: {
     width: 88,
@@ -353,59 +370,6 @@ const styles = StyleSheet.create({
   saveBtnTxt: {
     fontSize: 16,
     color: '#E24B92',
-  },
-
-  succView: {
-    width: 275,
-    height: 222,
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  succBtn: {
-    width: 155,
-    height: 36,
-    borderRadius: 36,
-    marginBottom: 34,
-    backgroundColor: '#E24B92',
-  },
-  succBtnTxt: {
-    height: 22,
-    fontSize: 16,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#FFFFFF',
-    lineHeight: 22,
-  },
-  succIcon: {
-    width: 40,
-    height: 37,
-    marginTop: 40
-  },
-  succTxt: {
-    height: 22,
-    fontSize: 16,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#777777',
-    lineHeight: 22,
-  },
-  errorView: {
-    paddingTop: 40,
-    paddingBottom: 40,
-    width: 245,
-    // height: 167,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    borderRadius: 10
-  },
-  errorIcon: {
-    width: 49,
-    height: 50,
-    marginBottom: 13,
-  },
-  errorTxt: {
-    height: 25,
-    fontSize: 18,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#FFFFFF',
-    lineHeight: 25
   },
 });
 

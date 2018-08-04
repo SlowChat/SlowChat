@@ -38,29 +38,6 @@ export default class App extends Component<Props> {
       this.setState({ images: IMGS })
     }, 500)
   }
-  transfromY() {
-    this.springValue = new Animated.Value(-44)
-    this.props.navigation.setParams({
-      header: () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
-        style={[styles.header, {transform: [{translateY: this.springValue}]}]}>
-        <Text style={styles.headerTxt}>首页</Text>
-      </SafeAreaView>),
-    })
-    Animated.spring(
-      this.springValue,
-      {
-        toValue: 0,
-        friction: 100
-      }
-    ).start()
-
-      // Animated.timing(this.springValue, {
-      //   toValue: 0, // 目标值
-      //   duration: 300, // 动画时间
-      //   easing: Easing.linear // 缓动函数
-      // }).start();
-
-  }
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
     const toValue = fadeIn ? 1 : 0
