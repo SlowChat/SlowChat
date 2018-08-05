@@ -26,8 +26,8 @@ export default class Email extends Component {
 
   }
 
-  
-  
+
+
   render() {
     const { params } = this.props.navigation.state;
     const { navigate } = this.props.navigation;
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  editBtn: {  
+  editBtn: {
     paddingRight: 15,
     color: '#666',
     fontSize: 18
@@ -57,4 +57,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   }
 });
-

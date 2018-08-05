@@ -6,7 +6,6 @@ import {
   Image,
   Button,
   TextInput,
-  TouchableOpacity
 } from 'react-native';
 
 export default class ReplyBox extends Component {

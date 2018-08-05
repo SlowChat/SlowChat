@@ -22,7 +22,7 @@ export default class EmailList extends Component {
   }
 
   renderStatus() {
-    /* 
+    /*
     draft: 草稿
     reservation: 预约
     sent: 发送

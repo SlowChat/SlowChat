@@ -22,7 +22,7 @@ export default class HomeItem extends PureComponent<Props> {
   }
   render() {
     return (
-      <TouchableOpacity style={styles.container} activeOpacity={0.8} onPress={this.handlePress}>
+      <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this.handlePress}>
         <View style={styles.avatarWrap}>
           <Image style={styles.avatar} source={ICONS.head} />
           <View style={styles.avatarRight}>

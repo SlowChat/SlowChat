@@ -36,7 +36,7 @@ export default class SendMail extends Component {
       headerRight: (
         <Button
           title='发送'
-          color={params.rightColor || '#F9DBE9'}
+          color={params.enable ? '#E24B92' : '#F9DBE9'}
           onPress={params.rightOnPress}
         />
       ),
@@ -50,10 +50,10 @@ export default class SendMail extends Component {
     pickerModal: false,
     attachs: ['http://img.alicdn.com/bao/uploaded/i2/TB1jZYfdRjTBKNjSZFwATwG4XXa_041742.jpg'],
     params: {
-      title: '欢迎欢迎欢迎',
-      content: '欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎',
-      email: 'test@163.com',
-      send_time: '2018-10-10 10:10',
+      title: '',
+      content: '',
+      email: '',
+      send_time: '',
       type: 2,
     }
   }
@@ -65,9 +65,18 @@ export default class SendMail extends Component {
   setParams(key, value) {
     const { params } = this.state
     params[key] = value
-    this.setState({ params })
+    this.setState({ params }, () => {
+      const sendBtnEnable = this.checkParams()
+      if (this.sendBtnEnable != sendBtnEnable) {
+        this.noupdate = true
+        this.sendBtnEnable = sendBtnEnable
+        this.props.navigation.setParams({
+          enable: sendBtnEnable,
+        })
+      }
+    })
   }
-  checkParams() {
+  checkParams(showTip) {
     const { attachs } = this.state
     const { title, content, email, send_time, attach } = this.state.params
     const tips = []
@@ -77,21 +86,22 @@ export default class SendMail extends Component {
     if (!send_time) tips.push('发信时间')
     if (!content) tips.push('内容')
     if (tips.length > 0) {
-      const tip = '请保证' + tips.join('，') + '填写正确！'
-      this.refs.toast.show(tip);
+      if (showTip) {
+        const tip = '请保证' + tips.join('，') + '填写正确！'
+        this.refs.toast.show(tip)
+      }
       return false
     } else {
       return true
     }
   }
   handleSend = () => {
-    if (!this.checkParams()) return
+    if (!this.checkParams(true)) return
     const params = {...this.state.params}
     params.attach = this.state.attachs.join(',')
     post('api/mail/add.html', params).then(res => {
       if (res.code == 10001) {
-
-        // 跳转到登录页面
+        this.props.navigation.replace('Login', {back: true})
       } else if (res.code == 1) {
         this.setState({ isSucc: true, isError: false, isSend: false })
       } else {
@@ -102,7 +112,7 @@ export default class SendMail extends Component {
     })
   }
   handleSave = () => {
-    if (!this.checkParams()) return
+    if (!this.checkParams(true)) return
     const params = {...this.state.params}
     params.attach = this.state.attachs.join(',')
     post('api/mail/save.html', params).then(res => {
@@ -130,9 +140,7 @@ export default class SendMail extends Component {
   }
 
   rightBtnOnPress = () => {
-    this.props.navigation.setParams({
-      rightColor: '#FFFFFF',
-    })
+
   }
   onRequestClose = () => {
     this.setState({ isSucc: false })
@@ -168,7 +176,7 @@ export default class SendMail extends Component {
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={this.state.datetime}
-            mode="datetime" format="YYYY-MM-DD HH:mm"
+            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD hh:mm"
             confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
             customStyles={{
               dateInput: {
