@@ -7,14 +7,14 @@ import BottomTabs from './BottomTabs'
 import SendMailScreen from './scenes/SendMail'
 import MailDetailScreen from './scenes/MailDetail'
 import UserScreen from './user/User'
-import SettingScreen from './user/setting'
+import SettingScreen from './user/Setting'
 import EmailScreen from './user/Email'
 import InformationScreen from './user/Information'
 import EditMobileScreen from './user/EditMobile'
 import EditEmailScreen from './user/EditEmail'
 import EditPasswordScreen from './user/EditPassword'
 import AboutScreen from './user/About'
-import RuleScreen from './user/rule'
+import RuleScreen from './user/Rule'
 import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
@@ -52,7 +52,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'BottomTabs',
+  initialRouteName: 'User',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

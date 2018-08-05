@@ -4,8 +4,8 @@ import {
   Text,
   View,
   Image,
-  Button,
-  ScrollView
+  ScrollView,
+  TouchableWithoutFeedback
 } from 'react-native';
 import EmailList from '../components/EmailList'
 import UserSearch from '../components/UserSearch'
@@ -25,17 +25,17 @@ export default class Email extends Component {
   componentDidMount() {
 
   }
+
+  
   
   render() {
+    const { params } = this.props.navigation.state;
+    const { navigate } = this.props.navigation;
     return (
       <View>
         <UserSearch />
         <ScrollView style={styles.emailList}>
-          <EmailList />
-          <EmailList />
-          <EmailList />
-          <EmailList />
-          <EmailList />
+          <EmailList status={params.status} navigate={navigate} />
         </ScrollView>
 
       </View>
@@ -58,6 +58,3 @@ const styles = StyleSheet.create({
   }
 });
 
-// <Button title="测试" onPress={() => {
-//     this.props.navigation.navigate('SendMail')
-//   }}></Button>

@@ -14,7 +14,7 @@ const ICONS = {
   forward: require('../images/icon_forward.png'),
 }
 
-export default class Setting extends Component {
+export default class EditMobile extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {

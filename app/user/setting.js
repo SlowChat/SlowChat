@@ -37,36 +37,47 @@ export default class Setting extends Component {
 
   render() {
     const { switchBtn } = this.state
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <Avatar />
         <View style={styles.link}>
-          <View style={styles.menu}>
-            <Text style={styles.label}>绑定手机号</Text>
-            <Text style={styles.text}>133****0000</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>绑定邮箱</Text>
-            <Text style={styles.text}>133****0000@qq.com</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>修改密码</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
+          <TouchableWithoutFeedback onPress={() => navigate('EditMobile')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>绑定手机号</Text>
+              <Text style={styles.text}>133****0000</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('EditEmail')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>绑定邮箱</Text>
+              <Text style={styles.text}>133****0000@qq.com</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('EditPassword')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>修改密码</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
           <View style={styles.menu}>
             <Text style={styles.label}>消息提醒</Text>
             <Switch style={styles.switch} value={switchBtn} onValueChange={this.handleSwitch} />
           </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>关于慢邮</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>用户反馈</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
+          <TouchableWithoutFeedback onPress={() => navigate('About')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>关于慢邮</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('FeedBack')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>用户反馈</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <TouchableWithoutFeedback>
           <View style={styles.exit}>

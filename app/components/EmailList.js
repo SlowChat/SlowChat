@@ -4,7 +4,7 @@ import {
   Text,
   View,
   Image,
-  Button
+  TouchableWithoutFeedback
 } from 'react-native';
 
 const ICONS = {
@@ -12,23 +12,37 @@ const ICONS = {
   noShow: require('../images/icon_hide.png'),
   eyes: require('../images/icon_eyes.png'),
   comment: require('../images/icon_comment.png'),
+  finish: require('../images/icon_finish.png')
 }
 
 export default class EmailList extends Component {
-  render() {
-    return (
-      <View>
-        <View style={styles.list}>
-          <Image style={styles.icon} source={ICONS.show} />
-          <View style={styles.content}>
-            <Text style={styles.name}>Abagael@qq.com</Text>
-            <Text style={styles.name}>20岁，来自父亲的祝福</Text>
-            <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
+
+  cancel() {
+    alert(44444)
+  }
+
+  renderStatus() {
+    /* 
+    draft: 草稿
+    reservation: 预约
+    sent: 发送
+    public: 公开
+    */
+    const { status } = this.props;
+    if (status === 'draft') {
+      return null
+    } else if (status === 'reservation') {
+      return (
+        <View style={styles.status}>
+          <View style={styles.statusLeft}>
           </View>
-          <View style={styles.time}>
-            <Text style={styles.timeTxt}>6-16</Text>
+          <View style={styles.btn}>
+            <Text style={styles.btnTxt} onPress={() => this.cancel()}>取消发送</Text>
           </View>
         </View>
+      )
+    } else if (status === 'sent') {
+      return (
         <View style={styles.status}>
           <View style={styles.statusLeft}>
             <Image style={styles.statusIcon} source={ICONS.eyes}/>
@@ -36,11 +50,46 @@ export default class EmailList extends Component {
             <Image style={styles.statusIcon} source={ICONS.comment}/>
             <Text style={styles.num}>10</Text>
           </View>
-          <View style={styles.btn}>
-            <Text style={styles.btnTxt}>取消发送</Text>
+          <View style={styles.statusRight}>
+          <Image style={styles.finish} source={ICONS.finish} />
+            <Text style={styles.rightTxt}>已完成发送</Text>
           </View>
+        </View>
+      )
+    } else if (status === 'public') {
+      return (
+        <View style={styles.status}>
+          <View style={styles.statusLeft}>
+            <Image style={styles.statusIcon} source={ICONS.eyes}/>
+            <Text style={styles.num}>10</Text>
+            <Image style={styles.statusIcon} source={ICONS.comment}/>
+            <Text style={styles.num}>10</Text>
+          </View>
+          <View style={styles.statusRight}>
+          </View>
+        </View>
+      )
+    }
+  }
+  render() {
+    const { navigate } = this.props;
+    return (
+      <TouchableWithoutFeedback onPress={() => navigate('MailDetail', { id: 1 })}>
+        <View>
+          <View style={styles.list}>
+            <Image style={styles.icon} source={ICONS.show} />
+            <View style={styles.content}>
+              <Text style={styles.name}>Abagael@qq.com</Text>
+              <Text style={styles.name}>20岁，来自父亲的祝福</Text>
+              <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
+            </View>
+            <View style={styles.time}>
+              <Text style={styles.timeTxt}>6-16</Text>
+            </View>
+          </View>
+          { this.renderStatus() }
       </View>
-    </View>
+    </TouchableWithoutFeedback>
     );
   }
 }
@@ -96,7 +145,7 @@ const styles = StyleSheet.create({
   },
   statusLeft: {
     flexDirection: 'row',
-    width: '70%',
+    width: '65%',
   },
   statusIcon: {
     width: 20,
@@ -108,9 +157,25 @@ const styles = StyleSheet.create({
     color: '#B4B4B4',
     marginRight: 10,
   },
+  statusRight: {
+    flexDirection: 'row',
+    width: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  finish: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightTxt: {
+    color: '#B4B4B4'
+  },
   btn: {
     flexDirection: 'row',
-    width: '25%',
+    width: '30%',
     height: 32,
     borderRadius: 15,
     borderWidth: 1,

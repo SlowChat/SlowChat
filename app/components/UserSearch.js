@@ -12,6 +12,11 @@ export default class UserSearch extends PureComponent {
   state = {
     text: ''
   }
+
+  onPressSearch() {
+    
+  }
+
   render() {
     const { onPress } = this.props
     return (
@@ -28,7 +33,7 @@ export default class UserSearch extends PureComponent {
               placeholder='搜索'
               value={this.state.text}
             />
-            <Text style={styles.btn}>搜索</Text>
+            <Text style={styles.btn} onPress={() => this.onPressSearch()}>搜索</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
