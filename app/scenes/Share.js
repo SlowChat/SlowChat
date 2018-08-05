@@ -25,7 +25,6 @@ const ICONS = {
 }
 
 
-
 type Props = {};
 export default class HeaderTip extends PureComponent<Props> {
   state = {
@@ -78,29 +77,21 @@ export default class HeaderTip extends PureComponent<Props> {
           <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
         </ViewShot>
         <View style={styles.icons}>
-          <TouchableOpacity onPress={this.handleWechat}>
-            <View style={styles.iconWrap}>
-              <Image style={styles.icon} source={ICONS.wechat}></Image>
-              <Text style={styles.iconTxt}>微信</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWechat}>
+            <Image style={styles.icon} source={ICONS.wechat}></Image>
+            <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handleWeibo}>
-            <View style={styles.iconWrap}>
-              <Image style={styles.icon} source={ICONS.weibo}></Image>
-              <Text style={styles.iconTxt}>微博</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWeibo}>
+            <Image style={styles.icon} source={ICONS.weibo}></Image>
+            <Text style={styles.iconTxt}>微博</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handleSave}>
-            <View style={styles.iconWrap}>
-              <Image style={styles.icon} source={ICONS.save}></Image>
-              <Text style={styles.iconTxt}>保存</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
+            <Image style={styles.icon} source={ICONS.save}></Image>
+            <Text style={styles.iconTxt}>保存</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.iconWrap} onPress={this.handleMore}>
-              <Image style={styles.icon} source={ICONS.more}></Image>
-              <Text style={styles.iconTxt}>更多</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleMore}>
+            <Image style={styles.icon} source={ICONS.more}></Image>
+            <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>
         <Toast ref="toast" position="center" />

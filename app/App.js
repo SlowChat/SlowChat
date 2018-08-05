@@ -6,6 +6,7 @@ import BottomTabs from './BottomTabs'
 
 import LoginScreen from './login/Login'
 import RegistScreen from './login/Regist'
+import RegistSuccScreen from './login/RegistSucc'
 
 import SendMailScreen from './scenes/SendMail'
 import MailDetailScreen from './scenes/MailDetail'
@@ -35,6 +36,7 @@ export default createStackNavigator({
   },
   Login: { screen: LoginScreen },
   Regist: { screen: RegistScreen },
+  RegistSucc: { screen: RegistSuccScreen },
   User: { screen: UserScreen },
   Setting: { screen: SettingScreen },
   Email: { screen: EmailScreen },
@@ -58,7 +60,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Share',
+  initialRouteName: 'ReserveDetail',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

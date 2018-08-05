@@ -22,29 +22,27 @@ export default class HomeItem extends PureComponent<Props> {
   }
   render() {
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={this.handlePress}>
-        <View style={styles.container}>
-          <View style={styles.avatarWrap}>
-            <Image style={styles.avatar} source={ICONS.head} />
-            <View style={styles.avatarRight}>
-              <View style={styles.nameWrap}>
-                <Text style={styles.name}>给未来的自</Text>
-                <Text style={styles.time}>12:00</Text>
-              </View>
-              <Text style={styles.date}>发信时间：2019年1月10日</Text>
+      <TouchableOpacity style={styles.container} activeOpacity={0.8} onPress={this.handlePress}>
+        <View style={styles.avatarWrap}>
+          <Image style={styles.avatar} source={ICONS.head} />
+          <View style={styles.avatarRight}>
+            <View style={styles.nameWrap}>
+              <Text style={styles.name}>给未来的自</Text>
+              <Text style={styles.time}>12:00</Text>
             </View>
+            <Text style={styles.date}>发信时间：2019年1月10日</Text>
           </View>
-          <View style={styles.content}>
-            <Text style={styles.contentTxt}>发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日</Text>
-          </View>
-          <View style={styles.attention}>
-            <Image style={styles.eyeIcon} source={ICONS.eye} /><Text style={[styles.num, styles.eyeNum]}>10</Text>
-            <Image style={styles.commentIcon} source={ICONS.comment} />
-            <Text style={styles.num}>6</Text>
-          </View>
-          <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
-          <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
         </View>
+        <View style={styles.content}>
+          <Text style={styles.contentTxt}>发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日</Text>
+        </View>
+        <View style={styles.attention}>
+          <Image style={styles.eyeIcon} source={ICONS.eye} /><Text style={[styles.num, styles.eyeNum]}>10</Text>
+          <Image style={styles.commentIcon} source={ICONS.comment} />
+          <Text style={styles.num}>6</Text>
+        </View>
+        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
+        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
       </TouchableOpacity>
     );
   }

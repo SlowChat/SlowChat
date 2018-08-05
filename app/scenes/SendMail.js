@@ -181,14 +181,16 @@ export default class SendMail extends Component {
         <HeaderTip tip="爱慢邮——让我们回到未来" />
         <View style={styles.item}>
           <Text style={styles.label}>收件人：</Text>
-          <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)} />
-          <TouchableOpacity onPress={() => { this.setParams('email', '') }}>
+          <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+            autoCapitalize="none" underlineColorAndroid='transparent' />
+          <TouchableOpacity activeOpacity={0.8} onPress={() => { this.setParams('email', '') }}>
             <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
           </TouchableOpacity>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>主题：</Text>
-          <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)} />
+          <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)}
+            autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>附件：</Text>
@@ -222,7 +224,8 @@ export default class SendMail extends Component {
             }} />
         </View>
         <View style={styles.content}>
-          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)} />
+          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
+            autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={this.handleSave}>

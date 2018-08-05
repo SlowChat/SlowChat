@@ -17,7 +17,8 @@ export default class ReplyBox extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4" underlineColorAndroid="transparent" />
+        <TextInput style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
+          autoCapitalize="none" underlineColorAndroid='transparent' />
         <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
       </View>
     )
@@ -32,6 +33,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'PingFangSC-Regular',
     backgroundColor: '#FFFFFF',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#F6F6F6',
   },
   input: {
     fontSize: 15,

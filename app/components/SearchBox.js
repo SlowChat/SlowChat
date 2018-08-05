@@ -20,7 +20,7 @@ export default class HomeItem extends PureComponent<Props> {
     return (
       <View style={styles.container}>
         <Text style={styles.txt}>慢友圈</Text>
-        <TouchableOpacity  style={styles.search} onPress={() => {
+        <TouchableOpacity activeOpacity={0.8} style={styles.search} onPress={() => {
             onPress && onPress()
           }}>
           <Text style={styles.placeholder}>查找您感兴趣的内容</Text>

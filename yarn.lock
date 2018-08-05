@@ -3600,7 +3600,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.22.0:
+moment@^2.22.0, moment@^2.22.2:
   version "2.22.2"
   resolved "http://registry.npm.taobao.org/moment/download/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
@@ -4173,6 +4173,10 @@ react-native-datepicker@^1.7.2:
   dependencies:
     moment "^2.22.0"
 
+react-native-device-info@^0.22.2:
+  version "0.22.2"
+  resolved "http://registry.npm.taobao.org/react-native-device-info/download/react-native-device-info-0.22.2.tgz#ff2829ebe40d75be1d3b6560f0cd48e794a5a287"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/react-native-dismiss-keyboard/download/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -4234,6 +4238,10 @@ react-native-safe-area-view@^0.8.0:
   resolved "http://registry.npm.taobao.org/react-native-safe-area-view/download/react-native-safe-area-view-0.8.0.tgz#22d78cb8e8658d04a10cd53c1546e0bc86cb7aea"
   dependencies:
     hoist-non-react-statics "^2.3.1"
+
+react-native-storage@^0.2.2:
+  version "0.2.2"
+  resolved "http://registry.npm.taobao.org/react-native-storage/download/react-native-storage-0.2.2.tgz#4449197f122b2da0650e3704e1f050260ed58d9f"
 
 react-native-swiper@^1.5.13:
   version "1.5.13"

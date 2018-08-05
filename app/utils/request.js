@@ -1,28 +1,32 @@
 import { Platform } from 'react-native'
+import Constant from './constant'
+import Storage from './storage'
+
 import URL from './url'
 
-const BASE_URL = 'http://manyou.0lz.net/'
+const BASE_URL = Constant.DOMAIN + '/'
 
 const getToken = () => {
   return '217aba3196c7dd24f2a0a39c7dff4da2217aba3196c7dd24f2a0a39c7dff4da2'
 }
 
-const getHeaders = (unneed) => {
+const getHeaders = async (unneed) => {
   if (unneed) {
     return {}
   }
   return {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    'MY-Token': getToken(),
+    'MY-Token': await Storage.getToken(),
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
 
-export function get(url, params, unneedLogin) {
+export async function get(url, params, unneedLogin) {
   const geturl = URL.stringify(BASE_URL + url, params)
+  const headers = await getHeaders(unneedLogin)
   return fetch(geturl, {
     method: 'GET',
-    headers: getHeaders(unneedLogin)
+    headers
   }).then((response) => {
     if (response.ok) {
       return response.json();
@@ -31,10 +35,14 @@ export function get(url, params, unneedLogin) {
 }
 
 
-export function post(url, params, unneedLogin) {
+export async function post(url, params, unneedLogin) {
+  const headers = await getHeaders(unneedLogin)
   return fetch(BASE_URL + url, {
     method: 'POST',
-    headers: getHeaders(unneedLogin),
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
     body: JSON.stringify(params),
   }).then((response) => response.json()).catch((err) => {
     console.error(err);
@@ -43,16 +51,17 @@ export function post(url, params, unneedLogin) {
 }
 
 
-export function upload(uri) {
+export async function upload(uri) {
   let formData = new FormData();
   const name = uri.substring(uri.lastIndexOf('/') + 1, uri.length)
   let file = {uri: uri, type: 'multipart/form-data', name: name};
   formData.append('file', file);
+  const headers = await getHeaders(unneedLogin)
   return fetch(BASE_URL + 'api/upload/image.html', {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
-      ...getHeaders()
+      ...headers
     },
     body: formData,
   }).then((response) => {

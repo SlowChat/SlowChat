@@ -4,14 +4,17 @@ import {
   Text,
   View,
   Image,
+  ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 
-import LinearGradient from 'react-native-linear-gradient'
+// import LinearGradient from 'react-native-linear-gradient'
 
 const ICONS = {
   ing: require('../images/icon_ing.png'),
   ed: require('../images/icon_ed.png'),
   cancel: require('../images/icon_cancel.png'),
+  bg: require('../images/condition_bar.png'),
 }
 
 const STATUS = {
@@ -20,22 +23,23 @@ const STATUS = {
   cancel: '已取消发送',
 }
 
+
+
 export default class SendTip extends PureComponent {
   render() {
     const { type, onPress } = this.props
     return (
-      <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#D74B80', '#FB4BBA']} style={styles.container}>
+      <ImageBackground source={ICONS.bg} style={styles.container}>
         <Image style={styles.icon} source={ICONS[type]} />
         <Text style={styles.txt}>{STATUS[type]}</Text>
         {
-          type == 'ing' && <TouchableOpacity onPress={onPress}>
+          type == 'ing' && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
             <View style={styles.btnWrap}>
               <Text style={styles.btn}>取消发送</Text>
             </View>
           </TouchableOpacity>
         }
-
-      </LinearGradient>
+      </ImageBackground>
     )
   }
 }
@@ -48,6 +52,8 @@ const styles = StyleSheet.create({
     // backgroundColor: 'linear-gradient(-135deg,rgba(251,75,186,1),rgba(215,75,128,1))',
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 20,
+    backgroundColor: '#FB4BBA',
   },
   icon: {
     width: 20,
@@ -71,4 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666666',
   }
-});
+})
+
+// <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 8.5}} colors={['#D74B80', '#FB4BBA']} style={styles.container}>
+// </LinearGradient>

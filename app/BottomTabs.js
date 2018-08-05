@@ -17,8 +17,8 @@ const ICONS = {
     p: require('./images/space_p.png'),
     w: require('./images/space_w.png'),
   },
-  New: require('./images/new.png'),
-  Share: {
+  NewTab: require('./images/new.png'),
+  ShareTab: {
     p: require('./images/share_p.png'),
     w: require('./images/share_w.png'),
   },
@@ -41,26 +41,28 @@ export default createBottomTabNavigator(
   {
     Home: HomeStack,
     Space: SpaceStack,
-    New: NewScreen,
-    Share: ShareScreen,
+    NewTab: NewScreen,
+    ShareTab: ShareScreen,
     Mime: MimeScreen,
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Space',
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
         let icon = ICONS[routeName]
-        if (routeName !== 'New') {
+        if (routeName !== 'NewTab') {
           icon = focused ? ICONS[routeName].p : ICONS[routeName].w
         }
         return <Image style={styles.icon} source={icon} />;
       },
       tabBarOnPress: ({navigation, defaultHandler}) => {
         const { routeName } = navigation.state;
-        if (routeName == 'New') {
+        if (routeName == 'NewTab') {
           navigation.navigate('SendMail')
+        } else if (routeName == 'ShareTab') {
+          navigation.navigate('Share')
         } else {
           defaultHandler && defaultHandler()
         }
