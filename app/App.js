@@ -14,7 +14,6 @@ import DraftDetailScreen from './scenes/DraftDetail'
 import ReserveDetailScreen from './scenes/ReserveDetail'
 import ShareScreen from './scenes/Share'
 
-// import UserScreen from './user/User'
 import SettingScreen from './user/Setting'
 import EmailScreen from './user/Email'
 import InformationScreen from './user/Information'
@@ -28,7 +27,7 @@ import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
 
 export default createStackNavigator({
-  Home: {
+  BottomTabs: {
     screen: BottomTabs,
     navigationOptions: {
       header: null
@@ -37,7 +36,6 @@ export default createStackNavigator({
   Login: { screen: LoginScreen },
   Regist: { screen: RegistScreen },
   RegistSucc: { screen: RegistSuccScreen },
-  // User: { screen: UserScreen },
   Setting: { screen: SettingScreen },
   Email: { screen: EmailScreen },
   Information: { screen: InformationScreen },
@@ -60,7 +58,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Home',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

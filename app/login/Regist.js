@@ -106,23 +106,25 @@ export default class Regist extends PureComponent<Props> {
     </SafeAreaView>)
   }
   render() {
-    const { checked, username, password, verification_code } = this.state
+    const { checked, username, password, verification_code, activeTab } = this.state
     const verifyStyle = username ? [styles.verifyTxt, styles.activeVerifyTxt] : styles.verifyTxt
+    const placeholder = activeTab == 0 ? '请输入手机号' : '请输入邮箱'
+    const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
     return (
       <View style={styles.container}>
         {this.renderTabs()}
         <View style={styles.wrap}>
           <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={ICONS.loginInput}>
-            <TextInput value={username} style={[styles.input, styles.verifyInput]} autoCapitalize="none" placeholder="请输入手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
-              underlineColorAndroid='transparent' />
+            <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
+             keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
             <TouchableOpacity activeOpacity={0.8} style={styles.verifyBtn} onPress={this.sendVerification}>
               <Text style={verifyStyle}>获取验证码</Text>
             </TouchableOpacity>
           </ImageBackground>
 
           <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
-            <TextInput value={verification_code} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
-              underlineColorAndroid='transparent' />
+            <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
+              autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>
 
           <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>

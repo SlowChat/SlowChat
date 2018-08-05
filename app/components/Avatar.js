@@ -4,10 +4,7 @@ import {
   Text,
   View,
   Image,
-  PixelRatio
 } from 'react-native';
-
-const onePx = 1 / PixelRatio.get()
 
 const ICONS = {
   img: require('../images/head_placeholder80.png'),

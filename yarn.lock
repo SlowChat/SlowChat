@@ -4167,6 +4167,10 @@ react-lifecycles-compat@^3, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "http://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
+react-native-actionsheet@^2.4.2:
+  version "2.4.2"
+  resolved "http://registry.npm.taobao.org/react-native-actionsheet/download/react-native-actionsheet-2.4.2.tgz#6a00dd51a75ef2c8974312130e405af73191500f"
+
 react-native-datepicker@^1.7.2:
   version "1.7.2"
   resolved "http://registry.npm.taobao.org/react-native-datepicker/download/react-native-datepicker-1.7.2.tgz#58d0822591a0ac9b32aba082650222a0ee29669d"

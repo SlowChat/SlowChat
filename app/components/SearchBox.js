@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  TextInput,
   TouchableOpacity
 } from 'react-native';
 
@@ -15,22 +16,33 @@ const ICONS = {
 
 type Props = {};
 export default class HomeItem extends PureComponent<Props> {
-  render() {
+  handleChange = (text) => {
+    this.search = text
+  }
+  handleSubmit = () => {
+    this.handleSearch()
+  }
+  handleSearch = () => {
     const { onPress } = this.props
+    onPress && onPress(this.search)
+  }
+  render() {
     return (
       <View style={styles.container}>
         <Text style={styles.txt}>慢友圈</Text>
-        <TouchableOpacity activeOpacity={0.8} style={styles.search} onPress={() => {
-            onPress && onPress()
-          }}>
-          <Text style={styles.placeholder}>查找您感兴趣的内容</Text>
-          <View style={styles.line}></View>
-          <Image style={styles.icon} source={require('../images/icon_search.png')} />
-        </TouchableOpacity>
+        <View style={styles.search}>
+          <TextInput style={styles.input} onChangeText={this.handleChange} onSubmitEditing={this.handleSubmit}
+            returnKeyType="search" placeholder="查找您感兴趣的内容" placeholderColor="#D8D8D8"
+            autoCapitalize="none" underlineColorAndroid='transparent' />
+          <TouchableOpacity activeOpacity={0.8} onPress={this.handleSearch}>
+            <Image style={styles.icon} source={require('../images/icon_search.png')} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
 }
+// <View style={styles.line}></View>
 
 const styles = StyleSheet.create({
   container: {
@@ -52,7 +64,6 @@ const styles = StyleSheet.create({
   search: {
     flex: 1,
     alignItems: 'center',
-    paddingLeft: 15,
     height: 30,
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
@@ -60,15 +71,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCCCCC',
   },
-  placeholder: {
+  input: {
     flex: 1,
     fontSize: 16,
-    color: '#D8D8D8',
-  },
-  line: {
-    width:1,
-    height: 22,
-    backgroundColor: '#CCCCCC',
+    color: '#333333',
+    borderRightWidth: 1,
+    borderRightColor: '#CCCCCC',
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   icon: {
     width: 30,

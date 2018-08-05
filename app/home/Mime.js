@@ -19,7 +19,7 @@ const ICONS = {
   integral: require('../images/icon_jifen.png'),
 }
 
-export default class User extends Component {
+export default class Mime extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     const { navigate } = navigation;
@@ -44,7 +44,6 @@ export default class User extends Component {
   componentDidMount() {
 
   }
-
   render() {
     const { navigate } = this.props.navigation;
     return (

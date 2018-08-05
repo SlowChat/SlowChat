@@ -35,6 +35,23 @@ const HomeStack = createStackNavigator({
 const SpaceStack = createStackNavigator({
   Space: SpaceScreen
 })
+const MimeStack = createStackNavigator({
+  Mime: MimeScreen
+}, {
+  navigationOptions: {
+    headerBackTitleVisible: false,
+    headerTintColor: '#E24B92',
+    headerStyle: {
+      backgroundColor: '#FFFFFF',
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontSize: 18,
+      fontFamily: 'PingFangSC-Regular',
+      color: '#333'
+    },
+  }
+})
 
 
 export default createBottomTabNavigator(
@@ -43,10 +60,10 @@ export default createBottomTabNavigator(
     Space: SpaceStack,
     NewTab: NewScreen,
     ShareTab: ShareScreen,
-    Mime: MimeScreen,
+    Mime: MimeStack,
   },
   {
-    initialRouteName: 'Mime',
+    initialRouteName: 'Home',
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarIcon: ({ focused }) => {

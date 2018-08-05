@@ -53,7 +53,6 @@ export default class App extends Component<Props> {
     } else {
       this.hasHeader = false
     }
-
     Animated.timing(this.fadeInOpacity, {
       toValue: toValue, // 目标值
       duration: 300, // 动画时间
@@ -70,9 +69,9 @@ export default class App extends Component<Props> {
   }
 
   handleScroll = (e) => {
-    const THRESHOLD = 80
+    const THRESHOLD = 130
     const offsetY = e.nativeEvent.contentOffset.y
-    if (offsetY > THRESHOLD + 20 && !this.hasHeader) {
+    if (offsetY > THRESHOLD + 10 && !this.hasHeader) {
       this.fadeInOrOut(true)
     } else if (offsetY < THRESHOLD && this.hasHeader) {
       this.fadeInOrOut(false)
@@ -160,7 +159,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTxt: {
-
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333',
+    fontWeight: 'bold',
   },
   footer:{
     flexDirection:'row',

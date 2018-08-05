@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  Modal,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
@@ -29,6 +30,7 @@ type Props = {};
 export default class HeaderTip extends PureComponent<Props> {
   state = {
     qrcodeUrl: 'https://www.baidu.com',
+    moreModal: false,
   }
   handleWechat = () => {
     // ShareUtil.auth(5, (code,result,message) =>{
@@ -41,14 +43,14 @@ export default class HeaderTip extends PureComponent<Props> {
   //  });
   }
 
+  handleShare() {
+
+  }
+
   handleSave = () => {
     this.refs.viewShot.capture().then(uri => {
       this.refs.toast.show('分享图片已保存')
     });
-  }
-
-  handleMore = () => {
-
   }
 
   render() {
@@ -89,11 +91,30 @@ export default class HeaderTip extends PureComponent<Props> {
             <Image style={styles.icon} source={ICONS.save}></Image>
             <Text style={styles.iconTxt}>保存</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleMore}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.setState({moreModal: true})}>
             <Image style={styles.icon} source={ICONS.more}></Image>
             <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>
+        <Modal visible={this.state.moreModal} transparent={true}
+          animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
+          <View style={styles.moreModalWrap}>
+            <View style={styles.moreModal}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(0)}>
+                <Text style={styles.moreTxt}>微信朋友圈</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+                <Text style={styles.moreTxt}>QQ</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+                <Text style={styles.moreTxt}>QQ空间</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.cancelBtn} onPress={() => this.setState({moreModal: false})}>
+                <Text style={styles.cancelTxt}>取消</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <Toast ref="toast" position="center" />
       </View>
     );
@@ -185,5 +206,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999999',
     lineHeight: 17
+  },
+  moreModalWrap: {
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  moreModal: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   }
 });

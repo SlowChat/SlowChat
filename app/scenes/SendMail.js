@@ -12,11 +12,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import ImagePicker from 'react-native-image-picker'
+// import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
 // import RNFileSelector from 'react-native-file-selector'
 import HeaderTip from '../components/HeaderTip'
+import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 
@@ -46,6 +47,7 @@ export default class SendMail extends Component {
     isSend: true,
     isError: false,
     isSucc: false,
+    pickerModal: false,
     attachs: ['http://img.alicdn.com/bao/uploaded/i2/TB1jZYfdRjTBKNjSZFwATwG4XXa_041742.jpg'],
     params: {
       title: '欢迎欢迎欢迎',
@@ -59,44 +61,6 @@ export default class SendMail extends Component {
     this.props.navigation.setParams({
       rightOnPress: this.handleSend
     })
-  }
-  handleFile = () => {
-    this.pickerAndUpload()
-  }
-  pickerAndUpload() {
-    const options = {
-      title: '选择图片',
-      cancelButtonTitle: '取消',
-      takePhotoButtonTitle: '拍照',
-      chooseFromLibraryButtonTitle: '选择照片',
-      cameraType: 'back',
-      mediaType: 'photo',
-      videoQuality: 'high',
-      durationLimit: 10,
-      maxWidth: 300,
-      maxHeight: 300,
-      quality: 0.8,
-      angle: 0,
-      allowsEditing: false,
-      noData: false,
-      storageOptions: {
-        skipBackup: true
-      }
-    }
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled photo picker');
-      } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
-      } else {
-        // let source = { uri: response.uri };
-        upload(response.uri).then(res => {
-          console.log("succ", res)
-        }).catch(err => {
-          console.log(err);
-        })
-      }
-    });
   }
   setParams(key, value) {
     const { params } = this.state
@@ -194,7 +158,7 @@ export default class SendMail extends Component {
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>附件：</Text>
-          <TouchableOpacity style={styles.itemTouch} onPress={this.handleFile}>
+          <TouchableOpacity style={styles.itemTouch} onPress={() => this.setState({ pickerModal: true })}>
             <View style={styles.icons}>
               <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
             </View>
@@ -234,7 +198,7 @@ export default class SendMail extends Component {
             </View>
           </TouchableOpacity>
         </View>
-
+        <ImageChoose visible={this.state.pickerModal} onClose={() => this.setState({ pickerModal: false })} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           visible={this.state.isSucc}
@@ -253,19 +217,6 @@ export default class SendMail extends Component {
   }
 }
 
-
-// <Toast style={{backgroundColor:'red'}}
-//   position='center'
-//   fadeInDuration={750}
-//   fadeOutDuration={1000}
-//   opacity={0.8}
-//   textStyle={{color:'red'}}
-//   text={() => {
-//     return <View>
-//
-//     </View>
-//   }}
-// />
 
 const styles = StyleSheet.create({
   container: {
@@ -346,6 +297,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEEEEE',
   },
   textarea: {
     height: 88,
