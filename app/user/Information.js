@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
+import DatePicker from 'react-native-datepicker'
 import {
   StyleSheet,
   Text,
   View,
   Image,
   Button,
-  Switch,
+  TextInput,
+  Picker,
   TouchableWithoutFeedback
 } from 'react-native';
 
@@ -15,53 +17,103 @@ const ICONS = {
   forward: require('../images/icon_forward.png'),
 }
 
-export default class Setting extends Component {
+export default class Information extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
-      title: '设置',
+      title: '个人资料',
     }
   }
   state = {
-    switchBtn: true
+    switchBtn: true,
+    isShow: false,
+    sex: '男',
+    date: new Date()
   }
   componentDidMount() {
 
   }
 
-  handleSwitch = (value) => {
-    this.setState({
-      switchBtn: value
-    })
+  changeSex(itemValue) {
+    this.setState({sex: itemValue})
+    setTimeout(() => {
+      this.setState({isShow: false})
+    }, 1000)
   }
 
   render() {
-    const { switchBtn } = this.state
     return (
       <View style={styles.container}>
         <Avatar />
         <View style={styles.link}>
           <View style={styles.menu}>
             <Text style={styles.label}>昵称</Text>
-            <Text style={styles.text}>Abagael</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => this.setState({text})}
+              placeholder='请输入填写您的用户名'
+              value='Abagael'
+            />
+            {/* <Text style={styles.text}>Abagael</Text> */}
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>性别</Text>
-            <Text style={styles.text}>133****0000@qq.com</Text>
+            <Text style={styles.input} onPress = {() => this.setState({isShow: true})}>
+              {this.state.sex}
+            </Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>生日</Text>
-            <Text style={styles.text}>1992-10-10</Text>
+            <DatePicker
+              style={styles.input}
+              date={this.state.date}
+              mode="date"
+              placeholder="select date"
+              format="YYYY-MM-DD"
+              minDate="1900-05-01"
+              maxDate={new Date()}
+              confirmBtnText="确定"
+              cancelBtnText="取消"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  left: 0,
+                  top: 4,
+                  marginLeft: 0,
+                  width: 0
+                },
+                dateInput: {
+                  marginLeft: 0,
+                  borderWidth: 0,
+                  color: '#B4B4B4',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                },
+              }}
+              onDateChange={(date) => {this.setState({date: date})}}
+              locale="zh"
+            />
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
-        </View>
+          
+          
         <TouchableWithoutFeedback>
           <View style={styles.exit}>
             <Text style={styles.exitTxt}>保存</Text>
           </View>
         </TouchableWithoutFeedback>
+        <View>
+            <Picker
+              selectedValue={this.state.sex}
+              style={[styles.picker, {display: `${this.state.isShow ? 'flex' : 'none'}`}]}
+              onValueChange={(itemValue, itemIndex) => this.changeSex(itemValue)}>
+              <Picker.Item label="男" value="男" />
+              <Picker.Item label="女" value="女" />
+            </Picker>
+          </View>
+        </View>
       </View>
     );
   }
@@ -98,10 +150,17 @@ const styles = StyleSheet.create({
     width: '30%',
     color: '#666'
   },
-  text: {
+  input: {
     width: '62%',
     textAlign: 'right',
     color: '#B4B4B4'
+  },
+  picker: {
+    position: 'absolute',
+    top: 100,
+    bottom: 0,
+    left: 0,
+    width: '100%',
   },
   exit: {
     position: 'absolute',

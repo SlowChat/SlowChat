@@ -13,7 +13,7 @@ const ICONS = {
   forward: require('../images/icon_forward.png'),
 }
 
-export default class Setting extends Component {
+export default class About extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
@@ -25,28 +25,29 @@ export default class Setting extends Component {
 
   }
 
-  handleSwitch = (value) => {
-    this.setState({
-      switchBtn: value
-    })
-  }
-
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <View style={styles.link}>
-          <View style={styles.menu}>
-            <Text style={styles.label}>网站软件许可协议</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>常见问题</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>积分规则</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
+          <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>网站软件许可协议</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>常见问题</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
+            <View style={styles.menu}>
+              <Text style={styles.label}>积分规则</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     );

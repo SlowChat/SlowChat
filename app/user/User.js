@@ -22,16 +22,21 @@ const ICONS = {
 export default class User extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
+    const { navigate } = navigation;
     return {
       title: '个人中心',
       headerLeft: (
         <View style={styles.icon}>
-          <Image style={styles.set} source={ICONS.set} />
+          <TouchableWithoutFeedback onPress={() => navigate('Setting')}>
+            <Image style={styles.set} source={ICONS.set} />
+          </TouchableWithoutFeedback>
         </View>
       ),
       headerRight: (
         <View style={styles.icon}>
-          <Image style={styles.info} source={ICONS.info} />
+          <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
+            <Image style={styles.info} source={ICONS.info} />
+          </TouchableWithoutFeedback>
         </View>
       ),
     }
@@ -41,29 +46,30 @@ export default class User extends Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <Avatar />
         <View style={styles.remind}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>草稿箱</Text>
               <Text style={styles.num}>3</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'reservation' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>预定发送</Text>
               <Text style={styles.num}>3</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'sent' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>已发送</Text>
               <Text style={styles.num}>3</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'public' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>公开内容</Text>
               <Text style={styles.num}>3</Text>
@@ -80,21 +86,27 @@ export default class User extends Component {
           </View>
         </View>
         <View style={styles.link}>
-          <View style={styles.menu}>
-            <Image style={styles.menuImg} source={ICONS.person} />
-            <Text style={styles.menuTxt}>个人资料</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Image style={styles.menuImg} source={ICONS.integral} />
-            <Text style={styles.menuTxt}>我的积分</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Image style={styles.menuImg} source={ICONS.info} />
-            <Text style={styles.menuTxt}>消息通知</Text>
-            <Image style={styles.forward} source={ICONS.forward} />
-          </View>
+          <TouchableWithoutFeedback onPress={() => navigate('Information')}>
+            <View style={styles.menu}>
+              <Image style={styles.menuImg} source={ICONS.person} />
+              <Text style={styles.menuTxt}>个人资料</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Integral')}>
+            <View style={styles.menu}>
+              <Image style={styles.menuImg} source={ICONS.integral} />
+              <Text style={styles.menuTxt}>我的积分</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
+            <View style={styles.menu}>
+              <Image style={styles.menuImg} source={ICONS.info} />
+              <Text style={styles.menuTxt}>消息通知</Text>
+              <Image style={styles.forward} source={ICONS.forward} />
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     );
