@@ -12,11 +12,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import ImagePicker from 'react-native-image-picker'
+// import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
 // import RNFileSelector from 'react-native-file-selector'
 import HeaderTip from '../components/HeaderTip'
+import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 
@@ -35,7 +36,7 @@ export default class SendMail extends Component {
       headerRight: (
         <Button
           title='发送'
-          color={params.rightColor || '#F9DBE9'}
+          color={params.enable ? '#E24B92' : '#F9DBE9'}
           onPress={params.rightOnPress}
         />
       ),
@@ -46,12 +47,13 @@ export default class SendMail extends Component {
     isSend: true,
     isError: false,
     isSucc: false,
+    pickerModal: false,
     attachs: ['http://img.alicdn.com/bao/uploaded/i2/TB1jZYfdRjTBKNjSZFwATwG4XXa_041742.jpg'],
     params: {
-      title: '欢迎欢迎欢迎',
-      content: '欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎欢迎',
-      email: 'test@163.com',
-      send_time: '2018-10-10 10:10',
+      title: '',
+      content: '',
+      email: '',
+      send_time: '',
       type: 2,
     }
   }
@@ -60,50 +62,21 @@ export default class SendMail extends Component {
       rightOnPress: this.handleSend
     })
   }
-  handleFile = () => {
-    this.pickerAndUpload()
-  }
-  pickerAndUpload() {
-    const options = {
-      title: '选择图片',
-      cancelButtonTitle: '取消',
-      takePhotoButtonTitle: '拍照',
-      chooseFromLibraryButtonTitle: '选择照片',
-      cameraType: 'back',
-      mediaType: 'photo',
-      videoQuality: 'high',
-      durationLimit: 10,
-      maxWidth: 300,
-      maxHeight: 300,
-      quality: 0.8,
-      angle: 0,
-      allowsEditing: false,
-      noData: false,
-      storageOptions: {
-        skipBackup: true
-      }
-    }
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled photo picker');
-      } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
-      } else {
-        // let source = { uri: response.uri };
-        upload(response.uri).then(res => {
-          console.log("succ", res)
-        }).catch(err => {
-          console.log(err);
-        })
-      }
-    });
-  }
   setParams(key, value) {
     const { params } = this.state
     params[key] = value
-    this.setState({ params })
+    this.setState({ params }, () => {
+      const sendBtnEnable = this.checkParams()
+      if (this.sendBtnEnable != sendBtnEnable) {
+        this.noupdate = true
+        this.sendBtnEnable = sendBtnEnable
+        this.props.navigation.setParams({
+          enable: sendBtnEnable,
+        })
+      }
+    })
   }
-  checkParams() {
+  checkParams(showTip) {
     const { attachs } = this.state
     const { title, content, email, send_time, attach } = this.state.params
     const tips = []
@@ -113,21 +86,22 @@ export default class SendMail extends Component {
     if (!send_time) tips.push('发信时间')
     if (!content) tips.push('内容')
     if (tips.length > 0) {
-      const tip = '请保证' + tips.join('，') + '填写正确！'
-      this.refs.toast.show(tip);
+      if (showTip) {
+        const tip = '请保证' + tips.join('，') + '填写正确！'
+        this.refs.toast.show(tip)
+      }
       return false
     } else {
       return true
     }
   }
   handleSend = () => {
-    if (!this.checkParams()) return
+    if (!this.checkParams(true)) return
     const params = {...this.state.params}
     params.attach = this.state.attachs.join(',')
     post('api/mail/add.html', params).then(res => {
       if (res.code == 10001) {
-
-        // 跳转到登录页面
+        this.props.navigation.replace('Login', {back: true})
       } else if (res.code == 1) {
         this.setState({ isSucc: true, isError: false, isSend: false })
       } else {
@@ -138,7 +112,7 @@ export default class SendMail extends Component {
     })
   }
   handleSave = () => {
-    if (!this.checkParams()) return
+    if (!this.checkParams(true)) return
     const params = {...this.state.params}
     params.attach = this.state.attachs.join(',')
     post('api/mail/save.html', params).then(res => {
@@ -166,9 +140,7 @@ export default class SendMail extends Component {
   }
 
   rightBtnOnPress = () => {
-    this.props.navigation.setParams({
-      rightColor: '#FFFFFF',
-    })
+
   }
   onRequestClose = () => {
     this.setState({ isSucc: false })
@@ -181,18 +153,20 @@ export default class SendMail extends Component {
         <HeaderTip tip="爱慢邮——让我们回到未来" />
         <View style={styles.item}>
           <Text style={styles.label}>收件人：</Text>
-          <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)} />
-          <TouchableOpacity onPress={() => { this.setParams('email', '') }}>
+          <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+            autoCapitalize="none" underlineColorAndroid='transparent' />
+          <TouchableOpacity activeOpacity={0.8} onPress={() => { this.setParams('email', '') }}>
             <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
           </TouchableOpacity>
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>主题：</Text>
-          <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)} />
+          <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)}
+            autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>附件：</Text>
-          <TouchableOpacity style={styles.itemTouch} onPress={this.handleFile}>
+          <TouchableOpacity style={styles.itemTouch} onPress={() => this.setState({ pickerModal: true })}>
             <View style={styles.icons}>
               <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
             </View>
@@ -202,7 +176,7 @@ export default class SendMail extends Component {
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={this.state.datetime}
-            mode="datetime" format="YYYY-MM-DD HH:mm"
+            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD hh:mm"
             confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
             customStyles={{
               dateInput: {
@@ -222,7 +196,8 @@ export default class SendMail extends Component {
             }} />
         </View>
         <View style={styles.content}>
-          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)} />
+          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
+            autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={this.handleSave}>
@@ -231,7 +206,7 @@ export default class SendMail extends Component {
             </View>
           </TouchableOpacity>
         </View>
-
+        <ImageChoose visible={this.state.pickerModal} onClose={() => this.setState({ pickerModal: false })} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           visible={this.state.isSucc}
@@ -250,19 +225,6 @@ export default class SendMail extends Component {
   }
 }
 
-
-// <Toast style={{backgroundColor:'red'}}
-//   position='center'
-//   fadeInDuration={750}
-//   fadeOutDuration={1000}
-//   opacity={0.8}
-//   textStyle={{color:'red'}}
-//   text={() => {
-//     return <View>
-//
-//     </View>
-//   }}
-// />
 
 const styles = StyleSheet.create({
   container: {
@@ -343,6 +305,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEEEEE',
   },
   textarea: {
     height: 88,

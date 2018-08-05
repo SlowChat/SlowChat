@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 type Props = {};
-export default class TopTab extends Component<Props> {
+export default class TopTab extends PureComponent<Props> {
   render() {
     const { index, items, onPress } = this.props
     if (!items || !items.length) return null
@@ -23,7 +23,7 @@ export default class TopTab extends Component<Props> {
               txtWrap = styles.txtWrap
               txt = styles.txt
             }
-            return (<TouchableOpacity style={styles.tab} key={item.id} onPress={() => {onPress && onPress(i)}}>
+            return (<TouchableOpacity activeOpacity={0.8} style={styles.tab} key={item.id} onPress={() => {onPress && onPress(i)}}>
               <View style={txtWrap}>
                 <Text style={txt}>{item.name}</Text>
               </View>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txtWrap: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth * 2,
     borderBottomColor: '#B4B4B4',
     borderStyle: 'solid',
     height: 28,

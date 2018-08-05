@@ -28,7 +28,7 @@ export default class AvatarHeader extends PureComponent {
           <Text style={styles.reply}>给未来的自</Text>
           <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：2019年1月10日</Text>
-            <TouchableOpacity onPress={this.handleReply}>
+            <TouchableOpacity activeOpacity={0.8} onPress={this.handleReply}>
               <View onPress={this.handleReply}>
                 <Text style={styles.btn}>回复</Text>
               </View>

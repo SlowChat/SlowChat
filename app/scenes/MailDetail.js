@@ -31,14 +31,13 @@ export default class MailDetail extends Component {
     activeTab: 0,
     translateValue: new Animated.Value(-44),
   }
-  componentWillMount() {
-
+  shouldComponentUpdate() {
+    if (this.noupdate) {
+      this.noupdate = false
+      return false
+    }
+    return true
   }
-
-  shouldComponentUpdate(nextProps) {
-    console.log(nextProps);
-  }
-
   handleScroll = (e) => {
     const offsetY = e.nativeEvent.contentOffset.y
     const { title } = this.props
@@ -53,9 +52,15 @@ export default class MailDetail extends Component {
       this.translate(false)
     }
     if (change) {
+      this.noupdate = true
       this.props.navigation.setParams({
         title: this.title
       })
+    }
+    if (offsetY > this.listHeaderHeight && this.state.activeTab !== 1) {
+      this.setState({ activeTab: 1 })
+    } else if (offsetY < this.listHeaderHeight && this.state.activeTab !== 0) {
+      this.setState({ activeTab: 0 })
     }
   }
 

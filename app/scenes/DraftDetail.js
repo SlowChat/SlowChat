@@ -14,6 +14,8 @@ import {
 import HeaderTip from '../components/HeaderTip'
 import Attachment from '../components/Attachment'
 
+import { get, post } from '../utils/request'
+
 const ICONS = {
   delete: require('../images/delete.png'),
   edit: require('../images/edit.png'),
@@ -21,11 +23,9 @@ const ICONS = {
 }
 
 export default class DraftDetail extends Component {
-  static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    return {
-      title: params.title || '邮件详情',
-    }
+  state = {
+    data: {},
+    attachs: []
   }
   handleDelete = () => {
 
@@ -41,39 +41,40 @@ export default class DraftDetail extends Component {
   //   </SafeAreaView>),
   // })
   render() {
+    const { data, attachs } = this.state
     return (
       <View style={styles.container}>
         <ScrollView style={styles.body}>
           <HeaderTip tip="爱慢邮——让我们回到未来" />
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
-            <Text style={styles.txt}>收件人：</Text>
+            <Text style={styles.txt}>{data.email}</Text>
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>主题：</Text>
-            <Text style={styles.txt}>收件人：</Text>
+            <Text style={styles.txt}>{data.title}</Text>
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>发信时间：</Text>
-            <Text style={styles.txt}>收件人：</Text>
+            <Text style={styles.txt}>{data.send_time}</Text>
           </View>
           <View style={styles.content}>
             <Text style={styles.textarea}>
-              心如镜，虽外景不断变化，镜面却不会转动，这就是一颗平常心，能够景转而心不转。 只要你确信自己正确就去做。做了有人说不好，不做还是有人说不好，不要逃避批判。
+              {data.content}
             </Text>
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>附件：</Text>
             <Image style={styles.attachment} source={ICONS.attachment} />
-            <Text style={styles.attachmentNum}>3个附件</Text>
+            <Text style={styles.attachmentNum}>{attachs.length}个附件</Text>
           </View>
-          <Attachment />
+          <Attachment items={attachs} />
         </ScrollView>
         <View style={styles.bottom}>
-          <TouchableOpacity style={styles.bottomIconWrap} onPress={this.handleDelete}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.handleDelete}>
             <Image style={styles.bottomIcon} source={ICONS.delete} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.bottomIconWrap} onPress={this.handleEdit}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.handleEdit}>
             <Image style={styles.bottomIcon} source={ICONS.edit} />
           </TouchableOpacity>
         </View>
@@ -160,6 +161,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEEEEE',
   },
   textarea: {
     fontSize: 16,
@@ -167,9 +170,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottom: {
-    height: 44,
-    paddingRight: 15,
-    alignItems: 'flex-end',
+    height: 50,
+    flexDirection: 'row',
     justifyContent: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
@@ -186,11 +188,6 @@ const styles = StyleSheet.create({
   saveBtnTxt: {
     fontSize: 16,
     color: '#E24B92',
-  },
-  bottom: {
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
   },
   bottomIconWrap: {
     flex: 1,

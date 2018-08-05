@@ -4,10 +4,14 @@ import {
   Text,
   View,
   Image,
+  Modal,
+  Platform,
+  CameraRoll,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
 
+import RNFS from 'react-native-fs'
 // import ShareUtil from '../libs/um/ShareUtil'
 import QRCode from 'react-native-qrcode'
 import ViewShot from "react-native-view-shot"
@@ -25,11 +29,11 @@ const ICONS = {
 }
 
 
-
 type Props = {};
 export default class HeaderTip extends PureComponent<Props> {
   state = {
     qrcodeUrl: 'https://www.baidu.com',
+    moreModal: false,
   }
   handleWechat = () => {
     // ShareUtil.auth(5, (code,result,message) =>{
@@ -42,14 +46,33 @@ export default class HeaderTip extends PureComponent<Props> {
   //  });
   }
 
-  handleSave = () => {
-    this.refs.viewShot.capture().then(uri => {
-      this.refs.toast.show('分享图片已保存')
-    });
+  handleShare() {
+
   }
 
-  handleMore = () => {
-
+  handleSave = async () => {
+    try {
+      let uri = this.uri
+      if (!uri) {
+        uri = await this.refs.viewShot.capture()
+        this.uri = uri
+      }
+      if (Platform.OS === 'ios') {
+        await CameraRoll.saveToCameraRoll(uri)
+        this.refs.toast.show('图片已保存到相册')
+      } else {
+        const storeLocation = `${RNFS.DocumentDirectoryPath}`;
+        let pathName = new Date().getTime() + ".png"
+        let downloadDest = `${storeLocation}/${pathName}`;
+        const res = await RNFS.downloadFile({fromUrl: uri, toFile: downloadDest}).promise
+        if (res && res.statusCode === 200) {
+          await CameraRoll.saveToCameraRoll(`file://${downloadDest}`)
+          this.refs.toast.show('图片已保存到相册')
+        }
+      }
+    } catch (e) {
+      this.refs.toast.show('图片已保存失败')
+    }
   }
 
   render() {
@@ -78,31 +101,42 @@ export default class HeaderTip extends PureComponent<Props> {
           <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
         </ViewShot>
         <View style={styles.icons}>
-          <TouchableOpacity onPress={this.handleWechat}>
-            <View style={styles.iconWrap}>
-              <Image style={styles.icon} source={ICONS.wechat}></Image>
-              <Text style={styles.iconTxt}>微信</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWechat}>
+            <Image style={styles.icon} source={ICONS.wechat}></Image>
+            <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handleWeibo}>
-            <View style={styles.iconWrap}>
-              <Image style={styles.icon} source={ICONS.weibo}></Image>
-              <Text style={styles.iconTxt}>微博</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWeibo}>
+            <Image style={styles.icon} source={ICONS.weibo}></Image>
+            <Text style={styles.iconTxt}>微博</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handleSave}>
-            <View style={styles.iconWrap}>
-              <Image style={styles.icon} source={ICONS.save}></Image>
-              <Text style={styles.iconTxt}>保存</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
+            <Image style={styles.icon} source={ICONS.save}></Image>
+            <Text style={styles.iconTxt}>保存</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.iconWrap} onPress={this.handleMore}>
-              <Image style={styles.icon} source={ICONS.more}></Image>
-              <Text style={styles.iconTxt}>更多</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.setState({moreModal: true})}>
+            <Image style={styles.icon} source={ICONS.more}></Image>
+            <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>
+        <Modal visible={this.state.moreModal} transparent={true}
+          animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
+          <View style={styles.moreModalWrap}>
+            <View style={styles.moreModal}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(0)}>
+                <Text style={styles.moreTxt}>微信朋友圈</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+                <Text style={styles.moreTxt}>QQ</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+                <Text style={styles.moreTxt}>QQ空间</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.cancelBtn} onPress={() => this.setState({moreModal: false})}>
+                <Text style={styles.cancelTxt}>取消</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <Toast ref="toast" position="center" />
       </View>
     );
@@ -194,5 +228,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999999',
     lineHeight: 17
+  },
+  moreModalWrap: {
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  moreModal: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   }
 });

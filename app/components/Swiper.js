@@ -26,7 +26,6 @@ export default class SwiperComponent extends PureComponent<Props> {
     if (!items || items.length == 0) return null
     const dot = (<View style={styles.dot} />)
     const activeDot = (<View style={[styles.dot, styles.activeDot]} />)
-    const marginBottom = Platform.OS === 'android'? 125 : 500
     return (
       <View>
         <View style={styles.wrapper} >

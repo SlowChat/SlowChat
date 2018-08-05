@@ -21,7 +21,7 @@ export default class Space extends Component<Props> {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
-      header: () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+      header: () => (<SafeAreaView style={styles.header} forceInset={{ top: 'always', horizontal: 'never' }}>
           <SearchBox onPress={params.searchBoxPress} />
         </SafeAreaView>)
     }
@@ -83,8 +83,11 @@ export default class Space extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
     fontFamily: 'PingFangSC-Regular',
+  },
+  header: {
+    backgroundColor: '#FFFFFF',
   },
   tipWrap: {
     height: 25,
