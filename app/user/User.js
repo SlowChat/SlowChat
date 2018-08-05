@@ -42,7 +42,7 @@ export default class User extends Component {
     }
   }
   componentDidMount() {
-
+    
   }
 
   render() {

@@ -12,7 +12,7 @@ const getHeaders = (unneed) => {
     return {}
   }
   return {
-    // 'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/json',
     'MY-Token': getToken(),
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
@@ -32,6 +32,7 @@ export function get(url, params, unneedLogin) {
 
 
 export function post(url, params, unneedLogin) {
+  console.log('----', params)
   return fetch(BASE_URL + url, {
     method: 'POST',
     headers: getHeaders(unneedLogin),
