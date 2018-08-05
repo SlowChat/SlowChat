@@ -5,10 +5,13 @@ import {
   View,
   Image,
   Modal,
+  Platform,
+  CameraRoll,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
 
+import RNFS from 'react-native-fs'
 // import ShareUtil from '../libs/um/ShareUtil'
 import QRCode from 'react-native-qrcode'
 import ViewShot from "react-native-view-shot"
@@ -47,10 +50,29 @@ export default class HeaderTip extends PureComponent<Props> {
 
   }
 
-  handleSave = () => {
-    this.refs.viewShot.capture().then(uri => {
-      this.refs.toast.show('分享图片已保存')
-    });
+  handleSave = async () => {
+    try {
+      let uri = this.uri
+      if (!uri) {
+        uri = await this.refs.viewShot.capture()
+        this.uri = uri
+      }
+      if (Platform.OS === 'ios') {
+        await CameraRoll.saveToCameraRoll(uri)
+        this.refs.toast.show('图片已保存到相册')
+      } else {
+        const storeLocation = `${RNFS.DocumentDirectoryPath}`;
+        let pathName = new Date().getTime() + ".png"
+        let downloadDest = `${storeLocation}/${pathName}`;
+        const res = await RNFS.downloadFile({fromUrl: uri, toFile: downloadDest}).promise
+        if (res && res.statusCode === 200) {
+          await CameraRoll.saveToCameraRoll(`file://${downloadDest}`)
+          this.refs.toast.show('图片已保存到相册')
+        }
+      }
+    } catch (e) {
+      this.refs.toast.show('图片已保存失败')
+    }
   }
 
   render() {
