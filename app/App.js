@@ -58,7 +58,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'BottomTabs',
+  initialRouteName: 'Regist',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

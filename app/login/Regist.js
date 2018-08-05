@@ -21,6 +21,7 @@ const ICONS = {
   checked: require('../images/checked.png'),
   unchecked: require('../images/unchecked.png'),
   loginInput: require('../images/login_input.png'),
+  bg: require('../images/bg_register.png'),
   // loginBtn: require('../images/login_btn.png'),
 }
 
@@ -86,24 +87,23 @@ export default class Regist extends PureComponent<Props> {
   }
   renderTabs() {
     const { activeTab } = this.state
-    return (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
-      style={[styles.header]}>
-      <TouchableOpacity activeOpacity={0.8} onPress={() => {this.props.navigation.goBack()}}>
-        <Image style={styles.back} source={ICONS.back} />
-      </TouchableOpacity>
-      <View style={styles.tabWrap}>
-        <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(0)}>
-          <View style={[styles.tab, activeTab == 0 ? styles.activeTab : {}]}>
-            <Text style={styles.tabTxt}>手机号注册</Text>
-          </View>
+    return (<ImageBackground style={styles.headerbg} source={ICONS.bg}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => {this.props.navigation.goBack()}}>
+          <Image style={styles.back} source={ICONS.back} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(1)}>
-          <View style={[styles.tab, activeTab == 1 ? styles.activeTab : {}]}>
-            <Text style={styles.tabTxt}>邮箱注册</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>)
+        <View style={styles.tabWrap}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(0)}>
+            <View style={[styles.tab, activeTab == 0 ? styles.activeTab : {}]}>
+              <Text style={styles.tabTxt}>手机号注册</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(1)}>
+            <View style={[styles.tab, activeTab == 1 ? styles.activeTab : {}]}>
+              <Text style={styles.tabTxt}>邮箱注册</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>)
   }
   render() {
     const { checked, username, password, verification_code, activeTab } = this.state
@@ -166,17 +166,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     position: 'relative',
   },
-  header: {
+  headerbg: {
     position: 'relative',
-    backgroundColor: '#D74B80',
     height: 170,
   },
 
   back: {
-    width: 22,
-    height: 22,
+    width: 30,
+    height: 30,
+    marginTop: 30,
     marginLeft: 15,
-    // marginTop: 17,
   },
 
   tabWrap: {
@@ -205,6 +204,7 @@ const styles = StyleSheet.create({
   },
   tabTxt: {
     color: '#FFFFFF',
+    fontSize: 15
   },
 
   wrap: {
