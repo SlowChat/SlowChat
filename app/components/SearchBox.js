@@ -4,11 +4,8 @@ import {
   Text,
   View,
   Image,
-  PixelRatio,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from 'react-native';
-
-const onePx = 1 / PixelRatio.get()
 
 const ICONS = {
   head: require('../images/head_placeholder80.png'),
@@ -23,15 +20,13 @@ export default class HomeItem extends PureComponent<Props> {
     return (
       <View style={styles.container}>
         <Text style={styles.txt}>慢友圈</Text>
-        <TouchableWithoutFeedback onPress={() => {
+        <TouchableOpacity  style={styles.search} onPress={() => {
             onPress && onPress()
           }}>
-          <View style={styles.search}>
-            <Text style={styles.placeholder}>查找您感兴趣的内容</Text>
-            <View style={styles.line}></View>
-            <Image style={styles.icon} source={require('../images/icon_search.png')} />
-          </View>
-        </TouchableWithoutFeedback>
+          <Text style={styles.placeholder}>查找您感兴趣的内容</Text>
+          <View style={styles.line}></View>
+          <Image style={styles.icon} source={require('../images/icon_search.png')} />
+        </TouchableOpacity>
       </View>
     );
   }

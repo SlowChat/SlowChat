@@ -4,8 +4,15 @@ import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 
 import BottomTabs from './BottomTabs'
 
+import LoginScreen from './login/Login'
+import RegistScreen from './login/Regist'
+
 import SendMailScreen from './scenes/SendMail'
 import MailDetailScreen from './scenes/MailDetail'
+import DraftDetailScreen from './scenes/DraftDetail'
+import ReserveDetailScreen from './scenes/ReserveDetail'
+import ShareScreen from './scenes/Share'
+
 import UserScreen from './user/User'
 import SettingScreen from './user/Setting'
 import EmailScreen from './user/Email'
@@ -18,17 +25,16 @@ import RuleScreen from './user/Rule'
 import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
-import DraftDetailScreen from './scenes/DraftDetail'
-import ReserveDetailScreen from './scenes/ReserveDetail'
-import ShareScreen from './scenes/Share'
 
 export default createStackNavigator({
-  BottomTabs: {
+  Home: {
     screen: BottomTabs,
     navigationOptions: {
       header: null
     }
   },
+  Login: { screen: LoginScreen },
+  Regist: { screen: RegistScreen },
   User: { screen: UserScreen },
   Setting: { screen: SettingScreen },
   Email: { screen: EmailScreen },
@@ -52,7 +58,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'User',
+  initialRouteName: 'Share',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

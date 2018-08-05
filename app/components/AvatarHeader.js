@@ -4,10 +4,7 @@ import {
   Text,
   View,
   Image,
-  PixelRatio
 } from 'react-native';
-
-const onePx = 1 / PixelRatio.get()
 
 const ICONS = {
   head: require('../images/head_placeholder80.png'),
@@ -35,7 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 15,
     paddingBottom: 15,
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },
   avatar: {

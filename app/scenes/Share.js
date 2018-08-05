@@ -8,7 +8,10 @@ import {
   ImageBackground,
 } from 'react-native';
 
-// import QRCode from 'react-native-qrcode'
+// import ShareUtil from '../libs/um/ShareUtil'
+import QRCode from 'react-native-qrcode'
+import ViewShot from "react-native-view-shot"
+import Toast from 'react-native-easy-toast'
 
 import AvatarHeader from '../components/AvatarHeader'
 
@@ -21,21 +24,28 @@ const ICONS = {
   more: require('../images/icon_more.png'),
 }
 
-const QRCode_IMG = 'https://mmbiz.qpic.cn/mmbiz_jpg/oTQcjB03Y8yLqw2nfh6ibN7qJP69P4kJ5WypFmReMCEjCAYMpaiasEkQlHpx95W8Cw0BPBEEbiaB97xeYDdibjSviaw/640?wx_fmt=jpeg'
+
 
 type Props = {};
 export default class HeaderTip extends PureComponent<Props> {
-
+  state = {
+    qrcodeUrl: 'https://www.baidu.com',
+  }
   handleWechat = () => {
-
+    // ShareUtil.auth(5, (code,result,message) =>{
+    //   console.log(code,result,message)
+    // });
   }
 
   handleWeibo = () => {
-
+  //   ShareUtil.shareboard('qwqw','', 'https://www.baidu.com','测试',[0,1,2,3,4,5,6,33],(code,message) =>{
+  //  });
   }
 
   handleSave = () => {
-
+    this.refs.viewShot.capture().then(uri => {
+      this.refs.toast.show('分享图片已保存')
+    });
   }
 
   handleMore = () => {
@@ -43,25 +53,30 @@ export default class HeaderTip extends PureComponent<Props> {
   }
 
   render() {
+    // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
     return (
       <View style={styles.container}>
-        <ImageBackground source={ICONS.sharebg} style={styles.wrap}>
-          <View style={styles.avatarWrap}>
-            <Image style={styles.avatar} source={ICONS.head} />
-            <View style={styles.avatarRight}>
-              <View style={styles.nameWrap}>
-                <Text style={styles.name}>给未来的自</Text>
-                <Text style={styles.desc}>邀请你来慢邮~</Text>
+        <ViewShot ref="viewShot">
+          <ImageBackground source={ICONS.sharebg} style={styles.wrap}>
+            <View style={styles.avatarWrap}>
+              <Image style={styles.avatar} source={ICONS.head} />
+              <View style={styles.avatarRight}>
+                <View style={styles.nameWrap}>
+                  <Text style={styles.name}>给未来的自</Text>
+                  <Text style={styles.desc}>邀请你来慢邮~</Text>
+                </View>
+                <Text style={styles.title}>发信时间：2019年1月10日</Text>
               </View>
-              <Text style={styles.title}>发信时间：2019年1月10日</Text>
             </View>
-          </View>
-          <View style={styles.qrcodeWrap}>
-            <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
-          </View>
-        </ImageBackground>
-        <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
+            <View style={styles.qrcodeWrap}>
+              <View style={styles.qrcode}>
+                <QRCode value={this.state.qrcodeUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+              </View>
+            </View>
+          </ImageBackground>
+          <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
+        </ViewShot>
         <View style={styles.icons}>
           <TouchableOpacity onPress={this.handleWechat}>
             <View style={styles.iconWrap}>
@@ -88,6 +103,7 @@ export default class HeaderTip extends PureComponent<Props> {
             </View>
           </TouchableOpacity>
         </View>
+        <Toast ref="toast" position="center" />
       </View>
     );
   }
@@ -111,8 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   qrcode: {
-    width: 160,
-    height: 160,
+    padding: 2,
+    backgroundColor: '#FFFFFF',
   },
   shareTxt: {
     marginTop: 41,

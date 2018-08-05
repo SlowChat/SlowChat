@@ -17,6 +17,7 @@ export default class AvatarHeader extends PureComponent {
 
   }
   render() {
+    console.log("====1111=====");
     const { nobord } = this.props
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
     return (
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   borded: {
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },
   bottom: {

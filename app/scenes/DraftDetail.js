@@ -8,28 +8,38 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
-  PixelRatio,
 } from 'react-native';
 
 
 import HeaderTip from '../components/HeaderTip'
 import Attachment from '../components/Attachment'
 
-const onePx = 1 / PixelRatio.get()
-
 const ICONS = {
-  delete: require('../images/icon_attachment.png'),
-  edit: require('../images/icon_attachment.png'),
+  delete: require('../images/delete.png'),
+  edit: require('../images/edit.png'),
   attachment: require('../images/icon_attachment.png'),
 }
 
 export default class DraftDetail extends Component {
+  static navigationOptions = ({navigation}) => {
+    const { params = {} } = navigation.state
+    return {
+      title: params.title || '邮件详情',
+    }
+  }
   handleDelete = () => {
 
   }
   handleEdit = () => {
     this.props.navigation.push('SendMail')
   }
+
+  // this.props.navigation.setParams({
+  //   header: () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
+  //     style={[styles.header, {transform: [{translateY: this.springValue}]}]}>
+  //     <Text style={styles.headerTxt}>首页</Text>
+  //   </SafeAreaView>),
+  // })
   render() {
     return (
       <View style={styles.container}>
@@ -88,7 +98,7 @@ const styles = StyleSheet.create({
     height: 44,
     paddingLeft: 20,
     paddingRight: 15,
-    borderBottomWidth: onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },
   label: {
@@ -148,7 +158,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    borderTopWidth: onePx,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
   textarea: {
@@ -161,7 +171,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     alignItems: 'flex-end',
     justifyContent: 'center',
-    borderTopWidth: onePx,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
   saveBtn: {
@@ -188,7 +198,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottomIcon: {
-    width: 27,
-    height: 29
+    width: 40,
+    height: 40,
+    resizeMode: 'contain'
   }
 });

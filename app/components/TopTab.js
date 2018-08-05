@@ -3,11 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback,
-  PixelRatio
+  TouchableOpacity,
 } from 'react-native';
-
-const onePx = 1 / PixelRatio.get()
 
 type Props = {};
 export default class TopTab extends Component<Props> {
@@ -26,13 +23,11 @@ export default class TopTab extends Component<Props> {
               txtWrap = styles.txtWrap
               txt = styles.txt
             }
-            return (<TouchableWithoutFeedback key={item.id} onPress={() => {onPress && onPress(i)}}>
-              <View style={styles.tab}>
-                <View style={txtWrap}>
-                  <Text style={txt}>{item.name}</Text>
-                </View>
+            return (<TouchableOpacity style={styles.tab} key={item.id} onPress={() => {onPress && onPress(i)}}>
+              <View style={txtWrap}>
+                <Text style={txt}>{item.name}</Text>
               </View>
-            </TouchableWithoutFeedback>)
+            </TouchableOpacity>)
           })
         }
       </View>
@@ -47,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     fontFamily: 'PingFangSC-Regular',
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
     borderStyle: 'solid',
   },
@@ -56,7 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txtWrap: {
-    borderBottomWidth: 2 * onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#B4B4B4',
     borderStyle: 'solid',
     height: 28,

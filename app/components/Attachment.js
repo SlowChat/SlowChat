@@ -5,7 +5,10 @@ import {
   Text,
   View,
   Image,
+  Modal,
 } from 'react-native'
+
+import ImageViewer from 'react-native-image-zoom-viewer'
 
 const IMGS = [
   'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
@@ -18,19 +21,37 @@ const IMGS = [
 
 export default class Attachment extends PureComponent {
   static defaultProps = {
-    items: IMGS
-  };
+    items: IMGS,
+  }
+  state = {
+    visible: false,
+    index: 0,
+  }
+  handleClick = (index) => {
+    this.setState({ visible: true })
+  }
+  handleChange = (index) => {
+    this.setState({ index })
+  }
+  handleOpen = (e) => {
+    const { index } = e.target.dataset
+    this.setState({ index })
+  }
   render() {
     const { items } = this.props
+    const { visible, index } = this.state
     return (
       <View style={styles.imageList}>
         { items && items.map((item, index) => {
           return (<View key={index} style={styles.imageItem}>
-            <Image source={{uri: item}} style={styles.image}></Image>
+            <Image data-index={index} source={{uri: item}} style={styles.image} onClick={this.handleOpen}></Image>
             <Text style={styles.imageName}>图片1名图片1名图片1名.png</Text>
             <Text style={styles.imageSize}>112.66</Text>
           </View>)
         })}
+        <Modal visible={visible} transparent={true}>
+            <ImageViewer enableImageZoom index={index} imageUrls={items} onClick={this.handleClick} onChange={this.handleChange} />
+        </Modal>
       </View>
     )
   }

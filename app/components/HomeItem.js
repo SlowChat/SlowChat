@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  PixelRatio
+  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
-
-const onePx = 1 / PixelRatio.get()
 
 const ICONS = {
   head: require('../images/head_placeholder80.png'),
@@ -16,31 +15,37 @@ const ICONS = {
 }
 
 type Props = {};
-export default class HomeItem extends Component<Props> {
+export default class HomeItem extends PureComponent<Props> {
+  handlePress = () => {
+    const { onPress, data } = this.props
+    onPress && onPress(data.item.key)
+  }
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.avatarWrap}>
-          <Image style={styles.avatar} source={ICONS.head} />
-          <View style={styles.avatarRight}>
-            <View style={styles.nameWrap}>
-              <Text style={styles.name}>给未来的自</Text>
-              <Text style={styles.time}>12:00</Text>
+      <TouchableOpacity activeOpacity={0.7} onPress={this.handlePress}>
+        <View style={styles.container}>
+          <View style={styles.avatarWrap}>
+            <Image style={styles.avatar} source={ICONS.head} />
+            <View style={styles.avatarRight}>
+              <View style={styles.nameWrap}>
+                <Text style={styles.name}>给未来的自</Text>
+                <Text style={styles.time}>12:00</Text>
+              </View>
+              <Text style={styles.date}>发信时间：2019年1月10日</Text>
             </View>
-            <Text style={styles.date}>发信时间：2019年1月10日</Text>
           </View>
+          <View style={styles.content}>
+            <Text style={styles.contentTxt}>发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日</Text>
+          </View>
+          <View style={styles.attention}>
+            <Image style={styles.eyeIcon} source={ICONS.eye} /><Text style={[styles.num, styles.eyeNum]}>10</Text>
+            <Image style={styles.commentIcon} source={ICONS.comment} />
+            <Text style={styles.num}>6</Text>
+          </View>
+          <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
+          <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
         </View>
-        <View style={styles.content}>
-          <Text style={styles.contentTxt}>发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日</Text>
-        </View>
-        <View style={styles.attention}>
-          <Image style={styles.eyeIcon} source={ICONS.eye} /><Text style={[styles.num, styles.eyeNum]}>10</Text>
-          <Image style={styles.commentIcon} source={ICONS.comment} />
-          <Text style={styles.num}>6</Text>
-        </View>
-        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
-        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
   content: {
     paddingTop: 15,
     paddingBottom: 15,
-    borderBottomWidth: onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
     borderStyle: 'solid',
   },

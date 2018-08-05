@@ -8,14 +8,12 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
-  PixelRatio,
 } from 'react-native';
 
 
 import HeaderTip from '../components/HeaderTip'
 import Attachment from '../components/Attachment'
 
-const onePx = 1 / PixelRatio.get()
 
 const ICONS = {
   delete: require('../images/icon_attachment.png'),
@@ -79,7 +77,7 @@ const styles = StyleSheet.create({
     height: 44,
     paddingLeft: 20,
     paddingRight: 15,
-    borderBottomWidth: onePx,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },
   label: {
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    borderTopWidth: onePx,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
   textarea: {
