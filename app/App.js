@@ -58,7 +58,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Regist',
+  initialRouteName: 'User',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

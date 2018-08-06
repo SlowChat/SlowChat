@@ -8,8 +8,9 @@ import {
   Switch,
   TouchableWithoutFeedback
 } from 'react-native';
-
+import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
+import { get, post } from '../utils/request'
 
 const ICONS = {
   forward: require('../images/icon_forward.png'),
@@ -32,6 +33,20 @@ export default class Setting extends Component {
   handleSwitch = (value) => {
     this.setState({
       switchBtn: value
+    })
+  }
+
+  handleSubmit = () => {
+    const { navigate, pop } = this.props.navigation;
+    const { email, vCode } = this.state;
+    post('api/user/logout.html').then((res) => {
+      // pop();
+      console.log(res)
+      if (res.code == 1) {
+        navigate('Login')
+      } else {
+        this.refs.toast.show(res.msg);
+      }
     })
   }
 
@@ -79,7 +94,7 @@ export default class Setting extends Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
           <View style={styles.exit}>
             <Text style={styles.exitTxt}>退出当前账号</Text>
           </View>

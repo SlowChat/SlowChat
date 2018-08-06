@@ -15,8 +15,13 @@ const getHeaders = async (unneed) => {
     return {}
   }
   return {
+<<<<<<< HEAD
+    'Content-Type': 'application/json',
+    'MY-Token': getToken(),
+=======
     // 'Content-Type': 'application/x-www-form-urlencoded',
     'MY-Token': await Storage.getToken(),
+>>>>>>> 97b91fdb0b411ac7cbc2414a26d5f01190f89847
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
@@ -35,8 +40,13 @@ export async function get(url, params, unneedLogin) {
 }
 
 
+<<<<<<< HEAD
+export function post(url, params, unneedLogin) {
+  console.log('----', params)
+=======
 export async function post(url, params, unneedLogin) {
   const headers = await getHeaders(unneedLogin)
+>>>>>>> 97b91fdb0b411ac7cbc2414a26d5f01190f89847
   return fetch(BASE_URL + url, {
     method: 'POST',
     headers: {
