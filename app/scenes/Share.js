@@ -40,7 +40,7 @@ export default class HeaderTip extends PureComponent<Props> {
   handleWechat = () => {
     JShareModule.isWeChatInstalled((isInstalled) => {
       if (isInstalled === true) {
-        share('wechat_session')
+        this.share('wechat_session')
       } else {
         this.refs.toast.show('您尚未按照微信客户端')
       }
@@ -58,15 +58,15 @@ export default class HeaderTip extends PureComponent<Props> {
   }
   // 微博
   handleWeibo = () => {
-    share('sina_weibo')
+    this.share('sina_weibo')
   }
   // QQ
   handleQQ = () => {
-    share('qq')
+    this.share('qq')
   }
   // QQ空间
   handleQZone = () => {
-    share('qzone')
+    this.share('qzone')
   }
 
   async share(platform) {
