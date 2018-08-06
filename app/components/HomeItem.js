@@ -21,28 +21,34 @@ export default class HomeItem extends PureComponent<Props> {
     onPress && onPress(data.item.key)
   }
   render() {
+    const { item } = this.props.data
+    const [send_date, send_time] = (item.send_time || '').split(' ')
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this.handlePress}>
         <View style={styles.avatarWrap}>
           <Image style={styles.avatar} source={ICONS.head} />
           <View style={styles.avatarRight}>
             <View style={styles.nameWrap}>
-              <Text style={styles.name}>给未来的自</Text>
-              <Text style={styles.time}>12:00</Text>
+              <Text style={styles.name}>{item.title}</Text>
+              <Text style={styles.time}>{send_time}</Text>
             </View>
-            <Text style={styles.date}>发信时间：2019年1月10日</Text>
+            <Text style={styles.date}>发信时间：{send_date}</Text>
           </View>
         </View>
         <View style={styles.content}>
-          <Text style={styles.contentTxt}>发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日发信时间：2019年1月10日</Text>
+          <Text style={styles.contentTxt}>{item.content}</Text>
         </View>
         <View style={styles.attention}>
-          <Image style={styles.eyeIcon} source={ICONS.eye} /><Text style={[styles.num, styles.eyeNum]}>10</Text>
+          <Image style={styles.eyeIcon} source={ICONS.eye} />
+          <Text style={[styles.num, styles.eyeNum]}>{item.looks}</Text>
           <Image style={styles.commentIcon} source={ICONS.comment} />
-          <Text style={styles.num}>6</Text>
+          <Text style={styles.num}>{item.comments}</Text>
         </View>
-        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
-        <View><Text style={styles.comment}>Abagael：到了最后，我突然笑了</Text></View>
+        {
+          item.comment && item.comment.map(item => (<View key={item.id}>
+            <Text style={styles.comment}>Abagael：{item.content}</Text>
+          </View>))
+        }
       </TouchableOpacity>
     );
   }

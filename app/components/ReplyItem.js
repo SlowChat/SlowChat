@@ -14,7 +14,8 @@ const ICONS = {
 
 export default class AvatarHeader extends PureComponent {
   handleReply = () => {
-
+    const { onPress } = this.props
+    onPress && onPress()
   }
   render() {
     console.log("====1111=====");
@@ -29,9 +30,7 @@ export default class AvatarHeader extends PureComponent {
           <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：2019年1月10日</Text>
             <TouchableOpacity activeOpacity={0.8} onPress={this.handleReply}>
-              <View onPress={this.handleReply}>
-                <Text style={styles.btn}>回复</Text>
-              </View>
+              <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -14,7 +14,7 @@ import {
 import HeaderTip from '../components/HeaderTip'
 import Attachment from '../components/Attachment'
 
-import { get, post } from '../utils/request'
+import { post } from '../utils/request'
 
 const ICONS = {
   delete: require('../images/delete.png'),
@@ -27,6 +27,33 @@ export default class DraftDetail extends Component {
     data: {},
     attachs: []
   }
+
+  componentWillMount() {
+    this.getData()
+  }
+
+  async getData() {
+    if (this.loading) return
+    this.loading = true
+    try {
+      const { id } = this.props.navigation.state.params
+      const res = await post('api/mail/getInfo.html', { id })
+      if (res.code == 1) {
+        const { items } = res.data
+        this.setState({
+          detail: items,
+          attachs: items.attach.split(',')
+        })
+      } else {
+
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.loading = false
+    }
+  }
+
   handleDelete = () => {
 
   }
@@ -41,7 +68,7 @@ export default class DraftDetail extends Component {
   //   </SafeAreaView>),
   // })
   render() {
-    const { data, attachs } = this.state
+    const { detail, attachs } = this.state
     return (
       <View style={styles.container}>
         <ScrollView style={styles.body}>

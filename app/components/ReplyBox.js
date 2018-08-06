@@ -10,14 +10,19 @@ import {
 
 export default class ReplyBox extends Component {
   handleReply = () => {
-    const { onPress } = this.props
-    onPress && onPress()
+    if (this.content) {
+      const { onPress } = this.props
+      onPress && onPress(this.content)
+    }
+  }
+  handleChange = (txt) => {
+    this.content = txt
   }
   render() {
     return (
       <View style={styles.container}>
         <TextInput style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
-          autoCapitalize="none" underlineColorAndroid='transparent' />
+          autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
         <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
       </View>
     )

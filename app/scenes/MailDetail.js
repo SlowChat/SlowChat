@@ -9,10 +9,13 @@ import {
   Easing,
 } from 'react-native';
 
+import Toast from 'react-native-easy-toast'
 import TopTab from '../components/TopTab'
 import MailContent from '../components/MailContent'
 import ReplyItem from '../components/ReplyItem'
 import ReplyBox from '../components/ReplyBox'
+
+import { post } from '../utils/request'
 
 const ITEMS = [{id: 0, name: '信件内容'}, {id: 1, name: '慢友圈'}]
 const ANIMAT_TIME = 500
@@ -30,6 +33,8 @@ export default class MailDetail extends Component {
   state = {
     activeTab: 0,
     translateValue: new Animated.Value(-44),
+    detail: {},
+    comments: [],
   }
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -91,12 +96,52 @@ export default class MailDetail extends Component {
     }).start();
   }
 
-  render() {
-    let data = [];
-    for (let i = 0; i < 100; i++) {
-      data.push({key: i, title: i + ''});
+  async getData() {
+    if (this.loading) return
+    this.loading = true
+    try {
+      const { id } = this.props.navigation.state.params
+      const res = await post('api/mail/getInfo.html', { id })
+      if (res.code == 1) {
+        const { items } = res.data
+        this.setState({
+          detail: items,
+          coments: []
+        })
+      } else {
+
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.loading = false
     }
+  }
+
+
+  handleReply = (content) => {
+    this.addComment(0, content)
+  }
+
+  async addComment(pid, content) {
+    try {
+      const { id } = this.props.navigation.state.params
+      const res = await post('api/mail_comment/add.html', {
+        pid, mail_id: id,content
+      })
+      if (res && res.code == 1) {
+
+      } else {
+        this.refs.toast.show(res.msg || '慢聊飘走了')
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  render() {
     const { activeTab, fadeInOpacity } = this.state
+    const { detail, comments } = this.state
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {transform: [{translateY: this.state.translateValue}]}]}>
@@ -105,20 +150,25 @@ export default class MailDetail extends Component {
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
-          data={data}
+          data={comments}
           initialNumToRender={5}
           onScroll={this.handleScroll}
-          keyExtractor={(item, index) => item.key + ''}
+          keyExtractor={(item) => item.id + ''}
           renderItem={(item) => <ReplyItem item={item} />}
           ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
-            <MailContent />
-            <View style={styles.replyHeader}>
-              <Text style={[styles.replyComment, styles.replyNum]}>评论 3</Text>
-              <Text style={styles.replyNum}>浏览 22</Text>
-            </View>
+            <MailContent data={detail} />
+            {
+              detail.comments && detail.looks && (
+                <View style={styles.replyHeader}>
+                  <Text style={[styles.replyComment, styles.replyNum]}>评论 {detail.comments}</Text>
+                  <Text style={styles.replyNum}>浏览 {detail.looks}</Text>
+                </View>
+              )
+            }
           </View>)}
         />
-        <ReplyBox />
+        <ReplyBox onPress={this.handleReply} />
+        <Toast ref="toast" position="center" />
       </View>
     )
   }
