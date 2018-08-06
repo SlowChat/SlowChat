@@ -104,9 +104,11 @@ export default class MailDetail extends Component {
       const res = await post('api/mail/getInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
+        const comments = items.comment
+        delete items.comment
         this.setState({
           detail: items,
-          coments: []
+          comments
         })
       } else {
 

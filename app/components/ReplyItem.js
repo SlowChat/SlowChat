@@ -12,23 +12,23 @@ const ICONS = {
   head: require('../images/head_placeholder80.png'),
 }
 
-export default class AvatarHeader extends PureComponent {
+export default class ReplyItem extends PureComponent {
   handleReply = () => {
     const { onPress } = this.props
     onPress && onPress()
   }
   render() {
-    console.log("====1111=====");
     const { nobord } = this.props
+    const { item } = this.props.data
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
     return (
       <View style={styles.wrap}>
-        <Image style={styles.avatar} source={ICONS.head} />
+        <Image style={styles.avatar} source={item.user.avatar || ICONS.head} />
         <View style={avatarRightClass}>
-          <Text style={styles.name}>给未来的自</Text>
-          <Text style={styles.reply}>给未来的自</Text>
+          <Text style={styles.name}>{item.user.user_nickname}</Text>
+          <Text style={styles.reply}>{item.content}</Text>
           <View style={styles.bottom}>
-            <Text style={styles.date}>发信时间：2019年1月10日</Text>
+            <Text style={styles.date}>发信时间：{item.add_time}</Text>
             <TouchableOpacity activeOpacity={0.8} onPress={this.handleReply}>
               <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>
