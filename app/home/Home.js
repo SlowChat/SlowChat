@@ -16,6 +16,7 @@ import {SafeAreaView} from 'react-navigation'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 
+import { post } from '../utils/request'
 
 const IMGS = [
   'https://img.alicdn.com/bao/uploaded/i1/TB2Xy7fquySBuNjy1zdXXXPxFXa_!!0-paimai.jpg',
@@ -76,6 +77,18 @@ export default class App extends Component<Props> {
     } else if (offsetY < THRESHOLD && this.hasHeader) {
       this.fadeInOrOut(false)
     }
+  }
+
+
+  getData() {
+    // if (this.loading) return
+    // const { page, size } = this.state
+    // post('api/mail/getMyList.html', {
+    //   p: page,
+    //   s: size,
+    // })
+
+
   }
 
   handleLoadmore = () => {
