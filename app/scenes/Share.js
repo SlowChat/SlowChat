@@ -11,6 +11,7 @@ import {
   ImageBackground,
 } from 'react-native';
 
+import JShareModule from 'jshare-react-native';
 import RNFS from 'react-native-fs'
 // import ShareUtil from '../libs/um/ShareUtil'
 import QRCode from 'react-native-qrcode'
@@ -28,26 +29,64 @@ const ICONS = {
   more: require('../images/icon_more.png'),
 }
 
-
 type Props = {};
 export default class HeaderTip extends PureComponent<Props> {
   state = {
     qrcodeUrl: 'https://www.baidu.com',
     moreModal: false,
   }
+
+  // 微信
   handleWechat = () => {
-    // ShareUtil.auth(5, (code,result,message) =>{
-    //   console.log(code,result,message)
-    // });
+    JShareModule.isWeChatInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        share('wechat_session')
+      } else {
+        this.refs.toast.show('您尚未按照微信客户端')
+      }
+    })
   }
-
+  // 朋友圈
+  handleWechatTimeLine = () => {
+    JShareModule.isWeChatInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        share('wechat_timeline')
+      } else {
+        this.refs.toast.show('您尚未按照微信客户端')
+      }
+    })
+  }
+  // 微博
   handleWeibo = () => {
-  //   ShareUtil.shareboard('qwqw','', 'https://www.baidu.com','测试',[0,1,2,3,4,5,6,33],(code,message) =>{
-  //  });
+    share('sina_weibo')
+  }
+  // QQ
+  handleQQ = () => {
+    share('qq')
+  }
+  // QQ空间
+  handleQZone = () => {
+    share('qzone')
   }
 
-  handleShare() {
-
+  async share(platform) {
+    let uri = this.uri
+    if (!uri) {
+      uri = await this.refs.viewShot.capture()
+      this.uri = uri
+    }
+    const message = {
+      type: 'image',
+      platform,
+      imagePath: this.uri,
+      imageArray: [this.uri]
+    }
+    JShareModule.share(message, (map) => {
+      console.log("share succeed, map: " + map);
+    }, (map) => {
+      console.log("share failed, map: " + map);
+      this.refs.toast.show('分享失败')
+    })
   }
 
   handleSave = async () => {
@@ -122,13 +161,13 @@ export default class HeaderTip extends PureComponent<Props> {
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
             <View style={styles.moreModal}>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(0)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleWechatTimeLine}>
                 <Text style={styles.moreTxt}>微信朋友圈</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleQQ}>
                 <Text style={styles.moreTxt}>QQ</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleQZone}>
                 <Text style={styles.moreTxt}>QQ空间</Text>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} style={styles.cancelBtn} onPress={() => this.setState({moreModal: false})}>

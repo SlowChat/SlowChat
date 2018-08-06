@@ -3,6 +3,8 @@ package com.slowchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import cn.jiguang.share.reactnative.JSharePackage;
 import com.rnfs.RNFSPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -27,6 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
+            new JSharePackage(),
             new RNFSPackage(),
             new RNViewShotPackage(),
             new ImagePickerPackage(),
@@ -49,5 +53,8 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    // 在 Init 之前调用，设置为 true，则会打印 debug 级别日志，否则只会打印 warning 级别以上的日志
+    // JShareInterface.setDebugMode(true);
+    JShareInterface.init(this);
   }
 }

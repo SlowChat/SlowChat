@@ -103,8 +103,31 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [
+            JPUSH_APPKEY: "ea78d2a0b4a6298ba3630c3a",
+            APP_CHANNEL : "default",
+            JSHARE_PKGNAME: "cn.jiguang.share.demo",
+            JPUSH_APPKEY: "your app key", //在此替换你的APPKey
+            JPUSH_CHANNEL: "developer-default",
+            TENCENT_APPID: "your tencent app id"
+        ]
+
         ndk {
             abiFilters "armeabi-v7a", "x86"
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file("jshare.jks") //你的签名文件路径
+            storePassword "slowchat" //你的文件保存密码
+            keyAlias "slowchat"  //你的别名
+            keyPassword "slowchat" //你的签名密码
+        }
+        release {
+            storeFile file("jshare.jks")  //你的签名文件路径
+            storePassword "slowchat" //你的文件保存密码
+            keyAlias "slowchat" //你的别名
+            keyPassword "slowchat" //你的签名密码
         }
     }
     splits {
@@ -137,6 +160,10 @@ android {
 }
 
 dependencies {
+    compile project(':jcore-react-native')
+    compile project(':jpush-react-native')
+    compile project(':react-native-device-info')
+    compile project(':jshare-react-native')
     compile project(':react-native-fs')
     compile project(':react-native-view-shot')
     compile project(':react-native-image-picker')
