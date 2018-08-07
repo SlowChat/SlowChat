@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-picker'
+import RNFileSelector from 'react-native-file-selector';
 
 import AttachmentItem from './AttachmentItem'
 
@@ -85,6 +86,22 @@ export default class AvatarHeader extends Component {
       }
     });
   }
+  chooseFile = () => {
+    const { onClose } = this.props
+    onClose && onClose()
+    setTimeout(() => {
+      RNFileSelector.Show({
+        title: 'select',
+        onDone: (path) => {
+          console.log('file selected: ' + path)
+        },
+        onCancel: () => {
+          console.log('cancelled')
+        }
+      })
+    }, 60)
+
+  }
   render() {
     const items = IMGS
     const { visible, onClose } = this.props
@@ -92,13 +109,16 @@ export default class AvatarHeader extends Component {
       <Modal visible={visible} transparent={true}
         animationType="slide" onRequestClose={onClose}>
         <View style={styles.wrap}>
-          <TouchableOpacity activeOpacity={0.8} style={styles.bg} onPress={onClose}></TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={onClose}></TouchableOpacity>
           <View style={styles.content}>
             <View style={styles.header}>
-              <TouchableOpacity activeOpacity={0.8} onPress={this.chooseImage}>
+              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
                 <Image style={styles.icon} source={ICONS.pic}></Image>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.8} onPress={this.chooseVideo}>
+              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
+                <Image style={styles.icon} source={ICONS.folder}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
                 <Image style={styles.icon} source={ICONS.folder}></Image>
               </TouchableOpacity>
             </View>

@@ -11,17 +11,18 @@ import Attachment from './Attachment'
 
 export default class MailContent extends PureComponent {
   render() {
-    const { images } = this.props
+    const { data = ''} = this.props
+    const attachs = (data.attach || '').split(',')
     return (
       <View style={styles.container}>
         <AvatarHeader />
         <View>
-          <Text style={styles.header}>20岁，来自父亲的祝福！</Text>
+          <Text style={styles.header}>{data.title}</Text>
         </View>
         <View>
-          <Text style={styles.content}>如果你无法简洁的表达你的想法，那只说明你还不够了解它。生日快乐！</Text>
+          <Text style={styles.content}>{data.content}</Text>
         </View>
-        <Attachment />
+        <Attachment items={attachs} />
       </View>
     )
   }

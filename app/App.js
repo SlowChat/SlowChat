@@ -60,7 +60,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'User',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
