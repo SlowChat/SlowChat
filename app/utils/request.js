@@ -15,13 +15,8 @@ const getHeaders = async (unneed) => {
     return {}
   }
   return {
-<<<<<<< HEAD
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
     'MY-Token': getToken(),
-=======
-    // 'Content-Type': 'application/x-www-form-urlencoded',
-    'MY-Token': await Storage.getToken(),
->>>>>>> 97b91fdb0b411ac7cbc2414a26d5f01190f89847
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
@@ -31,22 +26,20 @@ export async function get(url, params, unneedLogin) {
   const headers = await getHeaders(unneedLogin)
   return fetch(geturl, {
     method: 'GET',
-    headers
-  }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-  })
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+  }).then((response) => response.json()).catch((err) => {
+    console.error(eval("("+ err +")"));
+    throw err
+  });
 }
 
-
-<<<<<<< HEAD
-export function post(url, params, unneedLogin) {
-  console.log('----', params)
-=======
 export async function post(url, params, unneedLogin) {
+  console.log(url)
+  console.log(params)
   const headers = await getHeaders(unneedLogin)
->>>>>>> 97b91fdb0b411ac7cbc2414a26d5f01190f89847
   return fetch(BASE_URL + url, {
     method: 'POST',
     headers: {
@@ -55,7 +48,7 @@ export async function post(url, params, unneedLogin) {
     },
     body: JSON.stringify(params),
   }).then((response) => response.json()).catch((err) => {
-    console.error(err);
+    console.error(eval("("+ err +")"));
     throw err
   });
 }

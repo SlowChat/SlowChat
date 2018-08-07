@@ -72,15 +72,15 @@ export default class EmailList extends Component {
     }
   }
   render() {
-    const { navigate } = this.props;
+    const { item, navigate } = this.props;
     return (
-      <TouchableWithoutFeedback onPress={() => navigate('MailDetail', { id: 1 })}>
+      <TouchableWithoutFeedback onPress={() => navigate('MailDetail', { id: item.id })}>
         <View>
           <View style={styles.list}>
             <Image style={styles.icon} source={ICONS.show} />
             <View style={styles.content}>
-              <Text style={styles.name}>Abagael@qq.com</Text>
-              <Text style={styles.name}>20岁，来自父亲的祝福</Text>
+              <Text style={styles.name}>{item.email}</Text>
+              <Text style={styles.name}>{item.title}</Text>
               <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
             </View>
             <View style={styles.time}>

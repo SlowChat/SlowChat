@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import Avatar from '../components/Avatar'
+import { get, post } from '../utils/request'
 
 const ICONS = {
   set: require('../images/icon_set.png'),
@@ -19,6 +20,7 @@ const ICONS = {
   integral: require('../images/icon_jifen.png'),
 }
 
+let mobile='', userEmail='', username='';
 export default class User extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -27,7 +29,7 @@ export default class User extends Component {
       title: '个人中心',
       headerLeft: (
         <View style={styles.icon}>
-          <TouchableWithoutFeedback onPress={() => navigate('Setting')}>
+          <TouchableWithoutFeedback onPress={() => navigate('Setting', { mobile, userEmail, username })}>
             <Image style={styles.set} source={ICONS.set} />
           </TouchableWithoutFeedback>
         </View>
@@ -41,38 +43,81 @@ export default class User extends Component {
       ),
     }
   }
-  componentDidMount() {
-    
+  
+  state = {
+    mobile: '',
+    userEmail: '',
+    username: '',
+    sex: 0,
+    avatar: '',
+    draftCount: 0,
+    unsendCount: 0,
+    sentCount: 0,
+    publicCount: 0,
+    birthday: ''
+  }
+   
+  componentWillMount() {
+    get('api/user/userInfo.html').then(res => {
+      const { code, data } = res
+      if (code === 1) {
+        console.log(res)
+        mobile = data.mobile
+        userEmail = data.user_email
+        username = data.user_nickname
+        this.setState({
+          mobile: data.mobile,
+          userEmail: data.user_email,
+          username: data.user_nickname,
+          sex: data.sex,
+          avatar: data.avatar,
+          draftCount: data.draft_count,
+          unsendCount: data.unsend_count,
+          sentCount: data.send_count,
+          publicCount: data.public_count,
+          birthday: data.birthday
+        })
+      } 
+    }).catch(e => {
+      console.log(e)
+    })
+  }
+
+  handerSetting() {
+    const { navigate } = this.props.navigation;
+    const { mobile, userEmail } = this.state;
+    navigate('Setting', { mobile, userEmail })
   }
 
   render() {
     const { navigate } = this.props.navigation;
+    const { username, sex, avatar, birthday, draftCount, unsendCount, sentCount, publicCount } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar />
+        <Avatar username={username} avatar={avatar} />
         <View style={styles.remind}>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>草稿箱</Text>
-              <Text style={styles.num}>3</Text>
+              <Text style={styles.num}>{ draftCount }</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'reservation' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>预定发送</Text>
-              <Text style={styles.num}>3</Text>
+              <Text style={styles.num}>{ unsendCount }</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'sent' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>已发送</Text>
-              <Text style={styles.num}>3</Text>
+              <Text style={styles.num}>{ sentCount }</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'public' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>公开内容</Text>
-              <Text style={styles.num}>3</Text>
+              <Text style={styles.num}>{ publicCount }</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -86,7 +131,7 @@ export default class User extends Component {
           </View>
         </View>
         <View style={styles.link}>
-          <TouchableWithoutFeedback onPress={() => navigate('Information')}>
+          <TouchableWithoutFeedback onPress={() => navigate('Information', { username, avatar, sex, birthday })}>
             <View style={styles.menu}>
               <Image style={styles.menuImg} source={ICONS.person} />
               <Text style={styles.menuTxt}>个人资料</Text>
