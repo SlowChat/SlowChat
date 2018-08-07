@@ -2422,6 +2422,10 @@ image-size@^0.6.0:
   version "0.6.3"
   resolved "http://registry.npm.taobao.org/image-size/download/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
 
+immutable@3.8.2:
+  version "3.8.2"
+  resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
+
 import-local@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/import-local/download/import-local-1.0.0.tgz#5e4ffdc03f4fe6c009c6729beb29631c2f8227bc"
@@ -4216,6 +4220,12 @@ react-native-easy-toast@^1.1.0:
   resolved "http://registry.npm.taobao.org/react-native-easy-toast/download/react-native-easy-toast-1.1.0.tgz#7d3a34ed298d32c4827b8d43ddfab6a71b98a2e3"
   dependencies:
     prop-types "^15.5.10"
+
+react-native-file-selector@^0.0.3:
+  version "0.0.3"
+  resolved "http://registry.npm.taobao.org/react-native-file-selector/download/react-native-file-selector-0.0.3.tgz#056cbf73e3db7f13975b1f94703223d480631dda"
+  dependencies:
+    immutable "3.8.2"
 
 react-native-fs@^2.10.14:
   version "2.10.14"
