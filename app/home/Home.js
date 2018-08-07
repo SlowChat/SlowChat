@@ -41,9 +41,7 @@ export default class App extends Component<Props> {
     refreshing: false,
   }
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.setState({ images: IMGS })
-    // }, 500)
+    this.getData()
   }
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
@@ -83,10 +81,14 @@ export default class App extends Component<Props> {
   getData() {
     // if (this.loading) return
     // const { page, size } = this.state
-    // post('api/mail/getMyList.html', {
-    //   p: page,
-    //   s: size,
-    // })
+    post('api/mail/getMyList.html', {
+      p: 0,
+      s: 10,
+    }).then(res => {
+      console.log("res===", res);
+    }).catch(err => {
+      console.log("err======", err);
+    })
 
 
   }

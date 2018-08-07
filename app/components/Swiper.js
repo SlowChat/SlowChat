@@ -9,29 +9,30 @@ import {
 
 import Swiper from 'react-native-swiper';
 
+const ICONS = {
+  banner: require('../images/banner_placeholder.png')
+}
+
 type Props = {};
 export default class SwiperComponent extends PureComponent<Props> {
   static defaultProps = {
     items: []
   };
-  // shouldComponentUpdate(nextProps) {
-  //   if (nextProps.items.length != this.props.items.length) {
-  //     console.log("===========");
-  //     return true
-  //   }
-  //   return false
-  // }
+
   render() {
     const { items } = this.props
-    if (!items || items.length == 0) return null
     const dot = (<View style={styles.dot} />)
     const activeDot = (<View style={[styles.dot, styles.activeDot]} />)
     return (
       <View>
         <View style={styles.wrapper} >
-          <Swiper autoplay dot={dot} activeDot={activeDot}>
-            {items.map((item, index) => <Image key={index} source={{uri:item}} style={styles.image} />)}
-          </Swiper>
+          {
+            !items || items.length == 0 ? <Image source={ICONS.banner} style={styles.image} /> :
+            <Swiper autoplay dot={dot} activeDot={activeDot}>
+              {items.map((item, index) => <Image key={index} source={{uri:item}} style={styles.image} />)}
+            </Swiper>
+          }
+
         </View>
         <View style={styles.tipWraper}>
           <View style={styles.tipHeader}><Text style={styles.tipHeaderTxt}>回到未来</Text></View>
@@ -52,6 +53,8 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 225,
+    width: 375,
+    resizeMode: 'cover',
   },
   dot: {
     width:6,

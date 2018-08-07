@@ -14,10 +14,19 @@ const getHeaders = async (unneed) => {
   if (unneed) {
     return {}
   }
-  return {
-    // 'Content-Type': 'application/x-www-form-urlencoded',
-    'MY-Token': await Storage.getToken(),
-    'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
+  try {
+    const token = await Storage.getToken()
+    return {
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      'MY-Token': token,
+      'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
+    }
+  } catch (e) {
+    return {
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      'MY-Token': getToken(),
+      'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
+    }
   }
 }
 
