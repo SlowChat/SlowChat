@@ -16,8 +16,8 @@ import HomeItem from '../components/HomeItem'
 
 import { post } from '../utils/request'
 
+const SIZE = 10
 const ITEMS = [{id: 0, name: '最新发布'}, {id: 1, name: '热门'}]
-
 
 type Props = {};
 export default class Space extends Component<Props> {
@@ -70,7 +70,7 @@ export default class Space extends Component<Props> {
       this.loading = true
       const res = await post('api/mail/getList.html', {
         p: page,
-        s: 10,
+        s: SIZE,
         hot: this.state.activeTab,
         keyword
       })

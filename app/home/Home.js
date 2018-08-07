@@ -24,6 +24,8 @@ const IMGS = [
   'https://img.alicdn.com/bao/uploaded/i3/TB2Hhn4quSSBuNjy0FlXXbBpVXa_!!0-paimai.jpg'
 ]
 
+const SIZE = 10
+
 type Props = {};
 export default class App extends Component<Props> {
   static navigationOptions = ({navigation}) => {
@@ -38,6 +40,7 @@ export default class App extends Component<Props> {
   }
   state = {
     images: IMGS,
+    data: [],
     showFoot: 0,
     refreshing: false,
   }
@@ -79,19 +82,39 @@ export default class App extends Component<Props> {
   }
 
 
-  getData() {
-    // if (this.loading) return
-    // const { page, size } = this.state
-    post('api/mail/getMyList.html', {
-      p: 0,
-      s: 10,
-    }).then(res => {
-      console.log("res===", res);
-    }).catch(err => {
-      console.log("err======", err);
-    })
-
-
+  async getData(page = 0) {
+    if (this.loading || this.state.showFoot == 1) return
+    this.loading = true
+    if (page > 0) {
+      this.setState({ showFoot: 2 })
+    }
+    const { keyword = '' } = this
+    try {
+      this.loading = true
+      const res = await post('api/mail/getList.html', {
+        p: page,
+        s: SIZE,
+        hot: this.state.activeTab,
+        keyword
+      })
+      if (res.code == 1) {
+        const { total, items } = res.data
+        const newData = page == 0 ? items : this.state.data.concat(items)
+        let showFoot = newData.length >= total ? 1 : 0
+        this.setState({
+          data: newData,
+          showFoot
+        })
+        this.page++
+      } else {
+        this.refs.toast.show(res.msg || '慢聊飘走了')
+        this.setState({ showFoot: 0 })
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.loading = false
+    }
   }
 
   handleLoadmore = () => {
@@ -115,11 +138,7 @@ export default class App extends Component<Props> {
     return <Footer showFoot={this.state.showFoot} />
   }
   render() {
-    let data = [];
-    for (let i = 0; i < 10; i++) {
-      data.push({key: i, title: i + ''});
-    }
-    const { images } = this.state
+    const { images, data } = this.state
     return (
       <FlatList
         style={styles.flatlist}

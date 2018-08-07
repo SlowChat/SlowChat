@@ -21,9 +21,14 @@ export default class ReplyItem extends PureComponent {
     const { nobord } = this.props
     const { item } = this.props.data
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
+
+    let avatar = item.user.avatar
+    if (!avatar || avatar.indexOf('http') != 0) {
+      avatar = ICONS.head
+    }
     return (
       <View style={styles.wrap}>
-        <Image style={styles.avatar} source={item.user.avatar || ICONS.head} />
+        <Image style={styles.avatar} source={avatar} />
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>
           <Text style={styles.reply}>{item.content}</Text>

@@ -36,12 +36,12 @@ export default class DraftDetail extends Component {
     if (this.loading) return
     this.loading = true
     try {
-      const { id } = this.props.navigation.state.params
+      const { id } = this.props.navigation.state.params || {}
       const res = await post('api/mail/getInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
-          detail: items,
+          data: items,
           attachs: items.attach.split(',')
         })
       } else {
@@ -68,7 +68,7 @@ export default class DraftDetail extends Component {
   //   </SafeAreaView>),
   // })
   render() {
-    const { detail, attachs } = this.state
+    const { data, attachs } = this.state
     return (
       <View style={styles.container}>
         <ScrollView style={styles.body}>
@@ -186,8 +186,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#EEEEEE',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },

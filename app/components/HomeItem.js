@@ -47,7 +47,7 @@ export default class HomeItem extends PureComponent<Props> {
         <View style={styles.comments}>
           {
             item.comment && item.comment.map(item => (<View key={item.id}>
-              <Text style={styles.comment}>{item.user.user_nickname}：{item.content}</Text>
+              <Text numberOfLines={1} style={styles.comment}>{item.user.user_nickname}：{item.content}</Text>
             </View>))
           }
         </View>
@@ -59,6 +59,7 @@ export default class HomeItem extends PureComponent<Props> {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    paddingBottom: 6,
     fontFamily: 'PingFangSC-Regular',
     marginBottom: 10,
     backgroundColor: '#FFFFFF'

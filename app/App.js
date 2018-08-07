@@ -62,7 +62,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'MailDetail',
+  initialRouteName: 'Login',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

@@ -104,7 +104,7 @@ export default class MailDetail extends Component {
     this.loading = true
     try {
       const { id } = this.props.navigation.state.params || {}
-      const res = await post('api/mail/getInfo.html', { id: 1 })
+      const res = await post('api/mail/getInfo.html', { id })
       console.log(res);
       if (res.code == 1) {
         const { items } = res.data
@@ -131,9 +131,9 @@ export default class MailDetail extends Component {
 
   async addComment(pid, content) {
     try {
-      const { id } = this.props.navigation.state.params
+      const { id } = this.props.navigation.state.params || {}
       const res = await post('api/mail_comment/add.html', {
-        pid, mail_id: id,content
+        pid, mail_id: id, content
       })
       if (res && res.code == 1) {
 
@@ -166,7 +166,7 @@ export default class MailDetail extends Component {
           ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
             <MailContent data={detail} />
             {
-              detail.comments && detail.looks ? (
+              detail.comments ? (
                 <View style={styles.replyHeader}>
                   <Text style={[styles.replyComment, styles.replyNum]}>评论 {detail.comments}</Text>
                   <Text style={styles.replyNum}>浏览 {detail.looks}</Text>
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     height: 37,
     paddingLeft: 10,
     paddingRight: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
     backgroundColor: '#FFFFFF'
   },
