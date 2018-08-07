@@ -19,6 +19,7 @@ export default class HomeItem extends PureComponent<Props> {
   handlePress = () => {
     const { onPress, data } = this.props
     onPress && onPress(data.item.id)
+    console.log(data.item.id);
   }
   render() {
     const { item } = this.props.data

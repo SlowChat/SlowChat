@@ -23,16 +23,8 @@ const ICONS = {
   // loginBtn: require('../images/login_btn.png'),
 }
 
-
-
 type Props = {};
 export default class Login extends PureComponent<Props> {
-  static navigationOptions = ({navigation}) => {
-    return {
-      header: null,
-      mode: 'modal'
-    }
-  }
   componentWillMount() {
     this.username = '15216748429'
     this.password = '123456'

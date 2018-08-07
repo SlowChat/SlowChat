@@ -45,7 +45,8 @@ export default class App extends Component<Props> {
     refreshing: false,
   }
   componentDidMount() {
-    this.getData()
+    this.page = 0
+    this.getData(0)
   }
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
@@ -122,7 +123,10 @@ export default class App extends Component<Props> {
 
   }
   handleRefresh = () => {
-    console.log("=Refresh=");
+    this.setState({ showFoot: 0 }, () => {
+      this.page = 0
+      this.getData(0)
+    })
   }
   handlePress = (id) => {
     this.props.navigation.push('MailDetail', {id})
@@ -146,7 +150,7 @@ export default class App extends Component<Props> {
         data={data}
         renderItem={this.renderItem}
         initialNumToRender={5}
-        keyExtractor={(item, index) => item.key + ''}
+        keyExtractor={(item, index) => String(item.id)}
         onScroll={this.handleScroll}
         onEndReachedThreshold={3}
         onEndReached={this.handleLoadmore}

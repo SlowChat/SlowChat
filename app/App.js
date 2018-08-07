@@ -35,7 +35,13 @@ export default createStackNavigator({
       header: null
     }
   },
-  Login: { screen: LoginScreen },
+  Login: {
+    screen: LoginScreen,
+    mode: 'modal',
+    navigationOptions: {
+      header: null,
+    }
+  },
   Regist: { screen: RegistScreen },
   RegistSucc: { screen: RegistSuccScreen },
   ErrorTip: { screen: ErrorTipScreen },
@@ -62,7 +68,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Login',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
@@ -80,3 +86,22 @@ export default createStackNavigator({
     // }
   }
 });
+
+//
+// const defaultGetStateForAction = FirstApp.router.getStateForAction;
+//
+// FirstApp.router.getStateForAction = (action, state) => {
+//   //页面是MeScreen并且 global.user.loginState = false || ''（未登录）
+//   if (action.routeName ==='MeScreen'&& !global.user.loginState) {
+//     this.routes = [
+//       ...state.routes,
+//       {key: 'id-'+Date.now(), routeName: 'Login', params: { name: 'name1'}},
+//     ];
+//     return {
+//       ...state,
+//       routes,
+//       index: this.routes.length - 1,
+//     };
+//   }
+//   return defaultGetStateForAction(action, state);
+// };
