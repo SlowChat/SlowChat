@@ -7,6 +7,7 @@ import BottomTabs from './BottomTabs'
 import LoginScreen from './login/Login'
 import RegistScreen from './login/Regist'
 import RegistSuccScreen from './login/RegistSucc'
+import ErrorTipScreen from './components/ErrorTip'
 
 import SendMailScreen from './scenes/SendMail'
 import MailDetailScreen from './scenes/MailDetail'
@@ -14,6 +15,7 @@ import DraftDetailScreen from './scenes/DraftDetail'
 import ReserveDetailScreen from './scenes/ReserveDetail'
 import ShareScreen from './scenes/Share'
 
+import UserScreen from './user/User'
 import SettingScreen from './user/Setting'
 import EmailScreen from './user/Email'
 import InformationScreen from './user/Information'
@@ -36,6 +38,8 @@ export default createStackNavigator({
   Login: { screen: LoginScreen },
   Regist: { screen: RegistScreen },
   RegistSucc: { screen: RegistSuccScreen },
+  ErrorTip: { screen: ErrorTipScreen },
+  User: { screen: UserScreen },
   Setting: { screen: SettingScreen },
   Email: { screen: EmailScreen },
   Information: { screen: InformationScreen },
@@ -58,7 +62,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'BottomTabs',
+  initialRouteName: 'MailDetail',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',

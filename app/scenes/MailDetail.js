@@ -36,6 +36,9 @@ export default class MailDetail extends Component {
     detail: {},
     comments: [],
   }
+  componentWillMount() {
+    this.getData()
+  }
   shouldComponentUpdate() {
     if (this.noupdate) {
       this.noupdate = false
@@ -100,15 +103,16 @@ export default class MailDetail extends Component {
     if (this.loading) return
     this.loading = true
     try {
-      const { id } = this.props.navigation.state.params
-      const res = await post('api/mail/getInfo.html', { id })
+      const { id } = this.props.navigation.state.params || {}
+      const res = await post('api/mail/getInfo.html', { id: 1 })
+      console.log(res);
       if (res.code == 1) {
         const { items } = res.data
         const comments = items.comment
         delete items.comment
         this.setState({
           detail: items,
-          comments
+          comments: [comments]
         })
       } else {
 
@@ -144,6 +148,8 @@ export default class MailDetail extends Component {
   render() {
     const { activeTab, fadeInOpacity } = this.state
     const { detail, comments } = this.state
+    console.log("====detail.comments && detail.looks===", comments);
+
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {transform: [{translateY: this.state.translateValue}]}]}>
@@ -156,16 +162,16 @@ export default class MailDetail extends Component {
           initialNumToRender={5}
           onScroll={this.handleScroll}
           keyExtractor={(item) => item.id + ''}
-          renderItem={(item) => <ReplyItem item={item} />}
+          renderItem={(item) => <ReplyItem key={item.id} data={item} />}
           ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
             <MailContent data={detail} />
             {
-              detail.comments && detail.looks && (
+              detail.comments && detail.looks ? (
                 <View style={styles.replyHeader}>
                   <Text style={[styles.replyComment, styles.replyNum]}>评论 {detail.comments}</Text>
                   <Text style={styles.replyNum}>浏览 {detail.looks}</Text>
                 </View>
-              )
+              ) : null
             }
           </View>)}
         />
@@ -175,6 +181,9 @@ export default class MailDetail extends Component {
     )
   }
 }
+
+
+
 
 
 const styles = StyleSheet.create({

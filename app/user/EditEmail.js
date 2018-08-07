@@ -24,24 +24,68 @@ export default class EditEmail extends Component {
     }
   }
   state = {
-    email: '',
-    vCode: ''
+    email: this.props.navigation.state.params.userEmail,
+    vCode: '',
+    btnText: '',
+    status: ''
   }
   componentDidMount() {
-
+    if (this.props.navigation.state.params.userEmail !== '') {
+      this.setState({
+        btnText: '验证后绑定新邮箱',
+        status: 'check'
+      })
+    } else {
+      this.setState({
+        btnText: '绑定',
+        status: 'bind'
+      })
+    }
   }
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { email, vCode } = this.state;
-    post('api/user/bind_email.html', { email: email, verification_code: vCode }).then((res) => {
-      pop();
+    const { email, vCode, status } = this.state;
+    let url = ''
+    if (status=== 'bind') {
+      url = 'api/user/bind_email.html'
+    } else if (status=== 'check') {
+      url = 'api/user/check_old_email.html'
+    } else {
+      url = 'api/user/edit_email.html'
+    }
+    post(url, { email: email, verification_code: vCode }, false).then((res) => {
+      if (res.code == 1) {
+        if (status === 'check') {
+          this.refs.toast.show(res.msg);
+          this.setState({
+            email: '',
+            vCode: '',
+            status: '',
+            btnText: '绑定'
+          })
+        } else {
+          this.refs.toast.show(res.msg);
+          setTimeout(() => {
+            pop();
+          }, 1000)
+        }
+        
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    })
+  }
+
+  handleVcode = () => {
+    const { email } = this.state;
+    post('api/verification_code/send.html', { username: email }).then((res) => {
       console.log(res)
-      // if (res.code == 1) {
-      //   this.refs.toast.show(res.msg);
-      // } else {
-      //   this.refs.toast.show(res.msg);
-      // }
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+      } else {
+        this.refs.toast.show(res.msg);
+      }
     })
   }
 
@@ -57,9 +101,11 @@ export default class EditEmail extends Component {
               placeholder='请输入您的邮箱'
               value={this.state.email}
             />
-            <View style={styles.btn}>
-              <Text style={styles.btnTxt}>获取验证码</Text>
-            </View>
+            <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
+              <View style={styles.btn}>
+                <Text style={styles.btnTxt}>获取验证码</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>
@@ -72,7 +118,7 @@ export default class EditEmail extends Component {
           </View>
           <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
             <View style={styles.save}>
-              <Text style={styles.saveTxt}>绑定</Text>
+              <Text style={styles.saveTxt}>{this.state.btnText}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

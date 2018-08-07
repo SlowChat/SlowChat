@@ -13,11 +13,12 @@ const ICONS = {
 
 export default class AvatarHeader extends Component {
   render() {
+    const { username, avatar } = this.props;
     return (
       <View style={styles.avatarWrap}>
         <Image style={styles.avatar} source={ICONS.img} />
         <View style={styles.avatarRight}>
-          <Text style={styles.name}>Abagael</Text>
+          <Text style={styles.name}>{ username }</Text>
           <Text style={styles.level}>普通会员</Text>
         </View>
       </View>

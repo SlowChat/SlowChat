@@ -31,6 +31,7 @@ export default class Space extends Component<Props> {
   }
 
   state = {
+    showFoot: 0,
     activeTab: 0,
     data: [],
     total: 0,
@@ -47,17 +48,23 @@ export default class Space extends Component<Props> {
     })
   }
   tabSwitch = (index) => {
+    if (this.state.activeTab == index) return
     this.setState({
-      activeTab: index
+      activeTab: index,
+      showFoot: 0,
+      items: []
     }, () => {
       this.page = 0
       this.getData(0)
     })
+    this._flatList.scrollToOffset({animated: true, offset: 0})
   }
   async getData(page = 0) {
-    if (this.loading) return
+    if (this.loading || this.state.showFoot == 1) return
     this.loading = true
-    this.setState({ showFoot: 2 })
+    if (page > 0) {
+      this.setState({ showFoot: 2 })
+    }
     const { keyword = '' } = this
     try {
       this.loading = true
@@ -94,21 +101,18 @@ export default class Space extends Component<Props> {
     this.props.navigation.push('MailDetail', {id})
   }
   render() {
-    let data = [];
-    for (let i = 0; i < 100; i++) {
-      data.push({key: i, title: i + ''});
-    }
-    const { activeTab } = this.state
+    const { activeTab, data } = this.state
     return (
       <View style={styles.container}>
         <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
         <FlatList
           style={styles.flatlist}
+          ref={(flatList)=>this._flatList = flatList}
           data={data}
-          renderItem={(item) => <HomeItem data={item} onPress={this.handlePress} />}
+          renderItem={(item) => <HomeItem key={item.id} data={item} onPress={this.handlePress} />}
           initialNumToRender={5}
-          keyExtractor={(item) => item.id + ''}
+          keyExtractor={(item) => String(item.id)}
           onEndReachedThreshold={1}
           onEndReached={this.handleLoadmore}
         />
@@ -119,11 +123,10 @@ export default class Space extends Component<Props> {
 }
 
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F6F6F6',
     fontFamily: 'PingFangSC-Regular',
   },
   header: {

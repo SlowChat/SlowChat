@@ -11,7 +11,6 @@ import {
 import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
-
 const ICONS = {
   forward: require('../images/icon_forward.png'),
 }
@@ -39,35 +38,37 @@ export default class Setting extends Component {
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
     const { email, vCode } = this.state;
-    post('api/user/logout.html').then((res) => {
-      // pop();
+    post('api/user/logout.html').then(res => {
       console.log(res)
       if (res.code == 1) {
         navigate('Login')
       } else {
         this.refs.toast.show(res.msg);
       }
+    }).catch(e => {
+      this.refs.toast.show(res.msg);
     })
   }
 
   render() {
     const { switchBtn } = this.state
     const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
     return (
       <View style={styles.container}>
-        <Avatar />
+        <Avatar username={params.username} />
         <View style={styles.link}>
-          <TouchableWithoutFeedback onPress={() => navigate('EditMobile')}>
+          <TouchableWithoutFeedback onPress={() => navigate('EditMobile', { mobile: params.mobile })}>
             <View style={styles.menu}>
               <Text style={styles.label}>绑定手机号</Text>
-              <Text style={styles.text}>133****0000</Text>
+              <Text style={styles.text}>{params.mobile}</Text>
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('EditEmail')}>
+          <TouchableWithoutFeedback onPress={() => navigate('EditEmail', { userEmail: params.userEmail })}>
             <View style={styles.menu}>
               <Text style={styles.label}>绑定邮箱</Text>
-              <Text style={styles.text}>133****0000@qq.com</Text>
+              <Text style={styles.text}>{params.userEmail}</Text>
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
@@ -99,6 +100,7 @@ export default class Setting extends Component {
             <Text style={styles.exitTxt}>退出当前账号</Text>
           </View>
         </TouchableWithoutFeedback>
+        <Toast ref="toast" position="bottom" />
       </View>
     );
   }

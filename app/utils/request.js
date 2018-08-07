@@ -10,12 +10,13 @@ const getToken = () => {
   return '217aba3196c7dd24f2a0a39c7dff4da2217aba3196c7dd24f2a0a39c7dff4da2'
 }
 
+
 const getHeaders = async (unneed) => {
   if (unneed) {
     return {}
   }
   try {
-    const token = await Storage.getToken()
+    const { token } = await Storage.getToken()
     return {
       // 'Content-Type': 'application/x-www-form-urlencoded',
       'MY-Token': token,
@@ -35,17 +36,19 @@ export async function get(url, params, unneedLogin) {
   const headers = await getHeaders(unneedLogin)
   return fetch(geturl, {
     method: 'GET',
-    headers
-  }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-  })
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+  }).then((response) => response.json()).catch((err) => {
+    console.error(eval("("+ err +")"));
+    throw err
+  });
 }
 
-
-
 export async function post(url, params, unneedLogin) {
+  console.log(url)
+  console.log(params)
   const headers = await getHeaders(unneedLogin)
   return fetch(BASE_URL + url, {
     method: 'POST',
@@ -55,7 +58,8 @@ export async function post(url, params, unneedLogin) {
     },
     body: JSON.stringify(params),
   }).then((response) => response.json()).catch((err) => {
-    console.error(err);
+    console.log(err);
+    console.error(eval("("+ err +")"));
     throw err
   });
 }

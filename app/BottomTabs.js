@@ -63,7 +63,7 @@ export default createBottomTabNavigator(
     Mime: MimeStack,
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Space',
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarIcon: ({ focused }) => {

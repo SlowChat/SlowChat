@@ -24,24 +24,71 @@ export default class EditMobile extends Component {
     }
   }
   state = {
-    mobile: '',
-    vCode: ''
+    mobile: this.props.navigation.state.params.mobile,
+    vCode: '',
+    btnText: '',
+    status: '',
+    btnStatus: 0
   }
   componentDidMount() {
+    if (this.props.navigation.state.params.mobile !== '') {
+      this.setState({
+        btnText: '验证后绑定新手机',
+        status: 'check'
+      })
+    } else {
+      this.setState({
+        btnText: '绑定',
+        status: 'bind'
+      })
+    }
     
   }
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { mobile, vCode } = this.state;
-    post('api/user/bind_mobile.html', { mobile: mobile, verification_code: vCode }).then((res) => {
-      pop();
+    const { mobile, vCode, status } = this.state;
+    let url = ''
+    if (status=== 'bind') {
+      url = 'api/user/bind_mobile.html'
+    } else if (status=== 'check') {
+      url = 'api/user/check_old_mobile.html'
+    } else {
+      url = 'api/user/edit_mobile.html'
+    }
+    post(url, { mobile: mobile, verification_code: vCode }).then((res) => {
       console.log(res)
-      // if (res.code == 1) {
-      //   this.refs.toast.show(res.msg);
-      // } else {
-      //   this.refs.toast.show(res.msg);
-      // }
+      if (res.code == 1) {
+        if (status === 'check') {
+          this.refs.toast.show(res.msg);
+          this.setState({
+            mobile: '',
+            vCode: '',
+            status: '',
+            btnText: '绑定'
+          })
+        } else {
+          this.refs.toast.show(res.msg);
+          setTimeout(() => {
+            pop();
+          }, 1000)
+        }
+        
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    })
+  }
+
+  handleVcode = () => {
+    const { mobile } = this.state;
+    post('api/verification_code/send.html', { username: mobile }).then((res) => {
+      console.log(res)
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+      } else {
+        this.refs.toast.show(res.msg);
+      }
     })
   }
 
@@ -56,10 +103,13 @@ export default class EditMobile extends Component {
               onChangeText={(text) => this.setState({mobile: text})}
               placeholder='请输入您的手机号'
               value={this.state.mobile}
+              maxLength={11}
             />
-            <View style={styles.btn}>
-              <Text style={styles.btnTxt}>获取验证码</Text>
-            </View>
+            <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
+              <View style={styles.btn}>
+                <Text style={styles.btnTxt}>获取验证码</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>
@@ -71,8 +121,8 @@ export default class EditMobile extends Component {
             />
           </View>
           <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={styles.save}>
-              <Text style={styles.saveTxt}>绑定</Text>
+            <View style={[styles.save, this.state.btnStatus === 1 ? styles.active : '']}>
+              <Text style={styles.saveTxt}>{this.state.btnText}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -138,6 +188,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
     alignItems:'center',
     justifyContent: 'center',
+  },
+  active: {
+    backgroundColor: '#E24B92',
   },
   saveTxt: {
     color: '#fff',

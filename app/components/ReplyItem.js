@@ -29,7 +29,7 @@ export default class ReplyItem extends PureComponent {
           <Text style={styles.reply}>{item.content}</Text>
           <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：{item.add_time}</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={this.handleReply}>
+            <TouchableOpacity activeOpacity={0.7} onPress={this.handleReply}>
               <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>
           </View>
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     width: 40,
+    minWidth: 40,
     height: 40,
     marginRight: 10,
   },

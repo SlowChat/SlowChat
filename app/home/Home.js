@@ -15,6 +15,7 @@ import {SafeAreaView} from 'react-navigation'
 
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
+import Footer from '../components/Footer'
 
 import { post } from '../utils/request'
 
@@ -37,7 +38,7 @@ export default class App extends Component<Props> {
   }
   state = {
     images: IMGS,
-    showFoot: 1,
+    showFoot: 0,
     refreshing: false,
   }
   componentDidMount() {
@@ -111,24 +112,7 @@ export default class App extends Component<Props> {
     return (<Swiper items={images} />)
   }
   renderFooter = () => {
-    if (this.state.showFoot === 1) {
-      return (
-        <View style={styles.nomore}>
-          <Text style={styles.nomoreTxt}>
-              没有更多数据了
-          </Text>
-        </View>
-      )
-    } else if(this.state.showFoot === 2) {
-      return (
-        <View style={styles.footer}>
-          <ActivityIndicator />
-          <Text style={styles.footerTxt}>正在加载更多数据...</Text>
-        </View>
-      )
-    } else if(this.state.showFoot === 0){
-      return null
-    }
+    return <Footer showFoot={this.state.showFoot} />
   }
   render() {
     let data = [];
@@ -179,30 +163,6 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: 'bold',
   },
-  footer:{
-    flexDirection:'row',
-    height:24,
-    justifyContent:'center',
-    alignItems:'center',
-    marginBottom:10,
-  },
-  footerTxt: {
-    color: '#999999',
-    fontSize: 14,
-    marginLeft: 5,
-  },
-  nomore: {
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  nomoreTxt: {
-    color: '#999999',
-    fontSize: 14,
-    marginLeft: 5,
-    marginTop:5,
-    marginBottom:5,
-  }
 });
 
 // <Button title="测试" onPress={() => {
