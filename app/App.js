@@ -2,6 +2,7 @@ import React, {Component, PureComponent} from 'react';
 import { StyleSheet } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
+import StartScreen from './Start'
 import BottomTabs from './BottomTabs'
 
 import LoginScreen from './login/Login'
@@ -28,7 +29,13 @@ import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
 
-const FirstApp = createStackNavigator({
+export default createStackNavigator({
+  Start: {
+    screen: StartScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
   BottomTabs: {
     screen: BottomTabs,
     navigationOptions: {
@@ -68,7 +75,7 @@ const FirstApp = createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'BottomTabs',
+  initialRouteName: 'Start',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
@@ -86,36 +93,30 @@ const FirstApp = createStackNavigator({
     // }
   }
 });
-
-import Storage from './utils/storage'
-
-const defaultGetStateForAction = FirstApp.router.getStateForAction;
-FirstApp.router.getStateForAction = function(action, state) {
-  console.log(action,state); //
-
-
-
-  if (action.type == 'Navigation/INIT') {
-    // const token = await Storage.getToken()
-    // if (!token) {
-      // this.routes = [
-      //   ...state.routes,
-      //   {key: 'id-'+Date.now(), routeName: 'Login'},
-      // ];
-      // return {
-      //   ...state,
-      //   routes,
-      //   index: this.routes.length - 1,
-      // };
-    // }
-  }
-  // if (action.routeName === 'Home') {
-  //   const token = ''
-  //   // await Storage.getToken()
-
-  // }
-  return defaultGetStateForAction(action, state);
-};
-
-
-export default FirstApp
+//
+// import Storage from './utils/storage'
+//
+// const defaultGetStateForAction = FirstApp.router.getStateForAction;
+// FirstApp.router.getStateForAction = function(action, state) {
+//   console.log(action,state); //
+//   if (action.type == 'Navigation/INIT') {
+//     // const token = await Storage.getToken()
+//     // if (!token) {
+//       // this.routes = [
+//       //   ...state.routes,
+//       //   {key: 'id-'+Date.now(), routeName: 'Login'},
+//       // ];
+//       // return {
+//       //   ...state,
+//       //   routes,
+//       //   index: this.routes.length - 1,
+//       // };
+//     // }
+//   }
+//   // if (action.routeName === 'Home') {
+//   //   const token = ''
+//   //   // await Storage.getToken()
+//
+//   // }
+//   return defaultGetStateForAction(action, state);
+// };
