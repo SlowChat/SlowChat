@@ -40,7 +40,7 @@ export default class DraftDetail extends Component {
     if (this.loading) return
     this.loading = true
     try {
-      const id = getId()
+      const id = this.getId()
       const res = await post('api/mail/getInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
@@ -64,7 +64,7 @@ export default class DraftDetail extends Component {
       '您确定要删除该草稿箱吗？',
       [
         {text: '删除', onPress: async () => {
-          const id = getId()
+          const id = this.getId()
           const res = await post('api/mail/delDraft.html', { id })
           if (res.code == 1) {
             this.props.navigation.goBack()
@@ -79,7 +79,7 @@ export default class DraftDetail extends Component {
     )
   }
   handleEdit = () => {
-    const id = getId()
+    const id = this.getId()
     this.props.navigation.push('NewMail', {id})
   }
 

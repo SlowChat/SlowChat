@@ -106,7 +106,7 @@ export default class MailDetail extends Component {
     if (this.loading) return
     this.loading = true
     try {
-      const id = getId()
+      const id = this.getId()
       const res = await post('api/mail/getInfo.html', { id })
       console.log(res);
       if (res.code == 1) {
@@ -141,7 +141,7 @@ export default class MailDetail extends Component {
 
   async addComment(pid, content) {
     try {
-      const id = getId()
+      const id = this.getId()
       const res = await post('api/mail_comment/add.html', {
         pid, mail_id: id, content
       })
