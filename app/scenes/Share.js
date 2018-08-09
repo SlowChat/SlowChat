@@ -119,7 +119,7 @@ export default class HeaderTip extends PureComponent<Props> {
             <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>
-        <Modal visible transparent={true}
+        <Modal visible={this.state.moreModal} transparent={true}
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
             <View style={styles.moreModal}>
@@ -150,7 +150,6 @@ export default class HeaderTip extends PureComponent<Props> {
     );
   }
 }
-// visible={this.state.moreModal}
 
 const styles = StyleSheet.create({
   container : {
@@ -246,6 +245,8 @@ const styles = StyleSheet.create({
   },
   moreModal: {
     width: 262,
+    paddingTop: 5,
+    paddingBottom: 5,
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
     alignItems: 'center',

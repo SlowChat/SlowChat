@@ -58,7 +58,7 @@ export async function upload(uri) {
   const name = uri.substring(uri.lastIndexOf('/') + 1, uri.length)
   let file = {uri: uri, type: 'multipart/form-data', name: name};
   formData.append('file', file);
-  const headers = await getHeaders(unneedLogin)
+  const headers = await getHeaders()
   return fetch(BASE_URL + 'api/upload/image.html', {
     method: 'POST',
     headers: {
@@ -66,9 +66,7 @@ export async function upload(uri) {
       ...headers
     },
     body: formData,
-  }).then((response) => {
-    return response.text()
-  })
+  }).then((response) => response.json())
 }
 
 // {

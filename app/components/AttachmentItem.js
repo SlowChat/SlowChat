@@ -14,14 +14,14 @@ export default class Attachment extends PureComponent {
     onPress && onPress()
   }
   render() {
-    const { data } = this.props
+    const { item } = this.props
     return (
       <View style={styles.imageItem}>
         <TouchableOpacity  activeOpacity={0.8} onPress={this.handleOpen}>
-          <Image source={{uri: data}} style={styles.image}></Image>
+          <Image source={{uri: item.url}} style={styles.image}></Image>
         </TouchableOpacity>
-        <Text numberOfLines={1} style={styles.imageName}>图片1名图片1名图片1名.png</Text>
-        <Text style={styles.imageSize}>112.66</Text>
+        { item.fileName && <Text numberOfLines={1} style={styles.imageName}>{item.fileName}</Text> }
+        { item.fileSize && <Text style={styles.imageSize}>{item.fileSize}</Text> }
       </View>
     )
   }

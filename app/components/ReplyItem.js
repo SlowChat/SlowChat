@@ -14,12 +14,12 @@ const ICONS = {
 
 export default class ReplyItem extends PureComponent {
   handleReply = () => {
-    const { onPress } = this.props
-    onPress && onPress()
+    const { data: {item}, onReply } = this.props
+    onReply && onReply(item.id)
   }
   render() {
     const { nobord } = this.props
-    const { item } = this.props.data
+    const { item: {reply, ...item} } = this.props.data
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
 
     let avatar = item.user.avatar
@@ -31,12 +31,23 @@ export default class ReplyItem extends PureComponent {
         <Image style={styles.avatar} source={avatar} />
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>
-          <Text style={styles.reply}>{item.content}</Text>
+          <Text style={styles.content}>{item.content}</Text>
           <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：{item.add_time}</Text>
             <TouchableOpacity activeOpacity={0.7} onPress={this.handleReply}>
               <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>
+          </View>
+          <View style={styles.replyList}>
+            {
+              reply && reply.map(item => {
+                return (<View style={styles.reply}>
+                  <Text style={[styles.replyTxt, styles.replyName]}>{item.user.user_nickname}：</Text>
+                  <Text style={styles.replyTxt}>{item.content}</Text>
+                </View>)
+              })
+            }
+
           </View>
         </View>
       </View>
@@ -70,7 +81,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  reply: {
+  content: {
     marginTop: 4,
     marginBottom: 9,
   },
@@ -103,5 +114,24 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontSize: 14,
     color: '#999999',
+  },
+  replyList: {
+    marginTop: 6,
+    backgroundColor: '#F6F6F6',
+    padding: 6,
+    paddingTop: 3,
+  },
+  reply: {
+    flexDirection: 'row',
+    marginTop: 3,
+  },
+  replyName: {
+    color: '#E24B92',
+  },
+  replyTxt: {
+    fontSize: 12,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#666666',
+    lineHeight: 17
   }
 });

@@ -13,13 +13,15 @@ import Constant from './constant'
 
 
 export default {
-  setToken: (token) => {
+  setToken: (token, user) => {
     Global.token = token
+    Global.user = user
     return storage.save({
       key: 'slowchattoken',
       data: {
         domain: Constant.DOMAIN,
-        token
+        token,
+        user
       },
       expires: 1000 * 3600 * 24 * 30,
     })
@@ -33,6 +35,7 @@ export default {
         syncInBackground: true,
       })
       Global.token = res.token
+      Global.user = res.user
       return res.token
     } catch (e) {
       return ''

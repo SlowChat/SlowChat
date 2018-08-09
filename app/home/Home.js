@@ -134,8 +134,8 @@ export default class App extends Component<Props> {
   renderItem = (item) => {
     return <HomeItem data={item} onPress={this.handleGoDetail} />
   }
-  handleGoNew = (id) => {
-    this.props.navigation.push('SendMail')
+  handleGoNew = () => {
+    this.props.navigation.push('NewMail')
   }
   renderHeader = () => {
     const { images } = this.state
@@ -193,7 +193,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-// <Button title="测试" onPress={() => {
-//     this.props.navigation.navigate('SendMail')
-//   }}></Button>

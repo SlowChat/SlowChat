@@ -26,7 +26,7 @@ export default class DraftDetail extends Component {
 
   }
   handleEdit = () => {
-    this.props.navigation.push('SendMail')
+    this.props.navigation.push('NewMail')
   }
   render() {
     return (

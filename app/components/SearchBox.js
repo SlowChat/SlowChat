@@ -33,7 +33,7 @@ export default class HomeItem extends PureComponent<Props> {
         <View style={styles.search}>
           <TextInput style={styles.input} onChangeText={this.handleChange} onSubmitEditing={this.handleSubmit}
             returnKeyType="search" placeholder="查找您感兴趣的内容" placeholderColor="#D8D8D8"
-            autoCapitalize="none" underlineColorAndroid='transparent' />
+            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           <TouchableOpacity activeOpacity={0.8} onPress={this.handleSearch}>
             <Image style={styles.icon} source={require('../images/icon_search.png')} />
           </TouchableOpacity>

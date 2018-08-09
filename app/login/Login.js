@@ -51,7 +51,7 @@ export default class Login extends PureComponent<Props> {
       const res = await post('api/user/login.html', params, true)
       if (res.code == 1) {
         const { token } = res.data
-        await Storage.setToken(token)
+        await Storage.setToken(token, user)
         const { navigation } = this.props
         if (this.back) {
           navigation.goBack()

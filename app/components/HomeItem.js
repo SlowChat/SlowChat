@@ -19,7 +19,6 @@ export default class HomeItem extends PureComponent<Props> {
   handlePress = () => {
     const { onPress, data } = this.props
     onPress && onPress(data.item.id)
-    console.log(data.item.id);
   }
   render() {
     const { item } = this.props.data
@@ -68,9 +67,8 @@ const styles = StyleSheet.create({
   avatarWrap: {
     flexDirection: 'row',
     paddingBottom: 15,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EEEEEE',
-    borderStyle: 'solid',
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: '#EEEEEE',
   },
   avatar: {
     width: 40,
@@ -116,7 +114,6 @@ const styles = StyleSheet.create({
     lineHeight: 17
   },
   content: {
-    paddingTop: 15,
     paddingBottom: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',

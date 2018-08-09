@@ -6,7 +6,8 @@ import HomeScreen from './home/Home'
 import SpaceScreen from './home/Space'
 import NewScreen from './home/New'
 import ShareScreen from './home/Share'
-import MimeScreen from './home/Mime'
+// import MimeScreen from './home/Mime'
+import MimeScreen from './user/User'
 
 const ICONS = {
   Home: {
@@ -78,7 +79,7 @@ export default createBottomTabNavigator(
       tabBarOnPress: ({navigation, defaultHandler}) => {
         const { routeName } = navigation.state;
         if (routeName == 'NewTab') {
-          navigation.navigate('SendMail')
+          navigation.navigate('NewMail')
         } else if (routeName == 'ShareTab') {
           navigation.navigate('Share')
         } else {

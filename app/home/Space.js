@@ -13,6 +13,7 @@ import TopTab from '../components/TopTab'
 import HeaderTip from '../components/HeaderTip'
 import SearchBox from '../components/SearchBox'
 import HomeItem from '../components/HomeItem'
+import Footer from '../components/Footer'
 
 import { post } from '../utils/request'
 
@@ -37,27 +38,27 @@ export default class Space extends Component<Props> {
     total: 0,
   }
   componentWillMount() {
-    this.page = 0
-    this.getData(0)
+    this.init()
   }
   componentDidMount() {
     this.props.navigation.setParams({
       searchBoxPress: (txt) => {
         this.keyword = txt || ''
+        this.init()
+        this._flatList.scrollToOffset({animated: true, offset: 0})
       }
     })
   }
   tabSwitch = (index) => {
     if (this.state.activeTab == index) return
-    this.setState({
-      activeTab: index,
-      showFoot: 0,
-      items: []
-    }, () => {
+    this.init({activeTab: index})
+    this._flatList.scrollToOffset({animated: true, offset: 0})
+  }
+  init(state = {}) {
+    this.setState({ showFoot: 0, items: [], ...state }, () => {
       this.page = 0
       this.getData(0)
     })
-    this._flatList.scrollToOffset({animated: true, offset: 0})
   }
   async getData(page = 0) {
     if (this.loading || this.state.showFoot == 1) return
@@ -100,6 +101,9 @@ export default class Space extends Component<Props> {
   handlePress = (id) => {
     this.props.navigation.push('MailDetail', {id})
   }
+  renderFooter = () => {
+    return <Footer showFoot={this.state.showFoot} />
+  }
   render() {
     const { activeTab, data } = this.state
     return (
@@ -115,6 +119,7 @@ export default class Space extends Component<Props> {
           keyExtractor={(item) => String(item.id)}
           onEndReachedThreshold={1}
           onEndReached={this.handleLoadmore}
+          ListFooterComponent={this.renderFooter}
         />
         <Toast ref="toast" position="center" />
       </View>

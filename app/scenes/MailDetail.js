@@ -17,6 +17,7 @@ import ReplyBox from '../components/ReplyBox'
 import AwardTip from '../components/AwardTip'
 import ErrorModal from '../components/ErrorModal'
 
+import Global from '../utils/global'
 import { post } from '../utils/request'
 
 const ITEMS = [{id: 0, name: '信件内容'}, {id: 1, name: '慢友圈'}]
@@ -28,9 +29,6 @@ export default class MailDetail extends Component {
     return {
       title: params.title || '邮件详情',
     }
-  }
-  static defaultProps = {
-    title: '20岁，来自父亲的祝福！'
   }
   state = {
     activeTab: 0,
@@ -110,7 +108,7 @@ export default class MailDetail extends Component {
       console.log(res);
       if (res.code == 1) {
         const { comment, ...items } = res.data.items
-        const comments = [comment] || []
+        const comments = comment ? [comment] : []
         this.setState({
           detail: items,
           comments
@@ -127,7 +125,12 @@ export default class MailDetail extends Component {
 
 
   handleReply = (content) => {
-    this.addComment(0, content)
+    this.addComment(this.pid || 0, content)
+  }
+
+  handleSubReply = (pid) => {
+    this.pid = pid
+    this.refs.replyBox.focus()
   }
 
   async addComment(pid, content) {
@@ -138,11 +141,29 @@ export default class MailDetail extends Component {
       })
       if (res && res.code == 1) {
         this.refs.awardTipRef.show()
+        const { comments } = this.state
+        if (pid == 0) {
+          comments.unshift()
+        } else {
+          const index = comments.findIndex(item => item.id == pid)
+          if (index > -1) {
+            comments[index].reply.push({
+              id: new Date().getTime(),
+              user: Global.user,
+              content,
+            })
+          }
+        }
+        this.setState({ comments })
+      } else if (res.code == 10001) {
+        this.props.navigation.navigate('Login', { back: true })
       } else {
         this.refs.errorModalRef.show({txt: res.msg || '回复失败，稍后尝试'})
       }
     } catch (e) {
       console.error(e)
+    } finally {
+      this.pid = 0
     }
   }
 
@@ -161,7 +182,7 @@ export default class MailDetail extends Component {
           initialNumToRender={5}
           onScroll={this.handleScroll}
           keyExtractor={(item) => item.id + ''}
-          renderItem={(item) => <ReplyItem key={item.id} data={item} />}
+          renderItem={(item) => <ReplyItem key={item.id} data={item} onReply={this.handleSubReply} />}
           ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
             <MailContent data={detail} />
             {
@@ -174,7 +195,7 @@ export default class MailDetail extends Component {
             }
           </View>)}
         />
-        <ReplyBox ref="" onReply={this.handleReply} />
+        <ReplyBox ref="replyBox" onReply={this.handleReply} />
         <AwardTip ref="awardTipRef" num="10" txt="发表评论成功" />
         <ErrorModal ref="errorModalRef" />
       </View>

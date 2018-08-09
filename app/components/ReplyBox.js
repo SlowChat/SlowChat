@@ -9,18 +9,27 @@ import {
 } from 'react-native';
 
 export default class ReplyBox extends Component {
-
+  state = {
+    content: ''
+  }
+  focus() {
+    this.refs.input.focus()
+  }
+  clear() {
+    this.setState({ content: '' })
+  }
   handleChange = (txt) => {
-    this.content = txt
+    this.setState({ content: txt })
   }
   handleReply = () => {
     const { onReply } = this.props
-    onReply && onReply(this.content)
+    onReply && onReply(this.state.content)
   }
   render() {
+    const { content } = this.state
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
+        <TextInput ref="input" Value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
           autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
         <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
       </View>

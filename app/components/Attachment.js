@@ -12,48 +12,8 @@ import ImageViewer from 'react-native-image-zoom-viewer'
 
 import AttachmentItem from './AttachmentItem'
 
-const IMGS = [
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-]
-
-const IMG_ARR = [
-  {
-    url: 'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  },
-  {
-    url: 'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  },
-  {
-    url: 'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  },
-  {
-    url: 'https://img.alicdn.com/imgextra/i3/2549841410/TB2uxDbcRcXBuNjt_biXXXpmpXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  },
-  {
-    url: 'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  },
-  {
-    url: 'https://img.alicdn.com/imgextra/i3/2549841410/TB23fcKuiCYBuNkSnaVXXcMsVXa_!!2549841410-0-sm.jpg_760x760Q50s50.jpg',
-  },
-]
-
-const images1 = [{
-    url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460'
-}, {
-    url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460'
-}, {
-    url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460'
-}]
 
 export default class Attachment extends PureComponent {
-  static defaultProps = {
-    items: IMGS,
-  }
   state = {
     visible: false,
     index: 1,
@@ -68,13 +28,13 @@ export default class Attachment extends PureComponent {
     this.setState({ index, visible: true })
   }
   render() {
-    const { items } = this.props
+    const items = (this.props.items || []).map(item => ({url: item}))
     const { visible, index } = this.state
     return (
       <View style={styles.imageList}>
-        { items && items.map((item, index) => <AttachmentItem key={index} data={item} onPress={() => this.handleOpen(index)} />)}
+        { items && items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
         <Modal visible={visible} transparent={true}>
-          <ImageViewer enableImageZoom index={index} imageUrls={IMG_ARR} onChange={this.handleChange} onClick={this.handleClick} />
+          <ImageViewer enableImageZoom index={index} imageUrls={items} onChange={this.handleChange} onClick={this.handleClick} />
         </Modal>
       </View>
     )

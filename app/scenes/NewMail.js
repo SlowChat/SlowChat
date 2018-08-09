@@ -21,7 +21,7 @@ import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 
-import { post, upload } from '../utils/request'
+import { post } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
 
@@ -46,13 +46,14 @@ export default class SendMail extends Component {
   state = {
     isSend: true,
     isSucc: false,
+    showSendMe: true,
     pickerModal: false,
-    attachs: ['http://img.alicdn.com/bao/uploaded/i2/TB1jZYfdRjTBKNjSZFwATwG4XXa_041742.jpg'],
+    attachs: [],
     params: {
-      title: '233233232',
-      content: 'dsa四大花旦哈苏的挥洒打底衫',
-      email: 'sanri.long@163.com',
-      send_time: '2018-11-1 09:19',
+      title: '',
+      content: '',
+      email: '',
+      send_time: '',
       type: 2,
     },
   }
@@ -62,9 +63,13 @@ export default class SendMail extends Component {
     })
   }
   setParams(key, value) {
+    let { showSendMe } = this.state
+    if (key == 'email' && value == '发给自己') {
+      showSendMe = false
+    }
     const { params } = this.state
     params[key] = value
-    this.setState({ params }, () => {
+    this.setState({ params, showSendMe }, () => {
       const sendBtnEnable = this.checkParams()
       if (this.sendBtnEnable != sendBtnEnable) {
         this.noupdate = true
@@ -97,7 +102,7 @@ export default class SendMail extends Component {
   handleSend = () => {
     if (!this.checkParams(true)) return
     const params = {...this.state.params}
-    params.attach = this.state.attachs.join(',')
+    params.attach = this.state.attachs.map(item => item.url).join(',')
     post('api/mail/add.html', params).then(res => {
       if (res.code == 10001) {
         this.props.navigation.replace('Login', {back: true})
@@ -133,12 +138,17 @@ export default class SendMail extends Component {
     let txt = (isSend ? '发送' : '保存草稿') + '失败，再试一次吧'
     this.refs.errorModalRef.show({txt})
   }
-
-  rightBtnOnPress = () => {
-
-  }
   onRequestClose = () => {
     this.setState({ isSucc: false })
+  }
+  handleImageChoose = (items) => {
+    this.setState({ attachs: items })
+  }
+  openImageChoose = () => {
+    this.setState({ pickerModal: true })
+  }
+  closeImageChoose = () => {
+    this.setState({ pickerModal: false })
   }
   render() {
     const { attachs, params, isSucc, isSend } = this.state
@@ -150,8 +160,8 @@ export default class SendMail extends Component {
         <View style={styles.item}>
           <Text style={styles.label}>收件人：</Text>
           <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)}
-            autoCapitalize="none" underlineColorAndroid='transparent' />
-          <TouchableOpacity activeOpacity={0.8} onPress={() => { this.setParams('email', '') }}>
+            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+          <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
             <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
           </TouchableOpacity>
         </View>
@@ -162,7 +172,7 @@ export default class SendMail extends Component {
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>附件：</Text>
-          <TouchableOpacity style={styles.itemTouch} onPress={() => this.setState({ pickerModal: true })}>
+          <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
             <View style={styles.icons}>
               <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
             </View>
@@ -171,7 +181,7 @@ export default class SendMail extends Component {
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
-          <DatePicker style={styles.datepicker} date={this.state.datetime}
+          <DatePicker style={styles.datepicker} date={params.send_time}
             locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD hh:mm"
             confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
             customStyles={{
@@ -201,7 +211,7 @@ export default class SendMail extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <ImageChoose visible={this.state.pickerModal} onClose={() => this.setState({ pickerModal: false })} />
+        <ImageChoose visible={this.state.pickerModal} onChange={this.handleImageChoose} onClose={this.closeImageChoose} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           btn="返回首页"
@@ -218,12 +228,14 @@ export default class SendMail extends Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
     fontFamily: 'PingFangSC-Regular'
+  },
+  hidden: {
+    display: 'none'
   },
   item: {
     flexDirection: 'row',

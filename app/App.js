@@ -68,7 +68,7 @@ const FirstApp = createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Share',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     headerBackTitleVisible: false,
     headerTintColor: '#E24B92',
