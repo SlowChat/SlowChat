@@ -119,7 +119,7 @@ export default class HeaderTip extends PureComponent<Props> {
             <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>
-        <Modal visible={this.state.moreModal} transparent={true}
+        <Modal visible transparent={true}
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
             <View style={styles.moreModal}>
@@ -132,7 +132,13 @@ export default class HeaderTip extends PureComponent<Props> {
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
                 <Text style={styles.moreTxt}>QQ空间</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.cancelBtn} onPress={() => this.setState({moreModal: false})}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+                <Text style={styles.moreTxt}>Twitter</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+                <Text style={styles.moreTxt}>Facebook</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.setState({moreModal: false})}>
                 <Text style={styles.cancelTxt}>取消</Text>
               </TouchableOpacity>
             </View>
@@ -144,6 +150,7 @@ export default class HeaderTip extends PureComponent<Props> {
     );
   }
 }
+// visible={this.state.moreModal}
 
 const styles = StyleSheet.create({
   container : {
@@ -238,8 +245,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   moreModal: {
+    width: 262,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-  }
+  },
+  moreBtn: {
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moreTxt: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#ED0B83',
+  },
+  cancelTxt: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#999999',
+  },
 });
