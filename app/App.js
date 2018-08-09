@@ -14,6 +14,7 @@ import DraftDetailScreen from './scenes/DraftDetail'
 import ReserveDetailScreen from './scenes/ReserveDetail'
 import ShareScreen from './scenes/Share'
 
+import UserScreen from './user/User'
 import SettingScreen from './user/Setting'
 import EmailScreen from './user/Email'
 import InformationScreen from './user/Information'
@@ -33,6 +34,7 @@ export default createStackNavigator({
       header: null
     }
   },
+  User: { screen: UserScreen },
   Login: { screen: LoginScreen },
   Regist: { screen: RegistScreen },
   RegistSucc: { screen: RegistSuccScreen },
