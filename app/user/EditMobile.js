@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { get, post } from '../utils/request'
+import { isMobileNumberSupport } from '../utils/util'
 import Toast from 'react-native-easy-toast'
 
 const ICONS = {
@@ -92,6 +93,16 @@ export default class EditMobile extends Component {
     })
   }
 
+  handleMobile = (text) => {
+    if (isMobileNumberSupport()) {
+      this.setState({
+        mobile: text
+      })
+    } else {
+      this.refs.toast.show('您输入的手机号有误');
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -100,7 +111,7 @@ export default class EditMobile extends Component {
             <Text style={styles.label}>手机号</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({mobile: text})}
+              onChangeText={(text) => this.handleMobile(text)}
               placeholder='请输入您的手机号'
               value={this.state.mobile}
               maxLength={11}
