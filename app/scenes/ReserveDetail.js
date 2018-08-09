@@ -120,7 +120,7 @@ export default class MailDetail extends Component {
     }).start();
   }
   getId() {
-    const { id = 30 } = this.props.navigation.state.params || {}
+    const { id } = this.props.navigation.state.params || {}
     return id
   }
   async getData() {

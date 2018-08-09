@@ -98,12 +98,15 @@ export default class MailDetail extends Component {
       easing: fadeIn ? Easing.easeIn : Easing.easeOut // 缓动函数
     }).start();
   }
-
+  getId() {
+    const { id } = this.props.navigation.state.params || {}
+    return id
+  }
   async getData() {
     if (this.loading) return
     this.loading = true
     try {
-      const { id } = this.props.navigation.state.params || {}
+      const id = getId()
       const res = await post('api/mail/getInfo.html', { id })
       console.log(res);
       if (res.code == 1) {
@@ -124,7 +127,7 @@ export default class MailDetail extends Component {
   }
 
   handleLoadmore = () => {
-    
+
   }
 
   handleReply = (content) => {
@@ -138,7 +141,7 @@ export default class MailDetail extends Component {
 
   async addComment(pid, content) {
     try {
-      const { id } = this.props.navigation.state.params || {}
+      const id = getId()
       const res = await post('api/mail_comment/add.html', {
         pid, mail_id: id, content
       })
@@ -171,8 +174,7 @@ export default class MailDetail extends Component {
   }
 
   render() {
-    const { activeTab, fadeInOpacity } = this.state
-    const { detail, comments } = this.state
+    const { activeTab, fadeInOpacity, detail, comments } = this.state
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {transform: [{translateY: this.state.translateValue}]}]}>

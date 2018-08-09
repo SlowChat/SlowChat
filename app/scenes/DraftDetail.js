@@ -32,12 +32,15 @@ export default class DraftDetail extends Component {
   componentWillMount() {
     this.getData()
   }
-
+  getId() {
+    const { id } = this.props.navigation.state.params || {}
+    return id
+  }
   async getData() {
     if (this.loading) return
     this.loading = true
     try {
-      const { id } = this.props.navigation.state.params || {}
+      const id = getId()
       const res = await post('api/mail/getInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
@@ -61,7 +64,7 @@ export default class DraftDetail extends Component {
       '您确定要删除该草稿箱吗？',
       [
         {text: '删除', onPress: async () => {
-          const { id } = this.props.navigation.state.params || {}
+          const id = getId()
           const res = await post('api/mail/delDraft.html', { id })
           if (res.code == 1) {
             this.props.navigation.goBack()
@@ -76,7 +79,7 @@ export default class DraftDetail extends Component {
     )
   }
   handleEdit = () => {
-    const { id = 30} = this.props.navigation.state.params || {}
+    const id = getId()
     this.props.navigation.push('NewMail', {id})
   }
 
