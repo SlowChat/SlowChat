@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
-import Toast from 'react-native-easy-toast'
+import ErrorModal from '../components/ErrorModal'
 
 import { post } from '../utils/request'
 import Storage from '../utils/storage'
@@ -59,13 +59,18 @@ export default class Login extends PureComponent<Props> {
           navigation.navigate('Home')
         }
       } else {
-        this.refs.toast.show(res.msg || '登录失败，请稍后重试');
+        this.showErrorModal(res.msg || '登录失败，请稍后重试')
       }
     } catch (err) {
       console.error(err);
-      this.refs.toast.show('登录失败，请稍后重试');
+      this.showErrorModal('登录失败，请稍后重试')
     }
   }
+
+  showErrorModal(txt) {
+    this.refs.errorModalRef.show({txt})
+  }
+
 
   render() {
     return (
@@ -100,8 +105,7 @@ export default class Login extends PureComponent<Props> {
             </TouchableOpacity>
           </View>
         </View>
-
-        <Toast ref="toast" position="center" />
+        <ErrorModal ref="errorModalRef" />
       </View>
     );
   }

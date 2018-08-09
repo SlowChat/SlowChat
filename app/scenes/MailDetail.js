@@ -9,11 +9,13 @@ import {
   Easing,
 } from 'react-native';
 
-import Toast from 'react-native-easy-toast'
+// import Toast from 'react-native-easy-toast'
 import TopTab from '../components/TopTab'
 import MailContent from '../components/MailContent'
 import ReplyItem from '../components/ReplyItem'
 import ReplyBox from '../components/ReplyBox'
+import AwardTip from '../components/AwardTip'
+import ErrorModal from '../components/ErrorModal'
 
 import { post } from '../utils/request'
 
@@ -107,12 +109,11 @@ export default class MailDetail extends Component {
       const res = await post('api/mail/getInfo.html', { id })
       console.log(res);
       if (res.code == 1) {
-        const { items } = res.data
-        const comments = items.comment
-        delete items.comment
+        const { comment, ...items } = res.data.items
+        const comments = [comment] || []
         this.setState({
           detail: items,
-          comments: [comments]
+          comments
         })
       } else {
 
@@ -136,9 +137,9 @@ export default class MailDetail extends Component {
         pid, mail_id: id, content
       })
       if (res && res.code == 1) {
-
+        this.refs.awardTipRef.show()
       } else {
-        this.refs.toast.show(res.msg || '慢聊飘走了')
+        this.refs.errorModalRef.show({txt: res.msg || '回复失败，稍后尝试'})
       }
     } catch (e) {
       console.error(e)
@@ -148,8 +149,6 @@ export default class MailDetail extends Component {
   render() {
     const { activeTab, fadeInOpacity } = this.state
     const { detail, comments } = this.state
-    console.log("====detail.comments && detail.looks===", comments);
-
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {transform: [{translateY: this.state.translateValue}]}]}>
@@ -175,13 +174,15 @@ export default class MailDetail extends Component {
             }
           </View>)}
         />
-        <ReplyBox onPress={this.handleReply} />
-        <Toast ref="toast" position="center" />
+        <ReplyBox ref="" onReply={this.handleReply} />
+        <AwardTip ref="awardTipRef" num="10" txt="发表评论成功" />
+        <ErrorModal ref="errorModalRef" />
       </View>
     )
   }
 }
 
+// <Toast ref="toast" position="center" />
 
 
 

@@ -11,7 +11,7 @@ const getHeaders = async (unneed) => {
   if (unneed) {
     return {}
   }
-  const { token } = await Storage.getToken()
+  const token = await Storage.getToken()
   return {
     'MY-Token': token,
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
@@ -35,9 +35,9 @@ export async function get(url, params, unneedLogin) {
 }
 
 export async function post(url, params, unneedLogin) {
+  const headers = await getHeaders(unneedLogin)
   console.log(url)
   console.log(params)
-  const headers = await getHeaders(unneedLogin)
   console.log(headers);
   return fetch(BASE_URL + url, {
     method: 'POST',
@@ -47,7 +47,6 @@ export async function post(url, params, unneedLogin) {
     },
     body: JSON.stringify(params),
   }).then((response) => response.json()).catch((err) => {
-    console.log(err);
     console.error(eval("("+ err +")"));
     throw err
   });

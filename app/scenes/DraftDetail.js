@@ -5,12 +5,13 @@ import {
   Text,
   View,
   Image,
+  Alert,
   Button,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
 
-
+import Toast from 'react-native-easy-toast'
 import HeaderTip from '../components/HeaderTip'
 import Attachment from '../components/Attachment'
 
@@ -55,7 +56,24 @@ export default class DraftDetail extends Component {
   }
 
   handleDelete = () => {
-
+    Alert.alert(
+      '删除确认',
+      '您确定要删除该草稿箱吗？',
+      [
+        {text: '删除', onPress: async () => {
+          const { id } = this.props.navigation.state.params || {}
+          const res = await post('api/mail/delDraft.html', { id })
+          if (res.code == 1) {
+            this.props.navigation.goBack()
+          } else if (res.code == 10001) {
+            this.props.navigation.navigate('Login', {back: true})
+          } else {
+            this.refs.toast.show(res.msg || '慢聊飘走了')
+          }
+        }, style: 'destructive'},
+        {text: '取消'},
+      ],
+    )
   }
   handleEdit = () => {
     this.props.navigation.push('SendMail')
@@ -105,6 +123,7 @@ export default class DraftDetail extends Component {
             <Image style={styles.bottomIcon} source={ICONS.edit} />
           </TouchableOpacity>
         </View>
+        <Toast ref="toast" position="center" />
       </View>
     )
   }

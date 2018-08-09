@@ -14,8 +14,39 @@ const ICONS = {
 }
 
 export default class ErrorModal extends PureComponent {
+  state = {
+    visible: false,
+    txt: ''
+  }
+  componentWillUnmount() {
+    this.clearTimer()
+  }
+  
+  show({txt}) {
+    this.setState({ visible: true, txt }, () => {
+      this.clearTimer()
+      this.delayClose()
+    })
+  }
+  hide() {
+    this.clearTimer()
+    this.setState({ visible: false, txt: '' })
+  }
+
+  delayClose() {
+    this.timer = setTimeout(() => {
+      this.setState({ visible: false })
+    }, 5000)
+  }
+  clearTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  }
+
   render() {
-    const { txt, visible } = this.props
+    const { txt, visible } = this.state
     return (
       <Modal
         animationType='fade'

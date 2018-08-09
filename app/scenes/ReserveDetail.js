@@ -23,8 +23,7 @@ import MyMailContent from '../components/MyMailContent'
 import ReplyItem from '../components/ReplyItem'
 import ReplyBox from '../components/ReplyBox'
 
-
-import { get, post } from '../utils/request'
+import { post } from '../utils/request'
 
 const ICONS = {
   overt: require('../images/icon_overt.png'),
@@ -40,7 +39,7 @@ export default class ReserveDetail extends Component {
       title: params.title || '邮件详情',
       headerRight: (
         <TouchableOpacity activeOpacity={0.7} style={styles.rightBtnWrap} onPress={params.rightBtnOnPress}>
-          <Image style={styles.rightBtn} source={params.privacy ? ICONS.hide : ICONS.overt} />
+          <Image style={styles.rightBtn} source={params.ispub ? ICONS.overt : ICONS.hide} />
         </TouchableOpacity>
       ),
     }
@@ -68,10 +67,24 @@ export default class ReserveDetail extends Component {
   }
   rightBtnOnPress = () => {
     this.noupdate = true
-    this.privacy = !this.privacy
-    this.props.navigation.setParams({
-      privacy: this.privacy,
+    this.ispub = !this.ispub
+    const url = this.ispub ? 'api/mail/setPub.html' : 'api/mail/setPra.html'
+    const { id } = this.state.data
+    post(url, { id }).then((res) => {
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg || '设置成功');
+        this.props.navigation.setParams({
+          ispub: this.ispub,
+        })
+      } else if (res.code == 10001) {
+        this.props.navigation.navigate('Login', {back: true})
+      } else {
+        this.refs.toast.show(res.msg || '设置失败');
+      }
     })
+
+
+
   }
   switchTab = (index) => {
     if (index == 0) {
@@ -89,8 +102,8 @@ export default class ReserveDetail extends Component {
   }
   handleCancel = () => {
     const { id } = this.state.data
-    post('api/mail/cancel.html', { id, id }).then((res) => {
-      if (res.code == 0) {
+    post('api/mail/cancel.html', { id }).then((res) => {
+      if (res.code == 1) {
         this.refs.toast.show('取消发送成功');
       } else if (res.code == 10001) {
          this.props.navigation.navigate('Login')
@@ -177,7 +190,7 @@ export default class ReserveDetail extends Component {
           initialNumToRender={10}
           keyExtractor={(item, index) => item.key + ''}
           onScroll={this.handleScroll}
-          onEndReachedThreshold={3}
+          onEndReachedThreshold={2}
           onEndReached={this.handleLoadmore}
           ListHeaderComponent={this.renderHeader}
         />

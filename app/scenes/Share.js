@@ -18,6 +18,7 @@ import ViewShot from "react-native-view-shot"
 import Toast from 'react-native-easy-toast'
 
 import AvatarHeader from '../components/AvatarHeader'
+import AwardTip from '../components/AwardTip'
 
 const ICONS = {
   head: require('../images/head_placeholder80.png'),
@@ -47,7 +48,7 @@ export default class HeaderTip extends PureComponent<Props> {
   }
 
   handleShare() {
-
+    this.refs.awardTip.show()
   }
 
   handleSave = async () => {
@@ -137,6 +138,7 @@ export default class HeaderTip extends PureComponent<Props> {
             </View>
           </View>
         </Modal>
+        <AwardTip ref="awardTip" num="30" txt="分享成功" />
         <Toast ref="toast" position="center" />
       </View>
     );

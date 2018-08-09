@@ -45,17 +45,16 @@ export default class SendMail extends Component {
 
   state = {
     isSend: true,
-    isError: false,
     isSucc: false,
     pickerModal: false,
     attachs: ['http://img.alicdn.com/bao/uploaded/i2/TB1jZYfdRjTBKNjSZFwATwG4XXa_041742.jpg'],
     params: {
-      title: '',
-      content: '',
-      email: '',
-      send_time: '',
+      title: '233233232',
+      content: 'dsa四大花旦哈苏的挥洒打底衫',
+      email: 'sanri.long@163.com',
+      send_time: '2018-11-1 09:19',
       type: 2,
-    }
+    },
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -103,7 +102,7 @@ export default class SendMail extends Component {
       if (res.code == 10001) {
         this.props.navigation.replace('Login', {back: true})
       } else if (res.code == 1) {
-        this.setState({ isSucc: true, isError: false, isSend: false })
+        this.setState({ isSucc: true, isSend: false })
       } else {
         this.dealError(true)
       }
@@ -117,11 +116,10 @@ export default class SendMail extends Component {
     params.attach = this.state.attachs.join(',')
     post('api/mail/save.html', params).then(res => {
       console.log(res);
-
       if (res.code == 10001) {
-        // 跳转到登录页面
+        this.props.navigation.navigate('Login', { back: true })
       } else if (res.code == 1) {
-        this.setState({ isSucc: true, isError: false, isSend: false })
+        this.setState({ isSucc: true, isSend: false })
       } else {
         this.dealError(false)
       }
@@ -132,11 +130,8 @@ export default class SendMail extends Component {
   }
 
   dealError(isSend) {
-    this.setState({ isSucc: false, isError: true, isSend }, () => {
-      this.timer = setTimeout(() => {
-        this.setState({ isError: false })
-      }, 2000)
-    })
+    let txt = (isSend ? '发送' : '保存草稿') + '失败，再试一次吧'
+    this.refs.errorModalRef.show({txt})
   }
 
   rightBtnOnPress = () => {
@@ -146,8 +141,9 @@ export default class SendMail extends Component {
     this.setState({ isSucc: false })
   }
   render() {
-    const { params, isSend, isSucc, isError } = this.state
+    const { attachs, params, isSucc, isSend } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
+    const attachTxt = attachs.length == 0 ? '无附件' : `${attachs.length}个附件`
     return (
       <View style={styles.container}>
         <HeaderTip tip="爱慢邮——让我们回到未来" />
@@ -170,7 +166,7 @@ export default class SendMail extends Component {
             <View style={styles.icons}>
               <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
             </View>
-            <Text style={styles.attachmentNum}>3个附件</Text>
+            <Text style={styles.attachmentNum}>{attachTxt}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.item}>
@@ -184,7 +180,6 @@ export default class SendMail extends Component {
               }
             }}
             onDateChange={(datetime) => {
-              console.log(datetime);
               this.setParams('send_time', datetime)
             }} />
           <Image style={styles.arrow} source={require('../images/icon_forward.png')} />
@@ -209,16 +204,14 @@ export default class SendMail extends Component {
         <ImageChoose visible={this.state.pickerModal} onClose={() => this.setState({ pickerModal: false })} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
+          btn="返回首页"
           visible={this.state.isSucc}
           onPress={() => {
-            this.props.navigation.replace('Home') // navigate
+            this.props.navigation.replace('BottomTabs') // navigate
           }}
           onRequestClose={this.onRequestClose}
         />
-        <ErrorModal
-          txt={`${tipTxt}失败，再试一次吧`}
-          visible={this.state.isError}
-        />
+        <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
       </View>
     )

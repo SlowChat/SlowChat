@@ -13,7 +13,6 @@ export default class MailContent extends PureComponent {
   render() {
     const { data } = this.props
     const attachs = (data.attach || '').split(',')
-    console.log("MailContent===", data);
     return (
       <View style={styles.container}>
         <AvatarHeader data={data} />

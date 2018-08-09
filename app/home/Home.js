@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
-
+import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
@@ -95,8 +95,6 @@ export default class App extends Component<Props> {
       const res = await post('api/mail/getList.html', {
         p: page,
         s: SIZE,
-        hot: this.state.activeTab,
-        keyword
       })
       if (res.code == 1) {
         const { total, items } = res.data
@@ -107,6 +105,8 @@ export default class App extends Component<Props> {
           showFoot
         })
         this.page++
+      } else if (res.code == 10001) {
+        this.props.navigation.push('Login', {back: true})
       } else {
         this.refs.toast.show(res.msg || '慢聊飘走了')
         this.setState({ showFoot: 0 })
@@ -128,15 +128,18 @@ export default class App extends Component<Props> {
       this.getData(0)
     })
   }
-  handlePress = (id) => {
+  handleGoDetail = (id) => {
     this.props.navigation.push('MailDetail', {id})
   }
   renderItem = (item) => {
-    return <HomeItem data={item} onPress={this.handlePress} />
+    return <HomeItem data={item} onPress={this.handleGoDetail} />
+  }
+  handleGoNew = (id) => {
+    this.props.navigation.push('SendMail')
   }
   renderHeader = () => {
     const { images } = this.state
-    return (<Swiper items={images} />)
+    return (<Swiper items={images} onNew={this.handleGoNew} />)
   }
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
@@ -144,21 +147,24 @@ export default class App extends Component<Props> {
   render() {
     const { images, data } = this.state
     return (
-      <FlatList
-        style={styles.flatlist}
-        ref={(flatList)=>this._flatList = flatList}
-        data={data}
-        renderItem={this.renderItem}
-        initialNumToRender={5}
-        keyExtractor={(item, index) => String(item.id)}
-        onScroll={this.handleScroll}
-        onEndReachedThreshold={3}
-        onEndReached={this.handleLoadmore}
-        refreshing={this.state.refreshing}
-        onRefresh={this.handleRefresh}
-        ListHeaderComponent={this.renderHeader}
-        ListFooterComponent={this.renderFooter}
-      />
+      <View>
+        <FlatList
+          style={styles.flatlist}
+          ref={(flatList)=>this._flatList = flatList}
+          data={data}
+          renderItem={this.renderItem}
+          initialNumToRender={5}
+          keyExtractor={(item, index) => String(item.id)}
+          onScroll={this.handleScroll}
+          onEndReachedThreshold={3}
+          onEndReached={this.handleLoadmore}
+          refreshing={this.state.refreshing}
+          onRefresh={this.handleRefresh}
+          ListHeaderComponent={this.renderHeader}
+          ListFooterComponent={this.renderFooter}
+        />
+        <Toast ref="toast" position="center" />
+      </View>
     )
   }
 }

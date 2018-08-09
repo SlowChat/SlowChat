@@ -13,6 +13,10 @@ export default class ReplyBox extends Component {
   handleChange = (txt) => {
     this.content = txt
   }
+  handleReply = () => {
+    const { onReply } = this.props
+    onReply && onReply(this.content)
+  }
   render() {
     return (
       <View style={styles.container}>

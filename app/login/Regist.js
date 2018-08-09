@@ -12,8 +12,9 @@ import {
 } from 'react-native'
 
 import {SafeAreaView} from 'react-navigation'
-import Toast from 'react-native-easy-toast'
+import ErrorModal from '../components/ErrorModal'
 import { post } from '../utils/request'
+import Toast from 'react-native-easy-toast'
 
 
 const ICONS = {
@@ -38,7 +39,7 @@ export default class Regist extends PureComponent<Props> {
     checked: true,
     username: '',
     password: '',
-    verification_code: ''
+    verification_code: '',
   }
 
   switchTab(index) {
@@ -55,15 +56,16 @@ export default class Regist extends PureComponent<Props> {
     post('api/verification_code/send.html', {
       username: this.state.username
     }, true).then(res => {
+      if (res.code == 1)
       this.refs.toast.show(res.msg || '验证码已经发送成功');
     }).catch(e => {
-      this.refs.toast.show('验证码发送失败');
+      this.showErrorModal('验证码发送失败')
     })
   }
   // 注册
   handleRegist = () => {
     if (!this.state.checked) {
-      this.refs.toast.show('请同意慢邮Manyou.info网站软件许可使用协议')
+      this.showErrorModal('请同意慢邮Manyou.info网站软件许可使用协议')
       return
     }
     const { username, password, verification_code } = this.state
@@ -76,15 +78,20 @@ export default class Regist extends PureComponent<Props> {
       if (res.code == 1) {
         this.props.navigation.replace('RegistSucc')
       } else {
-        this.refs.toast.show(res.msg || '登录失败，请稍后重试')
+        this.showErrorModal(res.msg || '注册失败，请稍后重试')
       }
     }).catch(e => {
-      this.refs.toast.show('注册失败，请稍后重试')
+      this.showErrorModal('注册失败，请稍后重试')
     })
   }
   goLogin = () => {
     this.props.navigation.replace('Login', {back: true})
   }
+
+  showErrorModal(txt) {
+    this.refs.errorModalRef.show({txt})
+  }
+
   renderTabs() {
     const { activeTab } = this.state
     return (<ImageBackground style={styles.headerbg} source={ICONS.bg}>
@@ -154,6 +161,7 @@ export default class Regist extends PureComponent<Props> {
             <Text style={styles.tip}>》</Text>
           </View>
         </View>
+        <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
       </View>
     )

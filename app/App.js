@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import { StyleSheet } from 'react-native';
-import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import BottomTabs from './BottomTabs'
 
@@ -9,7 +9,7 @@ import RegistScreen from './login/Regist'
 import RegistSuccScreen from './login/RegistSucc'
 import ErrorTipScreen from './components/ErrorTip'
 
-import SendMailScreen from './scenes/SendMail'
+import NewMailScreen from './scenes/NewMail'
 import MailDetailScreen from './scenes/MailDetail'
 import DraftDetailScreen from './scenes/DraftDetail'
 import ReserveDetailScreen from './scenes/ReserveDetail'
@@ -28,7 +28,7 @@ import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
 
-export default createStackNavigator({
+const FirstApp = createStackNavigator({
   BottomTabs: {
     screen: BottomTabs,
     navigationOptions: {
@@ -57,7 +57,7 @@ export default createStackNavigator({
   Notice: {screen: NoticeScreen},
   Integral: {screen: IntegralScreen},
   FeedBack: { screen: FeedBackScreen },
-  SendMail: { screen: SendMailScreen },
+  NewMail: { screen: NewMailScreen },
   MailDetail: { screen: MailDetailScreen },
   DraftDetail: { screen: DraftDetailScreen },
   ReserveDetail: { screen: ReserveDetailScreen },
@@ -87,21 +87,35 @@ export default createStackNavigator({
   }
 });
 
-//
-// const defaultGetStateForAction = FirstApp.router.getStateForAction;
-//
-// FirstApp.router.getStateForAction = (action, state) => {
-//   //页面是MeScreen并且 global.user.loginState = false || ''（未登录）
-//   if (action.routeName ==='MeScreen'&& !global.user.loginState) {
-//     this.routes = [
-//       ...state.routes,
-//       {key: 'id-'+Date.now(), routeName: 'Login', params: { name: 'name1'}},
-//     ];
-//     return {
-//       ...state,
-//       routes,
-//       index: this.routes.length - 1,
-//     };
-//   }
-//   return defaultGetStateForAction(action, state);
-// };
+import Storage from './utils/storage'
+
+const defaultGetStateForAction = FirstApp.router.getStateForAction;
+FirstApp.router.getStateForAction = function(action, state) {
+  console.log(action,state); //
+
+
+
+  if (action.type == 'Navigation/INIT') {
+    // const token = await Storage.getToken()
+    // if (!token) {
+      // this.routes = [
+      //   ...state.routes,
+      //   {key: 'id-'+Date.now(), routeName: 'Login'},
+      // ];
+      // return {
+      //   ...state,
+      //   routes,
+      //   index: this.routes.length - 1,
+      // };
+    // }
+  }
+  // if (action.routeName === 'Home') {
+  //   const token = ''
+  //   // await Storage.getToken()
+
+  // }
+  return defaultGetStateForAction(action, state);
+};
+
+
+export default FirstApp

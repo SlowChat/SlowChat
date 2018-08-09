@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Image,
+  TouchableOpacity,
   Platform
 } from 'react-native';
 
@@ -20,7 +21,7 @@ export default class SwiperComponent extends PureComponent<Props> {
   };
 
   render() {
-    const { items } = this.props
+    const { items, onNew } = this.props
     const dot = (<View style={styles.dot} />)
     const activeDot = (<View style={[styles.dot, styles.activeDot]} />)
     return (
@@ -34,13 +35,13 @@ export default class SwiperComponent extends PureComponent<Props> {
           }
 
         </View>
-        <View style={styles.tipWraper}>
+        <TouchableOpacity activeOpacity={0.7} style={styles.tipWraper} onPress={onNew}>
           <View style={styles.tipHeader}><Text style={styles.tipHeaderTxt}>回到未来</Text></View>
           <View>
             <Text style={styles.tip}>给未来的自己写封信吧，给自己炖一碗鸡汤</Text>
             <Text style={styles.tip}>让若干年后的自己回味一下</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     )
   }

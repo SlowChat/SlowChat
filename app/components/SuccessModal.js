@@ -15,11 +15,11 @@ const ICONS = {
 
 export default class SuccessModal extends PureComponent {
   render() {
-    const { txt, visible, onRequestClose, onPress = () => {} } = this.props
+    const { txt, award, btn, visible, onRequestClose, onPress = () => {} } = this.props
     return (
       <Modal
         animationType='fade'
-        transparent={false}
+        transparent
         visible={visible}
         onRequestClose={onRequestClose}
       >
@@ -27,9 +27,14 @@ export default class SuccessModal extends PureComponent {
           <View style={styles.succView}>
             <Image source={ICONS.success} style={styles.succIcon} />
             <Text style={styles.succTxt}>{txt}</Text>
-            <TouchableOpacity activeOpacity={0.8} style={styles.succBtn} onPress={onPress}>
-              <Text style={styles.succBtnTxt}>返回首页</Text>
-            </TouchableOpacity>
+            {
+              award && <Text style={styles.awardTxt}>积分奖励+{award}分</Text>
+            }
+            {
+              btn && <TouchableOpacity activeOpacity={0.8} style={styles.succBtn} onPress={onPress}>
+                <Text style={styles.succBtnTxt}>{btn}</Text>
+              </TouchableOpacity>
+            }
           </View>
         </View>
       </Modal>

@@ -24,13 +24,19 @@ export default {
       expires: 1000 * 3600 * 24 * 30,
     })
   },
-  getToken: (token, force) => {
-    if (Global.token && !force) return {token: Global.token}
-    return storage.load({
-      key: 'slowchattoken',
-      autoSync: true,
-      syncInBackground: true,
-    })
+  getToken: async (token, force) => {
+    if (Global.token && !force) return Global.token
+    try {
+      const res = await storage.load({
+        key: 'slowchattoken',
+        autoSync: true,
+        syncInBackground: true,
+      })
+      Global.token = res.token
+      return res.token
+    } catch (e) {
+      return ''
+    }
   },
   clearAll: () => {
     storage.clearMap()
