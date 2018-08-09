@@ -64,6 +64,7 @@ export default createBottomTabNavigator(
   },
   {
     initialRouteName: 'Home',
+    // lazy:true,
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarIcon: ({ focused }) => {

@@ -7,6 +7,7 @@ import BottomTabs from './BottomTabs'
 import LoginScreen from './login/Login'
 import RegistScreen from './login/Regist'
 import RegistSuccScreen from './login/RegistSucc'
+import ErrorTipScreen from './components/ErrorTip'
 
 import SendMailScreen from './scenes/SendMail'
 import MailDetailScreen from './scenes/MailDetail'
@@ -34,9 +35,16 @@ export default createStackNavigator({
       header: null
     }
   },
-  Login: { screen: LoginScreen },
+  Login: {
+    screen: LoginScreen,
+    mode: 'modal',
+    navigationOptions: {
+      header: null,
+    }
+  },
   Regist: { screen: RegistScreen },
   RegistSucc: { screen: RegistSuccScreen },
+  ErrorTip: { screen: ErrorTipScreen },
   User: { screen: UserScreen },
   Setting: { screen: SettingScreen },
   Email: { screen: EmailScreen },
@@ -78,3 +86,22 @@ export default createStackNavigator({
     // }
   }
 });
+
+//
+// const defaultGetStateForAction = FirstApp.router.getStateForAction;
+//
+// FirstApp.router.getStateForAction = (action, state) => {
+//   //页面是MeScreen并且 global.user.loginState = false || ''（未登录）
+//   if (action.routeName ==='MeScreen'&& !global.user.loginState) {
+//     this.routes = [
+//       ...state.routes,
+//       {key: 'id-'+Date.now(), routeName: 'Login', params: { name: 'name1'}},
+//     ];
+//     return {
+//       ...state,
+//       routes,
+//       index: this.routes.length - 1,
+//     };
+//   }
+//   return defaultGetStateForAction(action, state);
+// };

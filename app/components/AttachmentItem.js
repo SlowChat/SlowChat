@@ -20,7 +20,7 @@ export default class Attachment extends PureComponent {
         <TouchableOpacity  activeOpacity={0.8} onPress={this.handleOpen}>
           <Image source={{uri: data}} style={styles.image}></Image>
         </TouchableOpacity>
-        <Text style={styles.imageName}>图片1名图片1名图片1名.png</Text>
+        <Text numberOfLines={1} style={styles.imageName}>图片1名图片1名图片1名.png</Text>
         <Text style={styles.imageSize}>112.66</Text>
       </View>
     )

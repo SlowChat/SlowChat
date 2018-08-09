@@ -21,15 +21,20 @@ export default class ReplyItem extends PureComponent {
     const { nobord } = this.props
     const { item } = this.props.data
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
+
+    let avatar = item.user.avatar
+    if (!avatar || avatar.indexOf('http') != 0) {
+      avatar = ICONS.head
+    }
     return (
       <View style={styles.wrap}>
-        <Image style={styles.avatar} source={item.user.avatar || ICONS.head} />
+        <Image style={styles.avatar} source={avatar} />
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>
           <Text style={styles.reply}>{item.content}</Text>
           <View style={styles.bottom}>
             <Text style={styles.date}>发信时间：{item.add_time}</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={this.handleReply}>
+            <TouchableOpacity activeOpacity={0.7} onPress={this.handleReply}>
               <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>
           </View>
@@ -49,6 +54,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     width: 40,
+    minWidth: 40,
     height: 40,
     marginRight: 10,
   },

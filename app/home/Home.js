@@ -15,6 +15,7 @@ import {SafeAreaView} from 'react-navigation'
 
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
+import Footer from '../components/Footer'
 
 import { post } from '../utils/request'
 
@@ -22,6 +23,8 @@ const IMGS = [
   'https://img.alicdn.com/bao/uploaded/i1/TB2Xy7fquySBuNjy1zdXXXPxFXa_!!0-paimai.jpg',
   'https://img.alicdn.com/bao/uploaded/i3/TB2Hhn4quSSBuNjy0FlXXbBpVXa_!!0-paimai.jpg'
 ]
+
+const SIZE = 10
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -37,13 +40,13 @@ export default class App extends Component<Props> {
   }
   state = {
     images: IMGS,
-    showFoot: 1,
+    data: [],
+    showFoot: 0,
     refreshing: false,
   }
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.setState({ images: IMGS })
-    // }, 500)
+    this.page = 0
+    this.getData(0)
   }
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
@@ -80,15 +83,39 @@ export default class App extends Component<Props> {
   }
 
 
-  getData() {
-    // if (this.loading) return
-    // const { page, size } = this.state
-    // post('api/mail/getMyList.html', {
-    //   p: page,
-    //   s: size,
-    // })
-
-
+  async getData(page = 0) {
+    if (this.loading || this.state.showFoot == 1) return
+    this.loading = true
+    if (page > 0) {
+      this.setState({ showFoot: 2 })
+    }
+    const { keyword = '' } = this
+    try {
+      this.loading = true
+      const res = await post('api/mail/getList.html', {
+        p: page,
+        s: SIZE,
+        hot: this.state.activeTab,
+        keyword
+      })
+      if (res.code == 1) {
+        const { total, items } = res.data
+        const newData = page == 0 ? items : this.state.data.concat(items)
+        let showFoot = newData.length >= total ? 1 : 0
+        this.setState({
+          data: newData,
+          showFoot
+        })
+        this.page++
+      } else {
+        this.refs.toast.show(res.msg || '慢聊飘走了')
+        this.setState({ showFoot: 0 })
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.loading = false
+    }
   }
 
   handleLoadmore = () => {
@@ -96,7 +123,10 @@ export default class App extends Component<Props> {
 
   }
   handleRefresh = () => {
-    console.log("=Refresh=");
+    this.setState({ showFoot: 0 }, () => {
+      this.page = 0
+      this.getData(0)
+    })
   }
   handlePress = (id) => {
     this.props.navigation.push('MailDetail', {id})
@@ -109,31 +139,10 @@ export default class App extends Component<Props> {
     return (<Swiper items={images} />)
   }
   renderFooter = () => {
-    if (this.state.showFoot === 1) {
-      return (
-        <View style={styles.nomore}>
-          <Text style={styles.nomoreTxt}>
-              没有更多数据了
-          </Text>
-        </View>
-      )
-    } else if(this.state.showFoot === 2) {
-      return (
-        <View style={styles.footer}>
-          <ActivityIndicator />
-          <Text style={styles.footerTxt}>正在加载更多数据...</Text>
-        </View>
-      )
-    } else if(this.state.showFoot === 0){
-      return null
-    }
+    return <Footer showFoot={this.state.showFoot} />
   }
   render() {
-    let data = [];
-    for (let i = 0; i < 10; i++) {
-      data.push({key: i, title: i + ''});
-    }
-    const { images } = this.state
+    const { images, data } = this.state
     return (
       <FlatList
         style={styles.flatlist}
@@ -141,7 +150,7 @@ export default class App extends Component<Props> {
         data={data}
         renderItem={this.renderItem}
         initialNumToRender={5}
-        keyExtractor={(item, index) => item.key + ''}
+        keyExtractor={(item, index) => String(item.id)}
         onScroll={this.handleScroll}
         onEndReachedThreshold={3}
         onEndReached={this.handleLoadmore}
@@ -177,30 +186,6 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: 'bold',
   },
-  footer:{
-    flexDirection:'row',
-    height:24,
-    justifyContent:'center',
-    alignItems:'center',
-    marginBottom:10,
-  },
-  footerTxt: {
-    color: '#999999',
-    fontSize: 14,
-    marginLeft: 5,
-  },
-  nomore: {
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  nomoreTxt: {
-    color: '#999999',
-    fontSize: 14,
-    marginLeft: 5,
-    marginTop:5,
-    marginBottom:5,
-  }
 });
 
 // <Button title="测试" onPress={() => {

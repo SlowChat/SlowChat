@@ -11,11 +11,12 @@ import Attachment from './Attachment'
 
 export default class MailContent extends PureComponent {
   render() {
-    const { data = ''} = this.props
+    const { data } = this.props
     const attachs = (data.attach || '').split(',')
+    console.log("MailContent===", data);
     return (
       <View style={styles.container}>
-        <AvatarHeader />
+        <AvatarHeader data={data} />
         <View>
           <Text style={styles.header}>{data.title}</Text>
         </View>

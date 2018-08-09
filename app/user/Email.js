@@ -6,6 +6,7 @@ import {
   Image,
   ActivityIndicator,
   FlatList,
+  TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
 import EmailList from '../components/EmailList'
@@ -56,9 +57,9 @@ export default class Email extends Component {
 
   fetchData = () => {
     const params = {
-      p: this.pageNo, 
-      s: this.pageSize, 
-      state: this.sendState, 
+      p: this.pageNo,
+      s: this.pageSize,
+      state: this.sendState,
       type: this.type,
       keyword: this.state.searchText
     }
@@ -84,12 +85,12 @@ export default class Email extends Component {
           showFoot: foot,
           isRefreshing: data.total / this.pageSize > 1,
         })
-      } 
+      }
     }).catch(e => {
       // console.log(e)
     })
   }
-  
+
   _renderItem = ({item}) => {
     const { params } = this.props.navigation.state;
     const { navigate } = this.props.navigation;
@@ -179,6 +180,7 @@ export default class Email extends Component {
   }
 
   renderData = () => {
+    const { isShowResult } = this.state
     return (
       <View style={styles.container}>
         <View style={{flexDirection: 'row',justifyContent: 'center',
@@ -193,10 +195,10 @@ export default class Email extends Component {
           <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
         </View>
         {
-          isShowResult && 
+          isShowResult &&
           <Text>共查到{this.state.total}条结果</Text>
         }
-        
+
         {
           this.state.dataArray.length > 0 ? (
             <FlatList
@@ -209,7 +211,7 @@ export default class Email extends Component {
               onEndReached={this._onEndReached}
               onEndReachedThreshold={0.1}
               ItemSeparatorComponent={this._separator}
-              keyExtractor={(item, index) => item.id}
+              keyExtractor={(item, index) => String(item.id)}
             />
 
           ) : (
@@ -313,14 +315,13 @@ const styles = StyleSheet.create({
     borderStyle: 'solid'
   },
   space: {
-    width: '100%',
-    paddingLeft: '10%',
-    paddingRight: '10%',
-    justifyContent: 'center',
+    flex: 1,
+    // paddingLeft: '10%',
+    // paddingRight: '10%',
+    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f6f7f8',
-    paddingTop: 200,
-    paddingBottom: 200
+    paddingTop: 170,
   },
   spaceImg: {
     width: 64,

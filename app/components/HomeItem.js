@@ -18,7 +18,8 @@ type Props = {};
 export default class HomeItem extends PureComponent<Props> {
   handlePress = () => {
     const { onPress, data } = this.props
-    onPress && onPress(data.item.key)
+    onPress && onPress(data.item.id)
+    console.log(data.item.id);
   }
   render() {
     const { item } = this.props.data
@@ -29,7 +30,7 @@ export default class HomeItem extends PureComponent<Props> {
           <Image style={styles.avatar} source={ICONS.head} />
           <View style={styles.avatarRight}>
             <View style={styles.nameWrap}>
-              <Text style={styles.name}>{item.title}</Text>
+              <Text style={styles.name}>{item.user.user_nickname}</Text>
               <Text style={styles.time}>{send_time}</Text>
             </View>
             <Text style={styles.date}>发信时间：{send_date}</Text>
@@ -44,11 +45,13 @@ export default class HomeItem extends PureComponent<Props> {
           <Image style={styles.commentIcon} source={ICONS.comment} />
           <Text style={styles.num}>{item.comments}</Text>
         </View>
-        {
-          item.comment && item.comment.map(item => (<View key={item.id}>
-            <Text style={styles.comment}>Abagael：{item.content}</Text>
-          </View>))
-        }
+        <View style={styles.comments}>
+          {
+            item.comment && item.comment.map(item => (<View key={item.id}>
+              <Text numberOfLines={1} style={styles.comment}>{item.user.user_nickname}：{item.content}</Text>
+            </View>))
+          }
+        </View>
       </TouchableOpacity>
     );
   }
@@ -57,12 +60,17 @@ export default class HomeItem extends PureComponent<Props> {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    paddingBottom: 6,
     fontFamily: 'PingFangSC-Regular',
     marginBottom: 10,
     backgroundColor: '#FFFFFF'
   },
   avatarWrap: {
     flexDirection: 'row',
+    paddingBottom: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEEEEE',
+    borderStyle: 'solid',
   },
   avatar: {
     width: 40,
@@ -71,6 +79,16 @@ const styles = StyleSheet.create({
   },
   avatarRight: {
     flex: 1,
+  },
+  title: {
+    marginTop: 10,
+  },
+  titleTxt: {
+    height: 20,
+    fontSize: 14,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#999999',
+    lineHeight: 20,
   },
   nameWrap: {
     marginBottom: 2,
@@ -112,7 +130,6 @@ const styles = StyleSheet.create({
   attention: {
     flexDirection: 'row',
     marginTop: 14,
-    marginBottom: 9,
     alignItems: 'center',
   },
   eyeIcon: {
@@ -133,6 +150,9 @@ const styles = StyleSheet.create({
   num: {
     fontSize: 12,
     color: '#B4B4B4',
+  },
+  comments: {
+    marginTop: 9,
   },
   comment: {
     height: 20,

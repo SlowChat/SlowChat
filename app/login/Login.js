@@ -23,20 +23,12 @@ const ICONS = {
   // loginBtn: require('../images/login_btn.png'),
 }
 
-
-
 type Props = {};
 export default class Login extends PureComponent<Props> {
-  static navigationOptions = ({navigation}) => {
-    return {
-      header: null,
-      mode: 'modal'
-    }
-  }
   componentWillMount() {
     this.username = '15216748429'
     this.password = '123456'
-    const { back = true } = this.props.navigation.state.params
+    const { back } = this.props.navigation.state.params || {}
     this.back = back
   }
   regist = () => {
@@ -49,19 +41,19 @@ export default class Login extends PureComponent<Props> {
       this.props.navigation.navigate('EditPassword')
     }
   }
-  handleLogin = () => {
+  handleLogin = async () => {
     const params = {
       username: this.username,
       password: this.password,
       device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
     }
-    post('api/user/login.html', params, true).then(res => {
-      console.log(res);
+    try {
+      const res = await post('api/user/login.html', params, true)
       if (res.code == 1) {
         const { token } = res.data
-        Storage.setToken(token)
+        await Storage.setToken(token)
         const { navigation } = this.props
-        if (navigation.state.back) {
+        if (this.back) {
           navigation.goBack()
         } else {
           navigation.navigate('Home')
@@ -69,10 +61,10 @@ export default class Login extends PureComponent<Props> {
       } else {
         this.refs.toast.show(res.msg || '登录失败，请稍后重试');
       }
-    }).catch(e => {
-      console.log(e);
+    } catch (err) {
+      console.error(err);
       this.refs.toast.show('登录失败，请稍后重试');
-    })
+    }
   }
 
   render() {
@@ -126,7 +118,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#FFFFFF',
-    paddingTop: 18,
+    paddingTop: 20,
     paddingLeft: 20,
     height: 44,
   },

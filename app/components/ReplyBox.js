@@ -9,12 +9,7 @@ import {
 } from 'react-native';
 
 export default class ReplyBox extends Component {
-  handleReply = () => {
-    if (this.content) {
-      const { onPress } = this.props
-      onPress && onPress(this.content)
-    }
-  }
+
   handleChange = (txt) => {
     this.content = txt
   }
