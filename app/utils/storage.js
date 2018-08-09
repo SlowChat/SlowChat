@@ -26,7 +26,7 @@ export default {
       expires: 1000 * 3600 * 24 * 30,
     })
   },
-  getToken: async (token, force) => {
+  getToken: async (force) => {
     if (Global.token && !force) return Global.token
     try {
       const res = await storage.load({
@@ -35,7 +35,7 @@ export default {
         syncInBackground: true,
       })
       Global.token = res.token
-      Global.user = res.user
+      Global.user = res.user || {}
       return res.token
     } catch (e) {
       return ''

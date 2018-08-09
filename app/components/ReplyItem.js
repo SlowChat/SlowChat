@@ -47,7 +47,6 @@ export default class ReplyItem extends PureComponent {
                 </View>)
               })
             }
-
           </View>
         </View>
       </View>

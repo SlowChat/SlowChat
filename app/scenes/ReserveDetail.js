@@ -1,57 +1,58 @@
 import React, { Component } from 'react';
 
-
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  Button,
-  TextInput,
-  Switch,
-  FlatList,
   TouchableOpacity,
+  FlatList,
   Animated,
   Easing,
 } from 'react-native';
 
 import Toast from 'react-native-easy-toast'
-
 import SendTip from '../components/SendTip'
 import TopTab from '../components/TopTab'
-import MyMailContent from '../components/MyMailContent'
+import MailContent from '../components/MailContent'
 import ReplyItem from '../components/ReplyItem'
 import ReplyBox from '../components/ReplyBox'
+import AwardTip from '../components/AwardTip'
+import ErrorModal from '../components/ErrorModal'
 
+import Global from '../utils/global'
 import { post } from '../utils/request'
+
+const ITEMS = [{id: 0, name: '信件内容'}, {id: 1, name: '慢友圈'}]
+const ANIMAT_TIME = 500
 
 const ICONS = {
   overt: require('../images/icon_overt.png'),
   hide: require('../images/icon_hide.png'),
 }
-const ANIMAT_TIME = 500
-const ITEMS = [{id: 0, name: '信件内容'}, {id: 1, name: '慢友圈'}]
 
-export default class ReserveDetail extends Component {
+export default class MailDetail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
       title: params.title || '邮件详情',
       headerRight: (
-        <TouchableOpacity activeOpacity={0.7} style={styles.rightBtnWrap} onPress={params.rightBtnOnPress}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.rightBtnWrap} onPress={params.rightBtnOnPress}>
           <Image style={styles.rightBtn} source={params.ispub ? ICONS.overt : ICONS.hide} />
         </TouchableOpacity>
       ),
+
     }
-  }
-  static defaultProps = {
-    title: '20岁，来自父亲的祝福！'
   }
   state = {
     status: 'ing',
     activeTab: 0,
-    data: {},
     translateValue: new Animated.Value(-44),
+    detail: {},
+    comments: [],
+  }
+  componentWillMount() {
+    this.getData()
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -64,53 +65,6 @@ export default class ReserveDetail extends Component {
       return false
     }
     return true
-  }
-  rightBtnOnPress = () => {
-    this.noupdate = true
-    this.ispub = !this.ispub
-    const url = this.ispub ? 'api/mail/setPub.html' : 'api/mail/setPra.html'
-    const { id } = this.state.data
-    post(url, { id }).then((res) => {
-      if (res.code == 1) {
-        this.refs.toast.show(res.msg || '设置成功');
-        this.props.navigation.setParams({
-          ispub: this.ispub,
-        })
-      } else if (res.code == 10001) {
-        this.props.navigation.navigate('Login', {back: true})
-      } else {
-        this.refs.toast.show(res.msg || '设置失败');
-      }
-    })
-
-
-
-  }
-  switchTab = (index) => {
-    if (index == 0) {
-      this._flatList.scrollToOffset({animated: true, offset: 0})
-    } else {
-      if (this.listHeaderHeight) {
-        this._flatList.scrollToOffset({animated: true, offset: this.listHeaderHeight })
-      }
-    }
-    if (this.state.activeTab == index) return
-    this.setState({ activeTab: index })
-  }
-  handleLoadmore = () => {
-
-  }
-  handleCancel = () => {
-    const { id } = this.state.data
-    post('api/mail/cancel.html', { id }).then((res) => {
-      if (res.code == 1) {
-        this.refs.toast.show('取消发送成功');
-      } else if (res.code == 10001) {
-         this.props.navigation.navigate('Login')
-      } else {
-        this.refs.toast.show(res.msg || '取消发送失败');
-      }
-    })
   }
 
   handleScroll = (e) => {
@@ -138,6 +92,19 @@ export default class ReserveDetail extends Component {
       this.setState({ activeTab: 0 })
     }
   }
+
+  switchTab = (index) => {
+    if (index == 0) {
+      this._flatList.scrollToOffset({animated: true, offset: 0})
+    } else {
+      if (this.listHeaderHeight) {
+        this._flatList.scrollToOffset({animated: true, offset: this.listHeaderHeight })
+      }
+    }
+    if (this.state.activeTab == index) return
+    this.setState({ activeTab: index })
+  }
+
   flatListHeaderLayout = ({nativeEvent: e}) => {
     this.listHeaderHeight = e.layout.height - 44 - 38
   }
@@ -152,79 +119,164 @@ export default class ReserveDetail extends Component {
       easing: fadeIn ? Easing.easeIn : Easing.easeOut // 缓动函数
     }).start();
   }
+  getId() {
+    const { id = 30 } = this.props.navigation.state.params || {}
+    return id
+  }
+  async getData() {
+    if (this.loading) return
+    this.loading = true
+    try {
+      const id = this.getId()
+      const res = await post('api/mail/getInfo.html', { id })
+      if (res.code == 1) {
+        const { comment, ...items } = res.data.items
+        const comments = comment ? [comment] : []
+        this.setState({
+          detail: items,
+          comments
+        }, () => {
+          this.ispub = this.state.detail.type == 2
+          this.setEye()
+        })
+      } else {
 
-  renderHeader = () => {
-    return (<View onLayout={this.flatListHeaderLayout}>
-      <MyMailContent />
-      <View style={styles.replyHeader} onLayout={({nativeEvent: e}) => console.log(e.layout)}>
-        <Text style={[styles.replyComment, styles.replyNum]}>评论 3</Text>
-        <Text style={styles.replyNum}>浏览 22</Text>
-      </View>
-    </View>)
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.loading = false
+    }
+  }
+
+  rightBtnOnPress = () => {
+    const url = this.ispub ? 'api/mail/setPra.html' : 'api/mail/setPub.html'
+    const id = this.getId()
+    post(url, { id }).then((res) => {
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg || '设置成功')
+        this.ispub = !this.ispub
+        this.setEye()
+      } else if (res.code == 10001) {
+        this.props.navigation.navigate('Login', {back: true})
+      } else {
+        this.refs.toast.show(res.msg || '设置失败');
+      }
+    })
+  }
+
+  setEye() {
+    this.noupdate = true
+    this.props.navigation.setParams({
+      ispub: this.ispub,
+    })
+  }
+
+  handleReply = (content) => {
+    this.addComment(this.pid || 0, content)
+  }
+
+  handleSubReply = (pid) => {
+    this.pid = pid
+    this.refs.replyBox.focus()
+  }
+
+  async addComment(pid, content) {
+    try {
+      const id = this.getId()
+      const res = await post('api/mail_comment/add.html', {
+        pid, mail_id: id, content
+      })
+      if (res && res.code == 1) {
+        this.refs.awardTipRef.show()
+        const { comments } = this.state
+        if (pid == 0) {
+          comments.unshift()
+        } else {
+          const index = comments.findIndex(item => item.id == pid)
+          if (index > -1) {
+            comments[index].reply.push({
+              id: new Date().getTime(),
+              user: Global.user,
+              content,
+            })
+          }
+        }
+        this.setState({ comments })
+      } else if (res.code == 10001) {
+        this.props.navigation.navigate('Login', { back: true })
+      } else {
+        this.refs.errorModalRef.show({txt: res.msg || '回复失败，稍后尝试'})
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.pid = 0
+    }
+  }
+
+  handleCancel = () => {
+    const id = this.getId()
+    post('api/mail/cancel.html', { id }).then((res) => {
+      if (res.code == 1) {
+        this.refs.toast.show('取消发送成功');
+      } else if (res.code == 10001) {
+         this.props.navigation.navigate('Login')
+      } else {
+        this.refs.toast.show(res.msg || '取消发送失败');
+      }
+    })
+  }
+
+  handleLoadmore = () => {
+
   }
 
   render() {
-    let data = [];
-    for (let i = 0; i < 10; i++) {
-      data.push({key: i, title: i + ''});
-    }
-    const { status, activeTab, showTab } = this.state
+    const { status, activeTab, detail, comments, fadeInOpacity } = this.state
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {transform: [{translateY: this.state.translateValue}]}]}>
           <TopTab index={activeTab} items={ITEMS} onPress={this.switchTab} />
         </Animated.View>
         <SendTip type={status} onPress={this.handleCancel} />
-        {
-          showTab && (
-            <View style={styles.toptab}>
-              <TopTab index={activeTab} items={ITEMS} onPress={this.switchTab} />
-            </View>
-          )
-        }
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
-          data={data}
-          renderItem={(item) => <ReplyItem item={item} />}
-          initialNumToRender={10}
-          keyExtractor={(item, index) => item.key + ''}
+          data={comments}
+          initialNumToRender={5}
           onScroll={this.handleScroll}
           onEndReachedThreshold={2}
           onEndReached={this.handleLoadmore}
-          ListHeaderComponent={this.renderHeader}
+          keyExtractor={(item) => item.id + ''}
+          renderItem={(item) => <ReplyItem key={item.id} data={item} onReply={this.handleSubReply} />}
+          ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
+            <MailContent data={detail} />
+            {
+              detail.comments ? (
+                <View style={styles.replyHeader}>
+                  <Text style={[styles.replyComment, styles.replyNum]}>评论 {detail.comments}</Text>
+                  <Text style={styles.replyNum}>浏览 {detail.looks}</Text>
+                </View>
+              ) : null
+            }
+          </View>)}
         />
-        <ReplyBox/>
-        <Toast ref="toast" position="bottom" />
+        <ReplyBox ref="replyBox" onReply={this.handleReply} />
+        <AwardTip ref="awardTipRef" num="10" txt="发表评论成功" />
+        <ErrorModal ref="errorModalRef" />
+        <Toast ref="toast" position="center" />
       </View>
     )
   }
 }
 
-// keyExtractor={this._keyExtractor}
-
-// ListHeaderComponent={() => (<View>
-//   <MyMailContent />
-//   <View style={styles.replyHeader}>
-//     <Text style={[styles.replyComment, styles.replyNum]}>评论 3</Text>
-//     <Text style={styles.replyNum}>浏览 22</Text>
-//   </View>
-// </View>)}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 500,
-    position: 'relative',
-    backgroundColor: '#FFFFFF',
-    fontFamily: 'PingFangSC-Regular',
-  },
-  toptab: {
-    position: 'absolute',
-    top: 44,
-    left: 0,
-    right: 0,
-    zIndex: 10,
+    height: 400,
+    backgroundColor: '#F6F6F6',
   },
   flatlist: {
     flex: 1,
@@ -248,7 +300,7 @@ const styles = StyleSheet.create({
     height: 37,
     paddingLeft: 10,
     paddingRight: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
     backgroundColor: '#FFFFFF'
   },
@@ -271,4 +323,5 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
-});
+
+})

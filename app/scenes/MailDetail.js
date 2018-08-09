@@ -123,6 +123,9 @@ export default class MailDetail extends Component {
     }
   }
 
+  handleLoadmore = () => {
+    
+  }
 
   handleReply = (content) => {
     this.addComment(this.pid || 0, content)
@@ -180,6 +183,8 @@ export default class MailDetail extends Component {
           ref={(flatList)=>this._flatList = flatList}
           data={comments}
           initialNumToRender={5}
+          onEndReachedThreshold={2}
+          onEndReached={this.handleLoadmore}
           onScroll={this.handleScroll}
           keyExtractor={(item) => item.id + ''}
           renderItem={(item) => <ReplyItem key={item.id} data={item} onReply={this.handleSubReply} />}

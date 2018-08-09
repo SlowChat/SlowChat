@@ -57,11 +57,51 @@ export default class SendMail extends Component {
       type: 2,
     },
   }
+
+  componentWillMount() {
+    this.getData()
+  }
+
   componentDidMount() {
     this.props.navigation.setParams({
       rightOnPress: this.handleSend
     })
   }
+
+  shouldComponentUpdate() {
+    if (this.noupdate) {
+      this.noupdate = false
+      return false
+    }
+    return true
+  }
+
+  async getData() {
+    if (this.loading) return
+    this.loading = true
+    try {
+      const { id } = this.props.navigation.state.params || {}
+      const res = await post('api/mail/getInfo.html', { id })
+      if (res.code == 1) {
+        const { items } = res.data
+        this.setState({
+          params: items,
+          attachs: items.attach.split(',').map(item => ({url: item}))
+        }, () => {
+          this.noupdate = true
+          this.sendBtnEnable = true
+          this.props.navigation.setParams({
+            enable: true,
+          })
+        })
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.loading = false
+    }
+  }
+
   setParams(key, value) {
     let { showSendMe } = this.state
     if (key == 'email' && value == '发给自己') {
@@ -118,7 +158,7 @@ export default class SendMail extends Component {
   handleSave = () => {
     if (!this.checkParams(true)) return
     const params = {...this.state.params}
-    params.attach = this.state.attachs.join(',')
+    params.attach = this.state.attachs.map(item => item.url).join(',')
     post('api/mail/save.html', params).then(res => {
       console.log(res);
       if (res.code == 10001) {
@@ -159,7 +199,7 @@ export default class SendMail extends Component {
         <HeaderTip tip="爱慢邮——让我们回到未来" />
         <View style={styles.item}>
           <Text style={styles.label}>收件人：</Text>
-          <TextInput autoFocus style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+          <TextInput autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
             autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
             <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
@@ -167,8 +207,8 @@ export default class SendMail extends Component {
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>主题：</Text>
-          <TextInput style={styles.input} onChangeText={(text) => this.setParams('title', text)}
-            autoCapitalize="none" underlineColorAndroid='transparent' />
+          <TextInput style={styles.input} value={params.title} onChangeText={(text) => this.setParams('title', text)}
+            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.item}>
           <Text style={styles.label}>附件：</Text>
@@ -201,8 +241,8 @@ export default class SendMail extends Component {
             }} />
         </View>
         <View style={styles.content}>
-          <TextInput multiline placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
-            autoCapitalize="none" underlineColorAndroid='transparent' />
+          <TextInput multiline value={params.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
+            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={this.handleSave}>

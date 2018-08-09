@@ -76,7 +76,8 @@ export default class DraftDetail extends Component {
     )
   }
   handleEdit = () => {
-    this.props.navigation.push('NewMail')
+    const { id = 30} = this.props.navigation.state.params || {}
+    this.props.navigation.push('NewMail', {id})
   }
 
   // this.props.navigation.setParams({
