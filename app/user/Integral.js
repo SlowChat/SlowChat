@@ -4,10 +4,11 @@ import {
   Text,
   View,
   Image,
-  Button,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  FlatList
 } from 'react-native';
-
+import { get, post } from '../utils/request'
 
 const ICONS = {
   clock: require('../images/icon_clock.png'),
@@ -18,56 +19,208 @@ const ICONS = {
 export default class Integral extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
+    const { navigate } = navigation;
     return {
       title: '我的积分',
       headerRight: (
-        <View style={styles.icon}>
-          <Text style={styles.ruleBtn}>积分规则</Text>
-        </View>
+        <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
+          <View style={styles.icon}>
+            <Text style={styles.ruleBtn}>积分规则</Text>
+          </View>
+        </TouchableWithoutFeedback>
       ),
     }
   }
-  componentDidMount() {
+  state = {
+    isLoading: true,
+    // 网络请求状态
+    error: false,
+    dataArray: [],
+    showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
+    isRefreshing: false, // 下拉控制
+    spaceTxt: '请尝试搜索其他关键词',
+    isSpacePage: true,
+    total: 0
+  }
+  pageNo = 0
+  pageSize = 10
 
+  componentDidMount() {
+    this.fetchData()
   }
 
-  render() {
+  fetchData = () => {
+    post('api/user/score_log.html', { p:this.pageNo, s:this.pageSize}).then(res => {
+      const { code, data } = res
+      console.log(res)
+      if (code === 1) {
+        let foot = 0
+        if (this.pageNo + 1 >= Math.ceil(data.total_page / this.pageSize)) {
+          // listView底部显示没有更多数据了
+          foot = 1
+        }
+        if (data.log && data.log.length <= 0) {
+          this.setState({
+            isSpacePage: true
+          })
+        }
+        this.setState({
+          total: data.total,
+          dataArray: this.state.dataArray.concat(data.log),
+          isLoading: false,
+          showFoot: foot,
+          isRefreshing: data.total_page / this.pageSize > 1,
+        })
+        
+      } 
+    }).catch(e => {
+      console.log(e)
+    })
+  }
+  
+  _renderItem = ({item}) => {
+    return (
+      <View style={styles.list}>
+        <View style={styles.left}>
+          <Text style={styles.time}>{item.time}</Text>
+          <Text style={styles.detail}>{item.item}</Text>
+        </View>
+        <Text style={styles.right}>
+          {item.score}
+        </Text>
+      </View>
+    )
+  }
+
+    // 列表底部显示
+  _renderFooter = () => {
+    console.log(this.state.showFoot)
+    if (this.state.showFoot === 1) {
+      return (
+        <View style={styles.footer}>
+          <Text style={{color: '#999'}}>
+              没有更多数据了
+          </Text>
+        </View>
+      )
+    } else if (this.state.showFoot === 2) {
+      return (
+        <View style={styles.footer}>
+          <ActivityIndicator />
+          <Text style={{color: '#999'}}>正在加载更多数据...</Text>
+        </View>
+      )
+    } else if (this.state.showFoot === 0) {
+      return (
+        <View style={styles.footer}>
+          <Text />
+        </View>
+      )
+    }
+  }
+
+    // 下拉加载更多
+  _onEndReached = () => {
+    // 如果是正在加载中或没有更多数据了，则返回
+    if (this.state.showFoot !== 0) {
+      return
+    }
+    // 如果当前页大于或等于总页数，那就是到最后一页了，返回
+    if (this.pageNo + 1 >= Math.ceil(this.state.total_page / this.pageSize)) {
+      return
+    } else {
+      this.pageNo ++
+    }
+    // 底部显示正在加载更多数据
+    this.setState({showFoot: 2})
+    // 获取数据
+    this.fetchData()
+  }
+
+    // 列表分隔线
+  _separator = () => {
+    return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
+  }
+
+  // 加载等待的view
+  renderLoadingView = () => {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator
+          animating
+          style={[styles.gray, {height: 80}]}
+          color='red'
+          size='large'
+        />
+      </View>
+    )
+  }
+
+    // 加载失败view
+  renderErrorView = () => {
+    return (
+      <View style={styles.container}>
+        <Image style={styles.spaceImg} source={require('../images/icon_error.png')} />
+        <Text>您遇到网络问题</Text>
+      </View>
+    )
+  }
+
+  renderData = () => {
     return (
       <View style={styles.container}>
         <View style={styles.integralBox}>
           <Text style={styles.tit}>我的积分</Text>
-          <Text style={styles.score}>100</Text>
+          <Text style={styles.score}>{this.state.total}</Text>
         </View>
-        <View style={styles.list}>
-          <View style={styles.left}>
-            <Text style={styles.time}>2018-05-11</Text>
-            <Text style={styles.detail}>连续2天打卡</Text>
-          </View>
-          <Text style={styles.right}>
-            +10
-          </Text>
-        </View>
-        <View style={styles.list}>
-          <View style={styles.left}>
-            <Text style={styles.time}>2018-05-11</Text>
-            <Text style={styles.detail}>连续2天打卡</Text>
-          </View>
-          <Text style={styles.right}>
-            +10
-          </Text>
-        </View>
-        <View style={styles.list}>
-          <View style={styles.left}>
-            <Text style={styles.time}>2018-05-11</Text>
-            <Text style={styles.detail}>连续2天打卡</Text>
-          </View>
-          <Text style={styles.right}>
-            +10
-          </Text>
-        </View>
+        {
+          this.state.dataArray.length > 0 ? (
+            <FlatList
+              data={this.state.dataArray}
+              renderItem={this._renderItem}
+              onLoad={this.getDataEvent}
+              hasNext={false}
+              extraData={this.state}
+              ListFooterComponent={this._renderFooter}
+              onEndReached={this._onEndReached}
+              onEndReachedThreshold={0.1}
+              ItemSeparatorComponent={this._separator}
+              // keyExtractor={(item, index) => item}
+            />
+
+          ) : (
+            <View style={styles.space}>
+              {
+                this.state.isSpacePage && (
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}>
+                    <Text style={styles.spaceTit}>没有找到相匹配的结果</Text>
+                    <Text style={styles.spaceTxt}>{this.state.spaceTxt}</Text>
+                  </View>
+                )
+              }
+            </View>
+          )
+        }
       </View>
-    );
+    )
   }
+
+  render () {
+    // 第一次加载等待的view
+    if (this.state.isLoading && !this.state.error) {
+      return this.renderLoadingView()
+    } else if (this.state.error) {
+      // 请求失败view
+      return this.renderErrorView()
+    }
+    // 加载数据
+    return this.renderData()
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -126,4 +279,37 @@ const styles = StyleSheet.create({
     color: '#E24B92',
     fontSize: 18
   },
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderColor: '#e0e0e0',
+    borderTopWidth: 1,
+    borderStyle: 'solid'
+  },
+  space: {
+    width: '100%',
+    paddingLeft: '10%',
+    paddingRight: '10%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f6f7f8',
+    paddingTop: 200,
+    paddingBottom: 200
+  },
+  spaceImg: {
+    width: 64,
+    height: 64
+  },
+  spaceTit: {
+    fontSize: 18,
+    color: '#999',
+  },
+  spaceTxt: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    lineHeight: 24
+  }
 });

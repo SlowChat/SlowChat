@@ -11,6 +11,9 @@ import {
 import Toast from 'react-native-easy-toast'
 
 import { get, post } from '../utils/request'
+import { isEmail } from '../utils/util'
+import VerifyCode from '../components/VerifyCode'
+import SuccessModal from '../components/SuccessModal'
 
 const ICONS = {
   forward: require('../images/icon_forward.png'),
@@ -24,25 +27,102 @@ export default class EditEmail extends Component {
     }
   }
   state = {
-    email: '',
-    vCode: ''
+    email: this.props.navigation.state.params.userEmail,
+    vCode: '',
+    btnText: '',
+    status: '',
+    isClick: false,
+    isVcodeClick: false,
+    initStatus: false,  //验证手机
+    isSucc: false   //成功提示框
   }
   componentDidMount() {
-
+    if (this.props.navigation.state.params.userEmail !== '') {
+      this.setState({
+        btnText: '验证后绑定新邮箱',
+        status: 'check'
+      })
+    } else {
+      this.setState({
+        btnText: '绑定',
+        status: 'bind'
+      })
+    }
   }
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { email, vCode } = this.state;
-    post('api/user/bind_email.html', { email: email, verification_code: vCode }).then((res) => {
-      pop();
-      console.log(res)
-      // if (res.code == 1) {
-      //   this.refs.toast.show(res.msg);
-      // } else {
-      //   this.refs.toast.show(res.msg);
-      // }
+    const { email, vCode, status } = this.state;
+    let url = ''
+    if (status=== 'bind') {
+      url = 'api/user/bind_email.html'
+    } else if (status=== 'check') {
+      url = 'api/user/check_old_email.html'
+    } else {
+      url = 'api/user/edit_email.html'
+    }
+    post(url, { email: email, verification_code: vCode }, false).then((res) => {
+      if (res.code == 1) {
+        if (status === 'check') {
+          this.refs.toast.show(res.msg);
+          this.setState({
+            email: '',
+            vCode: '',
+            status: '',
+            status: '',
+            btnText: '绑定',
+            isClick: false,
+            initStatus: true,
+            isVcodeClick: false
+          })
+        } else {
+          this.setState({isSucc: true})
+        }
+      } else {
+        this.refs.toast.show(res.msg);
+      }
     })
+  }
+
+  handleVcode = () => {
+    const { email } = this.state;
+    post('api/verification_code/send.html', { username: email }).then((res) => {
+      console.log(res)
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    })
+  }
+
+  handleChangeEmail = (text) => {
+    this.setState({
+      email: text
+    })
+    if (text.length >= 11 && isEmail(text)) {
+      this.setState({isVcodeClick: true})
+    } else {
+      this.setState({isVcodeClick: false})
+    }
+  }
+
+  handleEmail = () => {
+    const { email } = this.state;
+    if (!isEmail(email)) this.refs.toast.show('您的邮箱地址输入有误');
+  }
+
+  inputVcode = (text) => {
+    this.setState({vCode: text})
+    if (text.length >= 6) {
+      this.setState({
+        isClick: true
+      })
+    }
+  }
+
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
   }
 
   render() {
@@ -53,30 +133,42 @@ export default class EditEmail extends Component {
             <Text style={styles.label}>邮箱</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({email: text})}
+              onChangeText={(text) => this.handleChangeEmail(text)}
+              onBlur={() => this.handleEmail()}
               placeholder='请输入您的邮箱'
               value={this.state.email}
             />
-            <View style={styles.btn}>
-              <Text style={styles.btnTxt}>获取验证码</Text>
-            </View>
+            <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
+              <View style={styles.btn}>
+                <Text style={styles.btnTxt}>获取验证码</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({vCode: text})}
+              onChangeText={(text) => this.inputVcode(text)}
               placeholder='请输入您的验证码'
               value={this.state.vCode}
             />
           </View>
           <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={styles.save}>
-              <Text style={styles.saveTxt}>绑定</Text>
+            <View style={[styles.save, this.state.isClick ? styles.active : '']}>
+              <Text style={styles.saveTxt}>{this.state.btnText}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
         <Toast ref="toast" position="bottom" />
+        <SuccessModal
+          txt={'邮箱绑定成功'}
+          btn={'返回'}
+          visible={this.state.isSucc}
+          onPress={() => {
+            this.props.navigation.pop() // navigate
+          }}
+          onRequestClose={this.onRequestClose}
+        />
       </View>
     );
   }
@@ -114,7 +206,7 @@ const styles = StyleSheet.create({
     color: '#666'
   },
   input: {
-    width: '55%',
+    width: '50%',
     textAlign: 'left',
     color: '#333'
   },

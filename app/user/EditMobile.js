@@ -8,9 +8,11 @@ import {
   TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
-
-import { get, post } from '../utils/request'
 import Toast from 'react-native-easy-toast'
+import { get, post } from '../utils/request'
+import { isMobileNumberSupport } from '../utils/util'
+import VerifyCode from '../components/VerifyCode'
+import SuccessModal from '../components/SuccessModal'
 
 const ICONS = {
   forward: require('../images/icon_forward.png'),
@@ -24,27 +26,105 @@ export default class EditMobile extends Component {
     }
   }
   state = {
-    mobile: '',
-    vCode: ''
+    mobile: this.props.navigation.state.params.mobile,
+    vCode: '',
+    btnText: '',
+    status: '',
+    isClick: false,
+    isVcodeClick: false,
+    initStatus: false,  //验证手机
+    isSucc: false   //成功提示框
   }
   componentDidMount() {
-    
+    if (this.props.navigation.state.params.mobile !== '') {
+      this.setState({
+        btnText: '验证后绑定新手机',
+        status: 'check',
+        isVcodeClick: true
+      })
+    } else {
+      this.setState({
+        btnText: '绑定',
+        status: 'bind'
+      })
+    }
   }
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { mobile, vCode } = this.state;
-    post('api/user/bind_mobile.html', { mobile: mobile, verification_code: vCode }).then((res) => {
-      pop();
+    const { mobile, vCode, status } = this.state;
+    let url = ''
+    if (status=== 'bind') {
+      url = 'api/user/bind_mobile.html'
+    } else if (status=== 'check') {
+      url = 'api/user/check_old_mobile.html'
+    } else {
+      url = 'api/user/edit_mobile.html'
+    }
+    post(url, { mobile: mobile, verification_code: vCode }).then((res) => {
       console.log(res)
-      // if (res.code == 1) {
-      //   this.refs.toast.show(res.msg);
-      // } else {
-      //   this.refs.toast.show(res.msg);
-      // }
+      if (res.code == 1) {
+        if (status === 'check') {
+          this.refs.toast.show(res.msg);
+          this.setState({
+            mobile: '',
+            vCode: '',
+            status: '',
+            btnText: '绑定',
+            isClick: false,
+            initStatus: true,
+            isVcodeClick: false
+          })
+        } else {
+          this.setState({isSucc: true})
+        }
+      } else {
+        this.refs.toast.show(res.msg);
+      }
     })
   }
 
+  handleVcode = () => {
+    const { mobile } = this.state;
+    post('api/verification_code/send.html', { username: mobile }).then((res) => {
+      console.log(res)
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    })
+  }
+
+  handleChangeMobile = (text) => {
+    this.setState({
+      mobile: text
+    })
+    if (text.length >= 11 && isMobileNumberSupport(text)) {
+      this.setState({isVcodeClick: true})
+    } else {
+      this.setState({isVcodeClick: false})
+    }
+  }
+
+  handleMobile = () => {
+    const { mobile } = this.state;
+    if (!isMobileNumberSupport(mobile)) this.refs.toast.show('您的手机号输入有误');
+  }
+
+  inputVcode = (text) => {
+    this.setState({vCode: text})
+    if (text.length >= 6) {
+      this.setState({
+        isClick: true
+      })
+    }
+  }
+
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
+  
   render() {
     return (
       <View style={styles.container}>
@@ -53,30 +133,39 @@ export default class EditMobile extends Component {
             <Text style={styles.label}>手机号</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({mobile: text})}
+              onChangeText={(text) => this.handleChangeMobile(text)}
+              onBlur={() => this.handleMobile()}
               placeholder='请输入您的手机号'
               value={this.state.mobile}
+              maxLength={11}
             />
-            <View style={styles.btn}>
-              <Text style={styles.btnTxt}>获取验证码</Text>
-            </View>
+            <VerifyCode mobile={this.state.mobile} isVrfy={this.state.isVcodeClick} initStatus={this.state.initStatus} />
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({vCode: text})}
+              onChangeText={(text) => this.inputVcode(text)}
               placeholder='请输入您的验证码'
               value={this.state.vCode}
             />
           </View>
           <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={styles.save}>
-              <Text style={styles.saveTxt}>绑定</Text>
+            <View style={[styles.save, this.state.isClick ? styles.active : '']}>
+              <Text style={styles.saveTxt}>{this.state.btnText}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
         <Toast ref="toast" position="bottom" />
+        <SuccessModal
+          txt={'手机号绑定成功'}
+          btn={'返回'}
+          visible={this.state.isSucc}
+          onPress={() => {
+            this.props.navigation.pop() // navigate
+          }}
+          onRequestClose={this.onRequestClose}
+        />
       </View>
     );
   }
@@ -114,14 +203,14 @@ const styles = StyleSheet.create({
     color: '#666'
   },
   input: {
-    width: '55%',
+    width: '50%',
     textAlign: 'left',
     color: '#333'
   },
   btn: {
     width: '25%',
     height: 30,
-    backgroundColor: '#E24B92',
+    backgroundColor: '#efefef',
     borderRadius: 15,
     alignItems:'center',
     justifyContent: 'center',
@@ -138,6 +227,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
     alignItems:'center',
     justifyContent: 'center',
+  },
+  active: {
+    backgroundColor: '#E24B92',
   },
   saveTxt: {
     color: '#fff',

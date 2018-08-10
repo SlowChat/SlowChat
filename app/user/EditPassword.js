@@ -48,6 +48,18 @@ export default class EditPassowrd extends Component {
     })
   }
 
+  handleVcode = () => {
+    const { mobile } = this.state;
+    post('api/verification_code/send.html', { username: mobile }).then((res) => {
+      console.log(res)
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -60,9 +72,11 @@ export default class EditPassowrd extends Component {
               placeholder='请输入您的手机号'
               value={this.state.username}
             />
-            <View style={styles.btn}>
-              <Text style={styles.btnTxt}>获取验证码</Text>
-            </View>
+            <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
+              <View style={styles.btn}>
+                <Text style={styles.btnTxt}>获取验证码</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>

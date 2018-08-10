@@ -10,8 +10,10 @@ import {
   Picker,
   TouchableWithoutFeedback
 } from 'react-native';
-
+import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
+import Confirm from '../components/Confirm'
+import { get, post } from '../utils/request'
 
 const ICONS = {
   forward: require('../images/icon_forward.png'),
@@ -27,11 +29,39 @@ export default class Information extends Component {
   state = {
     switchBtn: true,
     isShow: false,
-    sex: '男',
-    date: new Date()
+    sex: '',
+    date: this.props.navigation.state.params.birthday,
+    nickname: this.props.navigation.state.params.username,
+    avatar: this.props.navigation.state.params.avatar,
+    isSucc: false
   }
-  componentDidMount() {
 
+  componentDidMount() {
+    this.setState({
+      sex: this.getSexValue()
+    })
+  }
+
+  getSexValue() {
+    const { sex } = this.props.navigation.state.params;
+    if (sex === 0) {
+      return '保密';
+    } else if (sex === 1) {
+      return '男'
+    } else if (sex === 2) {
+      return '女'
+    }
+  }
+
+  getSexid() {
+    const { sex } = this.state;
+    if (sex === '保密') {
+      return 0;
+    } else if (sex === '男') {
+      return 1
+    } else if (sex === '女') {
+      return 2
+    }
   }
 
   changeSex(itemValue) {
@@ -41,20 +71,43 @@ export default class Information extends Component {
     }, 1000)
   }
 
+  handleSubmit() {
+    const { navigate, pop } = this.props.navigation;
+    const { sex, nickname, avatar, date } = this.state;
+    post('api/user/userInfo.html', { user_nickname: nickname, avatar, sex: this.getSexid(), birthday: date}).then(res => {
+      console.log(res)
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+        setTimeout(() => {
+          pop()
+        })
+      }
+    }).catch(e => {
+      this.refs.toast.show(res.msg);
+    })
+  }
+
+  onChangeName = () => {
+    this.setState({ isSucc: true })
+  }
+
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
+
+  onRightPress = () => {
+    this.setState({nickname: this.state.inputname, isSucc: false})
+  }
+
   render() {
+    const { params } = this.props.navigation.state;
     return (
       <View style={styles.container}>
         <Avatar />
         <View style={styles.link}>
           <View style={styles.menu}>
             <Text style={styles.label}>昵称</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => this.setState({text})}
-              placeholder='请输入填写您的用户名'
-              value='Abagael'
-            />
-            {/* <Text style={styles.text}>Abagael</Text> */}
+            <Text style={styles.input} onPress={() => this.onChangeName()}>{this.state.nickname}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
           <View style={styles.menu}>
@@ -99,7 +152,7 @@ export default class Information extends Component {
           </View>
           
           
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
           <View style={styles.exit}>
             <Text style={styles.exitTxt}>保存</Text>
           </View>
@@ -109,11 +162,34 @@ export default class Information extends Component {
               selectedValue={this.state.sex}
               style={[styles.picker, {display: `${this.state.isShow ? 'flex' : 'none'}`}]}
               onValueChange={(itemValue, itemIndex) => this.changeSex(itemValue)}>
+              <Picker.Item label="保密" value="保密" />
               <Picker.Item label="男" value="男" />
               <Picker.Item label="女" value="女" />
             </Picker>
           </View>
         </View>
+        <Toast ref="toast" position="bottom" />
+        <Confirm
+          tit='请输入新的昵称'
+          leftBtnTxt='取消'
+          rightBtnTxt='确定'
+          autoView={
+            <TextInput
+              style={styles.nickInput}
+              onChangeText={(text) => this.setState({inputname: text})}
+              placeholder='请输入填写您的用户名'
+              value={this.state.nickname}
+            />
+          }
+          visible={this.state.isSucc}
+          onLeftPress={() => {
+            this.onRequestClose()
+          }}
+          onRightPress={() => {
+            this.onRightPress() // navigate
+          }}
+          onRequestClose={this.onRequestClose}
+        />
       </View>
     );
   }
@@ -154,6 +230,17 @@ const styles = StyleSheet.create({
     width: '62%',
     textAlign: 'right',
     color: '#B4B4B4'
+  },
+  nickInput: {
+    width: '80%',
+    height: 40,
+    marginBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 10,
+    color: '#B4B4B4',
+    backgroundColor: '#eee',
+    alignItems:'center',
   },
   picker: {
     position: 'absolute',

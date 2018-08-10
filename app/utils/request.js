@@ -16,7 +16,7 @@ const getHeaders = async (unneed) => {
   }
   return {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    'MY-Token': await Storage.getToken(),
+    'MY-Token': getToken(),
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
@@ -37,6 +37,8 @@ export async function get(url, params, unneedLogin) {
 
 
 export async function post(url, params, unneedLogin) {
+  console.log(url)
+  console.log(params)
   const headers = await getHeaders(unneedLogin)
   return fetch(BASE_URL + url, {
     method: 'POST',
