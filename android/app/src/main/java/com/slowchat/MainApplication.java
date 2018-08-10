@@ -3,6 +3,7 @@ package com.slowchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import ui.fileselector.RNFileSelectorPackage;
 import com.rnfs.RNFSPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new RNFileSelectorPackage(),
             new RNFSPackage(),
             new RNViewShotPackage(),

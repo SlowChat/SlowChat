@@ -10,6 +10,8 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+#import "RNSplashScreen.h" // 导入启动屏包
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -34,6 +36,7 @@
   // 原先
   // self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [RNSplashScreen show]; // SplashScreen 显示启动屏幕
   return YES;
 }
 
