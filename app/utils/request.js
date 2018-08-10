@@ -13,7 +13,8 @@ const getHeaders = async (unneed) => {
   }
   const token = await Storage.getToken()
   return {
-    'MY-Token': token,
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    'MY-Token': getToken(),
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
@@ -35,6 +36,8 @@ export async function get(url, params, unneedLogin) {
 }
 
 export async function post(url, params, unneedLogin) {
+  console.log(url)
+  console.log(params)
   const headers = await getHeaders(unneedLogin)
   console.log(url)
   console.log(params)

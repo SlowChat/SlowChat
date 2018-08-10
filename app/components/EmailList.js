@@ -6,6 +6,7 @@ import {
   Image,
   TouchableWithoutFeedback
 } from 'react-native';
+import Confirm from '../components/Confirm'
 
 const ICONS = {
   show: require('../images/icon_overt.png'),
@@ -17,8 +18,12 @@ const ICONS = {
 
 export default class EmailList extends Component {
 
+  state ={
+    isSucc: false
+  }
+
   cancel() {
-    alert(44444)
+    this.setState({isSucc: true})
   }
 
   renderStatus() {
@@ -72,7 +77,7 @@ export default class EmailList extends Component {
     }
   }
   render() {
-    const { item, navigate } = this.props;
+    const { item, navigate, status } = this.props;
     return (
       <TouchableWithoutFeedback onPress={() => navigate('MailDetail', { id: item.id })}>
         <View>
@@ -88,6 +93,29 @@ export default class EmailList extends Component {
             </View>
           </View>
           { this.renderStatus() }
+          <Confirm
+            tit={status === 'reservation' ? '确定取消发送邮件吗' : '删除草稿'}
+            leftBtnTxt={status === 'reservation' ? '查看积分规则' : '取消'}
+            rightBtnTxt={status === 'reservation' ? '再想想' : '取消删除'}
+            autoView={
+              status === 'reservation' ? (
+                <View>
+                  <Text>取消发送将从您的积分账户中扣除10积分</Text>
+                  <Text>当前积分：5（不足）</Text>
+                </View>
+              ) : (
+                <Text>草稿删除后将不能修复</Text>
+              )
+            }
+            visible={this.state.isSucc}
+            onLeftPress={() => {
+              this.onRequestClose()
+            }}
+            onRightPress={() => {
+              this.onRightPress() // navigate
+            }}
+            onRequestClose={this.onRequestClose}
+          />
       </View>
     </TouchableWithoutFeedback>
     );
@@ -102,8 +130,8 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingTop: 10,
     paddingBottom: 5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    borderBottomColor: '#efefef',
     backgroundColor: '#FFFFFF',
   },
   icon: {

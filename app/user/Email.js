@@ -64,7 +64,6 @@ export default class Email extends Component {
       keyword: this.state.searchText
     }
     post(this.returnUrl(), params).then(res => {
-      console.log(res)
       const { code, data } = res
       if (code === 1) {
         let foot = 0
@@ -152,6 +151,9 @@ export default class Email extends Component {
   }
 
   handleSearch() {
+    this.setState({
+      dataArray: []
+    })
     this.fetchData()
   }
 
@@ -181,10 +183,10 @@ export default class Email extends Component {
 
   renderData = () => {
     const { isShowResult } = this.state
+    const { params } = this.props.navigation.state;
     return (
       <View style={styles.container}>
-        <View style={{flexDirection: 'row',justifyContent: 'center',
-  alignItems: 'center',}}>
+        <View style={styles.searchBox}>
           <Image style={styles.icon} source={require('../images/icon_search.png')} />
           <TextInput
             style={styles.search}
@@ -196,7 +198,7 @@ export default class Email extends Component {
         </View>
         {
           isShowResult &&
-          <Text>共查到{this.state.total}条结果</Text>
+          <Text style={styles.result}>共查到{this.state.total}条结果</Text>
         }
 
         {
@@ -210,7 +212,6 @@ export default class Email extends Component {
               ListFooterComponent={this._renderFooter}
               onEndReached={this._onEndReached}
               onEndReachedThreshold={0.1}
-              ItemSeparatorComponent={this._separator}
               keyExtractor={(item, index) => String(item.id)}
             />
 
@@ -260,7 +261,49 @@ export default class Email extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f6f7f8',
+  },
+  searchBox: {
+    flexDirection: 'row',
+    height: 44,
+    marginBottom: 10,
+    fontFamily: 'PingFangSC-Regular',
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    top: 7,
+    left: 20,
+    width: 30,
+    height: 30,
+    zIndex: 10
+  },
+  search: {
+    flexDirection: 'row',
+    width: '87%',
+    alignItems: 'center',
+    paddingLeft: 35,
+    height: 32,
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+  },
+  result: {
+    textAlign: 'center',
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+  btn: {
+    flexDirection: 'row',
+    width: '13%',
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#E24B92'
   },
   searchBox: {
     height: 44,

@@ -15,6 +15,15 @@ export function isMobileNumberSupport(v) {
   return /^[1][345678][0-9]{9}$/.test(v);
 }
 
+export function isEmail(str){
+  const re=/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+  if (re.test(str) != true) {
+    return false;
+  }else{
+    return true;
+  }
+}
+
 export function isIphoneX () {
   const dimen = Dimensions.get('window')
   return (

@@ -15,7 +15,8 @@ const ICONS = {
 
 export default class SuccessModal extends PureComponent {
   render() {
-    const { txt, award, btn, visible, onRequestClose, onPress = () => {} } = this.props
+    const { txt, icon, award, btn, visible, onRequestClose, onPress = () => {} } = this.props
+    const succIcon = icon ? icon : require('../images/icon_succeed.png');
     return (
       <Modal
         animationType='fade'
@@ -25,7 +26,7 @@ export default class SuccessModal extends PureComponent {
       >
         <View style={styles.succViewWrap}>
           <View style={styles.succView}>
-            <Image source={ICONS.success} style={styles.succIcon} />
+            <Image source={succIcon} style={styles.succIcon} />
             <Text style={styles.succTxt}>{txt}</Text>
             {
               award && <Text style={styles.awardTxt}>积分奖励+{award}分</Text>
@@ -89,4 +90,8 @@ const styles = StyleSheet.create({
     color: '#777777',
     lineHeight: 22,
   },
+  awardTxt: {
+    color: '#E24B92',
+    paddingTop: 10
+  }
 })
