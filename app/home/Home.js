@@ -9,6 +9,7 @@ import {
   Animated,
   Easing,
   ActivityIndicator,
+  DeviceEventEmitter,
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
@@ -40,13 +41,23 @@ export default class App extends Component<Props> {
   }
   state = {
     images: IMGS,
-    data: [],
+    items: [],
     showFoot: 0,
     refreshing: false,
   }
+  componentWillMount() {
+    this.initData()
+  }
   componentDidMount() {
-    this.page = 0
-    this.getData(0)
+    DeviceEventEmitter.addListener('refresh-home', (params) => {
+      this.initData()
+   });
+  }
+  initData(state = {}) {
+    this.setState({ showFoot: 0, items: [], ...state }, () => {
+      this.page = 0
+      this.getData(0)
+    })
   }
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
@@ -101,7 +112,7 @@ export default class App extends Component<Props> {
         const newData = page == 0 ? items : this.state.data.concat(items)
         let showFoot = newData.length >= total ? 1 : 0
         this.setState({
-          data: newData,
+          items: newData,
           showFoot
         })
         this.page++
@@ -123,10 +134,7 @@ export default class App extends Component<Props> {
 
   }
   handleRefresh = () => {
-    this.setState({ showFoot: 0 }, () => {
-      this.page = 0
-      this.getData(0)
-    })
+    this.initData()
   }
   handleGoDetail = (id) => {
     this.props.navigation.push('MailDetail', {id})
@@ -145,13 +153,13 @@ export default class App extends Component<Props> {
     return <Footer showFoot={this.state.showFoot} />
   }
   render() {
-    const { images, data } = this.state
+    const { images, items } = this.state
     return (
       <View>
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
-          data={data}
+          data={items}
           renderItem={this.renderItem}
           initialNumToRender={5}
           keyExtractor={(item, index) => String(item.id)}

@@ -4248,12 +4248,6 @@ react-native-image-zoom-viewer@^2.2.13:
   dependencies:
     react-native-image-pan-zoom "^2.1.7"
 
-react-native-linear-gradient@^2.4.0:
-  version "2.4.0"
-  resolved "http://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.4.0.tgz#51d8ea12bb72a59bede9edc87b694b16b64cf435"
-  dependencies:
-    prop-types "^15.5.10"
-
 react-native-qrcode@^0.2.7:
   version "0.2.7"
   resolved "http://registry.npm.taobao.org/react-native-qrcode/download/react-native-qrcode-0.2.7.tgz#d103166fb1a5b53643e8bf7b88c0672e689ac4f8"

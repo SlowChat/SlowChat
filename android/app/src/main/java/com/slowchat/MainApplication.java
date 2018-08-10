@@ -8,7 +8,6 @@ import ui.fileselector.RNFileSelectorPackage;
 import com.rnfs.RNFSPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.imagepicker.ImagePickerPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -33,8 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFileSelectorPackage(),
             new RNFSPackage(),
             new RNViewShotPackage(),
-            new ImagePickerPackage(),
-            new LinearGradientPackage()
+            new ImagePickerPackage()
       );
     }
 
