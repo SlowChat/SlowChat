@@ -11,6 +11,9 @@ import {
 import Toast from 'react-native-easy-toast'
 
 import { get, post } from '../utils/request'
+import { isEmail } from '../utils/util'
+import VerifyCode from '../components/VerifyCode'
+import SuccessModal from '../components/SuccessModal'
 
 const ICONS = {
   forward: require('../images/icon_forward.png'),
@@ -27,7 +30,11 @@ export default class EditEmail extends Component {
     email: this.props.navigation.state.params.userEmail,
     vCode: '',
     btnText: '',
-    status: ''
+    status: '',
+    isClick: false,
+    isVcodeClick: false,
+    initStatus: false,  //验证手机
+    isSucc: false   //成功提示框
   }
   componentDidMount() {
     if (this.props.navigation.state.params.userEmail !== '') {
@@ -62,15 +69,15 @@ export default class EditEmail extends Component {
             email: '',
             vCode: '',
             status: '',
-            btnText: '绑定'
+            status: '',
+            btnText: '绑定',
+            isClick: false,
+            initStatus: true,
+            isVcodeClick: false
           })
         } else {
-          this.refs.toast.show(res.msg);
-          setTimeout(() => {
-            pop();
-          }, 1000)
+          this.setState({isSucc: true})
         }
-        
       } else {
         this.refs.toast.show(res.msg);
       }
@@ -89,6 +96,35 @@ export default class EditEmail extends Component {
     })
   }
 
+  handleChangeEmail = (text) => {
+    this.setState({
+      email: text
+    })
+    if (text.length >= 11 && isEmail(text)) {
+      this.setState({isVcodeClick: true})
+    } else {
+      this.setState({isVcodeClick: false})
+    }
+  }
+
+  handleEmail = () => {
+    const { email } = this.state;
+    if (!isEmail(email)) this.refs.toast.show('您的邮箱地址输入有误');
+  }
+
+  inputVcode = (text) => {
+    this.setState({vCode: text})
+    if (text.length >= 6) {
+      this.setState({
+        isClick: true
+      })
+    }
+  }
+
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -97,7 +133,8 @@ export default class EditEmail extends Component {
             <Text style={styles.label}>邮箱</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({email: text})}
+              onChangeText={(text) => this.handleChangeEmail(text)}
+              onBlur={() => this.handleEmail()}
               placeholder='请输入您的邮箱'
               value={this.state.email}
             />
@@ -111,18 +148,27 @@ export default class EditEmail extends Component {
             <Text style={styles.label}>验证码</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.setState({vCode: text})}
+              onChangeText={(text) => this.inputVcode(text)}
               placeholder='请输入您的验证码'
               value={this.state.vCode}
             />
           </View>
           <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={styles.save}>
+            <View style={[styles.save, this.state.isClick ? styles.active : '']}>
               <Text style={styles.saveTxt}>{this.state.btnText}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
         <Toast ref="toast" position="bottom" />
+        <SuccessModal
+          txt={'邮箱绑定成功'}
+          btn={'返回'}
+          visible={this.state.isSucc}
+          onPress={() => {
+            this.props.navigation.pop() // navigate
+          }}
+          onRequestClose={this.onRequestClose}
+        />
       </View>
     );
   }
@@ -160,7 +206,7 @@ const styles = StyleSheet.create({
     color: '#666'
   },
   input: {
-    width: '55%',
+    width: '50%',
     textAlign: 'left',
     color: '#333'
   },

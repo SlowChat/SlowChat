@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
+import Confirm from '../components/Confirm'
 import { get, post } from '../utils/request'
 
 const ICONS = {
@@ -32,6 +33,7 @@ export default class Information extends Component {
     date: this.props.navigation.state.params.birthday,
     nickname: this.props.navigation.state.params.username,
     avatar: this.props.navigation.state.params.avatar,
+    isSucc: false
   }
 
   componentDidMount() {
@@ -85,6 +87,18 @@ export default class Information extends Component {
     })
   }
 
+  onChangeName = () => {
+    this.setState({ isSucc: true })
+  }
+
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
+
+  onRightPress = () => {
+    this.setState({nickname: this.state.inputname, isSucc: false})
+  }
+
   render() {
     const { params } = this.props.navigation.state;
     return (
@@ -93,12 +107,7 @@ export default class Information extends Component {
         <View style={styles.link}>
           <View style={styles.menu}>
             <Text style={styles.label}>昵称</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => this.setState({nickname: text})}
-              placeholder='请输入填写您的用户名'
-              value={this.state.nickname}
-            />
+            <Text style={styles.input} onPress={() => this.onChangeName()}>{this.state.nickname}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
           <View style={styles.menu}>
@@ -160,6 +169,27 @@ export default class Information extends Component {
           </View>
         </View>
         <Toast ref="toast" position="bottom" />
+        <Confirm
+          tit='请输入新的昵称'
+          leftBtnTxt='取消'
+          rightBtnTxt='确定'
+          autoView={
+            <TextInput
+              style={styles.nickInput}
+              onChangeText={(text) => this.setState({inputname: text})}
+              placeholder='请输入填写您的用户名'
+              value={this.state.nickname}
+            />
+          }
+          visible={this.state.isSucc}
+          onLeftPress={() => {
+            this.onRequestClose()
+          }}
+          onRightPress={() => {
+            this.onRightPress() // navigate
+          }}
+          onRequestClose={this.onRequestClose}
+        />
       </View>
     );
   }
@@ -200,6 +230,17 @@ const styles = StyleSheet.create({
     width: '62%',
     textAlign: 'right',
     color: '#B4B4B4'
+  },
+  nickInput: {
+    width: '80%',
+    height: 40,
+    marginBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 10,
+    color: '#B4B4B4',
+    backgroundColor: '#eee',
+    alignItems:'center',
   },
   picker: {
     position: 'absolute',

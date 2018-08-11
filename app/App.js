@@ -49,6 +49,7 @@ export default createStackNavigator({
       header: null,
     }
   },
+  User: { screen: UserScreen },
   Regist: { screen: RegistScreen },
   RegistSucc: { screen: RegistSuccScreen },
   ErrorTip: { screen: ErrorTipScreen },
