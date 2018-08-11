@@ -12,15 +12,18 @@ const ICONS = {
 
 export default class AvatarHeader extends PureComponent {
   render() {
-    console.log(this.props.data);
     const data = this.props.data || {}
     const [send_date, send_time] = (data.send_time || '').split(' ')
+    let { avatar, user_nickname } = data.user || {}
+    if (!avatar || avatar.indexOf('http') != 0) {
+      avatar = ICONS.head
+    }
     return (
       <View style={styles.avatarWrap}>
-        <Image style={styles.avatar} source={ICONS.head} />
+        <Image style={styles.avatar} source={avatar} />
         <View style={styles.avatarRight}>
           <View style={styles.nameWrap}>
-            <Text style={styles.name}>给未来的自</Text>
+            <Text style={styles.name}>{user_nickname}</Text>
             <Text style={styles.time}>{send_time}</Text>
           </View>
           <Text style={styles.date}>发信时间：{send_date}</Text>

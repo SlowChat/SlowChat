@@ -16,6 +16,7 @@ export default class ReplyBox extends Component {
     this.refs.input.focus()
   }
   clear() {
+    console.log("=======");
     this.setState({ content: '' })
   }
   handleChange = (txt) => {
@@ -29,7 +30,7 @@ export default class ReplyBox extends Component {
     const { content } = this.state
     return (
       <View style={styles.container}>
-        <TextInput ref="input" Value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
+        <TextInput ref="input" value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
           autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
         <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
       </View>

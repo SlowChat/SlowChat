@@ -111,7 +111,7 @@ export default class MailDetail extends Component {
       console.log(res);
       if (res.code == 1) {
         const { comment, ...items } = res.data.items
-        const comments = comment ? [comment] : []
+        const comments = comment && comment.length > 0 ? comment : []
         this.setState({
           detail: items,
           comments
@@ -147,9 +147,14 @@ export default class MailDetail extends Component {
       })
       if (res && res.code == 1) {
         this.refs.awardTipRef.show()
+        this.refs.replyBox.clear()
         const { comments } = this.state
         if (pid == 0) {
-          comments.unshift()
+          comments.unshift({
+            id: new Date().getTime(),
+            user: Global.user,
+            content,
+          })
         } else {
           const index = comments.findIndex(item => item.id == pid)
           if (index > -1) {

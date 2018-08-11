@@ -77,7 +77,8 @@ export default createStackNavigator({
 }, {
   initialRouteName: 'Start',
   navigationOptions: {
-    headerBackTitleVisible: false,
+    // headerBackTitleVisible: false,
+    headerBackTitle: null,
     headerTintColor: '#E24B92',
     headerStyle: {
       backgroundColor: '#FFFFFF',

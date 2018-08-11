@@ -22,7 +22,7 @@ export default class ReplyItem extends PureComponent {
     const { item: {reply, ...item} } = this.props.data
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
 
-    let avatar = item.user.avatar
+    let { avatar } = item.user || {}
     if (!avatar || avatar.indexOf('http') != 0) {
       avatar = ICONS.head
     }
@@ -38,16 +38,20 @@ export default class ReplyItem extends PureComponent {
               <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.replyList}>
-            {
-              reply && reply.map(item => {
-                return (<View style={styles.reply}>
-                  <Text style={[styles.replyTxt, styles.replyName]}>{item.user.user_nickname}：</Text>
-                  <Text style={styles.replyTxt}>{item.content}</Text>
-                </View>)
-              })
-            }
-          </View>
+          {
+            reply && reply.length > 0 && (
+              <View style={styles.replyList}>
+                {
+                  reply.map(item => {
+                    return (<View key={item.id} style={styles.reply}>
+                      <Text style={[styles.replyTxt, styles.replyName]}>{item.user.user_nickname}：</Text>
+                      <Text style={styles.replyTxt}>{item.content}</Text>
+                    </View>)
+                  })
+                }
+              </View>
+            )
+          }
         </View>
       </View>
     )
