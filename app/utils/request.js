@@ -2,7 +2,6 @@ import { Platform } from 'react-native'
 import Constant from './constant'
 import Storage from './storage'
 import URL from './url'
-import Global from './global'
 
 const BASE_URL = Constant.DOMAIN + '/'
 
@@ -14,7 +13,7 @@ const getHeaders = async (unneed) => {
   const token = await Storage.getToken()
   return {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    'MY-Token': getToken(),
+    'MY-Token': await Storage.getToken(),
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
@@ -36,8 +35,6 @@ export async function get(url, params, unneedLogin) {
 }
 
 export async function post(url, params, unneedLogin) {
-  console.log(url)
-  console.log(params)
   const headers = await getHeaders(unneedLogin)
   console.log(url)
   console.log(params)
@@ -71,12 +68,3 @@ export async function upload(uri) {
     body: formData,
   }).then((response) => response.json())
 }
-
-// {
-//   "code": 1,
-//   "msg": "上传成功",
-//   "data": [
-//     "url":"",
-//     "filename":"20180801\f659c44c9594190f809cd5f9157a08cc.jpg"
-//   ]
-// }

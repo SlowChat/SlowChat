@@ -6,7 +6,7 @@ import {
   View,
   Image,
   Modal,
-  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 const ICONS = {
@@ -21,14 +21,14 @@ export default class ErrorModal extends PureComponent {
   componentWillUnmount() {
     this.clearTimer()
   }
-  
+
   show({txt}) {
     this.setState({ visible: true, txt }, () => {
       this.clearTimer()
       this.delayClose()
     })
   }
-  hide() {
+  hide = () => {
     this.clearTimer()
     this.setState({ visible: false, txt: '' })
   }
@@ -54,12 +54,14 @@ export default class ErrorModal extends PureComponent {
         visible={visible}
         onRequestClose={() => {this.onRequestClose()}}
       >
-        <View style={styles.errorViewWrap}>
-          <View style={styles.errorView}>
-            <Image source={ICONS.error} style={styles.errorIcon} />
-            <Text style={styles.errorTxt}>{txt}</Text>
+        <TouchableWithoutFeedback onPress={this.hide}>
+          <View style={styles.errorViewWrap}>
+            <View style={styles.errorView}>
+              <Image source={ICONS.error} style={styles.errorIcon} />
+              <Text style={styles.errorTxt}>{txt}</Text>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     )
   }

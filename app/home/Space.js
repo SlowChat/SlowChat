@@ -14,6 +14,8 @@ import HeaderTip from '../components/HeaderTip'
 import SearchBox from '../components/SearchBox'
 import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
+import Blank from '../components/Blank'
+import ErrorTip from '../components/ErrorTip'
 
 import { post } from '../utils/request'
 
@@ -36,6 +38,8 @@ export default class Space extends Component<Props> {
     activeTab: 0,
     data: [],
     total: 0,
+    isBlank: false,
+    isError: false,
   }
   componentWillMount() {
     this.init()
@@ -54,7 +58,7 @@ export default class Space extends Component<Props> {
     this.init({activeTab: index})
     this._flatList.scrollToOffset({animated: true, offset: 0})
   }
-  init(state = {}) {
+  init = (state = {}) => {
     this.setState({ showFoot: 0, items: [], ...state }, () => {
       this.page = 0
       this.getData(0)
@@ -79,20 +83,31 @@ export default class Space extends Component<Props> {
         const { total, items } = res.data
         const newData = page == 0 ? items : this.state.data.concat(items)
         let showFoot = newData.length >= total ? 1 : 0
+        let isBlank = showFoot.length == 0
         this.setState({
           data: newData,
-          showFoot
+          showFoot,
+          isBlank
         })
         this.page++
       } else {
-        this.refs.toast.show(res.msg || '慢聊飘走了')
-        this.setState({ showFoot: 0 })
+        this.dealError()
       }
     } catch (e) {
-      console.error(e)
+      this.dealError()
     } finally {
       this.loading = false
     }
+  }
+  dealError() {
+    const state = {}
+    if (this.state.data.length == 0) {
+      state.isError = true
+    } else {
+      // this.refs.toast.show(res.msg || '慢聊飘走了')
+    }
+    state.showFoot = 0
+    this.setState({ state })
   }
   handleLoadmore = () => {
     this.getData(this.page+1)
@@ -105,6 +120,12 @@ export default class Space extends Component<Props> {
     return <Footer showFoot={this.state.showFoot} />
   }
   render() {
+    if (this.state.isError) {
+      return <ErrorTip onPress={this.init} />
+    }
+    if (this.state.isBlank) {
+      return <Blank />
+    }
     const { activeTab, data } = this.state
     return (
       <View style={styles.container}>
@@ -131,7 +152,7 @@ export default class Space extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F6F6F6',
+    backgroundColor: '#F9F9F9',
     fontFamily: 'PingFangSC-Regular',
   },
   header: {

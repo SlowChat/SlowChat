@@ -6,7 +6,7 @@ import {
   View,
   Modal,
   ImageBackground,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 
@@ -27,7 +27,7 @@ export default class AwardTip extends PureComponent {
       this.delayClose()
     })
   }
-  hide() {
+  hide = () => {
     this.clearTimer()
     this.setState({ visible: false })
   }
@@ -54,17 +54,19 @@ export default class AwardTip extends PureComponent {
         visible={visible}
         onRequestClose={() => {this.onRequestClose()}}
       >
-        <View style={styles.awardViewWrap}>
-          <ImageBackground style={styles.awardView} source={ICONS.bg}>
-            <View style={styles.awardLeft}>
-              <Text style={styles.award}>+{num}</Text>
-            </View>
-            <View style={styles.awardRight}>
-              <Text style={styles.awardTxt}>积分奖励+{num}分</Text>
-              <Text style={styles.txt}>{txt}</Text>
-            </View>
-          </ImageBackground>
-        </View>
+        <TouchableWithoutFeedback onPress={this.hide}>
+          <View style={styles.awardViewWrap}>
+            <ImageBackground style={styles.awardView} source={ICONS.bg}>
+              <View style={styles.awardLeft}>
+                <Text style={styles.award}>+{num}</Text>
+              </View>
+              <View style={styles.awardRight}>
+                <Text style={styles.awardTxt}>积分奖励+{num}分</Text>
+                <Text style={styles.txt}>{txt}</Text>
+              </View>
+            </ImageBackground>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     )
   }

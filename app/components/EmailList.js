@@ -26,6 +26,15 @@ export default class EmailList extends Component {
     this.setState({isSucc: true})
   }
 
+  handleNav = () => {
+    const { item, navigate, status } = this.props;
+    if (status == 'draft') {
+      navigate('DraftDetail', { id: item.id })
+    } else {
+      navigate('ReserveDetail', { id: item.id, status: item.status })
+    }
+  }
+
   renderStatus() {
     /*
     draft: 草稿
@@ -77,9 +86,9 @@ export default class EmailList extends Component {
     }
   }
   render() {
-    const { item, navigate, status } = this.props;
+    const { item, status } = this.props;
     return (
-      <TouchableWithoutFeedback onPress={() => navigate('MailDetail', { id: item.id })}>
+      <TouchableWithoutFeedback onPress={this.handleNav}>
         <View>
           <View style={styles.list}>
             <Image style={styles.icon} source={ICONS.show} />
@@ -96,7 +105,7 @@ export default class EmailList extends Component {
           <Confirm
             tit={status === 'reservation' ? '确定取消发送邮件吗' : '删除草稿'}
             leftBtnTxt={status === 'reservation' ? '查看积分规则' : '取消'}
-            rightBtnTxt={status === 'reservation' ? '再想想' : '取消删除'}
+            rightBtnTxt={status === 'reservation' ? '再想想' : '确定删除'}
             autoView={
               status === 'reservation' ? (
                 <View>

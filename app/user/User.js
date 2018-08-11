@@ -51,7 +51,7 @@ export default class User extends Component {
       ),
     }
   }
-  
+
   state = {
     mobile: '',
     userEmail: '',
@@ -67,7 +67,7 @@ export default class User extends Component {
     msgCount: 0,
     isSucc: false
   }
-   
+
   componentWillMount() {
     get('api/user/userInfo.html').then(res => {
       const { code, data } = res
@@ -93,7 +93,7 @@ export default class User extends Component {
           birthday: data.birthday,
           msgCount: data.msg_count
         })
-      } 
+      }
     }).catch(e => {
       console.log(e)
     })

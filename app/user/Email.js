@@ -10,14 +10,15 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import EmailList from '../components/EmailList'
-import UserSearch from '../components/UserSearch'
+// import UserSearch from '../components/UserSearch'
+import Footer from '../components/Footer'
 import { get, post } from '../utils/request'
 
 export default class Email extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
-      title: '草稿箱',
+      title: params.title || '',
       headerRight: (
         <View style={styles.icon}>
           <Text style={styles.editBtn}>编辑</Text>
@@ -44,26 +45,43 @@ export default class Email extends Component {
   pageSize = 10
 
   componentDidMount() {
-    const { params } = this.props.navigation.state;
-    if (params.status === 'reservation') {
-      this.sendState = 1
-    } else if (params.status === 'sent') {
-      this.sendState = 2
-    } else if (params.status === 'public') {
+    const status = this.getStatus()
+    let title = '草稿箱'
+    if (status === 'reservation') {
+      this.sendState = 0
+      title = '预定发送信件'
+    } else if (status === 'sent') {
+      this.sendState = 10
+      title = '完成发送信件'
+    } else if (status === 'public') {
       this.type = 2
+      title = '我公开的信件'
     }
     this.fetchData()
+    if (title) {
+      this.props.navigation.setParams({ title })
+    }
+  }
+
+  getStatus() {
+    const { params = {} } = this.props.navigation.state;
+    return params.status
   }
 
   fetchData = () => {
     const params = {
       p: this.pageNo,
       s: this.pageSize,
-      state: this.sendState,
-      type: this.type,
-      keyword: this.state.searchText
+      keyword: this.state.searchText || ''
+    }
+    if (this.type !== null) {
+      params.type = this.type
+    }
+    if (this.sendState !== null) {
+      params.state = this.sendState
     }
     post(this.returnUrl(), params).then(res => {
+      console.log(res);
       const { code, data } = res
       if (code === 1) {
         let foot = 0
@@ -91,42 +109,17 @@ export default class Email extends Component {
   }
 
   _renderItem = ({item}) => {
-    const { params } = this.props.navigation.state;
+    const status = this.getStatus()
     const { navigate } = this.props.navigation;
     return (
-      <View>
-        <EmailList status={params.status} item={item} navigate={navigate} />
-      </View>
+      <EmailList status={status} item={item} navigate={navigate} />
     )
   }
 
     // 列表底部显示
   _renderFooter = () => {
-    console.log(this.state.showFoot)
-    if (this.state.showFoot === 1) {
-      return (
-        <View style={styles.footer}>
-          <Text style={{color: '#999'}}>
-              没有更多数据了
-          </Text>
-        </View>
-      )
-    } else if (this.state.showFoot === 2) {
-      return (
-        <View style={styles.footer}>
-          <ActivityIndicator />
-          <Text style={{color: '#999'}}>正在加载更多数据...</Text>
-        </View>
-      )
-    } else if (this.state.showFoot === 0) {
-      return (
-        <View style={styles.footer}>
-          <Text />
-        </View>
-      )
-    }
+    return <Footer showFoot={this.state.showFoot} />
   }
-
     // 下拉加载更多
   _onEndReached = () => {
     // 如果是正在加载中或没有更多数据了，则返回
@@ -237,8 +230,8 @@ export default class Email extends Component {
   }
 
   returnUrl() {
-    const { params } = this.props.navigation.state;
-    if (params.status === 'draft') {
+    const status = this.getStatus()
+    if (status === 'draft') {
       return 'api/mail/getDraftList.html'
     } else {
       return 'api/mail/getMyList.html'
@@ -297,41 +290,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 5,
     paddingBottom: 5
-  },
-  btn: {
-    flexDirection: 'row',
-    width: '13%',
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#E24B92'
-  },
-  searchBox: {
-    height: 44,
-    fontFamily: 'PingFangSC-Regular',
-    paddingLeft: 15,
-    paddingRight: 15,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    position: 'absolute',
-    top: 0,
-    left: 5,
-    width: 30,
-    height: 30,
-    zIndex: 10
-  },
-  search: {
-    flexDirection: 'row',
-    width: '87%',
-    alignItems: 'center',
-    paddingLeft: 35,
-    height: 32,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: '#CCCCCC',
   },
   btn: {
     flexDirection: 'row',

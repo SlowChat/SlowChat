@@ -41,7 +41,13 @@ export default {
       return ''
     }
   },
-  clearAll: () => {
+  clear: () => {
+    Global.token = ''
+    Global.user = {}
+    storage.remove({
+      key: 'slowchattoken'
+    })
+    storage.clearMapForKey('slowchattoken')
     storage.clearMap()
   }
 }

@@ -14,14 +14,14 @@ const ICONS = {
 
 export default class ErrorTip extends PureComponent {
   render() {
-    const { txt, visible } = this.props
+    const { txt, visible, onPress } = this.props
     return (
       <View style={styles.container}>
         <View style={styles.wrap}>
           <Image source={ICONS.error} style={styles.icon} />
           <Text style={styles.txt}>您的网络遇到问题</Text>
-          <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btnTxt}>重新加载网络</Text>
+          <TouchableOpacity style={styles.btn} onPress={onPress}>
+            <Text style={styles.btnTxt}>重新加载数据</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -31,10 +31,8 @@ export default class ErrorTip extends PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingTop: 142,
     alignItems:'center',
-    backgroundColor: '#FFFFFF',
   },
   wrap: {
     justifyContent:'center',
@@ -62,6 +60,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
     borderRadius: 36,
+    backgroundColor: '#FFFFFF',
   },
   btnTxt: {
     fontSize: 18,

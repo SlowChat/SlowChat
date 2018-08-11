@@ -11,16 +11,16 @@ import {
 // import LinearGradient from 'react-native-linear-gradient'
 
 const ICONS = {
-  ing: require('../images/icon_ing.png'),
-  ed: require('../images/icon_ed.png'),
-  cancel: require('../images/icon_cancel.png'),
+  0: require('../images/icon_ing.png'),
+  10: require('../images/icon_ed.png'),
+  20: require('../images/icon_cancel.png'),
   bg: require('../images/condition_bar.png'),
 }
 
 const STATUS = {
-  ing: '待发送',
-  ed: '已完成发送',
-  cancel: '已取消发送',
+  0: '待发送',
+  10: '已完成发送',
+  20: '已取消发送',
 }
 
 
@@ -28,12 +28,13 @@ const STATUS = {
 export default class SendTip extends PureComponent {
   render() {
     const { type, onPress } = this.props
+    if (type == null || typeof type == 'undefined') return null
     return (
       <ImageBackground source={ICONS.bg} style={styles.container}>
         <Image style={styles.icon} source={ICONS[type]} />
         <Text style={styles.txt}>{STATUS[type]}</Text>
         {
-          type == 'ing' && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+          type == 0 && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
             <View style={styles.btnWrap}>
               <Text style={styles.btn}>取消发送</Text>
             </View>

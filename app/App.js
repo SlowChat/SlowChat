@@ -13,7 +13,7 @@ import ErrorTipScreen from './components/ErrorTip'
 import NewMailScreen from './scenes/NewMail'
 import MailDetailScreen from './scenes/MailDetail'
 import DraftDetailScreen from './scenes/DraftDetail'
-import ReserveDetailScreen from './scenes/ReserveDetail'
+// import ReserveDetailScreen from './scenes/ReserveDetail'
 import ShareScreen from './scenes/Share'
 
 import UserScreen from './user/User'
@@ -68,7 +68,7 @@ export default createStackNavigator({
   NewMail: { screen: NewMailScreen },
   MailDetail: { screen: MailDetailScreen },
   DraftDetail: { screen: DraftDetailScreen },
-  ReserveDetail: { screen: ReserveDetailScreen },
+  // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
     screen: ShareScreen,
     navigationOptions: {
@@ -76,7 +76,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Start',
+  initialRouteName: 'BottomTabs',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
