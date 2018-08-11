@@ -76,7 +76,7 @@ export default createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'BottomTabs',
+  initialRouteName: 'Start',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
