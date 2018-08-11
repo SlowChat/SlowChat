@@ -8,7 +8,6 @@ import {
   FlatList,
   Animated,
   Easing,
-  ActivityIndicator,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -16,7 +15,9 @@ import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
+import Loading from '../components/Loading'
 import Footer from '../components/Footer'
+import ErrorTip from '../components/ErrorTip'
 
 import { post } from '../utils/request'
 
@@ -43,15 +44,19 @@ export default class App extends Component<Props> {
     images: IMGS,
     items: [],
     showFoot: 0,
+    showLoading: true,
+    showError: false,
     refreshing: false,
   }
   componentWillMount() {
     this.initData()
+    // this.props.navigation.reset('Login')
   }
   componentDidMount() {
     DeviceEventEmitter.addListener('refresh-home', (params) => {
       this.initData()
    });
+  //  console.log(this.props.navigation.popToTop)
   }
   initData(state = {}) {
     this.setState({ showFoot: 0, items: [], ...state }, () => {
@@ -93,7 +98,6 @@ export default class App extends Component<Props> {
     }
   }
 
-
   async getData(page = 0) {
     if (this.loading || this.state.showFoot == 1) return
     this.loading = true
@@ -113,25 +117,27 @@ export default class App extends Component<Props> {
         let showFoot = newData.length >= total ? 1 : 0
         this.setState({
           items: newData,
-          showFoot
+          showFoot,
         })
         this.page++
       } else if (res.code == 10001) {
-        this.props.navigation.push('Login')
+        this.props.navigation.replace('Login')
       } else {
         this.refs.toast.show(res.msg || '慢聊飘走了')
         this.setState({ showFoot: 0 })
       }
     } catch (e) {
-      console.error(e)
+      console.log(e)
     } finally {
       this.loading = false
+      if (this.state.showLoading) {
+        this.setState({ showLoading: false })
+      }
     }
   }
 
   handleLoadmore = () => {
     this.setState({ showFoot: 2 })
-
   }
   handleRefresh = () => {
     this.initData()
@@ -153,9 +159,9 @@ export default class App extends Component<Props> {
     return <Footer showFoot={this.state.showFoot} />
   }
   render() {
-    const { images, items } = this.state
+    const { showLoading, showError, images, items } = this.state
     return (
-      <View>
+      <View style={styles.container}>
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
@@ -171,6 +177,8 @@ export default class App extends Component<Props> {
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
         />
+        { showLoading && <Loading /> }
+        { showError && <ErrorTip onPress={this.init} /> }
         <Toast ref="toast" position="center" />
       </View>
     )
@@ -180,7 +188,7 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F9F9F9',
   },
   itemWrap: {
     backgroundColor: '#F6F6F6',

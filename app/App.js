@@ -29,7 +29,7 @@ import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
 
-export default createStackNavigator({
+const StackApp = createStackNavigator({
   Start: {
     screen: StartScreen,
     navigationOptions: {
@@ -95,6 +95,14 @@ export default createStackNavigator({
     // }
   }
 });
+
+export default StackApp
+// class App extends PureComponent {
+//   // StackApp
+//   render() {
+//     return
+//   }
+// }
 //
 // import Storage from './utils/storage'
 //

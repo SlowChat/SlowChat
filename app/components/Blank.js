@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class Confirm extends PureComponent {
+export default class Blank extends PureComponent {
   render() {
     return (
       <View style={styles.container}>

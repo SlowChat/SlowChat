@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
+
 import Toast from 'react-native-easy-toast'
 import Alert from '../components/Alert'
 import HeaderTip from '../components/HeaderTip'
@@ -53,7 +55,7 @@ export default class DraftDetail extends Component {
 
       }
     } catch (e) {
-      console.error(e)
+      console.log(e)
     } finally {
       this.loading = false
     }
@@ -118,14 +120,14 @@ export default class DraftDetail extends Component {
           </View>
           <Attachment items={attachs} />
         </ScrollView>
-        <View style={styles.bottom}>
+        <SafeAreaView style={styles.bottom}>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.openDelete}>
             <Image style={styles.bottomIcon} source={ICONS.delete} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.handleEdit}>
             <Image style={styles.bottomIcon} source={ICONS.edit} />
           </TouchableOpacity>
-        </View>
+        </SafeAreaView>
         <Alert
           ref="alert"
           title="删除草稿"

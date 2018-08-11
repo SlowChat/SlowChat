@@ -152,7 +152,7 @@ export default class MailDetail extends Component {
 
       }
     } catch (e) {
-      console.error(e)
+      console.log(e)
     } finally {
       this.loading = false
     }
@@ -223,7 +223,7 @@ export default class MailDetail extends Component {
         this.refs.errorModalRef.show({txt: res.msg || '回复失败，稍后尝试'})
       }
     } catch (e) {
-      console.error(e)
+      console.log(e)
     } finally {
       this.pid = 0
     }
@@ -234,6 +234,7 @@ export default class MailDetail extends Component {
     post('api/mail/cancel.html', { id }).then((res) => {
       if (res.code == 1) {
         this.refs.toast.show('取消发送成功');
+        this.setState({ status: 20 })
       } else if (res.code == 10001) {
          this.props.navigation.navigate('Login')
       } else {

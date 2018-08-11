@@ -91,6 +91,7 @@ export default class AvatarHeader extends Component {
       title: '选择视频',
       takePhotoButtonTitle: '拍摄视频',
       chooseFromLibraryButtonTitle: '选择视频',
+      cancelButtonTitle: '取消',
       mediaType: 'video',
       videoQuality: 'medium'
     }

@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   moreBtn: {
+    width: 262,
     height: 42,
     alignItems: 'center',
     justifyContent: 'center',

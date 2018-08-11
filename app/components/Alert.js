@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-export default class Confirm extends PureComponent {
+export default class Alert extends PureComponent {
   state = {
     visible: false
   }

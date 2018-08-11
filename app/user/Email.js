@@ -4,13 +4,16 @@ import {
   Text,
   View,
   Image,
+  Button,
   ActivityIndicator,
   FlatList,
   TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
+import {SafeAreaView} from 'react-navigation'
 import EmailList from '../components/EmailList'
 // import UserSearch from '../components/UserSearch'
+import Blank from '../components/Blank'
 import Footer from '../components/Footer'
 import { get, post } from '../utils/request'
 
@@ -19,13 +22,11 @@ export default class Email extends Component {
     const { params = {} } = navigation.state
     return {
       title: params.title || '',
-      headerRight: (
-        <View style={styles.icon}>
-          <Text style={styles.editBtn}>编辑</Text>
-        </View>
-      ),
+      headerRight: params.headerRight
     }
   }
+
+
   state = {
     isLoading: true,
     // 网络请求状态
@@ -33,7 +34,6 @@ export default class Email extends Component {
     dataArray: [],
     showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
     isRefreshing: false, // 下拉控制
-    spaceTxt: '请尝试搜索其他关键词',
     isSpacePage: true,
     total: 0,
     searchText: '',
@@ -58,9 +58,16 @@ export default class Email extends Component {
       title = '我公开的信件'
     }
     this.fetchData()
-    if (title) {
-      this.props.navigation.setParams({ title })
-    }
+    this.props.navigation.setParams({
+      title,
+      headerRight: status == 'draft' ? (
+        <Button title="编辑" color="#666666" onPress={this.handleEdit} />
+      ) : null,
+    })
+  }
+
+  handleEdit = () => {
+
   }
 
   getStatus() {
@@ -207,24 +214,9 @@ export default class Email extends Component {
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => String(item.id)}
             />
-
-          ) : (
-            <View style={styles.space}>
-              {
-                this.state.isSpacePage && (
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}>
-                    <Text style={styles.spaceTit}>没有找到相匹配的结果</Text>
-                    <Text style={styles.spaceTxt}>{this.state.spaceTxt}</Text>
-                  </View>
-                )
-              }
-            </View>
-          )
+          ) : this.state.isSpacePage && <Blank />
         }
+        <SafeAreaView />
       </View>
     )
   }
@@ -315,27 +307,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderStyle: 'solid'
   },
-  space: {
-    flex: 1,
-    // paddingLeft: '10%',
-    // paddingRight: '10%',
-    // justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f6f7f8',
-    paddingTop: 170,
-  },
+  
   spaceImg: {
     width: 64,
     height: 64
   },
-  spaceTit: {
-    fontSize: 18,
-    color: '#999',
-  },
-  spaceTxt: {
-    fontSize: 14,
-    color: '#999',
-    textAlign: 'center',
-    lineHeight: 24
-  }
 });

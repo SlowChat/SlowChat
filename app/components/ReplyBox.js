@@ -8,6 +8,8 @@ import {
   TextInput,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
+
 export default class ReplyBox extends Component {
   state = {
     content: ''
@@ -29,11 +31,11 @@ export default class ReplyBox extends Component {
   render() {
     const { content } = this.state
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TextInput ref="input" value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
           autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
         <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
-      </View>
+      </SafeAreaView>
     )
   }
 }
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 15,
     color: '#333',
-    width: 300,
+    flex: 1,
     height: 32,
     backgroundColor: '#F6F6F6',
     borderRadius: 18,

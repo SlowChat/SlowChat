@@ -47,7 +47,6 @@ export default {
     storage.remove({
       key: 'slowchattoken'
     })
-    storage.clearMapForKey('slowchattoken')
     storage.clearMap()
   }
 }

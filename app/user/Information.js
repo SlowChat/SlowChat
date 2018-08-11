@@ -8,8 +8,10 @@ import {
   Button,
   TextInput,
   Picker,
-  TouchableWithoutFeedback
+  TouchableOpacity,
 } from 'react-native';
+
+import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
 import Confirm from '../components/Confirm'
@@ -19,6 +21,18 @@ const ICONS = {
   forward: require('../images/icon_forward.png'),
 }
 
+const SEX_OBJ = {
+  0: '保密',
+  1: '男',
+  2: '女'
+}
+
+const SEXID_OBJ = {
+  '保密': 0,
+  '男': 1,
+  '女': 2
+}
+
 export default class Information extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -26,41 +40,17 @@ export default class Information extends Component {
       title: '个人资料',
     }
   }
-  state = {
-    switchBtn: true,
-    isShow: false,
-    sex: '',
-    date: this.props.navigation.state.params.birthday,
-    nickname: this.props.navigation.state.params.username,
-    avatar: this.props.navigation.state.params.avatar,
-    isSucc: false
-  }
-
-  componentDidMount() {
-    this.setState({
-      sex: this.getSexValue()
-    })
-  }
-
-  getSexValue() {
-    const { sex } = this.props.navigation.state.params;
-    if (sex === 0) {
-      return '保密';
-    } else if (sex === 1) {
-      return '男'
-    } else if (sex === 2) {
-      return '女'
-    }
-  }
-
-  getSexid() {
-    const { sex } = this.state;
-    if (sex === '保密') {
-      return 0;
-    } else if (sex === '男') {
-      return 1
-    } else if (sex === '女') {
-      return 2
+  constructor(props) {
+    super(props)
+    const { avatar, birthday, username, sex } = this.props.navigation.state.params || {}
+    this.state = {
+      switchBtn: true,
+      isShow: false,
+      sex: SEX_OBJ[sex] || '',
+      date: birthday,
+      nickname: username,
+      avatar: avatar,
+      isSucc: false
     }
   }
 
@@ -71,10 +61,10 @@ export default class Information extends Component {
     }, 1000)
   }
 
-  handleSubmit() {
+  handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
     const { sex, nickname, avatar, date } = this.state;
-    post('api/user/userInfo.html', { user_nickname: nickname, avatar, sex: this.getSexid(), birthday: date}).then(res => {
+    post('api/user/userInfo.html', { user_nickname: nickname, avatar, sex: SEXID_OBJ[sex], birthday: date}).then(res => {
       console.log(res)
       if (res.code == 1) {
         this.refs.toast.show(res.msg);
@@ -150,13 +140,12 @@ export default class Information extends Component {
             />
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
-          
-          
-        <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-          <View style={styles.exit}>
-            <Text style={styles.exitTxt}>保存</Text>
-          </View>
-        </TouchableWithoutFeedback>
+        </View>
+        <SafeAreaView style={styles.exitWrap}>
+          <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleSubmit}>
+            <Text style={styles.exitTxt}>保 存</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
         <View>
             <Picker
               selectedValue={this.state.sex}
@@ -166,7 +155,6 @@ export default class Information extends Component {
               <Picker.Item label="男" value="男" />
               <Picker.Item label="女" value="女" />
             </Picker>
-          </View>
         </View>
         <Toast ref="toast" position="bottom" />
         <Confirm
@@ -198,12 +186,12 @@ export default class Information extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efefef',
+    backgroundColor: '#f9f9f9',
   },
   link: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
   },
   menu: {
     flexDirection: 'row',
@@ -249,16 +237,17 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
   },
-  exit: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: 50,
+  exitWrap: {
     backgroundColor: '#fff',
+  },
+  exit: {
+    height: 50,
     alignItems:'center',
     justifyContent: 'center',
   },
   exitTxt: {
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
     color: '#EC3632'
   },
   switch: {

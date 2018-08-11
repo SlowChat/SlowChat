@@ -47,7 +47,6 @@ export default class HomeItem extends PureComponent<Props> {
 const styles = StyleSheet.create({
   container: {
     height: 44,
-    marginTop: 20,
     fontFamily: 'PingFangSC-Regular',
     paddingLeft: 15,
     paddingRight: 15,

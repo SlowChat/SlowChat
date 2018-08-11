@@ -77,9 +77,10 @@ export default class SendMail extends Component {
 
   async getData() {
     if (this.loading) return
+    const { id } = this.props.navigation.state.params || {}
+    if (typeof id == 'undefined') return
     this.loading = true
     try {
-      const { id } = this.props.navigation.state.params || {}
       const res = await post('api/mail/getInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
@@ -95,7 +96,7 @@ export default class SendMail extends Component {
         })
       }
     } catch (e) {
-      console.error(e)
+      console.log(e)
     } finally {
       this.loading = false
     }
@@ -103,8 +104,12 @@ export default class SendMail extends Component {
 
   setParams(key, value) {
     let { showSendMe } = this.state
-    if (key == 'email' && value == '发给自己') {
-      showSendMe = false
+    if (key == 'email') {
+      if (value == '发给自己' && showSendMe != false) {
+        showSendMe = false
+      } else if (value != '发给自己' && showSendMe != true) {
+        showSendMe = true
+      }
     }
     const { params } = this.state
     params[key] = value

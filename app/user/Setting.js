@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
+import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Storage from '../utils/storage'
 import Avatar from '../components/Avatar'
@@ -86,9 +87,12 @@ export default class Setting extends Component {
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity activeOpacity={0.6} style={styles.exit} onPress={this.handleLogout}>
-          <Text style={styles.exitTxt}>退出当前账号</Text>
-        </TouchableOpacity>
+        <SafeAreaView style={styles.exitWrap}>
+          <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleLogout}>
+            <Text style={styles.exitTxt}>退出当前账户</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+
         <Toast ref="toast" position="bottom" />
       </View>
     );
@@ -101,10 +105,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
   },
   link: {
+    flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#efefef',
   },
   menu: {
+    backgroundColor: '#fff',
     flexDirection: 'row',
     height: 44,
     paddingLeft: 10,
@@ -130,17 +136,17 @@ const styles = StyleSheet.create({
     // textAlign: 'right',
     color: '#B4B4B4'
   },
-  exit: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 50,
+  exitWrap: {
     backgroundColor: '#fff',
+  },
+  exit: {
+    height: 50,
     alignItems:'center',
     justifyContent: 'center',
   },
   exitTxt: {
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
     color: '#EC3632'
   },
   switch: {

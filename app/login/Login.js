@@ -38,7 +38,7 @@ export default class Login extends PureComponent<Props> {
     if (Platform.OS === 'android' && !this.back) {
       BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBack);
     }
-    
+
   }
   componentWillUnmount() {
     if (Platform.OS === 'android' && !this.back) {
@@ -87,7 +87,7 @@ export default class Login extends PureComponent<Props> {
         this.showErrorModal(res.msg || '登录失败，请稍后重试')
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
       this.showErrorModal('登录失败，请稍后重试')
     }
   }

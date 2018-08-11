@@ -29,7 +29,7 @@ export async function get(url, params, unneedLogin) {
       ...headers,
     },
   }).then((response) => response.json()).catch((err) => {
-    console.error(eval("("+ err +")"));
+    console.log(eval("("+ err +")"));
     throw err
   });
 }
@@ -46,10 +46,11 @@ export async function post(url, params, unneedLogin) {
       ...headers,
     },
     body: JSON.stringify(params),
-  }).then((response) => response.json()).catch((err) => {
-    console.error(eval("("+ err +")"));
-    throw err
-  });
+  }).then((response) => response.json())
+  // .catch((err) => {
+  //   // console.log(eval("("+ err +")"));
+  //   throw err
+  // });
 }
 
 
