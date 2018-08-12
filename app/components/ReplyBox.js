@@ -4,8 +4,9 @@ import {
   Text,
   View,
   Image,
-  Button,
+  // Button,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
@@ -18,7 +19,6 @@ export default class ReplyBox extends Component {
     this.refs.input.focus()
   }
   clear() {
-    console.log("=======");
     this.setState({ content: '' })
   }
   handleChange = (txt) => {
@@ -34,7 +34,9 @@ export default class ReplyBox extends Component {
       <SafeAreaView style={styles.container}>
         <TextInput ref="input" value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
           autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
-        <Button style={styles.title} title="发送" color="#E24B92" onPress={this.handleReply}></Button>
+        <TouchableOpacity style={styles.btn} activeOpacity={0.6} onPress={this.handleReply}>
+          <Text style={styles.btnTxt}>发送</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     )
   }
@@ -46,31 +48,32 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    fontFamily: 'PingFangSC-Regular',
     backgroundColor: '#FFFFFF',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#F6F6F6',
   },
   input: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 15,
     color: '#333',
     flex: 1,
     height: 32,
     backgroundColor: '#F6F6F6',
+    paddingTop: 0,
+    paddingBottom: 0,
     borderRadius: 18,
     paddingLeft: 15,
     paddingRight: 15,
   },
   btn: {
-    fontSize: 16,
-    color: '#999999',
+    width: 60,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingRight: 20,
   },
-  title: {
+  btnTxt: {
+    color: '#E24B92',
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 16,
   }
 });
-
-
-// bottomBox: {
-//
-// }

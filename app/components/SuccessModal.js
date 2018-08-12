@@ -15,14 +15,14 @@ const ICONS = {
 
 export default class SuccessModal extends PureComponent {
   render() {
-    const { txt, icon, award, btn, visible, onRequestClose, onPress = () => {} } = this.props
+    const { txt, icon, award, btn, visible, onClose = null, onPress = () => {} } = this.props
     const succIcon = icon ? icon : require('../images/icon_succeed.png');
     return (
       <Modal
         animationType='fade'
         transparent
         visible={visible}
-        onRequestClose={onRequestClose}
+        onRequestClose={onClose}
       >
         <View style={styles.succViewWrap}>
           <View style={styles.succView}>

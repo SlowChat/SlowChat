@@ -15,7 +15,7 @@ const ICONS = {
 
 export default class SuccessModal extends PureComponent {
   handleComplete = () => {
-    this.props.navigation.replace('Login')
+    this.props.navigation.goBack()
   }
   handleImprove = () => {
     this.props.navigation.replace('Information')

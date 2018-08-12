@@ -167,7 +167,7 @@ export default class EditEmail extends Component {
           onPress={() => {
             this.props.navigation.pop() // navigate
           }}
-          onRequestClose={this.onRequestClose}
+          onClose={this.onRequestClose}
         />
       </View>
     );
@@ -235,5 +235,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
-  
+
 });

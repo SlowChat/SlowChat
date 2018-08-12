@@ -8,6 +8,8 @@ import {
   FlatList,
   Animated,
   Easing,
+  Platform,
+  BackHandler,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -15,7 +17,6 @@ import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
-import Loading from '../components/Loading'
 import Footer from '../components/Footer'
 import ErrorTip from '../components/ErrorTip'
 
@@ -27,6 +28,7 @@ const IMGS = [
 ]
 
 const SIZE = 10
+let firstClick = 0
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -41,27 +43,57 @@ export default class App extends Component<Props> {
     }
   }
   state = {
-    images: IMGS,
+    images: [],
     items: [],
     showFoot: 0,
-    showLoading: true,
+    showLoading: false,
     showError: false,
     refreshing: false,
   }
   componentWillMount() {
     this.initData()
+    this.getSlides()
     // this.props.navigation.reset('Login')
   }
   componentDidMount() {
     DeviceEventEmitter.addListener('refresh-home', (params) => {
       this.initData()
    });
-  //  console.log(this.props.navigation.popToTop)
+   if (Platform.OS === 'android') {
+     BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBack);
+   }
+  }
+  shouldComponentUpdate() {
+    if (this.noupdate) {
+      this.noupdate = false
+      return false
+    }
+    return true
+  }
+  componentWillUnmount() {
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleAndroidBack);
+    }
+  }
+  handleAndroidBack = () => {
+    let timestamp = (new Date()).valueOf();
+    if (timestamp - firstClick > 2000) {
+        firstClick = timestamp;
+        this.refs.toast.show('再按一次退出', 100)
+        return true;
+    } else {
+        return false;
+    }
   }
   initData(state = {}) {
     this.setState({ showFoot: 0, items: [], ...state }, () => {
       this.page = 0
       this.getData(0)
+      setTimeout(() => {
+        if (this.loading) {
+          this.setState({ showLoading: true })
+        }
+      }, 300)
     })
   }
   fadeInOrOut(fadeIn) {
@@ -83,13 +115,14 @@ export default class App extends Component<Props> {
         this.hasHeader = false
       }
     }, 300)
+    this.noupdate = true
     this.props.navigation.setParams({
       opacity: this.fadeInOpacity
     })
   }
 
   handleScroll = (e) => {
-    const THRESHOLD = 130
+    const THRESHOLD = 100
     const offsetY = e.nativeEvent.contentOffset.y
     if (offsetY > THRESHOLD + 10 && !this.hasHeader) {
       this.fadeInOrOut(true)
@@ -130,11 +163,30 @@ export default class App extends Component<Props> {
       console.log(e)
     } finally {
       this.loading = false
-      if (this.state.showLoading) {
+      if (!this.goLogin && this.state.showLoading) {
         this.setState({ showLoading: false })
       }
     }
   }
+
+
+  async getSlides() {
+    try {
+      const res = await post('api/common/getSlideList.html')
+      if (res.code == 1 && !this.goLogin) {
+        this.setState({ images: res.data })
+      }
+    } catch (e) {
+
+    }
+  }
+  // reset(navigation, routeName)  {
+  //   const resetAction = NavigationActions.reset({
+  //     index: 0,
+  //     actions: [NavigationActions.navigate({ routeName })]
+  //   });
+  //   navigation.dispatch(resetAction);
+  // }
 
   handleLoadmore = () => {
     this.setState({ showFoot: 2 })
@@ -152,8 +204,8 @@ export default class App extends Component<Props> {
     this.props.navigation.push('NewMail')
   }
   renderHeader = () => {
-    const { images } = this.state
-    return (<Swiper items={images} onNew={this.handleGoNew} />)
+    const { images, showLoading, showError } = this.state
+    return (<Swiper items={images} onNew={this.handleGoNew} showLoading={showLoading} showError={showError} onError={this.handleRefresh} />)
   }
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
@@ -177,8 +229,6 @@ export default class App extends Component<Props> {
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
         />
-        { showLoading && <Loading /> }
-        { showError && <ErrorTip onPress={this.init} /> }
         <Toast ref="toast" position="center" />
       </View>
     )
@@ -196,6 +246,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#FFFFFF',
     position: 'absolute',
+    top: 0,
     left: 0,
     right: 0,
     height: 44,

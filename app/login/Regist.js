@@ -5,10 +5,12 @@ import {
   Text,
   TextInput,
   View,
+  ScrollView,
   Image,
   ImageBackground,
   CheckBox,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar,
 } from 'react-native'
 
 import {SafeAreaView} from 'react-navigation'
@@ -85,7 +87,7 @@ export default class Regist extends PureComponent<Props> {
     })
   }
   goLogin = () => {
-    this.props.navigation.replace('Login', {back: true})
+    this.props.navigation.goBack()
   }
 
   showErrorModal(txt) {
@@ -94,23 +96,23 @@ export default class Regist extends PureComponent<Props> {
 
   renderTabs() {
     const { activeTab } = this.state
-    return (<ImageBackground style={styles.headerbg} source={ICONS.bg}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => {this.props.navigation.goBack()}}>
-          <Image style={styles.back} source={ICONS.back} />
-        </TouchableOpacity>
-        <View style={styles.tabWrap}>
-          <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(0)}>
-            <View style={[styles.tab, activeTab == 0 ? styles.activeTab : {}]}>
-              <Text style={styles.tabTxt}>手机号注册</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(1)}>
-            <View style={[styles.tab, activeTab == 1 ? styles.activeTab : {}]}>
-              <Text style={styles.tabTxt}>邮箱注册</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>)
+    // <StatusBar hidden={true} />
+    return (
+        <ImageBackground style={styles.headerbg} source={ICONS.bg}>
+          <View style={styles.tabWrap}>
+            <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(0)}>
+              <View style={[styles.tab, activeTab == 0 ? styles.activeTab : {}]}>
+                <Text style={styles.tabTxt}>手机号注册</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(1)}>
+              <View style={[styles.tab, activeTab == 1 ? styles.activeTab : {}]}>
+                <Text style={styles.tabTxt}>邮箱注册</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      )
   }
   render() {
     const { checked, username, password, verification_code, activeTab } = this.state
@@ -119,48 +121,54 @@ export default class Regist extends PureComponent<Props> {
     const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
     return (
       <View style={styles.container}>
-        {this.renderTabs()}
-        <View style={styles.wrap}>
-          <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={ICONS.loginInput}>
-            <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
-             keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
-            <TouchableOpacity activeOpacity={0.8} style={styles.verifyBtn} onPress={this.sendVerification}>
-              <Text style={verifyStyle}>获取验证码</Text>
-            </TouchableOpacity>
-          </ImageBackground>
-
-          <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
-            <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
-              autoCapitalize="none" underlineColorAndroid='transparent' />
-          </ImageBackground>
-
-          <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
-            <TextInput maxLength={12} secureTextEntry value={password} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入6-12位密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({password: text})}
-              underlineColorAndroid='transparent' />
-          </ImageBackground>
-          <TouchableOpacity activeOpacity={0.8} style={styles.registBtn} onPress={this.handleRegist}>
-            <Text style={styles.registTxt}>注 册</Text>
+        <SafeAreaView style={styles.safeview}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => {this.props.navigation.goBack()}}>
+            <Image style={styles.back} source={ICONS.back} />
           </TouchableOpacity>
-          <View style={styles.tipWrap}>
-            <Text style={styles.tip}>已有账号，</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={this.goLogin}>
-              <Text style={[styles.tip, styles.activeTip]}>去登陆</Text>
-            </TouchableOpacity>
-          </View>
+        </SafeAreaView>
+        <ScrollView>
+          {this.renderTabs()}
+          <View style={styles.wrap}>
+            <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={ICONS.loginInput}>
+              <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
+               keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
+              <TouchableOpacity activeOpacity={0.8} style={styles.verifyBtn} onPress={this.sendVerification}>
+                <Text style={verifyStyle}>获取验证码</Text>
+              </TouchableOpacity>
+            </ImageBackground>
+            <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
+              <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
+                autoCapitalize="none" underlineColorAndroid='transparent' />
+            </ImageBackground>
 
-          <View style={[styles.tipWrap, styles.checkboxWrap]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => this.setState({ checked: !this.state.checked })}>
-              {
-                checked ? <Image style={styles.checkbox} source={ICONS.checked} /> : <Image style={styles.checkbox} source={ICONS.unchecked} />
-              }
+            <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
+              <TextInput maxLength={12} secureTextEntry value={password} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入6-12位密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({password: text})}
+                underlineColorAndroid='transparent' />
+            </ImageBackground>
+            <TouchableOpacity activeOpacity={0.8} style={styles.registBtn} onPress={this.handleRegist}>
+              <Text style={styles.registTxt}>注 册</Text>
             </TouchableOpacity>
-            <Text style={styles.tip}>注册即同意《</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={this.goLogin}>
-              <Text style={[styles.tip, styles.activeTip]}>慢邮Manyou.info 网站软件许可使用协议</Text>
-            </TouchableOpacity>
-            <Text style={styles.tip}>》</Text>
+            <View style={styles.tipWrap}>
+              <Text style={styles.tip}>已有账号，</Text>
+              <TouchableOpacity activeOpacity={0.8} onPress={this.goLogin}>
+                <Text style={[styles.tip, styles.activeTip]}>去登陆</Text>
+              </TouchableOpacity>
+            </View>
           </View>
+        </ScrollView>
+        <View style={[styles.tipWrap, styles.checkboxWrap]}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => this.setState({ checked: !this.state.checked })}>
+            {
+              checked ? <Image style={styles.checkbox} source={ICONS.checked} /> : <Image style={styles.checkbox} source={ICONS.unchecked} />
+            }
+          </TouchableOpacity>
+          <Text style={styles.tip}>注册即同意《</Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={this.goLogin}>
+            <Text style={[styles.tip, styles.activeTip]}>慢邮Manyou.info 网站软件许可使用协议</Text>
+          </TouchableOpacity>
+          <Text style={styles.tip}>》</Text>
         </View>
+        <SafeAreaView></SafeAreaView>
         <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
       </View>
@@ -179,10 +187,19 @@ const styles = StyleSheet.create({
     height: 170,
   },
 
+  safeview: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    zIndex: 10,
+  },
+
   back: {
     width: 30,
     height: 30,
-    marginTop: 30,
     marginLeft: 15,
   },
 
@@ -214,16 +231,14 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15
   },
-
   wrap: {
     flex: 1,
-    marginTop: 60,
+    paddingTop: 60,
     alignItems: 'center',
   },
   hidden: {
     display: 'none',
   },
-
   txt: {
     fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
@@ -284,10 +299,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkboxWrap: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 20,
+    paddingTop: 10,
+    marginBottom: 10,
     justifyContent: 'center',
   },
   tip: {

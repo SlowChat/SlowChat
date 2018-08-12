@@ -31,7 +31,7 @@ export default class EmailList extends Component {
     if (status == 'draft') {
       navigate('DraftDetail', { id: item.id })
     } else {
-      navigate('ReserveDetail', { id: item.id, status: item.status })
+      navigate('MailDetail', { id: item.id, status: item.state })
     }
   }
 

@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
 import StartScreen from './Start'
@@ -29,7 +29,7 @@ import NoticeScreen from './user/Notice'
 import FeedBackScreen from './user/FeedBack'
 import IntegralScreen from './user/Integral'
 
-const StackApp = createStackNavigator({
+const StackApp = (isLogin) => createStackNavigator({
   Start: {
     screen: StartScreen,
     navigationOptions: {
@@ -76,19 +76,24 @@ const StackApp = createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Start',
+  initialRouteName: isLogin ? 'BottomTabs' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
     headerTintColor: '#E24B92',
+    // headerRight: <View />,
     headerStyle: {
       backgroundColor: '#FFFFFF',
       borderBottomWidth: 0,
+      elevation: 0,
+    },
+    headerTitleContainerStyle: {
+      justifyContent: 'center',
     },
     headerTitleStyle: {
       fontSize: 18,
       fontFamily: 'PingFangSC-Regular',
-      color: '#333'
+      color: '#333',
     },
     // headerStyle: {
     //   paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,

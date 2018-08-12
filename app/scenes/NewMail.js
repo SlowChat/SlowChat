@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
   Switch,
+  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 
@@ -24,7 +25,7 @@ import { post } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
 
-export default class SendMail extends Component {
+export default class NewMail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     if (!params.rightOnPress) {
@@ -33,12 +34,17 @@ export default class SendMail extends Component {
     return {
       title: '写信',
       headerRight: (
-        <Button
-          title='发送'
-          color={params.enable ? '#E24B92' : '#F9DBE9'}
-          onPress={params.rightOnPress}
-        />
+        <TouchableOpacity style={styles.headerRight} onPress={params.rightOnPress}>
+          <Text style={[{color: params.enable ? '#E24B92' : '#F9DBE9'}, styles.headerRightTxt]}>发送</Text>
+        </TouchableOpacity>
       ),
+      // headerRight: (
+      //   <Button
+      //     title='发送'
+      //     color={params.enable ? '#E24B92' : '#F9DBE9'}
+      //     onPress={params.rightOnPress}
+      //   />
+      // ),
     }
   }
 
@@ -182,7 +188,7 @@ export default class SendMail extends Component {
     let txt = (isSend ? '发送' : '保存草稿') + '失败，再试一次吧'
     this.refs.errorModalRef.show({txt})
   }
-  onRequestClose = () => {
+  handelSuccClose = () => {
     this.setState({ isSucc: false })
   }
   handleImageChoose = (items) => {
@@ -199,11 +205,11 @@ export default class SendMail extends Component {
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '无附件' : `${attachs.length}个附件`
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <HeaderTip tip="爱慢邮——让我们回到未来" />
         <View style={styles.item}>
           <Text style={styles.label}>收件人：</Text>
-          <TextInput autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+          <TextInput keyboardType="email-address" autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
             autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
             <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
@@ -263,11 +269,10 @@ export default class SendMail extends Component {
           onPress={() => {
             this.props.navigation.replace('BottomTabs') // navigate
           }}
-          onRequestClose={this.onRequestClose}
         />
         <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -277,6 +282,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     fontFamily: 'PingFangSC-Regular'
+  },
+  headerRight: {
+    width: 64,
+    paddingRight: 20,
+    alignItems: 'flex-end',
+  },
+  headerRightTxt: {
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
   },
   hidden: {
     display: 'none'
@@ -358,6 +372,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#EEEEEE',
   },
   textarea: {
+    padding: 0,
     height: 88,
     fontSize: 16,
     color: '#333333',

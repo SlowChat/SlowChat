@@ -33,7 +33,7 @@ export default class Attachment extends PureComponent {
     return (
       <View style={styles.imageList}>
         { items && items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
-        <Modal visible={visible} transparent={true}>
+        <Modal visible={visible} transparent={true} onRequestClose={this.handleClick}>
           <ImageViewer enableImageZoom index={index} imageUrls={items} onChange={this.handleChange} onClick={this.handleClick} />
         </Modal>
       </View>

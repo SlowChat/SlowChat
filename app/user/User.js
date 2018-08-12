@@ -203,7 +203,7 @@ export default class User extends Component {
           onPress={() => {
             this.props.navigation.pop() // navigate
           }}
-          onRequestClose={this.onRequestClose}
+          onClose={this.onRequestClose}
         />
       </View>
     );

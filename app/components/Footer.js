@@ -40,8 +40,6 @@ const styles = StyleSheet.create({
     color: '#999999',
     fontSize: 14,
     marginLeft: 5,
-    marginTop:5,
-    marginBottom:5,
   },
   footer:{
     flexDirection:'row',

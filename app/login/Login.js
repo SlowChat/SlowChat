@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   View,
+  ScrollView,
   Image,
   ImageBackground,
   TouchableOpacity,
@@ -28,10 +29,13 @@ const ICONS = {
 let firstClick = 0;
 type Props = {};
 export default class Login extends PureComponent<Props> {
+  static navigationOptions = {
+    header: null
+  }
   componentWillMount() {
     this.username = '15216748429'
     this.password = '123456'
-    const { back = true } = this.props.navigation.state.params || {}
+    const { back } = this.props.navigation.state.params || {}
     this.back = back
   }
   componentDidMount() {
@@ -59,6 +63,7 @@ export default class Login extends PureComponent<Props> {
   regist = () => {
     this.props.navigation.navigate('Regist')
   }
+
   forget = () => {
     if (this.username.indexOf('@') > -1) {
       this.props.navigation.navigate('EditEmail')
@@ -81,7 +86,7 @@ export default class Login extends PureComponent<Props> {
         if (this.back) {
           navigation.goBack()
         } else {
-          navigation.navigate('Home')
+          navigation.replace('BottomTabs')
         }
       } else {
         this.showErrorModal(res.msg || '登录失败，请稍后重试')
@@ -106,6 +111,7 @@ export default class Login extends PureComponent<Props> {
              <Image style={styles.close} source={ICONS.close} />
            </TouchableOpacity>)}
         </SafeAreaView>
+        <ScrollView style={{flex: 1}}>
         <View style={styles.wrap}>
           <Image style={styles.logo} source={ICONS.logo} />
           <ImageBackground style={[styles.item, styles.loginInput]} source={ICONS.loginInput}>
@@ -130,6 +136,7 @@ export default class Login extends PureComponent<Props> {
             </TouchableOpacity>
           </View>
         </View>
+        </ScrollView>
         <ErrorModal ref="errorModalRef" />
       </View>
     );

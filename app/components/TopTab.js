@@ -13,23 +13,25 @@ export default class TopTab extends PureComponent<Props> {
     if (!items || !items.length) return null
     return (
       <View style={styles.container}>
-        {
-          items.map((item, i) => {
-            let txtWrap, txt
-            if (i == index) {
-              txt = [styles.txt, styles.activeTxt]
-              txtWrap = [styles.txtWrap, styles.activeTxtWrap]
-            } else {
-              txtWrap = styles.txtWrap
-              txt = styles.txt
-            }
-            return (<TouchableOpacity activeOpacity={0.8} style={styles.tab} key={item.id} onPress={() => {onPress && onPress(i)}}>
-              <View style={txtWrap}>
-                <Text style={txt}>{item.name}</Text>
-              </View>
-            </TouchableOpacity>)
-          })
-        }
+        <View style={styles.wrap}>
+          {
+            items.map((item, i) => {
+              let txtWrap, txt
+              if (i == index) {
+                txt = [styles.txt, styles.activeTxt]
+                txtWrap = [styles.txtWrap, styles.activeTxtWrap]
+              } else {
+                txtWrap = styles.txtWrap
+                txt = styles.txt
+              }
+              return (<TouchableOpacity activeOpacity={0.8} style={styles.tab} key={item.id} onPress={() => {onPress && onPress(i)}}>
+                <View style={txtWrap}>
+                  <Text style={txt}>{item.name}</Text>
+                </View>
+              </TouchableOpacity>)
+            })
+          }
+        </View>
       </View>
     );
   }
@@ -37,14 +39,15 @@ export default class TopTab extends PureComponent<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
     height: 44,
-    flexDirection: 'row',
-    fontFamily: 'PingFangSC-Regular',
+    justifyContent: 'flex-end',
     backgroundColor: '#FFFFFF',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
     borderStyle: 'solid',
+  },
+  wrap: {
+    flexDirection: 'row',
   },
   tab: {
     flex: 1,
@@ -59,6 +62,8 @@ const styles = StyleSheet.create({
   },
   txt: {
     color: '#B4B4B4',
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: 15,
   },
   activeTxtWrap: {
     borderBottomColor: '#E24B92',

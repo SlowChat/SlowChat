@@ -14,14 +14,14 @@ const ICONS = {
 
 export default class ErrorTip extends PureComponent {
   render() {
-    const { txt, visible, onPress } = this.props
+    const { txt = '重新加载数据', visible, onPress } = this.props
     return (
       <View style={styles.container}>
         <View style={styles.wrap}>
           <Image source={ICONS.error} style={styles.icon} />
           <Text style={styles.txt}>您的网络遇到问题</Text>
           <TouchableOpacity style={styles.btn} onPress={onPress}>
-            <Text style={styles.btnTxt}>重新加载数据</Text>
+            <Text style={styles.btnTxt}>{txt}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -11,16 +11,16 @@ import {
 // import LinearGradient from 'react-native-linear-gradient'
 
 const ICONS = {
-  0: require('../images/icon_ing.png'),
-  10: require('../images/icon_ed.png'),
-  20: require('../images/icon_cancel.png'),
+  1: require('../images/icon_ing.png'),
+  2: require('../images/icon_ed.png'),
+  3: require('../images/icon_cancel.png'),
   bg: require('../images/condition_bar.png'),
 }
 
 const STATUS = {
-  0: '待发送',
-  10: '已完成发送',
-  20: '已取消发送',
+  1: '待发送',
+  2: '已完成发送',
+  3: '已取消发送',
 }
 
 

@@ -42,7 +42,7 @@ export default class Space extends Component<Props> {
     total: 0,
     showBlank: false,
     showError: false,
-    showLoading: true,
+    showLoading: false,
   }
   componentWillMount() {
     this.init()
@@ -62,9 +62,14 @@ export default class Space extends Component<Props> {
     this._flatList.scrollToOffset({animated: true, offset: 0})
   }
   init = (state = {}) => {
-    this.setState({ showLoading: true, showFoot: 0, items: [], ...state }, () => {
+    this.setState({ showFoot: 0, items: [], ...state }, () => {
       this.page = 0
       this.getData(0)
+      setTimeout(() => {
+        if (this.loading) {
+          this.setState({ showLoading: true })
+        }
+      }, 300)
     })
   }
   async getData(page = 0) {
@@ -132,6 +137,9 @@ export default class Space extends Component<Props> {
       <View style={styles.container}>
         <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
+        { showLoading && <Loading /> }
+        { showBlank && <Blank /> }
+        { showError && <ErrorTip onPress={this.init} /> }
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
@@ -143,9 +151,6 @@ export default class Space extends Component<Props> {
           onEndReached={this.handleLoadmore}
           ListFooterComponent={this.renderFooter}
         />
-        { showLoading && <Loading /> }
-        { showBlank && <Blank /> }
-        { showError && <ErrorTip onPress={this.init} /> }
         <Toast ref="toast" position="center" />
       </View>
     );

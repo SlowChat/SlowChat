@@ -32,15 +32,16 @@ const ICONS = {
 }
 
 export default class MailDetail extends Component {
+
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
       title: params.title || '邮件详情',
-      headerRight: (
+      headerRight: params.rightBtnOnPress ? (
         <TouchableOpacity activeOpacity={0.6} style={styles.rightBtnWrap} onPress={params.rightBtnOnPress}>
           <Image style={styles.rightBtn} source={params.ispub ? ICONS.overt : ICONS.hide} />
         </TouchableOpacity>
-      ),
+      ) : null,
 
     }
   }
@@ -61,12 +62,15 @@ export default class MailDetail extends Component {
       status = null
       top = 0
     }
+    this.status = status
     this.setState({ status, top })
   }
   componentDidMount() {
-    this.props.navigation.setParams({
-      rightBtnOnPress: this.rightBtnOnPress
-    })
+    if (this.status != null) {
+      this.props.navigation.setParams({
+        rightBtnOnPress: this.rightBtnOnPress
+      })
+    }
   }
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -77,9 +81,10 @@ export default class MailDetail extends Component {
   }
 
   handleScroll = (e) => {
-    const offsetY = e.nativeEvent.contentOffset.y
-    const { title } = this.props
+    if (this.forbidscroll) return
+    const offsetY = parseInt(e.nativeEvent.contentOffset.y)
     let change = false
+    const { title } = this.state.detail
     if (offsetY > 130 && this.title != title) {
       change = true
       this.title = title
@@ -95,7 +100,7 @@ export default class MailDetail extends Component {
         title: this.title
       })
     }
-    if (offsetY > this.listHeaderHeight && this.state.activeTab !== 1) {
+    if (offsetY >= this.listHeaderHeight && this.state.activeTab !== 1) {
       this.setState({ activeTab: 1 })
     } else if (offsetY < this.listHeaderHeight && this.state.activeTab !== 0) {
       this.setState({ activeTab: 0 })
@@ -103,19 +108,25 @@ export default class MailDetail extends Component {
   }
 
   switchTab = (index) => {
+    this.forbidscroll = true
     if (index == 0) {
+      Animated.timing(this.state.translateValue, {
+        toValue: -44,
+        duration: 0, // 动画时间
+      }).start();
       this._flatList.scrollToOffset({animated: true, offset: 0})
     } else {
       if (this.listHeaderHeight) {
-        this._flatList.scrollToOffset({animated: true, offset: this.listHeaderHeight })
+        this._flatList.scrollToOffset({animated: false, offset: this.listHeaderHeight })
       }
     }
-    if (this.state.activeTab == index) return
-    this.setState({ activeTab: index })
+    this.setState({ activeTab: index }, () => {
+      this.forbidscroll = false
+    })
   }
 
   flatListHeaderLayout = ({nativeEvent: e}) => {
-    this.listHeaderHeight = e.layout.height - 44 - 38
+    this.listHeaderHeight = parseInt(e.layout.height - 44 - 38)
   }
 
   translate(fadeIn) {
@@ -129,7 +140,7 @@ export default class MailDetail extends Component {
     }).start();
   }
   getId() {
-    const { id } = this.props.navigation.state.params || {}
+    const { id = 29 } = this.props.navigation.state.params || {}
     return id
   }
   async getData() {
@@ -137,7 +148,8 @@ export default class MailDetail extends Component {
     this.loading = true
     try {
       const id = this.getId()
-      const res = await post('api/mail/getInfo.html', { id })
+      const url = this.status == null ? 'api/mail/getInfo.html' : 'api/mail/getMyInfo.html'
+      const res = await post(url, { id })
       if (res.code == 1) {
         const { comment, ...items } = res.data.items
         const comments = comment && comment.length > 0 ? comment : []
@@ -234,7 +246,7 @@ export default class MailDetail extends Component {
     post('api/mail/cancel.html', { id }).then((res) => {
       if (res.code == 1) {
         this.refs.toast.show('取消发送成功');
-        this.setState({ status: 20 })
+        this.setState({ status: 3 })
       } else if (res.code == 10001) {
          this.props.navigation.navigate('Login')
       } else {
@@ -246,9 +258,8 @@ export default class MailDetail extends Component {
   handleLoadmore = () => {
 
   }
-
   render() {
-    const { status, activeTab, detail, comments, fadeInOpacity } = this.state
+    const { status, activeTab, detail, comments } = this.state
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {top: this.state.top}, {transform: [{translateY: this.state.translateValue}]}]}>
