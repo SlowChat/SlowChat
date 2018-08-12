@@ -62,7 +62,7 @@ export default class Email extends Component {
       title,
       headerRight: status == 'draft' ? (
         <Button title="编辑" color="#666666" onPress={this.handleEdit} />
-      ) : null,
+      ) : <View />,
     })
   }
 
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderStyle: 'solid'
   },
-  
+
   spaceImg: {
     width: 64,
     height: 64

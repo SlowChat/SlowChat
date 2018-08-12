@@ -93,7 +93,8 @@ export default class AvatarHeader extends Component {
         if(Platform.OS === 'ios'){
           file = file.replace('file://', '')
         }
-        upload(response.uri, response.type).then(res => {
+        upload(response.uri, response.fileName).then(res => {
+          console.log(res);
           if (res.code == 1) {
             this.dealSucc(res.data.url, response)
           } else {

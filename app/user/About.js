@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableWithoutFeedback
 } from 'react-native';
 
@@ -85,5 +84,5 @@ const styles = StyleSheet.create({
     width: '60%',
     color: '#666'
   },
-  
+
 });

@@ -9,8 +9,6 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
-  ToastAndroid,
-  BackHandler,
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
@@ -26,7 +24,6 @@ const ICONS = {
   // loginBtn: require('../images/login_btn.png'),
 }
 
-let firstClick = 0;
 type Props = {};
 export default class Login extends PureComponent<Props> {
   static navigationOptions = {
@@ -37,27 +34,6 @@ export default class Login extends PureComponent<Props> {
     this.password = '123456'
     const { back } = this.props.navigation.state.params || {}
     this.back = back
-  }
-  componentDidMount() {
-    if (Platform.OS === 'android' && !this.back) {
-      BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBack);
-    }
-
-  }
-  componentWillUnmount() {
-    if (Platform.OS === 'android' && !this.back) {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleAndroidBack);
-    }
-  }
-  handleAndroidBack () {
-    let timestamp = (new Date()).valueOf();
-    if (timestamp - firstClick > 2000) {
-        firstClick = timestamp;
-        ToastAndroid.show('再按一次退出', ToastAndroid.SHORT);
-        return true;
-    } else {
-        return false;
-    }
   }
 
   regist = () => {

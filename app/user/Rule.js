@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  Button,
   ScrollView
 } from 'react-native';
 import Avatar from '../components/Avatar'
@@ -24,13 +23,13 @@ export default class App extends Component<Props> {
   componentDidMount() {
 
   }
-  
+
   render() {
     return (
       <ScrollView style={styles.container}>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={ICONS.help} /> 
+            <Image style={styles.icon} source={ICONS.help} />
             <Text style={styles.titTxt}>如何获得积分</Text>
           </View>
           <View style={styles.info}>
@@ -79,7 +78,7 @@ export default class App extends Component<Props> {
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={ICONS.help} /> 
+            <Image style={styles.icon} source={ICONS.help} />
             <Text style={styles.titTxt}>积分存在有效期？</Text>
           </View>
           <View style={styles.info}>
@@ -88,7 +87,7 @@ export default class App extends Component<Props> {
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={ICONS.help} /> 
+            <Image style={styles.icon} source={ICONS.help} />
             <Text style={styles.titTxt}>严禁用作弊方法获得积分？</Text>
           </View>
           <View style={styles.info}>
@@ -97,7 +96,7 @@ export default class App extends Component<Props> {
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={ICONS.help} /> 
+            <Image style={styles.icon} source={ICONS.help} />
             <Text style={styles.titTxt}>积分可以用来做什么？</Text>
           </View>
           <View style={styles.info}>

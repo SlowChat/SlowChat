@@ -4,12 +4,9 @@ import {
   Text,
   View,
   Image,
-  Button,
   FlatList,
   Animated,
   Easing,
-  Platform,
-  BackHandler,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -59,9 +56,6 @@ export default class App extends Component<Props> {
     DeviceEventEmitter.addListener('refresh-home', (params) => {
       this.initData()
    });
-   if (Platform.OS === 'android') {
-     BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBack);
-   }
   }
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -70,21 +64,7 @@ export default class App extends Component<Props> {
     }
     return true
   }
-  componentWillUnmount() {
-    if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleAndroidBack);
-    }
-  }
-  handleAndroidBack = () => {
-    let timestamp = (new Date()).valueOf();
-    if (timestamp - firstClick > 2000) {
-        firstClick = timestamp;
-        this.refs.toast.show('再按一次退出', 100)
-        return true;
-    } else {
-        return false;
-    }
-  }
+
   initData(state = {}) {
     this.setState({ showFoot: 0, items: [], ...state }, () => {
       this.page = 0
