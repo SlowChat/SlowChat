@@ -41,7 +41,7 @@ export default class MailDetail extends Component {
         <TouchableOpacity activeOpacity={0.6} style={styles.rightBtnWrap} onPress={params.rightBtnOnPress}>
           <Image style={styles.rightBtn} source={params.ispub ? ICONS.overt : ICONS.hide} />
         </TouchableOpacity>
-      ) : null,
+      ) : <View />,
 
     }
   }

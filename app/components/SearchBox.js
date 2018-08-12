@@ -78,6 +78,8 @@ const styles = StyleSheet.create({
     borderRightColor: '#CCCCCC',
     paddingLeft: 15,
     paddingRight: 15,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   icon: {
     width: 30,

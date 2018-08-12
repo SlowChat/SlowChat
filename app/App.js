@@ -81,7 +81,7 @@ const StackApp = (isLogin) => createStackNavigator({
     // headerBackTitleVisible: false,
     headerBackTitle: null,
     headerTintColor: '#E24B92',
-    // headerRight: <View />,
+    headerRight: <View />,
     headerStyle: {
       backgroundColor: '#FFFFFF',
       borderBottomWidth: 0,

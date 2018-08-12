@@ -7,8 +7,11 @@ import {
   Modal,
   ScrollView,
   TouchableOpacity,
+  Platform,
+  PermissionsAndroid
 } from 'react-native';
 
+import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import RNFileSelector from 'react-native-file-selector';
 import AttachmentItem from './AttachmentItem'
@@ -31,11 +34,37 @@ function formatFileSize(fileSize) {
   }
 }
 
+
 export default class AvatarHeader extends Component {
   state = {
     items: []
   }
-  chooseImage = () => {
+
+  async checkReadPermission() {
+    if (Platform.OS == 'ios') return false
+    let nopermission = false
+    try {
+      // PermissionsAndroid.PERMISSIONS.CAMERA
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: '相册权限申请',
+          message: '慢聊需要访问你的相册'
+        },
+      );
+      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
+        nopermission = true
+        this.refs.toast.show('授权拒绝，无法选择图片')
+      }
+    } catch (err) {
+      nopermission = true
+      this.refs.toast.show('授权失败，无法选择图片')
+    }
+    return nopermission
+  }
+  chooseImage = async () => {
+    let nopermission = await this.checkReadPermission()
+    if (nopermission) return
     const options = {
       title: '选择图片',
       cancelButtonTitle: '取消',
@@ -50,20 +79,27 @@ export default class AvatarHeader extends Component {
       // quality: 0.8,
       angle: 0,
       allowsEditing: false,
-      noData: false,
+      noData: true,
       storageOptions: {
-        skipBackup: true
+        skipBackup: true,
+        path: 'images'
       }
     }
+
     ImagePicker.showImagePicker(options, (response) => {
+      console.log(response);
       if (response && response.uri) {
-        upload(response.uri).then(res => {
+        let file = response.uri
+        if(Platform.OS === 'ios'){
+          file = file.replace('file://', '')
+        }
+        upload(response.uri, response.type).then(res => {
           if (res.code == 1) {
             this.dealSucc(res.data.url, response)
           } else {
             this.dealError(res)
           }
-        }).catch(err => {
+        }).catch(e => {
           this.dealError({code: 0})
         })
       }
@@ -77,14 +113,15 @@ export default class AvatarHeader extends Component {
       fileName,
       fileSize: formatFileSize(fileSize)
     })
-    console.log(items);
     this.setState({ items })
     const { onChange } = this.props
     onChange && onChange(items)
   }
   dealError(res) {
+    console.log(res)
     const { onUploadError } = this.props
     onUploadError && onUploadError(res)
+    this.refs.toast.show(res.msg || '上传失败')
   }
   chooseVideo = () => {
     const options = {
@@ -152,6 +189,7 @@ export default class AvatarHeader extends Component {
             </ScrollView>
           </View>
         </View>
+        <Toast ref="toast" position="center" />
       </Modal>
     )
   }

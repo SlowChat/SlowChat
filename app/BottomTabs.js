@@ -50,6 +50,9 @@ const MimeStack = createStackNavigator({
       elevation: 0,
       alignItems: 'center'
     },
+    headerTitleContainerStyle: {
+      justifyContent: 'center',
+    },
     headerTitleStyle: {
       fontSize: 18,
       fontFamily: 'PingFangSC-Regular',
