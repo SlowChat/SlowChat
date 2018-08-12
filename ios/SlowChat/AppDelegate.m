@@ -10,6 +10,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+#import <AVFoundation/AVFoundation.h>
 #import "RNSplashScreen.h" // 导入启动屏包
 
 @implementation AppDelegate
@@ -37,6 +38,8 @@
   // self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [RNSplashScreen show]; // SplashScreen 显示启动屏幕
+  // 视频
+  [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];  // allow
   return YES;
 }
 
