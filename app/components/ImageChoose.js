@@ -212,11 +212,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
+    paddingLeft: 26,
+    paddingRight: 26,
   },
   icon: {
     width: 30,
     height: 30,
-    marginLeft: 52,
+    marginLeft: 26,
+    marginRight: 26,
   },
   body: {
     height: 235,
