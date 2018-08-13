@@ -15,7 +15,6 @@ import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
-import ErrorTip from '../components/ErrorTip'
 
 import { post } from '../utils/request'
 

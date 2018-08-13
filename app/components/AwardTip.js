@@ -51,7 +51,7 @@ export default class AwardTip extends PureComponent {
       >
         <TouchableWithoutFeedback onPress={this.hide}>
           <View style={styles.awardViewWrap}>
-            <ImageBackground style={styles.awardView} source={Irequire('../images/bg_popup.png')}>
+            <ImageBackground style={styles.awardView} source={require('../images/bg_popup.png')}>
               <View style={styles.awardLeft}>
                 <Text style={styles.award}>+{num}</Text>
               </View>

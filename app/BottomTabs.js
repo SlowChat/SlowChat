@@ -9,37 +9,15 @@ import NewScreen from './home/New'
 import ShareScreen from './home/Share'
 // import MimeScreen from './user/User'
 
-const ICONS = {
-  Home: {
-    p: require('./images/home_p.png'),
-    w: require('./images/home_w.png'),
-  },
-  Space: {
-    p: require('./images/space_p.png'),
-    w: require('./images/space_w.png'),
-  },
-  NewTab: require('./images/new.png'),
-  ShareTab: {
-    p: require('./images/share_p.png'),
-    w: require('./images/share_w.png'),
-  },
-  Mime: {
-    p: require('./images/person_p.png'),
-    w: require('./images/person_w.png'),
-  }
-}
-
-
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   Login: LoginScreen,
 })
 const SpaceStack = createStackNavigator({
-  // Space: SpaceScreen,
-  Space: { screen: require('./home/Space').default },
+  Space: require('./home/Space').default,
 })
 const MimeStack = createStackNavigator({
-  Mime: { screen: require('./user/User').default },
+  Mime: require('./user/User').default,
 }, {
   navigationOptions: {
     headerBackTitleVisible: false,
@@ -63,27 +41,62 @@ const MimeStack = createStackNavigator({
 })
 
 
+
 export default createBottomTabNavigator(
   {
-    Home: HomeStack,
-    Space: SpaceStack,
-    NewTab: NewScreen,
-    ShareTab: ShareScreen,
-    Mime: MimeStack,
+    Home: {
+      screen: HomeStack,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/home_p.png') : require('./images/home_w.png')
+          }/>
+        )
+      },
+    },
+    Space: {
+      screen: SpaceStack,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/space_p.png') : require('./images/space_w.png')
+          }/>
+        )
+      },
+    },
+    NewTab: {
+      screen: NewScreen,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={require('./images/new.png')}/>
+        )
+      },
+    },
+    ShareTab: {
+      screen: ShareScreen,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/share_p.png') : require('./images/share_w.png')
+          }/>
+        )
+      },
+    },
+    Mime: {
+      screen: MimeStack,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/person_p.png') : require('./images/person_w.png')
+          }/>
+        )
+      },
+    },
   },
   {
     initialRouteName: 'Home',
-    // lazy:true,
     navigationOptions: ({ navigation }) => ({
       title: '',
-      tabBarIcon: ({ focused }) => {
-        const { routeName } = navigation.state;
-        let icon = ICONS[routeName]
-        if (routeName !== 'NewTab') {
-          icon = focused ? ICONS[routeName].p : ICONS[routeName].w
-        }
-        return <Image style={styles.icon} source={icon} />;
-      },
       tabBarOnPress: ({navigation, defaultHandler}) => {
         const { routeName } = navigation.state;
         if (routeName == 'NewTab') {

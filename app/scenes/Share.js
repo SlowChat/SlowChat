@@ -22,6 +22,8 @@ import Storage from '../utils/storage'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
+ICONS.bg = require('../images/bg_share.png')
+
 type Props = {};
 export default class Share extends PureComponent<Props> {
   state = {
@@ -96,7 +98,7 @@ export default class Share extends PureComponent<Props> {
       <View style={styles.container}>
         <ViewShot ref="viewShot">
           <View style={styles.shot}>
-            <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
+            <ImageBackground source={ICONS.bg} style={styles.wrap}>
               <View style={styles.avatarWrap}>
                 <Image style={styles.avatar} source={ICONS.head} />
                 <View style={styles.avatarRight}>
