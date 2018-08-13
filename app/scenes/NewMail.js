@@ -19,6 +19,7 @@ import HeaderTip from '../components/HeaderTip'
 import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
+import ICONS from '../utils/icon'
 
 import { post } from '../utils/request'
 import { isEmail } from '../utils/validate'
@@ -241,7 +242,7 @@ export default class NewMail extends Component {
             onDateChange={(datetime) => {
               this.setParams('send_time', datetime)
             }} />
-          <Image style={styles.arrow} source={require('../images/icon_forward.png')} />
+          <Image style={styles.arrow} source={ICONS.forward} />
         </View>
         <View style={styles.item}>
           <Text style={styles.txt}>信件提交后在“慢友圈”公开</Text>

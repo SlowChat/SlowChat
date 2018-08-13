@@ -102,13 +102,15 @@ export default class App extends Component<Props> {
   }
 
   handleScroll = (e) => {
-    const THRESHOLD = 100
     const offsetY = e.nativeEvent.contentOffset.y
-    if (offsetY > THRESHOLD + 10 && !this.hasHeader) {
-      this.fadeInOrOut(true)
-    } else if (offsetY < THRESHOLD && this.hasHeader) {
-      this.fadeInOrOut(false)
-    }
+    requestAnimationFrame(() => {
+      const THRESHOLD = 100
+      if (offsetY > THRESHOLD + 10 && !this.hasHeader) {
+        this.fadeInOrOut(true)
+      } else if (offsetY < THRESHOLD && this.hasHeader) {
+        this.fadeInOrOut(false)
+      }
+    })
   }
 
   async getData(page = 0) {
@@ -149,7 +151,6 @@ export default class App extends Component<Props> {
     }
   }
 
-
   async getSlides() {
     try {
       const res = await post('api/common/getSlideList.html')
@@ -169,7 +170,9 @@ export default class App extends Component<Props> {
   // }
 
   handleLoadmore = () => {
-    this.setState({ showFoot: 2 })
+    requestAnimationFrame(() => {
+      this.getData(this.page + 1)
+    })
   }
   handleRefresh = () => {
     this.initData()

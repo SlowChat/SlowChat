@@ -26,10 +26,6 @@ import { post } from '../utils/request'
 const ITEMS = [{id: 0, name: '信件内容'}, {id: 1, name: '慢友圈'}]
 const ANIMAT_TIME = 500
 
-const ICONS = {
-  overt: require('../images/icon_overt.png'),
-  hide: require('../images/icon_hide.png'),
-}
 
 export default class MailDetail extends Component {
 
@@ -39,7 +35,7 @@ export default class MailDetail extends Component {
       title: params.title || '邮件详情',
       headerRight: params.rightBtnOnPress ? (
         <TouchableOpacity activeOpacity={0.6} style={styles.rightBtnWrap} onPress={params.rightBtnOnPress}>
-          <Image style={styles.rightBtn} source={params.ispub ? ICONS.overt : ICONS.hide} />
+          <Image style={styles.rightBtn} source={params.ispub ? require('../images/icon_overt.png') : require('../images/icon_hide.png')} />
         </TouchableOpacity>
       ) : <View />,
 
@@ -83,45 +79,49 @@ export default class MailDetail extends Component {
   handleScroll = (e) => {
     if (this.forbidscroll) return
     const offsetY = parseInt(e.nativeEvent.contentOffset.y)
-    let change = false
-    const { title } = this.state.detail
-    if (offsetY > 130 && this.title != title) {
-      change = true
-      this.title = title
-      this.translate(true)
-    } else if (offsetY < 120 && this.title != '邮件详情') {
-      change = true
-      this.title = '邮件详情'
-      this.translate(false)
-    }
-    if (change) {
-      this.noupdate = true
-      this.props.navigation.setParams({
-        title: this.title
-      })
-    }
-    if (offsetY >= this.listHeaderHeight && this.state.activeTab !== 1) {
-      this.setState({ activeTab: 1 })
-    } else if (offsetY < this.listHeaderHeight && this.state.activeTab !== 0) {
-      this.setState({ activeTab: 0 })
-    }
+    requestAnimationFrame(() => {
+      let change = false
+      const { title } = this.state.detail
+      if (offsetY > 130 && this.title != title) {
+        change = true
+        this.title = title
+        this.translate(true)
+      } else if (offsetY < 120 && this.title != '邮件详情') {
+        change = true
+        this.title = '邮件详情'
+        this.translate(false)
+      }
+      if (change) {
+        this.noupdate = true
+        this.props.navigation.setParams({
+          title: this.title
+        })
+      }
+      if (offsetY >= this.listHeaderHeight && this.state.activeTab !== 1) {
+        this.setState({ activeTab: 1 })
+      } else if (offsetY < this.listHeaderHeight && this.state.activeTab !== 0) {
+        this.setState({ activeTab: 0 })
+      }
+    })
   }
 
   switchTab = (index) => {
-    this.forbidscroll = true
-    if (index == 0) {
-      Animated.timing(this.state.translateValue, {
-        toValue: -44,
-        duration: 0, // 动画时间
-      }).start();
-      this._flatList.scrollToOffset({animated: true, offset: 0})
-    } else {
-      if (this.listHeaderHeight) {
-        this._flatList.scrollToOffset({animated: false, offset: this.listHeaderHeight })
+    requestAnimationFrame(() => {
+      this.forbidscroll = true
+      if (index == 0) {
+        Animated.timing(this.state.translateValue, {
+          toValue: -44,
+          duration: 0, // 动画时间
+        }).start();
+        this._flatList.scrollToOffset({animated: true, offset: 0})
+      } else {
+        if (this.listHeaderHeight) {
+          this._flatList.scrollToOffset({animated: false, offset: this.listHeaderHeight })
+        }
       }
-    }
-    this.setState({ activeTab: index }, () => {
-      this.forbidscroll = false
+      this.setState({ activeTab: index }, () => {
+        this.forbidscroll = false
+      })
     })
   }
 
@@ -187,9 +187,11 @@ export default class MailDetail extends Component {
   }
 
   setEye() {
-    this.noupdate = true
-    this.props.navigation.setParams({
-      ispub: this.ispub,
+    requestAnimationFrame(() => {
+      this.noupdate = true
+      this.props.navigation.setParams({
+        ispub: this.ispub,
+      })
     })
   }
 

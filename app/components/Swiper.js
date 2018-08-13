@@ -14,10 +14,6 @@ import Swiper from 'react-native-swiper';
 import Loading from './Loading'
 import ErrorTip from './ErrorTip'
 
-const ICONS = {
-  banner: require('../images/banner_placeholder.png')
-}
-
 type Props = {};
 export default class SwiperComponent extends PureComponent<Props> {
   static defaultProps = {
@@ -39,7 +35,7 @@ export default class SwiperComponent extends PureComponent<Props> {
           {
             <Swiper autoplay autoplayTimeout={3} paginationStyle={styles.pagination} dotStyle={styles.dot} activeDotStyle={styles.activeDot}>
               {items.map((item, index) =>
-                <ImageBackground key={index} style={styles.image} source={ICONS.banner}>
+                <ImageBackground key={index} style={styles.image} source={require('../images/banner_placeholder.png')}>
                   <Image source={{uri:item.image}} style={styles.image} />
                 </ImageBackground>
               )}

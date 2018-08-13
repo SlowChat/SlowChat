@@ -17,12 +17,6 @@ import ErrorModal from '../components/ErrorModal'
 import { post } from '../utils/request'
 import Storage from '../utils/storage'
 
-const ICONS = {
-  logo: require('../images/logo.png'),
-  close: require('../images/close.png'),
-  loginInput: require('../images/login_input.png'),
-  // loginBtn: require('../images/login_btn.png'),
-}
 
 type Props = {};
 export default class Login extends PureComponent<Props> {
@@ -84,17 +78,17 @@ export default class Login extends PureComponent<Props> {
         <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
            style={styles.header}>
            {this.back && (<TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.goBack()}}>
-             <Image style={styles.close} source={ICONS.close} />
+             <Image style={styles.close} source={require('../images/close.png')} />
            </TouchableOpacity>)}
         </SafeAreaView>
         <ScrollView style={{flex: 1}}>
         <View style={styles.wrap}>
-          <Image style={styles.logo} source={ICONS.logo} />
-          <ImageBackground style={[styles.item, styles.loginInput]} source={ICONS.loginInput}>
+          <Image style={styles.logo} source={require('../images/logo.png')} />
+          <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
             <TextInput style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.username = text}
               autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>
-          <ImageBackground style={[styles.item, styles.loginInput]} source={ICONS.loginInput}>
+          <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
             <TextInput secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.password = text}
               autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>

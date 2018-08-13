@@ -8,9 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const ICONS = {
-  head: require('../images/head_placeholder80.png'),
-}
+import ICONS from '../utils/icon'
 
 export default class ReplyItem extends PureComponent {
   handleReply = () => {

@@ -7,10 +7,7 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
-
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
+import ICONS from '../utils/icon'
 
 export default class About extends Component {
   static navigationOptions = ({navigation}) => {

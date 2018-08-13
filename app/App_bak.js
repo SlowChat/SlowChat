@@ -2,10 +2,40 @@ import React, {Component, PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
+import StartScreen from './Start'
 import BottomTabs from './BottomTabs'
+
 import LoginScreen from './login/Login'
+import RegistScreen from './login/Regist'
+import RegistSuccScreen from './login/RegistSucc'
+import ErrorTipScreen from './components/ErrorTip'
+
+import NewMailScreen from './scenes/NewMail'
+import MailDetailScreen from './scenes/MailDetail'
+import DraftDetailScreen from './scenes/DraftDetail'
+// import ReserveDetailScreen from './scenes/ReserveDetail'
+import ShareScreen from './scenes/Share'
+
+import UserScreen from './user/User'
+import SettingScreen from './user/Setting'
+import EmailScreen from './user/Email'
+import InformationScreen from './user/Information'
+import EditMobileScreen from './user/EditMobile'
+import EditEmailScreen from './user/EditEmail'
+import EditPasswordScreen from './user/EditPassword'
+import AboutScreen from './user/About'
+import RuleScreen from './user/Rule'
+import NoticeScreen from './user/Notice'
+import FeedBackScreen from './user/FeedBack'
+import IntegralScreen from './user/Integral'
 
 const StackApp = (isLogin) => createStackNavigator({
+  Start: {
+    screen: StartScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
   BottomTabs: {
     screen: BottomTabs,
     navigationOptions: {
@@ -19,27 +49,28 @@ const StackApp = (isLogin) => createStackNavigator({
       header: null,
     }
   },
-  Regist: { screen: require('./login/Regist').default },
-  RegistSucc: { screen: require('./login/RegistSucc').default },
-  // ErrorTip: { screen: ErrorTipScreen },
-  User: { screen: require('./user/User').default },
-  Setting: { screen: require('./user/Setting').default },
-  Email: { screen: require('./user/Email').default },
-  Information: { screen: require('./user/Information').default },
-  EditMobile: { screen: require('./user/EditMobile').default },
-  EditEmail: { screen: require('./user/EditEmail').default },
-  EditPassword: { screen: require('./user/EditPassword').default },
-  About: { screen: require('./user/About').default },
-  Rule: { screen: require('./user/Rule').default },
-  Notice: { screen: require('./user/Notice').default },
-  Integral: { screen: require('./user/Integral').default },
-  FeedBack: { screen: require('./user/FeedBack').default },
-  NewMail: { screen: require('./scenes/NewMail').default },
-  MailDetail: { screen: require('./scenes/MailDetail').default },
-  DraftDetail: { screen: require('./scenes/DraftDetail').default },
+  User: { screen: UserScreen },
+  Regist: { screen: RegistScreen },
+  RegistSucc: { screen: RegistSuccScreen },
+  ErrorTip: { screen: ErrorTipScreen },
+  User: { screen: UserScreen },
+  Setting: { screen: SettingScreen },
+  Email: { screen: EmailScreen },
+  Information: { screen: InformationScreen },
+  EditMobile: { screen: EditMobileScreen },
+  EditEmail: { screen: EditEmailScreen },
+  EditPassword: { screen: EditPasswordScreen },
+  About: { screen: AboutScreen },
+  Rule: { screen: RuleScreen },
+  Notice: {screen: NoticeScreen},
+  Integral: {screen: IntegralScreen},
+  FeedBack: { screen: FeedBackScreen },
+  NewMail: { screen: NewMailScreen },
+  MailDetail: { screen: MailDetailScreen },
+  DraftDetail: { screen: DraftDetailScreen },
   // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
-    screen: require('./scenes/Share').default,
+    screen: ShareScreen,
     navigationOptions: {
       title: '分享'
     }

@@ -9,11 +9,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-
-const ICONS = {
-  bg: require('../images/bg_popup.png')
-}
-
 export default class AwardTip extends PureComponent {
   state = {
     visible: false,
@@ -56,7 +51,7 @@ export default class AwardTip extends PureComponent {
       >
         <TouchableWithoutFeedback onPress={this.hide}>
           <View style={styles.awardViewWrap}>
-            <ImageBackground style={styles.awardView} source={ICONS.bg}>
+            <ImageBackground style={styles.awardView} source={Irequire('../images/bg_popup.png')}>
               <View style={styles.awardLeft}>
                 <Text style={styles.award}>+{num}</Text>
               </View>

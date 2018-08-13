@@ -8,13 +8,9 @@ import {
 } from 'react-native';
 import Confirm from '../components/Confirm'
 
-const ICONS = {
-  show: require('../images/icon_overt.png'),
-  noShow: require('../images/icon_hide.png'),
-  eyes: require('../images/icon_eyes.png'),
-  comment: require('../images/icon_comment.png'),
-  finish: require('../images/icon_finish.png')
-}
+// const ICONS = {
+//   noShow: require('../images/icon_hide.png'),
+// }
 
 export default class EmailList extends Component {
 
@@ -59,13 +55,13 @@ export default class EmailList extends Component {
       return (
         <View style={styles.status}>
           <View style={styles.statusLeft}>
-            <Image style={styles.statusIcon} source={ICONS.eyes}/>
+            <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
             <Text style={styles.num}>10</Text>
-            <Image style={styles.statusIcon} source={ICONS.comment}/>
+            <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
             <Text style={styles.num}>10</Text>
           </View>
           <View style={styles.statusRight}>
-          <Image style={styles.finish} source={ICONS.finish} />
+          <Image style={styles.finish} source={require('../images/icon_finish.png')} />
             <Text style={styles.rightTxt}>已完成发送</Text>
           </View>
         </View>
@@ -74,9 +70,9 @@ export default class EmailList extends Component {
       return (
         <View style={styles.status}>
           <View style={styles.statusLeft}>
-            <Image style={styles.statusIcon} source={ICONS.eyes}/>
+            <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
             <Text style={styles.num}>10</Text>
-            <Image style={styles.statusIcon} source={ICONS.comment}/>
+            <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
             <Text style={styles.num}>10</Text>
           </View>
           <View style={styles.statusRight}>
@@ -91,7 +87,7 @@ export default class EmailList extends Component {
       <TouchableWithoutFeedback onPress={this.handleNav}>
         <View>
           <View style={styles.list}>
-            <Image style={styles.icon} source={ICONS.show} />
+            <Image style={styles.icon} source={require('../images/icon_overt.png')} />
             <View style={styles.content}>
               <Text style={styles.name}>{item.email}</Text>
               <Text style={styles.name}>{item.title}</Text>

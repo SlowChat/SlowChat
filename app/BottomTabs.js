@@ -4,11 +4,10 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import LoginScreen from './login/Login'
 import HomeScreen from './home/Home'
-import SpaceScreen from './home/Space'
+// import SpaceScreen from './home/Space'
 import NewScreen from './home/New'
 import ShareScreen from './home/Share'
-// import MimeScreen from './home/Mime'
-import MimeScreen from './user/User'
+// import MimeScreen from './user/User'
 
 const ICONS = {
   Home: {
@@ -36,10 +35,11 @@ const HomeStack = createStackNavigator({
   Login: LoginScreen,
 })
 const SpaceStack = createStackNavigator({
-  Space: SpaceScreen,
+  // Space: SpaceScreen,
+  Space: { screen: require('./home/Space').default },
 })
 const MimeStack = createStackNavigator({
-  Mime: MimeScreen,
+  Mime: { screen: require('./user/User').default },
 }, {
   navigationOptions: {
     headerBackTitleVisible: false,

@@ -121,7 +121,9 @@ export default class Space extends Component<Props> {
     this.setState({ state })
   }
   handleLoadmore = () => {
-    this.getData(this.page+1)
+    requestAnimationFrame(() => {
+      this.getData(this.page+1)
+    })
   }
 
   handlePress = (id) => {

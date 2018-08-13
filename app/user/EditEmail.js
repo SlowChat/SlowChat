@@ -14,9 +14,6 @@ import { isEmail } from '../utils/util'
 import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
 
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
 
 export default class EditEmail extends Component {
   static navigationOptions = ({navigation}) => {

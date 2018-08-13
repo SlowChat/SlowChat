@@ -14,7 +14,6 @@ const ICONS = {
   1: require('../images/icon_ing.png'),
   2: require('../images/icon_ed.png'),
   3: require('../images/icon_cancel.png'),
-  bg: require('../images/condition_bar.png'),
 }
 
 const STATUS = {
@@ -30,7 +29,7 @@ export default class SendTip extends PureComponent {
     const { type, onPress } = this.props
     if (type == null || typeof type == 'undefined') return null
     return (
-      <ImageBackground source={ICONS.bg} style={styles.container}>
+      <ImageBackground source={require('../images/condition_bar.png')} style={styles.container}>
         <Image style={styles.icon} source={ICONS[type]} />
         <Text style={styles.txt}>{STATUS[type]}</Text>
         {

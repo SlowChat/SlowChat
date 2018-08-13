@@ -17,19 +17,10 @@ import QRCode from 'react-native-qrcode'
 import ViewShot from "react-native-view-shot"
 import Toast from 'react-native-easy-toast'
 
+import ICONS from '../utils/icon'
 import Storage from '../utils/storage'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
-
-const ICONS = {
-  head: require('../images/head_placeholder80.png'),
-  sharebg: require('../images/bg_share.png'),
-  wechat: require('../images/icon_wechat.png'),
-  weibo: require('../images/icon_weibo.png'),
-  save: require('../images/icon_save.png'),
-  more: require('../images/icon_more.png'),
-}
-
 
 type Props = {};
 export default class Share extends PureComponent<Props> {
@@ -105,7 +96,7 @@ export default class Share extends PureComponent<Props> {
       <View style={styles.container}>
         <ViewShot ref="viewShot">
           <View style={styles.shot}>
-            <ImageBackground source={ICONS.sharebg} style={styles.wrap}>
+            <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
               <View style={styles.avatarWrap}>
                 <Image style={styles.avatar} source={ICONS.head} />
                 <View style={styles.avatarRight}>
@@ -127,19 +118,19 @@ export default class Share extends PureComponent<Props> {
         </ViewShot>
         <View style={styles.icons}>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWechat}>
-            <Image style={styles.icon} source={ICONS.wechat}></Image>
+            <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
             <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWeibo}>
-            <Image style={styles.icon} source={ICONS.weibo}></Image>
+            <Image style={styles.icon} source={require('../images/icon_weibo.png')}></Image>
             <Text style={styles.iconTxt}>微博</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
-            <Image style={styles.icon} source={ICONS.save}></Image>
+            <Image style={styles.icon} source={require('../images/icon_save.png')}></Image>
             <Text style={styles.iconTxt}>保存</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.setState({moreModal: true})}>
-            <Image style={styles.icon} source={ICONS.more}></Image>
+            <Image style={styles.icon} source={require('../images/icon_more.png')}></Image>
             <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>

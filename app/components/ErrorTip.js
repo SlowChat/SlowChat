@@ -8,9 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const ICONS = {
-  error: require('../images/error.png')
-}
 
 export default class ErrorTip extends PureComponent {
   render() {
@@ -18,7 +15,7 @@ export default class ErrorTip extends PureComponent {
     return (
       <View style={styles.container}>
         <View style={styles.wrap}>
-          <Image source={ICONS.error} style={styles.icon} />
+          <Image source={require('../images/error.png')} style={styles.icon} />
           <Text style={styles.txt}>您的网络遇到问题</Text>
           <TouchableOpacity style={styles.btn} onPress={onPress}>
             <Text style={styles.btnTxt}>{txt}</Text>

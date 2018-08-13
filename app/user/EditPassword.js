@@ -11,10 +11,6 @@ import {
 import { get, post } from '../utils/request'
 import Toast from 'react-native-easy-toast'
 
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
-
 export default class EditPassowrd extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state

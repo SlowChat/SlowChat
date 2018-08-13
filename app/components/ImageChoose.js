@@ -18,12 +18,6 @@ import AttachmentItem from './AttachmentItem'
 import { upload } from '../utils/request'
 
 
-const ICONS = {
-  picture: require('../images/picture.png'),
-  folder: require('../images/document.png'),
-}
-
-
 function formatFileSize(fileSize) {
   if (fileSize > 1024 * 1024) {
     return Math.round(fileSize / 1024 / 1024) + 'M'
@@ -174,13 +168,13 @@ export default class AvatarHeader extends Component {
           <View style={styles.content}>
             <View style={styles.header}>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
-                <Image style={styles.icon} source={ICONS.picture}></Image>
+                <Image style={styles.icon} source={require('../images/picture.png')}></Image>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
-                <Image style={styles.icon} source={ICONS.folder}></Image>
+                <Image style={styles.icon} source={require('../images/document.png')}></Image>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
-                <Image style={styles.icon} source={ICONS.folder}></Image>
+                <Image style={styles.icon} source={require('../images/document.png')}></Image>
               </TouchableOpacity>
             </View>
             <ScrollView horizontal contentContainerStyle={styles.body} showsHorizontalScrollIndicator={false}>

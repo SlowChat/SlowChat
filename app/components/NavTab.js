@@ -5,16 +5,13 @@ import {
   View,
 } from 'react-native';
 
-const ICONS = {
-  back: require('../images/icon_back.png'),
-}
 
 type Props = {};
-export default class HomeItem extends Component<Props> {
+export default class NavTab extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Image style={styles.back} source={ICONS.back} />
+        <Image style={styles.back} source={require('../images/icon_back.png')} />
         <Text style={styles.title}>
           {this.props.title}
         </Text>
