@@ -36,7 +36,7 @@ export default class EditMobile extends Component {
       this.setState({
         btnText: '验证后绑定新手机',
         status: 'check',
-        isVcodeClick: true
+        // isVcodeClick: true
       })
     } else {
       this.setState({
@@ -69,7 +69,6 @@ export default class EditMobile extends Component {
             btnText: '绑定',
             isClick: false,
             initStatus: true,
-            isVcodeClick: false
           })
         } else {
           this.setState({isSucc: true})
@@ -96,11 +95,11 @@ export default class EditMobile extends Component {
     this.setState({
       mobile: text
     })
-    if (text.length >= 11 && isMobileNumberSupport(text)) {
-      this.setState({isVcodeClick: true})
-    } else {
-      this.setState({isVcodeClick: false})
-    }
+    // if (text.length >= 11 && isMobileNumberSupport(text)) {
+    //   this.setState({isVcodeClick: true})
+    // } else {
+    //   this.setState({isVcodeClick: false})
+    // }
   }
 
   handleMobile = () => {
@@ -121,6 +120,10 @@ export default class EditMobile extends Component {
     this.setState({ isSucc: false })
   }
 
+  showTip = (msg) => {
+    this.refs.toast.show(msg)
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -135,7 +138,7 @@ export default class EditMobile extends Component {
               value={this.state.mobile}
               maxLength={11}
             />
-            <VerifyCode mobile={this.state.mobile} isVrfy={this.state.isVcodeClick} initStatus={this.state.initStatus} />
+          <VerifyCode mobile={this.state.mobile} onTip={this.showTip}  />
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>

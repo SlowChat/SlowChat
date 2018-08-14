@@ -15,6 +15,7 @@ import {
 
 import {SafeAreaView} from 'react-navigation'
 import ErrorModal from '../components/ErrorModal'
+import VerifyCode from '../components/VerifyCode'
 import { post } from '../utils/request'
 import Toast from 'react-native-easy-toast'
 
@@ -32,28 +33,20 @@ export default class Regist extends PureComponent<Props> {
     username: '',
     password: '',
     verification_code: '',
+    resetVertify: false,
   }
 
   switchTab(index) {
+    if (this.state.activeTab == index) return
     this.setState({
       activeTab: index,
       username: '',
       password: '',
-      verification_code: ''
+      verification_code: '',
+      resetVertify: !this.state.resetVertify,
     })
   }
 
-  // 获取验证码
-  sendVerification = () => {
-    post('api/verification_code/send.html', {
-      username: this.state.username
-    }, true).then(res => {
-      if (res.code == 1)
-      this.refs.toast.show(res.msg || '验证码已经发送成功');
-    }).catch(e => {
-      this.showErrorModal('验证码发送失败')
-    })
-  }
   // 注册
   handleRegist = () => {
     if (!this.state.checked) {
@@ -78,6 +71,9 @@ export default class Regist extends PureComponent<Props> {
   }
   goLogin = () => {
     this.props.navigation.goBack()
+  }
+  showTip = (msg) => {
+    this.refs.toast.show(msg)
   }
 
   showErrorModal(txt) {
@@ -122,9 +118,7 @@ export default class Regist extends PureComponent<Props> {
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
                keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
-              <TouchableOpacity activeOpacity={0.8} style={styles.verifyBtn} onPress={this.sendVerification}>
-                <Text style={verifyStyle}>获取验证码</Text>
-              </TouchableOpacity>
+             <VerifyCode type="regist" reset={this.state.resetVertify} mobile={username} onTip={this.showTip} />
             </ImageBackground>
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}

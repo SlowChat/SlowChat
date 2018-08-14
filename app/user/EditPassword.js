@@ -94,6 +94,10 @@ export default class EditPassowrd extends Component {
     this.setState({ isSucc: false })
   }
 
+  showTip = (msg) => {
+    this.refs.toast.show(msg)
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -107,7 +111,7 @@ export default class EditPassowrd extends Component {
               placeholder='请输入您的手机号'
               value={this.state.username}
             />
-            <VerifyCode mobile={this.state.mobile} isVrfy={this.state.isVcodeClick}/>
+          <VerifyCode mobile={this.state.mobile} onTip={this.showTip}/>
             {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
               <View style={styles.btn}>
                 <Text style={styles.btnTxt}>获取验证码</Text>

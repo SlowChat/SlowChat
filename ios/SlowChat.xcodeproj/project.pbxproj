@@ -828,7 +828,8 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 822322DMBK;
+						DevelopmentTeam = 9DPJR9557Z;
+						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1421,9 +1422,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 822322DMBK;
+				DEVELOPMENT_TEAM = 9DPJR9557Z;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
@@ -1432,6 +1435,7 @@
 					"$(SRCROOT)/../node_modules/react-native-video/ios",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1440,6 +1444,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ios.slowchat;
 				PRODUCT_NAME = SlowChat;
+				PROVISIONING_PROFILE = "e4b5583a-dfd7-4320-bd87-e5ea125b8bc3";
+				PROVISIONING_PROFILE_SPECIFIER = "slowchat-debug";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1448,8 +1454,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 822322DMBK;
+				DEVELOPMENT_TEAM = 9DPJR9557Z;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
@@ -1458,6 +1466,7 @@
 					"$(SRCROOT)/../node_modules/react-native-video/ios",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = (
@@ -1467,6 +1476,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ios.slowchat;
 				PRODUCT_NAME = SlowChat;
+				PROVISIONING_PROFILE = "8b08b77e-7596-4546-b55c-6e9ad6cba347";
+				PROVISIONING_PROFILE_SPECIFIER = "slowchat-prod";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
