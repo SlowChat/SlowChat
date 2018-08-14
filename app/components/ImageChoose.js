@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -29,7 +29,7 @@ function formatFileSize(fileSize) {
 }
 
 
-export default class AvatarHeader extends Component {
+export default class AvatarHeader extends PureComponent {
   state = {
     items: []
   }

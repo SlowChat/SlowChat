@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,7 +11,7 @@ import {
 
 import {SafeAreaView} from 'react-navigation'
 
-export default class ReplyBox extends Component {
+export default class ReplyBox extends PureComponent {
   state = {
     content: ''
   }

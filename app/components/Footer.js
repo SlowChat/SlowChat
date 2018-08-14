@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +6,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-export default class Footer extends Component {
+export default class Footer extends PureComponent {
   render() {
     const { showFoot } = this.props
     if (showFoot === 1) {

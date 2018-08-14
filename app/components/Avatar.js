@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
 
 import ICONS from '../utils/icon'
 
-export default class AvatarHeader extends Component {
+export default class AvatarHeader extends PureComponent {
   render() {
     const { username, avatar } = this.props;
     return (

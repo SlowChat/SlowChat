@@ -5,6 +5,9 @@ import {
 } from 'react-native';
 
 export default class Loading extends PureComponent {
+  shouldComponentUpdate() {
+    return false
+  }
   render() {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
 
 
 type Props = {};
-export default class NavTab extends Component<Props> {
+export default class NavTab extends PureComponent<Props> {
   render() {
     return (
       <View style={styles.container}>

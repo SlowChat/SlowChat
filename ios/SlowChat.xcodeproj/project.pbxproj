@@ -1438,7 +1438,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.slowchat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ios.slowchat;
 				PRODUCT_NAME = SlowChat;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1464,7 +1464,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.slowchat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ios.slowchat;
 				PRODUCT_NAME = SlowChat;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
