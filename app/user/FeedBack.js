@@ -4,19 +4,11 @@ import {
   Text,
   View,
   Image,
-  Button,
   TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
 
-
-const ICONS = {
-  clock: require('../images/icon_clock.png'),
-  inform: require('../images/icon_inform.png'),
-  forward: require('../images/icon_forward.png'),
-}
-
-export default class User extends Component {
+export default class FeedBack extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {

@@ -9,10 +9,6 @@ import {
   SafeAreaView,
 } from 'react-native'
 
-const ICONS = {
-  success: require('../images/icon_succeed.png'),
-}
-
 export default class SuccessModal extends PureComponent {
   handleComplete = () => {
     this.props.navigation.goBack()
@@ -23,7 +19,7 @@ export default class SuccessModal extends PureComponent {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={ICONS.success} style={styles.succIcon} />
+        <Image source={require('../images/icon_succeed.png')} style={styles.succIcon} />
         <Text style={styles.succTxt}>注册成功</Text>
         <TouchableOpacity activeOpacity={0.8} style={styles.succBtn} onPress={this.handleComplete}>
           <Text style={styles.succBtnTxt}>完 成</Text>

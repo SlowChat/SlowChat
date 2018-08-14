@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  Button,
   TextInput,
   Picker,
   TouchableOpacity,
@@ -16,10 +15,7 @@ import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
 import Confirm from '../components/Confirm'
 import { get, post } from '../utils/request'
-
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
+import ICONS from '../utils/icon'
 
 const SEX_OBJ = {
   0: '保密',

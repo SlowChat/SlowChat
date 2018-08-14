@@ -41,6 +41,20 @@ export default {
       return ''
     }
   },
+  getUser: async (force) => {
+    if (Global.user && Global.user.id) return Global.user
+    try {
+      const res = await storage.load({
+        key: 'slowchattoken',
+        autoSync: true,
+        syncInBackground: true,
+      })
+      Global.user = res.user || {}
+      return res.user || {}
+    } catch (e) {
+      return {}
+    }
+  },
   clear: () => {
     Global.token = ''
     Global.user = {}

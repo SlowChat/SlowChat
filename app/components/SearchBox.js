@@ -8,12 +8,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-const ICONS = {
-  head: require('../images/head_placeholder80.png'),
-  eye: require('../images/icon_eyes.png'),
-  comment: require('../images/icon_comment.png'),
-}
-
 type Props = {};
 export default class HomeItem extends PureComponent<Props> {
   handleChange = (text) => {
@@ -78,6 +72,8 @@ const styles = StyleSheet.create({
     borderRightColor: '#CCCCCC',
     paddingLeft: 15,
     paddingRight: 15,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   icon: {
     width: 30,

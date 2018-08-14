@@ -4,18 +4,12 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableWithoutFeedback
 } from 'react-native';
 
+import ICONS from '../utils/icon'
 
-const ICONS = {
-  clock: require('../images/icon_clock.png'),
-  inform: require('../images/icon_inform.png'),
-  forward: require('../images/icon_forward.png'),
-}
-
-export default class User extends Component {
+export default class Notice extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
@@ -31,12 +25,12 @@ export default class User extends Component {
       <View style={styles.container}>
         <View style={styles.link}>
           <View style={styles.menu}>
-            <Image style={styles.menuImg} source={ICONS.clock} />
+            <Image style={styles.menuImg} source={require('../images/icon_clock.png')} />
             <Text style={styles.menuTxt}>预约发送邮件提醒</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
           <View style={styles.menu}>
-            <Image style={styles.menuImg} source={ICONS.inform} />
+            <Image style={styles.menuImg} source={require('../images/icon_inform.png')} />
             <Text style={styles.menuTxt}>通知</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </View>

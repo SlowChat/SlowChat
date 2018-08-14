@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  Button,
   TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -14,10 +13,6 @@ import { get, post } from '../utils/request'
 import { isMobileNumberSupport } from '../utils/util'
 import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
-
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
 
 export default class EditMobile extends Component {
   static navigationOptions = ({navigation}) => {

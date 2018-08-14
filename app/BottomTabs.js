@@ -4,42 +4,20 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import LoginScreen from './login/Login'
 import HomeScreen from './home/Home'
-import SpaceScreen from './home/Space'
+// import SpaceScreen from './home/Space'
 import NewScreen from './home/New'
 import ShareScreen from './home/Share'
-// import MimeScreen from './home/Mime'
-import MimeScreen from './user/User'
-
-const ICONS = {
-  Home: {
-    p: require('./images/home_p.png'),
-    w: require('./images/home_w.png'),
-  },
-  Space: {
-    p: require('./images/space_p.png'),
-    w: require('./images/space_w.png'),
-  },
-  NewTab: require('./images/new.png'),
-  ShareTab: {
-    p: require('./images/share_p.png'),
-    w: require('./images/share_w.png'),
-  },
-  Mime: {
-    p: require('./images/person_p.png'),
-    w: require('./images/person_w.png'),
-  }
-}
-
+// import MimeScreen from './user/User'
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   Login: LoginScreen,
 })
 const SpaceStack = createStackNavigator({
-  Space: SpaceScreen,
+  Space: require('./home/Space').default,
 })
 const MimeStack = createStackNavigator({
-  Mime: MimeScreen,
+  Mime: require('./user/User').default,
 }, {
   navigationOptions: {
     headerBackTitleVisible: false,
@@ -49,6 +27,9 @@ const MimeStack = createStackNavigator({
       borderBottomWidth: 0,
       elevation: 0,
       alignItems: 'center'
+    },
+    headerTitleContainerStyle: {
+      justifyContent: 'center',
     },
     headerTitleStyle: {
       fontSize: 18,
@@ -60,27 +41,62 @@ const MimeStack = createStackNavigator({
 })
 
 
+
 export default createBottomTabNavigator(
   {
-    Home: HomeStack,
-    Space: SpaceStack,
-    NewTab: NewScreen,
-    ShareTab: ShareScreen,
-    Mime: MimeStack,
+    Home: {
+      screen: HomeStack,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/home_p.png') : require('./images/home_w.png')
+          }/>
+        )
+      },
+    },
+    Space: {
+      screen: SpaceStack,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/space_p.png') : require('./images/space_w.png')
+          }/>
+        )
+      },
+    },
+    NewTab: {
+      screen: NewScreen,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={require('./images/new.png')}/>
+        )
+      },
+    },
+    ShareTab: {
+      screen: ShareScreen,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/share_p.png') : require('./images/share_w.png')
+          }/>
+        )
+      },
+    },
+    Mime: {
+      screen: MimeStack,
+      navigationOptions: {
+        tabBarIcon:({focused,tintColor}) => (
+          <Image style={styles.icon} source={
+              focused ? require('./images/person_p.png') : require('./images/person_w.png')
+          }/>
+        )
+      },
+    },
   },
   {
     initialRouteName: 'Home',
-    // lazy:true,
     navigationOptions: ({ navigation }) => ({
       title: '',
-      tabBarIcon: ({ focused }) => {
-        const { routeName } = navigation.state;
-        let icon = ICONS[routeName]
-        if (routeName !== 'NewTab') {
-          icon = focused ? ICONS[routeName].p : ICONS[routeName].w
-        }
-        return <Image style={styles.icon} source={icon} />;
-      },
       tabBarOnPress: ({navigation, defaultHandler}) => {
         const { routeName } = navigation.state;
         if (routeName == 'NewTab') {

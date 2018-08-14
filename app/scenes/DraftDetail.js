@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  Button,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
@@ -18,12 +17,6 @@ import HeaderTip from '../components/HeaderTip'
 import Attachment from '../components/Attachment'
 
 import { post } from '../utils/request'
-
-const ICONS = {
-  delete: require('../images/delete.png'),
-  edit: require('../images/edit.png'),
-  attachment: require('../images/icon_attachment.png'),
-}
 
 export default class DraftDetail extends Component {
   state = {
@@ -65,7 +58,9 @@ export default class DraftDetail extends Component {
     this.setState({ showConfirm: false })
   }
   openDelete = () => {
-    this.refs.alert.show()
+    requestAnimationFrame(() => {
+      this.refs.alert.show()
+    })
   }
   handleDelete = async () => {
     const id = this.getId()
@@ -115,17 +110,17 @@ export default class DraftDetail extends Component {
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>附件：</Text>
-            <Image style={styles.attachment} source={ICONS.attachment} />
+            <Image style={styles.attachment} source={require('../images/icon_attachment.png')} />
             <Text style={styles.attachmentNum}>{attachs.length}个附件</Text>
           </View>
           <Attachment items={attachs} />
         </ScrollView>
         <SafeAreaView style={styles.bottom}>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.openDelete}>
-            <Image style={styles.bottomIcon} source={ICONS.delete} />
+            <Image style={styles.bottomIcon} source={require('../images/delete.png')} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.handleEdit}>
-            <Image style={styles.bottomIcon} source={ICONS.edit} />
+            <Image style={styles.bottomIcon} source={require('../images/edit.png')} />
           </TouchableOpacity>
         </SafeAreaView>
         <Alert

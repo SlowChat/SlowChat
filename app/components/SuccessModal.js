@@ -9,13 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const ICONS = {
-  success: require('../images/icon_succeed.png'),
-}
-
 export default class SuccessModal extends PureComponent {
   render() {
-    const { txt, icon, award, btn, visible, onClose = null, onPress = () => {} } = this.props
+    const { txt, icon, award, btn, visible, onClose = () => {}, onPress = () => {} } = this.props
     const succIcon = icon ? icon : require('../images/icon_succeed.png');
     return (
       <Modal

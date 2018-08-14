@@ -4,22 +4,13 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableWithoutFeedback
 } from 'react-native';
 
+import ICONS from '../utils/icon'
 import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
 import SuccessModal from '../components/SuccessModal'
-
-const ICONS = {
-  set: require('../images/icon_set.png'),
-  info: require('../images/icon_info.png'),
-  daka: require('../images/icon_daka.png'),
-  person: require('../images/icon_person.png'),
-  forward: require('../images/icon_forward.png'),
-  integral: require('../images/icon_jifen.png'),
-}
 
 let mobile='', userEmail='', username='', msgCount=0;
 export default class User extends Component {
@@ -31,7 +22,7 @@ export default class User extends Component {
       headerLeft: (
         <View style={styles.icon}>
           <TouchableWithoutFeedback onPress={() => navigate('Setting', { mobile, userEmail, username })}>
-            <Image style={styles.set} source={ICONS.set} />
+            <Image style={styles.set} source={require('../images/icon_set.png')} />
           </TouchableWithoutFeedback>
         </View>
       ),
@@ -39,7 +30,7 @@ export default class User extends Component {
         <View style={styles.icon}>
           <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
             <View>
-              <Image style={styles.info} source={ICONS.info} />
+              <Image style={styles.info} source={require('../images/icon_info.png')} />
               {
                 msgCount ? (
                   <View style={styles.msgCount}><Text style={{color: '#fff'}}>{msgCount}</Text></View>
@@ -143,7 +134,7 @@ export default class User extends Component {
         </View>
         <View style={styles.punch}>
           <View style={styles.punchLeft}>
-            <Image style={styles.daka} source={ICONS.daka} />
+            <Image style={styles.daka} source={require('../images/icon_daka.png')} />
             <Text style={styles.dakatxt}>今日打卡
               {
                 sign.desc ? (
@@ -169,21 +160,21 @@ export default class User extends Component {
         <View style={styles.link}>
           <TouchableWithoutFeedback onPress={() => navigate('Information', { username, avatar, sex, birthday })}>
             <View style={styles.menu}>
-              <Image style={styles.menuImg} source={ICONS.person} />
+              <Image style={styles.menuImg} source={require('../images/icon_person.png')} />
               <Text style={styles.menuTxt}>个人资料</Text>
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Integral')}>
             <View style={styles.menu}>
-              <Image style={styles.menuImg} source={ICONS.integral} />
+              <Image style={styles.menuImg} source={require('../images/icon_jifen.png')} />
               <Text style={styles.menuTxt}>我的积分</Text>
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
             <View style={styles.menu}>
-              <Image style={styles.menuImg} source={ICONS.info} />
+              <Image style={styles.menuImg} source={require('../images/icon_info.png')} />
               {
                 msgCount ? (
                   <View style={styles.msgCount}><Text style={{color: '#fff'}}>{msgCount}</Text></View>

@@ -9,9 +9,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
-const ICONS = {
-  error: require('../images/icon_error.png')
-}
 
 export default class ErrorModal extends PureComponent {
   state = {
@@ -57,7 +54,7 @@ export default class ErrorModal extends PureComponent {
         <TouchableWithoutFeedback onPress={this.hide}>
           <View style={styles.errorViewWrap}>
             <View style={styles.errorView}>
-              <Image source={ICONS.error} style={styles.errorIcon} />
+              <Image source={require('../images/icon_error.png')} style={styles.errorIcon} />
               <Text style={styles.errorTxt}>{txt}</Text>
             </View>
           </View>

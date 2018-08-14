@@ -4,12 +4,9 @@ import {
   Text,
   View,
   Image,
-  Button,
   FlatList,
   Animated,
   Easing,
-  Platform,
-  BackHandler,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -18,7 +15,6 @@ import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
-import ErrorTip from '../components/ErrorTip'
 
 import { post } from '../utils/request'
 
@@ -59,9 +55,6 @@ export default class App extends Component<Props> {
     DeviceEventEmitter.addListener('refresh-home', (params) => {
       this.initData()
    });
-   if (Platform.OS === 'android') {
-     BackHandler.addEventListener('hardwareBackPress', this.handleAndroidBack);
-   }
   }
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -70,21 +63,7 @@ export default class App extends Component<Props> {
     }
     return true
   }
-  componentWillUnmount() {
-    if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleAndroidBack);
-    }
-  }
-  handleAndroidBack = () => {
-    let timestamp = (new Date()).valueOf();
-    if (timestamp - firstClick > 2000) {
-        firstClick = timestamp;
-        this.refs.toast.show('再按一次退出', 100)
-        return true;
-    } else {
-        return false;
-    }
-  }
+
   initData(state = {}) {
     this.setState({ showFoot: 0, items: [], ...state }, () => {
       this.page = 0
@@ -122,13 +101,15 @@ export default class App extends Component<Props> {
   }
 
   handleScroll = (e) => {
-    const THRESHOLD = 100
     const offsetY = e.nativeEvent.contentOffset.y
-    if (offsetY > THRESHOLD + 10 && !this.hasHeader) {
-      this.fadeInOrOut(true)
-    } else if (offsetY < THRESHOLD && this.hasHeader) {
-      this.fadeInOrOut(false)
-    }
+    requestAnimationFrame(() => {
+      const THRESHOLD = 100
+      if (offsetY > THRESHOLD + 10 && !this.hasHeader) {
+        this.fadeInOrOut(true)
+      } else if (offsetY < THRESHOLD && this.hasHeader) {
+        this.fadeInOrOut(false)
+      }
+    })
   }
 
   async getData(page = 0) {
@@ -169,7 +150,6 @@ export default class App extends Component<Props> {
     }
   }
 
-
   async getSlides() {
     try {
       const res = await post('api/common/getSlideList.html')
@@ -189,7 +169,9 @@ export default class App extends Component<Props> {
   // }
 
   handleLoadmore = () => {
-    this.setState({ showFoot: 2 })
+    requestAnimationFrame(() => {
+      this.getData(this.page + 1)
+    })
   }
   handleRefresh = () => {
     this.initData()

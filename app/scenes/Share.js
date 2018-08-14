@@ -9,32 +9,34 @@ import {
   CameraRoll,
   TouchableOpacity,
   ImageBackground,
+  PermissionsAndroid
 } from 'react-native';
 
-import RNFS from 'react-native-fs'
 // import ShareUtil from '../libs/um/ShareUtil'
 import QRCode from 'react-native-qrcode'
 import ViewShot from "react-native-view-shot"
 import Toast from 'react-native-easy-toast'
 
+import ICONS from '../utils/icon'
+import Storage from '../utils/storage'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
-const ICONS = {
-  head: require('../images/head_placeholder80.png'),
-  sharebg: require('../images/bg_share.png'),
-  wechat: require('../images/icon_wechat.png'),
-  weibo: require('../images/icon_weibo.png'),
-  save: require('../images/icon_save.png'),
-  more: require('../images/icon_more.png'),
-}
-
+ICONS.bg = require('../images/bg_share.png')
 
 type Props = {};
-export default class HeaderTip extends PureComponent<Props> {
+export default class Share extends PureComponent<Props> {
   state = {
     qrcodeUrl: 'https://www.baidu.com',
     moreModal: false,
+    userName: ''
+  }
+  async componentWillMount() {
+    const user = await Storage.getUser()
+    console.log(user);
+    this.setState({
+      userName: user.user_nickname
+    })
   }
   handleWechat = () => {
     // ShareUtil.auth(5, (code,result,message) =>{
@@ -52,27 +54,40 @@ export default class HeaderTip extends PureComponent<Props> {
   }
 
   handleSave = async () => {
+    let cannotSave = false
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: '相册权限申请',
+            message: '慢聊保存截图，需要访问你的相册'
+          },
+        );
+        if (granted != PermissionsAndroid.RESULTS.GRANTED) {
+          cannotSave = true
+          this.refs.toast.show('授权拒绝，无法保存截图')
+        }
+      } catch (err) {
+        cannotSave = true
+        this.refs.toast.show('授权失败，无法保存截图')
+      }
+    }
+    if (cannotSave) return
     try {
       let uri = this.uri
       if (!uri) {
         uri = await this.refs.viewShot.capture()
         this.uri = uri
       }
-      if (Platform.OS === 'ios') {
+      try {
         await CameraRoll.saveToCameraRoll(uri)
         this.refs.toast.show('图片已保存到相册')
-      } else {
-        const storeLocation = `${RNFS.DocumentDirectoryPath}`;
-        let pathName = new Date().getTime() + ".png"
-        let downloadDest = `${storeLocation}/${pathName}`;
-        const res = await RNFS.downloadFile({fromUrl: uri, toFile: downloadDest}).promise
-        if (res && res.statusCode === 200) {
-          await CameraRoll.saveToCameraRoll(`file://${downloadDest}`)
-          this.refs.toast.show('图片已保存到相册')
-        }
+      } catch (e) {
+        this.refs.toast.show('图片已保存失败')
       }
     } catch (e) {
-      this.refs.toast.show('图片已保存失败')
+      this.refs.toast.show('截图失败')
     }
   }
 
@@ -82,40 +97,42 @@ export default class HeaderTip extends PureComponent<Props> {
     return (
       <View style={styles.container}>
         <ViewShot ref="viewShot">
-          <ImageBackground source={ICONS.sharebg} style={styles.wrap}>
-            <View style={styles.avatarWrap}>
-              <Image style={styles.avatar} source={ICONS.head} />
-              <View style={styles.avatarRight}>
-                <View style={styles.nameWrap}>
-                  <Text style={styles.name}>给未来的自</Text>
-                  <Text style={styles.desc}>邀请你来慢邮~</Text>
+          <View style={styles.shot}>
+            <ImageBackground source={ICONS.bg} style={styles.wrap}>
+              <View style={styles.avatarWrap}>
+                <Image style={styles.avatar} source={ICONS.head} />
+                <View style={styles.avatarRight}>
+                  <View style={styles.nameWrap}>
+                    <Text style={styles.name}>{this.state.userName}</Text>
+                    <Text style={styles.desc}>邀请你来慢邮~</Text>
+                  </View>
+                  <Text style={styles.title}>让我们 回到未来 回忆现在</Text>
                 </View>
-                <Text style={styles.title}>发信时间：2019年1月10日</Text>
               </View>
-            </View>
-            <View style={styles.qrcodeWrap}>
-              <View style={styles.qrcode}>
-                <QRCode value={this.state.qrcodeUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+              <View style={styles.qrcodeWrap}>
+                <View style={styles.qrcode}>
+                  <QRCode value={this.state.qrcodeUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+                </View>
               </View>
-            </View>
-          </ImageBackground>
-          <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
+            </ImageBackground>
+            <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
+          </View>
         </ViewShot>
         <View style={styles.icons}>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWechat}>
-            <Image style={styles.icon} source={ICONS.wechat}></Image>
+            <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
             <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWeibo}>
-            <Image style={styles.icon} source={ICONS.weibo}></Image>
+            <Image style={styles.icon} source={require('../images/icon_weibo.png')}></Image>
             <Text style={styles.iconTxt}>微博</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
-            <Image style={styles.icon} source={ICONS.save}></Image>
+            <Image style={styles.icon} source={require('../images/icon_save.png')}></Image>
             <Text style={styles.iconTxt}>保存</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.setState({moreModal: true})}>
-            <Image style={styles.icon} source={ICONS.more}></Image>
+            <Image style={styles.icon} source={require('../images/icon_more.png')}></Image>
             <Text style={styles.iconTxt}>更多</Text>
           </TouchableOpacity>
         </View>
@@ -155,13 +172,18 @@ const styles = StyleSheet.create({
   container : {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    fontFamily: 'PingFangSC-Regular',
+  },
+  shot: {
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   wrap: {
     marginTop: 50,
-    marginLeft: 30,
-    marginRight: 30,
+    // marginLeft: 30,
+    // marginRight: 30,
     padding: 5,
+    width: 315,
+    height: 300,
   },
   qrcodeWrap: {
     height: 210,
@@ -175,6 +197,7 @@ const styles = StyleSheet.create({
   shareTxt: {
     marginTop: 41,
     marginBottom: 25,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#666666',
     textAlign: 'center',
@@ -196,6 +219,7 @@ const styles = StyleSheet.create({
   },
   iconTxt: {
     height: 17,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#E24B92',
     lineHeight: 17,
@@ -222,17 +246,19 @@ const styles = StyleSheet.create({
   },
   name: {
     height: 25,
-    fontSize: 18,
     fontFamily: 'PingFangSC-Regular',
+    fontSize: 18,
     color: '#E24B92',
     lineHeight: 25,
   },
   desc: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#666666',
   },
   title: {
     height: 17,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#999999',
     lineHeight: 17
@@ -259,13 +285,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   moreTxt: {
-    fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
+    fontSize: 16,
     color: '#ED0B83',
   },
   cancelTxt: {
-    fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
+    fontSize: 16,
     color: '#999999',
   },
 });

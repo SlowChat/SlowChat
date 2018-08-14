@@ -18,16 +18,6 @@ import ErrorModal from '../components/ErrorModal'
 import { post } from '../utils/request'
 import Toast from 'react-native-easy-toast'
 
-
-const ICONS = {
-  back: require('../images/back_w.png'),
-  checked: require('../images/checked.png'),
-  unchecked: require('../images/unchecked.png'),
-  loginInput: require('../images/login_input.png'),
-  bg: require('../images/bg_register.png'),
-  // loginBtn: require('../images/login_btn.png'),
-}
-
 type Props = {};
 export default class Regist extends PureComponent<Props> {
   static navigationOptions = ({navigation}) => {
@@ -98,7 +88,7 @@ export default class Regist extends PureComponent<Props> {
     const { activeTab } = this.state
     // <StatusBar hidden={true} />
     return (
-        <ImageBackground style={styles.headerbg} source={ICONS.bg}>
+        <ImageBackground style={styles.headerbg} source={require('../images/bg_register.png')}>
           <View style={styles.tabWrap}>
             <TouchableOpacity activeOpacity={0.8} style={styles.tabItem} onPress={() => this.switchTab(0)}>
               <View style={[styles.tab, activeTab == 0 ? styles.activeTab : {}]}>
@@ -123,25 +113,25 @@ export default class Regist extends PureComponent<Props> {
       <View style={styles.container}>
         <SafeAreaView style={styles.safeview}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => {this.props.navigation.goBack()}}>
-            <Image style={styles.back} source={ICONS.back} />
+            <Image style={styles.back} source={require('../images/back_w.png')} />
           </TouchableOpacity>
         </SafeAreaView>
         <ScrollView>
           {this.renderTabs()}
           <View style={styles.wrap}>
-            <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={ICONS.loginInput}>
+            <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
                keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
               <TouchableOpacity activeOpacity={0.8} style={styles.verifyBtn} onPress={this.sendVerification}>
                 <Text style={verifyStyle}>获取验证码</Text>
               </TouchableOpacity>
             </ImageBackground>
-            <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
+            <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
                 autoCapitalize="none" underlineColorAndroid='transparent' />
             </ImageBackground>
 
-            <ImageBackground style={styles.inputWrap} source={ICONS.loginInput}>
+            <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput maxLength={12} secureTextEntry value={password} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入6-12位密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({password: text})}
                 underlineColorAndroid='transparent' />
             </ImageBackground>
@@ -159,7 +149,7 @@ export default class Regist extends PureComponent<Props> {
         <View style={[styles.tipWrap, styles.checkboxWrap]}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => this.setState({ checked: !this.state.checked })}>
             {
-              checked ? <Image style={styles.checkbox} source={ICONS.checked} /> : <Image style={styles.checkbox} source={ICONS.unchecked} />
+              checked ? <Image style={styles.checkbox} source={require('../images/checked.png')} /> : <Image style={styles.checkbox} source={require('../images/unchecked.png')} />
             }
           </TouchableOpacity>
           <Text style={styles.tip}>注册即同意《</Text>

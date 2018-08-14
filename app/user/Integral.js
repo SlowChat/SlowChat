@@ -10,12 +10,6 @@ import {
 } from 'react-native';
 import { get, post } from '../utils/request'
 
-const ICONS = {
-  clock: require('../images/icon_clock.png'),
-  inform: require('../images/icon_inform.png'),
-  forward: require('../images/icon_forward.png'),
-}
-
 export default class Integral extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -71,13 +65,13 @@ export default class Integral extends Component {
           showFoot: foot,
           isRefreshing: data.total_page / this.pageSize > 1,
         })
-        
-      } 
+
+      }
     }).catch(e => {
       console.log(e)
     })
   }
-  
+
   _renderItem = ({item}) => {
     return (
       <View style={styles.list}>
@@ -228,7 +222,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#efefef',
   },
-  ruleBtn: {  
+  ruleBtn: {
     paddingRight: 15,
     color: '#E24B92',
     fontSize: 18

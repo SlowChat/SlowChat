@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  Button,
   Switch,
   TouchableOpacity,
   TouchableWithoutFeedback
@@ -15,9 +14,7 @@ import Storage from '../utils/storage'
 import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
 
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
+import ICONS from '../utils/icon'
 
 export default class Setting extends Component {
   static navigationOptions = ({navigation}) => {
