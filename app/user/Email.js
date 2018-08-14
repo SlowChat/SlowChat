@@ -88,7 +88,7 @@ export default class Email extends Component {
       params.state = this.sendState
     }
     post(this.returnUrl(), params).then(res => {
-      console.log(res);
+      console.log('-------111111',res)
       const { code, data } = res
       if (code === 1) {
         let foot = 0
