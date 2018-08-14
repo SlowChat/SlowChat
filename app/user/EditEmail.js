@@ -59,6 +59,7 @@ export default class EditEmail extends Component {
     }
     post(url, { email: email, verification_code: vCode }, false).then((res) => {
       if (res.code == 1) {
+        
         if (status === 'check') {
           this.refs.toast.show(res.msg);
           this.setState({

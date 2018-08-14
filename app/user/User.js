@@ -63,7 +63,7 @@ export default class User extends Component {
     get('api/user/userInfo.html').then(res => {
       const { code, data } = res
       if (code === 1) {
-        console.log(res)
+        console.log('---------',res)
 
         if (data.sign && data.sign.desc) this.setState({ sign: data.sign })
         mobile = data.mobile
