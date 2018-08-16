@@ -34,13 +34,28 @@ export default class EditPassowrd extends Component {
     isSucc: false   //成功提示框
   }
   componentDidMount() {
-
+    const { params } = this.props.navigation.state;
+    console.log(params.source)
   }
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
     const { mobile, vCode, password } = this.state;
-    post('api/user/passwordReset.html', { username: mobile, verification_code: vCode, password: password }).then((res) => {
+    const { params } = this.props.navigation.state;
+    console.log(params.source)
+    let url = '', token = true
+    if (params.source) {
+      url = 'api/user/passwordForget.html'
+      token = false
+    } else {
+      url = 'api/user/passwordReset.html'
+      token = true
+    }
+    post(url, 
+      { username: mobile, 
+        verification_code: vCode, 
+        password: password 
+      }, token).then((res) => {
       console.log(res)
       if (res.code === 1) {
         this.refs.toast.show(res.msg);
@@ -55,7 +70,7 @@ export default class EditPassowrd extends Component {
 
   handleVcode = () => {
     const { mobile } = this.state;
-    post('api/verification_code/send.html', { username: mobile }).then((res) => {
+    post('api/verification_code/send.html', { username: mobile }, true).then((res) => {
       console.log(res)
       if (res.code == 1) {
         this.refs.toast.show(res.msg);

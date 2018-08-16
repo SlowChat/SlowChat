@@ -38,7 +38,7 @@ export default class Login extends PureComponent<Props> {
     if (this.username.indexOf('@') > -1) {
       this.props.navigation.navigate('EditEmail')
     } else {
-      this.props.navigation.navigate('EditPassword')
+      this.props.navigation.navigate('EditPassword', {source: 'login'})
     }
   }
   handleLogin = async () => {

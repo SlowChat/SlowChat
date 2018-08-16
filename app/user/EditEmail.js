@@ -83,7 +83,7 @@ export default class EditEmail extends Component {
 
   handleVcode = () => {
     const { email } = this.state;
-    post('api/verification_code/send.html', { username: email }).then((res) => {
+    post('api/verification_code/send.html', { username: email }, true).then((res) => {
       console.log(res)
       if (res.code == 1) {
         this.refs.toast.show(res.msg);

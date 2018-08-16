@@ -81,7 +81,7 @@ export default class EditMobile extends Component {
 
   handleVcode = () => {
     const { mobile } = this.state;
-    post('api/verification_code/send.html', { username: mobile }).then((res) => {
+    post('api/verification_code/send.html', { username: mobile }, true).then((res) => {
       console.log(res)
       if (res.code == 1) {
         this.refs.toast.show(res.msg);

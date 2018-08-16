@@ -45,7 +45,7 @@ const StackApp = (isLogin) => createStackNavigator({
     }
   }
 }, {
-  initialRouteName: isLogin ? 'BottomTabs' : 'Login',
+  initialRouteName: isLogin ? 'User' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
