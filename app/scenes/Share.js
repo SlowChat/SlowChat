@@ -12,7 +12,7 @@ import {
   PermissionsAndroid
 } from 'react-native';
 
-// import ShareUtil from '../libs/um/ShareUtil'
+import JShareModule from 'jshare-react-native'
 import QRCode from 'react-native-qrcode'
 import ViewShot from "react-native-view-shot"
 import Toast from 'react-native-easy-toast'
@@ -22,7 +22,7 @@ import Storage from '../utils/storage'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
-ICONS.bg = require('../images/bg_share.png')
+// ICONS.bg = require('../images/bg_share.png')
 
 type Props = {};
 export default class Share extends PureComponent<Props> {
@@ -33,24 +33,73 @@ export default class Share extends PureComponent<Props> {
   }
   async componentWillMount() {
     const user = await Storage.getUser()
-    console.log(user);
     this.setState({
       userName: user.user_nickname
     })
   }
-  handleWechat = () => {
-    // ShareUtil.auth(5, (code,result,message) =>{
-    //   console.log(code,result,message)
-    // });
+  handleWechat = (platform) => {
+    JShareModule.isWeChatInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        this.share(platform)
+      } else {
+        this.refs.toast.show('您尚未安装微信客户端')
+      }
+    })
+  }
+
+  handleQQ = (platform) => {
+    JShareModule.isQQInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        this.share(platform)
+      } else {
+        this.refs.toast.show('您尚未安装QQ客户端')
+      }
+    })
   }
 
   handleWeibo = () => {
-  //   ShareUtil.shareboard('qwqw','', 'https://www.baidu.com','测试',[0,1,2,3,4,5,6,33],(code,message) =>{
-  //  });
+    this.share('sina_weibo')
   }
 
-  handleShare() {
-    this.refs.awardTip.show()
+  handleTwitter = () => {
+    JShareModule.isTwitterInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        this.share('twitter')
+      } else {
+        this.refs.toast.show('您尚未安装Facebook客户端')
+      }
+    })
+  }
+
+  handleFacebook = () => {
+    JShareModule.isFacebookInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        this.share('facebook')
+      } else {
+        this.refs.toast.show('您尚未安装Facebook客户端')
+      }
+    })
+  }
+
+  async share(platform) {
+    let uri = this.uri
+    if (!uri) {
+      uri = await this.refs.viewShot.capture()
+      this.uri = uri
+    }
+    const message = {
+      type: 'image',
+      platform,
+      imagePath: this.uri,
+      imageArray: [this.uri]
+    }
+    JShareModule.share(message, (map) => {
+      console.log("share succeed, map: " + map);
+      this.refs.awardTip.show()
+    }, (map) => {
+      console.log("share failed, map: " + map);
+      this.refs.toast.show('分享失败')
+    })
   }
 
   handleSave = async () => {
@@ -98,7 +147,7 @@ export default class Share extends PureComponent<Props> {
       <View style={styles.container}>
         <ViewShot ref="viewShot">
           <View style={styles.shot}>
-            <ImageBackground source={ICONS.bg} style={styles.wrap}>
+            <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
               <View style={styles.avatarWrap}>
                 <Image style={styles.avatar} source={ICONS.head} />
                 <View style={styles.avatarRight}>
@@ -119,7 +168,7 @@ export default class Share extends PureComponent<Props> {
           </View>
         </ViewShot>
         <View style={styles.icons}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWechat}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={onPress={() => this.handleWechat('wechat_session')}}>
             <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
             <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
@@ -140,19 +189,19 @@ export default class Share extends PureComponent<Props> {
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
             <View style={styles.moreModal}>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(0)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleWechat('wechat_timeline')}>
                 <Text style={styles.moreTxt}>微信朋友圈</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qq')}>
                 <Text style={styles.moreTxt}>QQ</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qzone')}>
                 <Text style={styles.moreTxt}>QQ空间</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleTwitter}>
                 <Text style={styles.moreTxt}>Twitter</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleShare(1)}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleFacebook}>
                 <Text style={styles.moreTxt}>Facebook</Text>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.setState({moreModal: false})}>
