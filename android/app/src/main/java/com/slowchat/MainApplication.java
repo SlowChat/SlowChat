@@ -3,6 +3,7 @@ package com.slowchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import cn.jiguang.share.reactnative.JSharePackage;
 import com.microsoft.codepush.react.CodePush;
 import com.brentvatne.react.ReactVideoPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -41,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new JSharePackage(),
             new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
             new ReactVideoPackage(),
             new SplashScreenReactPackage(),

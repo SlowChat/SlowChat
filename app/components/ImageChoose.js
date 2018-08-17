@@ -109,7 +109,7 @@ export default class AvatarHeader extends PureComponent {
   //   onUploadError && onUploadError(res)
   //   this.refs.toast.show(res.msg || '上传失败')
   // }
-  chooseVideo = () => {
+  chooseVideo = async () => {
     let nopermission = await this.checkVideoPermission()
     if (nopermission) return
     const options = {

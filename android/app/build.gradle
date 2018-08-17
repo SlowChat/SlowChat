@@ -134,7 +134,14 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "CODEPUSH_KEY", '""'
+        }
+        releaseStaging {
+            buildConfigField "String", "CODEPUSH_KEY", '"R7trBQZsettQBdO_gM0Q9KKBWpe00e07ebd4-06ad-443c-a76f-ec8e5a6301b2"'
+        }
         release {
+            buildConfigField "String", "CODEPUSH_KEY", '"yvpaYtuixXZvA9Y_6yvFqzC-wGS10e07ebd4-06ad-443c-a76f-ec8e5a6301b2"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -156,6 +163,7 @@ android {
 }
 
 dependencies {
+    compile project(':jshare-react-native')
     compile project(':jcore-react-native')
     compile project(':jpush-react-native')
     compile project(':react-native-code-push')
