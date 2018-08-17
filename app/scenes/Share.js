@@ -168,7 +168,7 @@ export default class Share extends PureComponent<Props> {
           </View>
         </ViewShot>
         <View style={styles.icons}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={onPress={() => this.handleWechat('wechat_session')}}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_session')}>
             <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
             <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
