@@ -3,6 +3,8 @@ package com.slowchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+
+import cn.jiguang.share.android.api.JShareInterface;
 import cn.jiguang.share.reactnative.JSharePackage;
 import com.microsoft.codepush.react.CodePush;
 import com.brentvatne.react.ReactVideoPackage;
@@ -41,14 +43,14 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new JSharePackage(),
-            new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
-            new ReactVideoPackage(),
-            new SplashScreenReactPackage(),
-            new RNViewShotPackage(),
-            new ImagePickerPackage(),
-            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG)
+        new MainReactPackage(),
+        new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
+        new ReactVideoPackage(),
+        new SplashScreenReactPackage(),
+        new RNViewShotPackage(),
+        new ImagePickerPackage(),
+        new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
+        new JSharePackage(SHUTDOWN_TOAST, SHUTDOWN_LOG)
       );
     }
 
@@ -67,5 +69,8 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    // 在 Init 之前调用，设置为 true，则会打印 debug 级别日志，否则只会打印 warning 级别以上的日志
+    // JShareInterface.setDebugMode(true);
+    JShareInterface.init(this);             //   <-- Init here
   }
 }

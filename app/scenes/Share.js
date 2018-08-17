@@ -12,7 +12,7 @@ import {
   PermissionsAndroid
 } from 'react-native';
 
-// import ShareUtil from '../libs/um/ShareUtil'
+import JShareModule from 'jshare-react-native'
 import QRCode from 'react-native-qrcode'
 import ViewShot from "react-native-view-shot"
 import Toast from 'react-native-easy-toast'

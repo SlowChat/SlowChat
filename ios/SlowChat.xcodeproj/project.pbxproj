@@ -57,6 +57,7 @@
 		CAAF7BACFC3F4513880DF829 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D55FBA9D1D439A95DEECC1 /* libRNImagePicker.a */; };
 		E2C377CD92F6488EB9AFCA4D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335512D4645E472DB04D0E9F /* Security.framework */; };
 		EC71D84C042E4DA890CE0ACE /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3814A06D40A4499F9F4CF15E /* libRCTVideo.a */; };
+		F20DC2132126D268005C0468 /* RCTJShareConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = F20DC2122126D268005C0468 /* RCTJShareConfig.plist */; };
 		F2167E2421208095004D6106 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2167E232120800F004D6106 /* libRCTVideo.a */; };
 		F2216DE521172DF5006BF1FC /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2216DC221172DC4006BF1FC /* libRCTCameraRoll.a */; };
 		FFB15CF9D33A48128CA68DAA /* libRNViewShot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 479D7080116549D79B1B45D8 /* libRNViewShot.a */; };
@@ -482,6 +483,7 @@
 		EAABD71A67DF436CB1052B1D /* Foundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		EE304F0136034D24BD4A7928 /* SystemConfiguration.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F20DC1902126B8C1005C0468 /* SlowChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = SlowChat.entitlements; path = SlowChat/SlowChat.entitlements; sourceTree = "<group>"; };
+		F20DC2122126D268005C0468 /* RCTJShareConfig.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = RCTJShareConfig.plist; path = SlowChat/RCTJShareConfig.plist; sourceTree = "<group>"; };
 		F2216DB621172DC4006BF1FC /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		F2799D0780C443CC92C497CD /* RNViewShot.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNViewShot.xcodeproj; path = "../node_modules/react-native-view-shot/ios/RNViewShot.xcodeproj"; sourceTree = "<group>"; };
 		F5DBAB1253A443ADB4508010 /* RCTJCoreModule.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTJCoreModule.xcodeproj; path = "../node_modules/jcore-react-native/ios/RCTJCoreModule.xcodeproj"; sourceTree = "<group>"; };
@@ -654,6 +656,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				F20DC2122126D268005C0468 /* RCTJShareConfig.plist */,
 			);
 			name = SlowChat;
 			sourceTree = "<group>";
@@ -1449,6 +1452,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				F20DC2132126D268005C0468 /* RCTJShareConfig.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
