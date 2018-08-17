@@ -56,7 +56,9 @@ export default class User extends Component {
     birthday: '',
     sign: {},
     msgCount: 0,
-    isSucc: false
+    isSucc: false,
+    award: 0,  //打卡积分
+    awardDay: 0
   }
 
   componentWillMount() {
@@ -97,7 +99,21 @@ export default class User extends Component {
   }
 
   handleDaka() {
-    this.setState({isSucc: true})
+    post('api/user/sign.html').then(res => {
+      const { code, data } = res
+      console.log('1111111', res)
+      if (code === 1) {
+        this.setState({
+          isSucc: true,
+          sign: {
+            score: 15,
+            desc: '连续打卡4天'
+          }
+        })
+      }
+    }).catch(e => {
+      console.log(e)
+    })
   }
 
   render() {
@@ -192,9 +208,8 @@ export default class User extends Component {
           btn={'返回'}
           visible={this.state.isSucc}
           onPress={() => {
-            this.props.navigation.pop() // navigate
+            this.setState({isSucc: false}) // navigate
           }}
-          onClose={this.onRequestClose}
         />
       </View>
     );

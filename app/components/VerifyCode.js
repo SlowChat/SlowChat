@@ -50,7 +50,7 @@ export default class VerifyCode extends PureComponent {
     const { mobile } = this.props;
     this.loading = true
     if (this.isActive) {
-      post('api/verification_code/send.html', { username: mobile }).then((res) => {
+      post('api/verification_code/send.html', { username: mobile }, true).then((res) => {
         if (res.code == 1) {
           this.startTimer()
         }
