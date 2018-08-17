@@ -17,33 +17,22 @@ import RNFileSelector from 'react-native-file-selector';
 import AttachmentItem from './AttachmentItem'
 // import { upload } from '../utils/request'
 
-
-function formatFileSize(fileSize) {
-  if (fileSize > 1024 * 1024) {
-    return Math.round(fileSize / 1024 / 1024) + 'M'
-  } else if (fileSize > 1024) {
-    return Math.round(fileSize / 1024) + 'K'
-  } else {
-    return Math.round(fileSize) + 'B'
-  }
-}
-
-
 export default class AvatarHeader extends PureComponent {
   state = {
     items: []
   }
 
-  async checkReadPermission() {
+  async checkImagePermission() {
     if (Platform.OS == 'ios') return false
     let nopermission = false
     try {
       // PermissionsAndroid.PERMISSIONS.CAMERA
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      const granted = await PermissionsAndroid.requestMultiple(
+        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.CAMERA ],
         {
-          title: '相册权限申请',
-          message: '慢聊需要访问你的相册'
+          title: '权限申请',
+          message: '慢聊需要访问你的相机和相册'
         },
       );
       if (granted != PermissionsAndroid.RESULTS.GRANTED) {
@@ -56,8 +45,33 @@ export default class AvatarHeader extends PureComponent {
     }
     return nopermission
   }
+
+  async checkVideoPermission() {
+    if (Platform.OS == 'ios') return false
+    let nopermission = false
+    try {
+      const granted = await PermissionsAndroid.requestMultiple(
+        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          // PermissionsAndroid.PERMISSIONS.CAMERA,
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, ],
+        {
+          title: '权限申请',
+          message: '慢聊需要访问你的视频文件和录制视频'
+        },
+      );
+      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
+        nopermission = true
+        this.refs.toast.show('授权拒绝，无法选择图片')
+      }
+    } catch (err) {
+      nopermission = true
+      this.refs.toast.show('授权失败，无法选择图片')
+    }
+    return nopermission
+  }
+
   chooseImage = async () => {
-    let nopermission = await this.checkReadPermission()
+    let nopermission = await this.checkImagePermission()
     if (nopermission) return
     const options = {
       title: '选择图片',
@@ -96,6 +110,8 @@ export default class AvatarHeader extends PureComponent {
   //   this.refs.toast.show(res.msg || '上传失败')
   // }
   chooseVideo = () => {
+    let nopermission = await this.checkVideoPermission()
+    if (nopermission) return
     const options = {
       title: '选择视频',
       takePhotoButtonTitle: '拍摄视频',
@@ -121,7 +137,7 @@ export default class AvatarHeader extends PureComponent {
       uri,
       fileName,
       type,
-      fileSize: formatFileSize(fileSize)
+      fileSize
     })
     this.setState({ items })
     const { onChange } = this.props
@@ -157,7 +173,7 @@ export default class AvatarHeader extends PureComponent {
                 <Image style={styles.icon} source={require('../images/picture.png')}></Image>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
-                <Image style={styles.icon} source={require('../images/document.png')}></Image>
+                <Image style={styles.icon} source={require('../images/video.png')}></Image>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
                 <Image style={styles.icon} source={require('../images/document.png')}></Image>
