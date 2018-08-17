@@ -15,7 +15,7 @@ import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import RNFileSelector from 'react-native-file-selector';
 import AttachmentItem from './AttachmentItem'
-import { upload } from '../utils/request'
+// import { upload } from '../utils/request'
 
 
 function formatFileSize(fileSize) {
@@ -79,45 +79,22 @@ export default class AvatarHeader extends PureComponent {
         path: 'images'
       }
     }
-
     ImagePicker.showImagePicker(options, (response) => {
-      console.log(response);
       if (response && response.uri) {
         let file = response.uri
         if(Platform.OS === 'ios'){
           file = file.replace('file://', '')
         }
-        upload(response.uri, response.fileName).then(res => {
-          console.log(res);
-          if (res.code == 1) {
-            this.dealSucc(res.data.url, response)
-          } else {
-            this.dealError(res)
-          }
-        }).catch(e => {
-          this.dealError({code: 0})
-        })
+        this.dealSucc(file, response)
       }
     });
   }
-  dealSucc(url, response) {
-    const { items } = this.state
-    let { fileName, fileSize } = response
-    items.push({
-      url,
-      fileName,
-      fileSize: formatFileSize(fileSize)
-    })
-    this.setState({ items })
-    const { onChange } = this.props
-    onChange && onChange(items)
-  }
-  dealError(res) {
-    console.log(res)
-    const { onUploadError } = this.props
-    onUploadError && onUploadError(res)
-    this.refs.toast.show(res.msg || '上传失败')
-  }
+  // dealError(res) {
+  //   console.log(res)
+  //   const { onUploadError } = this.props
+  //   onUploadError && onUploadError(res)
+  //   this.refs.toast.show(res.msg || '上传失败')
+  // }
   chooseVideo = () => {
     const options = {
       title: '选择视频',
@@ -129,17 +106,26 @@ export default class AvatarHeader extends PureComponent {
     }
     ImagePicker.showImagePicker(options, (response) => {
       if (response.uri) {
-        upload(response.uri).then(res => {
-          if (res.code == 1) {
-            this.dealSucc(res.data.url, response)
-          } else {
-            this.dealError(res)
-          }
-        }).catch(err => {
-          this.dealError({code: 0})
-        })
+        let file = response.uri
+        if(Platform.OS === 'ios'){
+          file = file.replace('file://', '')
+        }
+        this.dealSucc(file, response, 'video')
       }
     });
+  }
+  dealSucc(uri, response, type = 'image') {
+    const { items } = this.state
+    let { fileName, fileSize } = response
+    items.push({
+      uri,
+      fileName,
+      type,
+      fileSize: formatFileSize(fileSize)
+    })
+    this.setState({ items })
+    const { onChange } = this.props
+    onChange && onChange(items)
   }
   chooseFile = () => {
     const { onClose } = this.props

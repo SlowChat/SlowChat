@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
+  StyleSheet,
   View,
   ActivityIndicator,
 } from 'react-native';
@@ -10,7 +11,7 @@ export default class Loading extends PureComponent {
   }
   render() {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <ActivityIndicator
           animating
           style={{height: 80}}
@@ -22,3 +23,16 @@ export default class Loading extends PureComponent {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  loading : {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  }
+})
