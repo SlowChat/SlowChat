@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen;
 
+import cn.jpush.android.api.JPushInterface;
+
 public class MainActivity extends ReactActivity {
 
     /**
@@ -18,7 +20,26 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-      // SplashScreen.show(this);  // here
       super.onCreate(savedInstanceState);
+      // SplashScreen.show(this);  // here
+      JPushInterface.init(this);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JPushInterface.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JPushInterface.onResume(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }
