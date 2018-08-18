@@ -79,6 +79,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -104,7 +105,12 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
+        manifestPlaceholders = [
+                JPUSH_APPKEY: "c4d58ccfd28897a5d21e93ea",
+                APP_CHANNEL : "default"
+        ]
+
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -128,7 +134,14 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "CODEPUSH_KEY", '""'
+        }
+        releaseStaging {
+            buildConfigField "String", "CODEPUSH_KEY", '"R7trBQZsettQBdO_gM0Q9KKBWpe00e07ebd4-06ad-443c-a76f-ec8e5a6301b2"'
+        }
         release {
+            buildConfigField "String", "CODEPUSH_KEY", '"yvpaYtuixXZvA9Y_6yvFqzC-wGS10e07ebd4-06ad-443c-a76f-ec8e5a6301b2"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -150,6 +163,11 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-device-info')
+    compile project(':jshare-react-native')
+    compile project(':jcore-react-native')
+    compile project(':jpush-react-native')
+    compile project(':react-native-code-push')
     compile project(':react-native-video')
     compile project(':react-native-splash-screen')
     compile project(':react-native-view-shot')

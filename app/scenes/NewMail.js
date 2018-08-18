@@ -21,7 +21,7 @@ import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 import ICONS from '../utils/icon'
 
-import { post } from '../utils/request'
+import { post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
 
@@ -136,7 +136,7 @@ export default class NewMail extends Component {
     const tips = []
     if (!email || !isEmail(email)) tips.push('收件人')
     if (!title) tips.push('主题')
-    if (attachs.length == 0) tips.push('附件')
+    // if (attachs.length == 0) tips.push('附件')
     if (!send_time) tips.push('发信时间')
     if (!content) tips.push('内容')
     if (tips.length > 0) {
@@ -149,6 +149,7 @@ export default class NewMail extends Component {
       return true
     }
   }
+
   handleSend = () => {
     if (!this.checkParams(true)) return
     const params = {...this.state.params}
@@ -165,12 +166,13 @@ export default class NewMail extends Component {
       this.dealError(true)
     })
   }
-  handleSave = () => {
+  handleSave = async () => {
     if (!this.checkParams(true)) return
-    const params = {...this.state.params}
-    params.attach = this.state.attachs.map(item => item.url).join(',')
-    post('api/mail/save.html', params).then(res => {
-      console.log(res);
+    try {
+      const attachs = await uploadFile()
+      const params = {...this.state.params}
+      params.attach = attachs.map(item => item.url).join(',')
+      const res = post('api/mail/save.html', params)
       if (res.code == 10001) {
         this.props.navigation.navigate('Login', { back: true })
       } else if (res.code == 1) {
@@ -178,10 +180,28 @@ export default class NewMail extends Component {
       } else {
         this.dealError(false)
       }
-    }).catch(e => {
-      console.log(e);
+    } catch (e) {
       this.dealError(false)
-    })
+    }
+  }
+
+  async uploadFile() {
+    const { attachs } = this.state
+    try {
+      for (let index = 0; index < attachs.length; i++) {
+        if (item.type == 'image') {
+          const res = await upload(item.uri, item.fileName)
+          if (res.code == 1) {
+            attachs[index].url = res.data.url
+          } else {
+            throw new Error(res)
+          }
+        }
+      }
+      return attachs
+    } catch (e) {
+      throw e
+    }
   }
 
   dealError(isSend) {
@@ -203,7 +223,7 @@ export default class NewMail extends Component {
   render() {
     const { attachs, params, isSucc, isSend } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
-    const attachTxt = attachs.length == 0 ? '无附件' : `${attachs.length}个附件`
+    const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
       <ScrollView style={styles.container}>
         <HeaderTip tip="爱慢邮——让我们回到未来" />

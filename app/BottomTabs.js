@@ -5,8 +5,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import LoginScreen from './login/Login'
 import HomeScreen from './home/Home'
 // import SpaceScreen from './home/Space'
-import NewScreen from './home/New'
-import ShareScreen from './home/Share'
+// import NewScreen from './home/New'
+// import ShareScreen from './home/Share'
 // import MimeScreen from './user/User'
 
 const HomeStack = createStackNavigator({
@@ -65,7 +65,7 @@ export default createBottomTabNavigator(
       },
     },
     NewTab: {
-      screen: NewScreen,
+      screen: require('./home/Null').default,
       navigationOptions: {
         tabBarIcon:({focused,tintColor}) => (
           <Image style={styles.icon} source={require('./images/new.png')}/>
@@ -73,7 +73,7 @@ export default createBottomTabNavigator(
       },
     },
     ShareTab: {
-      screen: ShareScreen,
+      screen: require('./home/Null').default,
       navigationOptions: {
         tabBarIcon:({focused,tintColor}) => (
           <Image style={styles.icon} source={
@@ -84,6 +84,7 @@ export default createBottomTabNavigator(
     },
     Mime: {
       screen: MimeStack,
+      // lazy: true,
       navigationOptions: {
         tabBarIcon:({focused,tintColor}) => (
           <Image style={styles.icon} source={

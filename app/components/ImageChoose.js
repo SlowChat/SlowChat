@@ -15,35 +15,24 @@ import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import RNFileSelector from 'react-native-file-selector';
 import AttachmentItem from './AttachmentItem'
-import { upload } from '../utils/request'
-
-
-function formatFileSize(fileSize) {
-  if (fileSize > 1024 * 1024) {
-    return Math.round(fileSize / 1024 / 1024) + 'M'
-  } else if (fileSize > 1024) {
-    return Math.round(fileSize / 1024) + 'K'
-  } else {
-    return Math.round(fileSize) + 'B'
-  }
-}
-
+// import { upload } from '../utils/request'
 
 export default class AvatarHeader extends PureComponent {
   state = {
     items: []
   }
 
-  async checkReadPermission() {
+  async checkImagePermission() {
     if (Platform.OS == 'ios') return false
     let nopermission = false
     try {
       // PermissionsAndroid.PERMISSIONS.CAMERA
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      const granted = await PermissionsAndroid.requestMultiple(
+        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.CAMERA ],
         {
-          title: '相册权限申请',
-          message: '慢聊需要访问你的相册'
+          title: '权限申请',
+          message: '慢聊需要访问你的相机和相册'
         },
       );
       if (granted != PermissionsAndroid.RESULTS.GRANTED) {
@@ -56,8 +45,33 @@ export default class AvatarHeader extends PureComponent {
     }
     return nopermission
   }
+
+  async checkVideoPermission() {
+    if (Platform.OS == 'ios') return false
+    let nopermission = false
+    try {
+      const granted = await PermissionsAndroid.requestMultiple(
+        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          // PermissionsAndroid.PERMISSIONS.CAMERA,
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, ],
+        {
+          title: '权限申请',
+          message: '慢聊需要访问你的视频文件和录制视频'
+        },
+      );
+      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
+        nopermission = true
+        this.refs.toast.show('授权拒绝，无法选择图片')
+      }
+    } catch (err) {
+      nopermission = true
+      this.refs.toast.show('授权失败，无法选择图片')
+    }
+    return nopermission
+  }
+
   chooseImage = async () => {
-    let nopermission = await this.checkReadPermission()
+    let nopermission = await this.checkImagePermission()
     if (nopermission) return
     const options = {
       title: '选择图片',
@@ -79,46 +93,25 @@ export default class AvatarHeader extends PureComponent {
         path: 'images'
       }
     }
-
     ImagePicker.showImagePicker(options, (response) => {
-      console.log(response);
       if (response && response.uri) {
         let file = response.uri
         if(Platform.OS === 'ios'){
           file = file.replace('file://', '')
         }
-        upload(response.uri, response.fileName).then(res => {
-          console.log(res);
-          if (res.code == 1) {
-            this.dealSucc(res.data.url, response)
-          } else {
-            this.dealError(res)
-          }
-        }).catch(e => {
-          this.dealError({code: 0})
-        })
+        this.dealSucc(file, response)
       }
     });
   }
-  dealSucc(url, response) {
-    const { items } = this.state
-    let { fileName, fileSize } = response
-    items.push({
-      url,
-      fileName,
-      fileSize: formatFileSize(fileSize)
-    })
-    this.setState({ items })
-    const { onChange } = this.props
-    onChange && onChange(items)
-  }
-  dealError(res) {
-    console.log(res)
-    const { onUploadError } = this.props
-    onUploadError && onUploadError(res)
-    this.refs.toast.show(res.msg || '上传失败')
-  }
-  chooseVideo = () => {
+  // dealError(res) {
+  //   console.log(res)
+  //   const { onUploadError } = this.props
+  //   onUploadError && onUploadError(res)
+  //   this.refs.toast.show(res.msg || '上传失败')
+  // }
+  chooseVideo = async () => {
+    let nopermission = await this.checkVideoPermission()
+    if (nopermission) return
     const options = {
       title: '选择视频',
       takePhotoButtonTitle: '拍摄视频',
@@ -129,17 +122,26 @@ export default class AvatarHeader extends PureComponent {
     }
     ImagePicker.showImagePicker(options, (response) => {
       if (response.uri) {
-        upload(response.uri).then(res => {
-          if (res.code == 1) {
-            this.dealSucc(res.data.url, response)
-          } else {
-            this.dealError(res)
-          }
-        }).catch(err => {
-          this.dealError({code: 0})
-        })
+        let file = response.uri
+        if(Platform.OS === 'ios'){
+          file = file.replace('file://', '')
+        }
+        this.dealSucc(file, response, 'video')
       }
     });
+  }
+  dealSucc(uri, response, type = 'image') {
+    const { items } = this.state
+    let { fileName, fileSize } = response
+    items.push({
+      uri,
+      fileName,
+      type,
+      fileSize
+    })
+    this.setState({ items })
+    const { onChange } = this.props
+    onChange && onChange(items)
   }
   chooseFile = () => {
     const { onClose } = this.props
@@ -171,7 +173,7 @@ export default class AvatarHeader extends PureComponent {
                 <Image style={styles.icon} source={require('../images/picture.png')}></Image>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
-                <Image style={styles.icon} source={require('../images/document.png')}></Image>
+                <Image style={styles.icon} source={require('../images/video.png')}></Image>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
                 <Image style={styles.icon} source={require('../images/document.png')}></Image>

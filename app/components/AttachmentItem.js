@@ -8,6 +8,16 @@ import {
   TouchableOpacity,
 } from 'react-native'
 
+function formatFileSize(fileSize) {
+  if (fileSize > 1024 * 1024) {
+    return Math.round(fileSize / 1024 / 1024) + 'M'
+  } else if (fileSize > 1024) {
+    return Math.round(fileSize / 1024) + 'K'
+  } else {
+    return Math.round(fileSize) + 'B'
+  }
+}
+
 export default class Attachment extends PureComponent {
   handleOpen = () => {
     const { onPress } = this.props
@@ -21,7 +31,7 @@ export default class Attachment extends PureComponent {
           <Image source={{uri: item.url}} style={styles.image}></Image>
         </TouchableOpacity>
         { item.fileName && <Text numberOfLines={1} style={styles.imageName}>{item.fileName}</Text> }
-        { item.fileSize && <Text style={styles.imageSize}>{item.fileSize}</Text> }
+        { item.fileSize && <Text style={styles.imageSize}>{formatFileSize(item.fileSize)}</Text> }
       </View>
     )
   }
