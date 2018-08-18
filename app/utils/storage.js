@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native';
 import Storage from 'react-native-storage'
+import Constant from '../constants'
 import Global from './global'
 
 let storage = new Storage({
@@ -9,7 +10,7 @@ let storage = new Storage({
     enableCache: true,
 });
 
-import Constant from './constant'
+
 
 
 export default {

@@ -45,7 +45,7 @@ export default class Start extends PureComponent {
   }
 
   onBackAndroid() {
-    if (routes.length < 1) { // 根界面
+    if (routes.length < 2) { // 根界面
       if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
           return false;
       }
@@ -53,6 +53,7 @@ export default class Start extends PureComponent {
       ToastAndroid.show('再点击一次退出应用', ToastAndroid.SHORT);
       return true;
     }
+    return true
   }
 
   navigationStateChange = (prevNav, nav, action) => {

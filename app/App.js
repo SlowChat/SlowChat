@@ -1,6 +1,8 @@
 import React, {Component, PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
+// import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
+
 
 // import BottomTabs from './BottomTabs'
 // import LoginScreen from './login/Login'
@@ -48,7 +50,6 @@ const StackApp = (isLogin) => createStackNavigator({
   }
 }, {
   initialRouteName: isLogin ? 'BottomTabs' : 'Login',
-  mode: 'card',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,

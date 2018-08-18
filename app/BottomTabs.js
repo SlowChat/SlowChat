@@ -84,7 +84,7 @@ export default createBottomTabNavigator(
     },
     Mime: {
       screen: MimeStack,
-      lazy: true,
+      // lazy: true,
       navigationOptions: {
         tabBarIcon:({focused,tintColor}) => (
           <Image style={styles.icon} source={

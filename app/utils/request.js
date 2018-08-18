@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import Constant from './constant'
+import Constant from '../constants'
 import Storage from './storage'
 import URL from './url'
 
