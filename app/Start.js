@@ -1,7 +1,10 @@
 import React, {PureComponent} from 'react';
-import { View, BackHandler, ToastAndroid } from 'react-native'
+import { View, BackHandler, ToastAndroid, AppState } from 'react-native'
 import Storage from './utils/storage'
 import SplashScreen from 'react-native-splash-screen'
+
+import { CODE_PUSH_KEY } from './constants'
+import codePush from 'react-native-code-push'
 
 import configAppNavigator from './App'
 
@@ -25,12 +28,20 @@ export default class Start extends PureComponent {
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+    AppState.addEventListener('change', this.handleChange)
   }
 
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+    AppState.removeEventListener('change', this.handleChange)
     lastBackPressed = null;
+  }
+
+  handleChange = (newState) => {
+    newState === 'active' && codePush.sync({
+      deploymentKey: CODE_PUSH_KEY
+    });
   }
 
   onBackAndroid() {

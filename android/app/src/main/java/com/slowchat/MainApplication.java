@@ -42,7 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new JSharePackage(),
+            new JSharePackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
             new ReactVideoPackage(),
             new SplashScreenReactPackage(),

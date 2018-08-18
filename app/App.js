@@ -2,18 +2,20 @@ import React, {Component, PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
-import BottomTabs from './BottomTabs'
-import LoginScreen from './login/Login'
+// import BottomTabs from './BottomTabs'
+// import LoginScreen from './login/Login'
 
 const StackApp = (isLogin) => createStackNavigator({
   BottomTabs: {
-    screen: BottomTabs,
+    // screen: BottomTabs,
+    screen: require('./BottomTabs').default,
     navigationOptions: {
       header: null
     }
   },
   Login: {
-    screen: LoginScreen,
+    // screen: LoginScreen,
+    screen: require('./login/Login').default,
     mode: 'modal',
     navigationOptions: {
       header: null,
