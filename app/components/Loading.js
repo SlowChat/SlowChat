@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
   ActivityIndicator,
 } from 'react-native';
 
-export default class Loading extends PureComponent {
+export default class Loading extends Component {
   shouldComponentUpdate() {
     return false
   }

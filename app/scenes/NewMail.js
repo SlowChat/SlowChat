@@ -19,8 +19,9 @@ import HeaderTip from '../components/HeaderTip'
 import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
+import Loading from '../components/Loading'
 import ICONS from '../utils/icon'
-
+import dateFormat from '../utils/date'
 import { post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
@@ -51,6 +52,7 @@ export default class NewMail extends Component {
   state = {
     isSend: true,
     isSucc: false,
+    showLoading: false,
     showSendMe: true,
     pickerModal: false,
     attachs: [],
@@ -58,7 +60,7 @@ export default class NewMail extends Component {
       title: '',
       content: '',
       email: '',
-      send_time: '',
+      send_time: dateFormat(),
       type: 2,
     },
   }
@@ -131,10 +133,12 @@ export default class NewMail extends Component {
     })
   }
   checkParams(showTip) {
+    if (this.state.showLoading) return false
     const { attachs } = this.state
     const { title, content, email, send_time, attach } = this.state.params
     const tips = []
-    if (!email || !isEmail(email)) tips.push('收件人')
+    if (!email) tips.push('收件人')
+    //  || !isEmail(email)
     if (!title) tips.push('主题')
     // if (attachs.length == 0) tips.push('附件')
     if (!send_time) tips.push('发信时间')
@@ -152,45 +156,58 @@ export default class NewMail extends Component {
 
   handleSend = () => {
     if (!this.checkParams(true)) return
-    const params = {...this.state.params}
-    params.attach = this.state.attachs.map(item => item.url).join(',')
-    post('api/mail/add.html', params).then(res => {
-      if (res.code == 10001) {
-        this.props.navigation.replace('Login', {back: true})
-      } else if (res.code == 1) {
-        this.setState({ isSucc: true, isSend: false })
-      } else {
+    this.setState({ showLoading: true }, async () => {
+      try {
+        const attachs = await this.uploadFile()
+        const params = {...this.state.params}
+        params.attach = attachs.map(item => item.url).join(',')
+        const res = await post('api/mail/add.html', params)
+        if (res.code == 10001) {
+          this.props.navigation.replace('Login', {back: true})
+        } else if (res.code == 1) {
+          this.setState({ isSucc: true, isSend: false, showLoading: false })
+        } else {
+          this.dealError(true)
+        }
+        console.log(res)
+      } catch (e) {
+        console.log(e)
         this.dealError(true)
       }
-    }).catch(e => {
-      this.dealError(true)
     })
   }
-  handleSave = async () => {
+  handleSave = () => {
     if (!this.checkParams(true)) return
-    try {
-      const attachs = await uploadFile()
-      const params = {...this.state.params}
-      params.attach = attachs.map(item => item.url).join(',')
-      const res = post('api/mail/save.html', params)
-      if (res.code == 10001) {
-        this.props.navigation.navigate('Login', { back: true })
-      } else if (res.code == 1) {
-        this.setState({ isSucc: true, isSend: false })
-      } else {
+    this.setState({ showLoading: true }, async () => {
+      try {
+        const attachs = await this.uploadFile()
+        const params = {...this.state.params}
+        params.attach = attachs.map(item => item.url).join(',')
+        const res = await post('api/mail/save.html', params)
+        if (res.code == 10001) {
+          this.props.navigation.navigate('Login', { back: true })
+        } else if (res.code == 1) {
+          this.setState({ isSucc: true, isSend: false, showLoading: false })
+        } else {
+          this.dealError(false)
+        }
+        console.log(res);
+      } catch (e) {
+        console.log(e);
         this.dealError(false)
       }
-    } catch (e) {
-      this.dealError(false)
-    }
+    })
   }
 
   async uploadFile() {
     const { attachs } = this.state
+    if (attachs.length == 0) return []
     try {
       for (let index = 0; index < attachs.length; i++) {
+        const item = attachs[index]
         if (item.type == 'image') {
           const res = await upload(item.uri, item.fileName)
+
           if (res.code == 1) {
             attachs[index].url = res.data.url
           } else {
@@ -207,6 +224,9 @@ export default class NewMail extends Component {
   dealError(isSend) {
     let txt = (isSend ? '发送' : '保存草稿') + '失败，再试一次吧'
     this.refs.errorModalRef.show({txt})
+    this.setState({
+      showLoading: false
+    })
   }
   handelSuccClose = () => {
     this.setState({ isSucc: false })
@@ -221,7 +241,7 @@ export default class NewMail extends Component {
     this.setState({ pickerModal: false })
   }
   render() {
-    const { attachs, params, isSucc, isSend } = this.state
+    const { showLoading, attachs, params, isSucc, isSend } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
@@ -252,7 +272,7 @@ export default class NewMail extends Component {
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={params.send_time}
-            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD hh:mm"
+            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
             confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
             customStyles={{
               dateInput: {
@@ -275,10 +295,8 @@ export default class NewMail extends Component {
             autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
         </View>
         <View style={styles.bottom}>
-          <TouchableOpacity onPress={this.handleSave}>
-            <View style={styles.saveBtn}>
-              <Text style={styles.saveBtnTxt}>保存草稿</Text>
-            </View>
+          <TouchableOpacity style={styles.saveBtn} onPress={this.handleSave}>
+            <Text style={styles.saveBtnTxt}>保存草稿</Text>
           </TouchableOpacity>
         </View>
         <ImageChoose visible={this.state.pickerModal} onChange={this.handleImageChoose} onClose={this.closeImageChoose} />
@@ -292,6 +310,7 @@ export default class NewMail extends Component {
         />
         <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
+        {showLoading && <Loading />}
       </ScrollView>
     )
   }

@@ -96,9 +96,9 @@ export default class AvatarHeader extends PureComponent {
     ImagePicker.showImagePicker(options, (response) => {
       if (response && response.uri) {
         let file = response.uri
-        if(Platform.OS === 'ios'){
-          file = file.replace('file://', '')
-        }
+        // if(Platform.OS === 'ios'){
+        //   file = file.replace('file://', '')
+        // }
         this.dealSucc(file, response)
       }
     });
@@ -123,9 +123,9 @@ export default class AvatarHeader extends PureComponent {
     ImagePicker.showImagePicker(options, (response) => {
       if (response.uri) {
         let file = response.uri
-        if(Platform.OS === 'ios'){
-          file = file.replace('file://', '')
-        }
+        // if(Platform.OS === 'ios'){
+        //   file = file.replace('file://', '')
+        // }
         this.dealSucc(file, response, 'video')
       }
     });
@@ -135,11 +135,13 @@ export default class AvatarHeader extends PureComponent {
     let { fileName, fileSize } = response
     items.push({
       uri,
+      url: uri,
       fileName,
       type,
       fileSize
     })
     this.setState({ items })
+    console.log(items);
     const { onChange } = this.props
     onChange && onChange(items)
   }

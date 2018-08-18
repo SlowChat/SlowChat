@@ -4,20 +4,20 @@ import { createStackNavigator } from 'react-navigation';
 // import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
 
 
-// import BottomTabs from './BottomTabs'
-// import LoginScreen from './login/Login'
+import BottomTabs from './BottomTabs'
+import LoginScreen from './login/Login'
 
 const StackApp = (isLogin) => createStackNavigator({
   BottomTabs: {
-    // screen: BottomTabs,
-    screen: require('./BottomTabs').default,
+    screen: BottomTabs,
+    // screen: require('./BottomTabs').default,
     navigationOptions: {
       header: null
     }
   },
   Login: {
-    // screen: LoginScreen,
-    screen: require('./login/Login').default,
+    screen: LoginScreen,
+    // screen: require('./login/Login').default,
     mode: 'modal',
     navigationOptions: {
       header: null,
@@ -49,7 +49,7 @@ const StackApp = (isLogin) => createStackNavigator({
     }
   }
 }, {
-  initialRouteName: isLogin ? 'BottomTabs' : 'Login',
+  initialRouteName: isLogin ? 'NewMail' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
