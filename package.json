@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start --config ../../../../packager/config.js",
-    "test": "jest"
+    "test": "jest",
+    "bundle-ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
   },
   "dependencies": {
     "moment": "^2.22.2",
@@ -21,6 +22,7 @@
     "react-native-qrcode": "^0.2.7",
     "react-native-splash-screen": "^3.1.1",
     "react-native-storage": "^0.2.2",
+    "react-native-swipe-list-view": "^1.3.1",
     "react-native-swiper": "^1.5.13",
     "react-native-video": "^3.2.0",
     "react-native-view-shot": "^2.4.0",

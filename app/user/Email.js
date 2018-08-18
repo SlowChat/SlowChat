@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
 import EmailList from '../components/EmailList'
-// import UserSearch from '../components/UserSearch'
+import Toast from 'react-native-easy-toast'
 import Blank from '../components/Blank'
 import Footer from '../components/Footer'
 import { get, post } from '../utils/request'
@@ -22,6 +22,7 @@ export default class Email extends Component {
     const { params = {} } = navigation.state
     return {
       title: params.title || '',
+      // headerLeft: params.headerLeft,
       headerRight: params.headerRight
     }
   }
@@ -45,6 +46,12 @@ export default class Email extends Component {
   pageSize = 10
 
   componentDidMount() {
+    this.setDefault()
+    this.fetchData()
+    
+  }
+
+  setDefault = () => {
     const status = this.getStatus()
     let title = '草稿箱'
     if (status === 'reservation') {
@@ -57,9 +64,11 @@ export default class Email extends Component {
       this.type = 2
       title = '我公开的信件'
     }
-    this.fetchData()
     this.props.navigation.setParams({
       title,
+      headerLeft: status == 'draft' ? (
+        <Button title="全选" color="#666666" onPress={this.handleAllSelect} />
+      ) : <View />,
       headerRight: status == 'draft' ? (
         <Button title="编辑" color="#666666" onPress={this.handleEdit} />
       ) : <View />,
@@ -67,9 +76,27 @@ export default class Email extends Component {
   }
 
   handleEdit = () => {
-
+    const status = this.getStatus()
+    let title = '已选择邮件'
+    this.props.navigation.setParams({
+      title,
+      headerLeft: status == 'draft' ? (
+        <Button title="全选" color="#666666" onPress={this.handleAllSelect} />
+      ) : <View />,
+      headerRight: status == 'draft' ? (
+        <Button title="取消" color="#666666" onPress={this.handleCancel} />
+      ) : <View />,
+    })
   }
 
+  handleCancel = () => {
+    this.setDefault()
+  }
+
+  handleAllSelect = () => {
+
+  }
+ 
   getStatus() {
     const { params = {} } = this.props.navigation.state;
     return params.status
@@ -88,7 +115,6 @@ export default class Email extends Component {
       params.state = this.sendState
     }
     post(this.returnUrl(), params).then(res => {
-      console.log('-------111111',res)
       const { code, data } = res
       if (code === 1) {
         let foot = 0
@@ -117,9 +143,9 @@ export default class Email extends Component {
 
   _renderItem = ({item}) => {
     const status = this.getStatus()
-    const { navigate } = this.props.navigation;
+    const { navigate, state } = this.props.navigation;
     return (
-      <EmailList status={status} item={item} navigate={navigate} />
+      <EmailList status={status} item={item} id={item.id} score={state.params.score} navigate={navigate} onPress= {(id) => this.onPressCancel(id)} />
     )
   }
 
@@ -150,10 +176,28 @@ export default class Email extends Component {
     return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
   }
 
+  onPressCancel = (id) => {
+    post('api/mail/cancel.html', {id: id}).then(res => {
+      const { code } = res
+      if (code === 1) {
+        this.refs.toast.show('删除成功');
+        this.setState({
+          dataArray: []
+        })
+        this.pageNo = 0
+        // 删除成功，重新请求接口
+        this.fetchData()
+      }
+    }).catch(e => {
+      // console.log(e)
+    })
+  }
+
   handleSearch() {
     this.setState({
       dataArray: []
     })
+    this.pageNo = 0
     this.fetchData()
   }
 
@@ -217,6 +261,7 @@ export default class Email extends Component {
           ) : this.state.isSpacePage && <Blank />
         }
         <SafeAreaView />
+        <Toast ref="toast" position="bottom" />
       </View>
     )
   }

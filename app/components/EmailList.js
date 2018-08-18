@@ -4,7 +4,8 @@ import {
   Text,
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TouchableOpacity
 } from 'react-native';
 import Confirm from '../components/Confirm'
 
@@ -22,6 +23,25 @@ export default class EmailList extends Component {
     this.setState({isSucc: true})
   }
 
+  onLeftPress() {
+    const { id, onPress, score, navigate } = this.props;
+    if (score >= 10) {
+      onPress(id) 
+    } else {
+      navigate('Rule')
+    }
+    this.onRequestClose()
+  }
+
+  onRightPress() {
+
+    this.onRequestClose()
+  }
+
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
+
   handleNav = () => {
     const { item, navigate, status } = this.props;
     if (status == 'draft') {
@@ -31,7 +51,7 @@ export default class EmailList extends Component {
     }
   }
 
-  renderStatus() {
+  renderStatus(id) {
     /*
     draft: 草稿
     reservation: 预约
@@ -46,9 +66,9 @@ export default class EmailList extends Component {
         <View style={styles.status}>
           <View style={styles.statusLeft}>
           </View>
-          <View style={styles.btn}>
-            <Text style={styles.btnTxt} onPress={() => this.cancel()}>取消发送</Text>
-          </View>
+          <TouchableOpacity style={styles.btn} onPress={() => this.cancel()}>
+            <Text style={styles.btnTxt}>取消发送</Text>
+          </TouchableOpacity>
         </View>
       )
     } else if (status === 'sent') {
@@ -82,31 +102,40 @@ export default class EmailList extends Component {
     }
   }
   render() {
-    const { item, status } = this.props;
+    const { item, status, score } = this.props;
+    let leftBtxTxt = ''
+    if (status === 'draft') {
+      leftBtxTxt = '取消'
+    } else if (status === 'reservation' && score >=10) {
+      leftBtxTxt = '取消发送'
+    } else {
+      leftBtxTxt = '查看积分规则'
+    }
     return (
-      <TouchableWithoutFeedback onPress={this.handleNav}>
         <View>
-          <View style={styles.list}>
-            <Image style={styles.icon} source={require('../images/icon_overt.png')} />
-            <View style={styles.content}>
-              <Text style={styles.name}>{item.email}</Text>
-              <Text style={styles.name}>{item.title}</Text>
-              <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
+          <TouchableWithoutFeedback onPress={this.handleNav}>
+            <View style={styles.list}>
+              <Image style={styles.icon} source={require('../images/icon_overt.png')} />
+              <View style={styles.content}>
+                <Text style={styles.name}>{item.email}</Text>
+                <Text style={styles.name}>{item.title}</Text>
+                <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
+              </View>
+              <View style={styles.time}>
+                <Text style={styles.timeTxt}>6-16</Text>
+              </View>
             </View>
-            <View style={styles.time}>
-              <Text style={styles.timeTxt}>6-16</Text>
-            </View>
-          </View>
-          { this.renderStatus() }
+          </TouchableWithoutFeedback>
+          { this.renderStatus(item.id) }
           <Confirm
             tit={status === 'reservation' ? '确定取消发送邮件吗' : '删除草稿'}
-            leftBtnTxt={status === 'reservation' ? '查看积分规则' : '取消'}
+            leftBtnTxt={leftBtxTxt}
             rightBtnTxt={status === 'reservation' ? '再想想' : '确定删除'}
             autoView={
               status === 'reservation' ? (
-                <View>
-                  <Text>取消发送将从您的积分账户中扣除10积分</Text>
-                  <Text>当前积分：5（不足）</Text>
+                <View style={styles.cont}>
+                  <Text style={{color: '#999', marginBottom: 10}}>取消发送将从您的积分账户中扣除10积分</Text>
+                  <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>{score >= 10 ? `我的积分：${score}` : `当前积分：${score}（不足）`}</Text>
                 </View>
               ) : (
                 <Text>草稿删除后将不能修复</Text>
@@ -114,7 +143,7 @@ export default class EmailList extends Component {
             }
             visible={this.state.isSucc}
             onLeftPress={() => {
-              this.onRequestClose()
+              this.onLeftPress()
             }}
             onRightPress={() => {
               this.onRightPress() // navigate
@@ -122,7 +151,6 @@ export default class EmailList extends Component {
             onRequestClose={this.onRequestClose}
           />
       </View>
-    </TouchableWithoutFeedback>
     );
   }
 }
@@ -218,5 +246,11 @@ const styles = StyleSheet.create({
   },
   btnTxt: {
     color: '#666'
+  },
+  cont: {
+    padding: 30,
+    borderTopWidth: 1,
+    borderStyle: 'solid',
+    borderTopColor: '#d8d8d8'
   }
 });

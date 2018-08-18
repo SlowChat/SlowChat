@@ -10,13 +10,13 @@ import ICONS from '../utils/icon'
 
 export default class AvatarHeader extends PureComponent {
   render() {
-    const { username, avatar } = this.props;
+    const { username, avatar, level } = this.props;
     return (
       <View style={styles.avatarWrap}>
         <Image style={styles.avatar} source={ICONS.head} />
         <View style={styles.avatarRight}>
           <Text style={styles.name}>{ username }</Text>
-          <Text style={styles.level}>普通会员</Text>
+          <Text style={styles.level}>{level}</Text>
         </View>
       </View>
     )

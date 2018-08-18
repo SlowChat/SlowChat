@@ -106,7 +106,7 @@ export default class Information extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>生日</Text>
             <DatePicker
-              style={styles.input}
+              style={{width: '62%', justifyContent: 'flex-end'}}
               date={this.state.date}
               mode="date"
               placeholder="select date"
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   input: {
     width: '62%',
     textAlign: 'right',
-    color: '#B4B4B4'
+    color: '#B4B4B4',
   },
   nickInput: {
     width: '80%',

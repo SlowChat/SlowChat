@@ -12,7 +12,6 @@ import {
 export default class Confirm extends PureComponent {
   render() {
     const { tit, leftBtnTxt, rightBtnTxt, autoView, visible, onRequestClose, onLeftPress = () => {}, onRightPress = () => {} } = this.props
-    console.log(tit)
     return (
       <Modal
         animationType='fade'

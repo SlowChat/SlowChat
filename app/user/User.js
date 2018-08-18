@@ -57,17 +57,15 @@ export default class User extends Component {
     sign: {},
     msgCount: 0,
     isSucc: false,
-    award: 0,  //打卡积分
-    awardDay: 0
+    level: ''
   }
 
   componentWillMount() {
     get('api/user/userInfo.html').then(res => {
       const { code, data } = res
       if (code === 1) {
-        console.log('---------',res)
-
-        if (data.sign && data.sign.desc) this.setState({ sign: data.sign })
+        console.log(data)
+        if (data.sign && data.sign.count) this.setState({ sign: data.sign })
         mobile = data.mobile
         userEmail = data.user_email
         username = data.user_nickname
@@ -82,9 +80,10 @@ export default class User extends Component {
           unsendCount: data.unsend_count,
           sentCount: data.send_count,
           publicCount: data.public_count,
-
+          level: data.level,
           birthday: data.birthday,
-          msgCount: data.msg_count
+          msgCount: data.msg_count,
+          score: data.score
         })
       }
     }).catch(e => {
@@ -106,8 +105,8 @@ export default class User extends Component {
         this.setState({
           isSucc: true,
           sign: {
-            score: 15,
-            desc: '连续打卡4天'
+            score: data.score,
+            desc: data.count
           }
         })
       }
@@ -118,10 +117,10 @@ export default class User extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { username, sex, avatar, birthday, draftCount, unsendCount, sentCount, publicCount, sign, msgCount } = this.state;
+    const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar username={username} avatar={avatar} />
+        <Avatar username={username} avatar={avatar} level={level} />
         <View style={styles.remind}>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
             <View style={styles.list}>
@@ -129,7 +128,7 @@ export default class User extends Component {
               <Text style={styles.num}>{ draftCount }</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'reservation' })}>
+          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'reservation', score: score })}>
             <View style={styles.list}>
               <Text style={styles.txt}>预定发送</Text>
               <Text style={styles.num}>{ unsendCount }</Text>
@@ -153,7 +152,7 @@ export default class User extends Component {
             <Image style={styles.daka} source={require('../images/icon_daka.png')} />
             <Text style={styles.dakatxt}>今日打卡
               {
-                sign.desc ? (
+                sign.count ? (
                   <Text style={styles.status}>(完成+{sign.score}积分)</Text>
                 ) : (
                   <Text style={styles.status}>(未完成)</Text>
@@ -162,8 +161,8 @@ export default class User extends Component {
             </Text>
           </View>
           {
-            sign.desc ? (
-              <Text style={styles.dakaTxt}>{sign.desc}</Text>
+            sign.count ? (
+              <Text style={styles.dakaTxt}>连续{sign.count}天</Text>
             ) : (
               <TouchableWithoutFeedback onPress={() => this.handleDaka()}>
                 <View style={styles.punchRight}>
@@ -203,8 +202,8 @@ export default class User extends Component {
         </View>
         <SuccessModal
           icon={require('../images/daka_l.png')}
-          txt={'本月连续打卡第4天'}
-          award={true}
+          txt={sign.desc}
+          award={sign.score}
           btn={'返回'}
           visible={this.state.isSucc}
           onPress={() => {
