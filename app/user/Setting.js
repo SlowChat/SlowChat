@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Switch,
+  Alert,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -12,7 +13,12 @@ import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Storage from '../utils/storage'
 import Avatar from '../components/Avatar'
-import { get, post } from '../utils/request'
+import { post } from '../utils/request'
+
+import { CODE_PUSH_KEY } from '../constants'
+import codePush from 'react-native-code-push'
+import DeviceInfo from 'react-native-device-info'
+
 
 import ICONS from '../utils/icon'
 
@@ -24,7 +30,13 @@ export default class Setting extends Component {
     }
   }
   state = {
+    appVersion: '1.0.0',
     switchBtn: true
+  }
+  componentDidMount() {
+    this.setState({
+      appVersion: DeviceInfo.getVersion()
+    })
   }
   handleSwitch = async (value) => {
     const token = await Storage.getToken()
@@ -48,7 +60,43 @@ export default class Setting extends Component {
       this.refs.toast.show('退出失败，请稍后重试');
     })
   }
-
+  checkUpdate = async () => {
+    const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
+    if (!update) {
+      Alert.alert("提示", "已是最新版本--", [
+        {
+          text: "确定",
+          onPress: () => {
+            console.log("点了OK");
+          }
+        }
+      ])
+      return
+    }
+    codePush.sync({
+      deploymentKey: CODE_PUSH_KEY,
+      updateDialog: {
+        appendReleaseDescription: true,
+        descriptionPrefix:'\n',
+        optionalIgnoreButtonLabel: '稍后',
+        optionalInstallButtonLabel: '立即更新',
+        optionalUpdateMessage: '有新版本了，是否更新？',
+        title: '更新提示'
+      },
+      installMode: codePush.InstallMode.IMMEDIATE
+    }, (status) => {
+      switch (status) {
+        case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+          console.log("DOWNLOADING_PACKAGE");
+          break;
+        case codePush.SyncStatus.INSTALLING_UPDATE:
+          console.log(" INSTALLING_UPDATE");
+          break;
+      }
+    }, (progress) => {
+      console.log(progress.receivedBytes + " of " + progress.totalBytes + " received.");
+    })
+  }
   render() {
     const { switchBtn } = this.state
     const { navigate } = this.props.navigation;
@@ -81,6 +129,11 @@ export default class Setting extends Component {
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('FeedBack')}>
             <Text style={styles.label}>用户反馈</Text>
+            <Image style={styles.forward} source={ICONS.forward} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={this.checkUpdate}>
+            <Text style={styles.label}>版本检测</Text>
+            <Text>{this.state.appVersion}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
         </View>

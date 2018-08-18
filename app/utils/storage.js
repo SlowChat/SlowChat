@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 import Storage from 'react-native-storage'
-import Constant from '../constants'
+import { DOMAIN } from '../constants'
 import Global from './global'
 
 let storage = new Storage({
@@ -20,7 +20,7 @@ export default {
     return storage.save({
       key: 'slowchattoken',
       data: {
-        domain: Constant.DOMAIN,
+        domain: DOMAIN,
         token,
         user
       },

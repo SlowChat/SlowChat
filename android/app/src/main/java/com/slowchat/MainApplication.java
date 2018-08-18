@@ -3,6 +3,7 @@ package com.slowchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import cn.jiguang.share.reactnative.JSharePackage;
 import com.microsoft.codepush.react.CodePush;
 import com.brentvatne.react.ReactVideoPackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
             new JSharePackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
             new ReactVideoPackage(),

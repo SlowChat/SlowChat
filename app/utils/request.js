@@ -1,9 +1,9 @@
 import { Platform } from 'react-native'
-import Constant from '../constants'
+import { DOMAIN } from '../constants'
 import Storage from './storage'
 import URL from './url'
 
-const BASE_URL = Constant.DOMAIN + '/'
+const BASE_URL = DOMAIN + '/'
 
 
 const getHeaders = async (unneed) => {
