@@ -163,6 +163,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-file-selector')
     compile project(':react-native-device-info')
     compile project(':jshare-react-native')
     compile project(':jcore-react-native')

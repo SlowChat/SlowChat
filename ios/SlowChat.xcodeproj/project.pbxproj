@@ -59,6 +59,9 @@
 		CAAF7BACFC3F4513880DF829 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D55FBA9D1D439A95DEECC1 /* libRNImagePicker.a */; };
 		E2C377CD92F6488EB9AFCA4D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335512D4645E472DB04D0E9F /* Security.framework */; };
 		EC71D84C042E4DA890CE0ACE /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3814A06D40A4499F9F4CF15E /* libRCTVideo.a */; };
+		ED82F28283BC4F8A9326C828 /* libRNFileSelector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F327E47530D1447898DF9ABB /* libRNFileSelector.a */; };
+		F20DC35C2127F397005C0468 /* FileBrowser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F20DC35B2127F397005C0468 /* FileBrowser.framework */; };
+		F20DC35D2127F397005C0468 /* FileBrowser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F20DC35B2127F397005C0468 /* FileBrowser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F2167E2421208095004D6106 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2167E232120800F004D6106 /* libRCTVideo.a */; };
 		F2216DE521172DF5006BF1FC /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2216DC221172DC4006BF1FC /* libRCTCameraRoll.a */; };
 		FFB15CF9D33A48128CA68DAA /* libRNViewShot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 479D7080116549D79B1B45D8 /* libRNViewShot.a */; };
@@ -387,6 +390,13 @@
 			remoteGlobalIDString = E72EC1401F7ABB5A0001BC90;
 			remoteInfo = "RNDeviceInfo-tvOS";
 		};
+		F20DC3592127F381005C0468 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC09C0E50F9F4919B7959FB8 /* RNFileSelector.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNFileSelector;
+		};
 		F2167E202120800F004D6106 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 082C281CC2C344DB83077560 /* RCTVideo.xcodeproj */;
@@ -438,6 +448,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F20DC35D2127F397005C0468 /* FileBrowser.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -497,11 +508,14 @@
 		C5D55FBA9D1D439A95DEECC1 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		D96B446AA12448B08738AA60 /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		DBAF2B56D3E3491B929F1223 /* CoreTelephony.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		DC09C0E50F9F4919B7959FB8 /* RNFileSelector.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFileSelector.xcodeproj; path = "../node_modules/react-native-file-selector/ios/RNFileSelector.xcodeproj"; sourceTree = "<group>"; };
 		EAABD71A67DF436CB1052B1D /* Foundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		EE304F0136034D24BD4A7928 /* SystemConfiguration.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F20DC1902126B8C1005C0468 /* SlowChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = SlowChat.entitlements; path = SlowChat/SlowChat.entitlements; sourceTree = "<group>"; };
+		F20DC35B2127F397005C0468 /* FileBrowser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FileBrowser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2216DB621172DC4006BF1FC /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		F2799D0780C443CC92C497CD /* RNViewShot.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNViewShot.xcodeproj; path = "../node_modules/react-native-view-shot/ios/RNViewShot.xcodeproj"; sourceTree = "<group>"; };
+		F327E47530D1447898DF9ABB /* libRNFileSelector.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFileSelector.a; sourceTree = "<group>"; };
 		F5DBAB1253A443ADB4508010 /* RCTJCoreModule.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTJCoreModule.xcodeproj; path = "../node_modules/jcore-react-native/ios/RCTJCoreModule.xcodeproj"; sourceTree = "<group>"; };
 		FED746A592214EF88E1EA095 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -548,12 +562,14 @@
 				AC6795E0397C44E281BF818E /* CoreFoundation.framework in Frameworks */,
 				2B43B74D57AB4BDAA9D0602A /* SystemConfiguration.framework in Frameworks */,
 				02F79BBBFA6B484FA2B4A99E /* Foundation.framework in Frameworks */,
+				F20DC35C2127F397005C0468 /* FileBrowser.framework in Frameworks */,
 				5FFA112C271E49058D466C6A /* UIKit.framework in Frameworks */,
 				4EB0C9AB31B0424182E9AA93 /* libresolv.tbd in Frameworks */,
 				97593990D5B148E4896DA0B2 /* CoreGraphics.framework in Frameworks */,
 				8928FAF29C7F48E7859FAD95 /* libRCTJShareModule.a in Frameworks */,
 				7A3F3D26526F451896523405 /* CoreLocation.framework in Frameworks */,
 				65B9D23E99734A12A64E6160 /* libRNDeviceInfo.a in Frameworks */,
+				ED82F28283BC4F8A9326C828 /* libRNFileSelector.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -765,6 +781,7 @@
 				C41F3148666146519326A8F4 /* RCTJPushModule.xcodeproj */,
 				C354D10D30C4408D99641D92 /* RCTJShareModule.xcodeproj */,
 				2657AD1785704A5EB77D8ED0 /* RNDeviceInfo.xcodeproj */,
+				DC09C0E50F9F4919B7959FB8 /* RNFileSelector.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -781,6 +798,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				F20DC35B2127F397005C0468 /* FileBrowser.framework */,
 				13B07FAE1A68108700A75B9A /* SlowChat */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* SlowChatTests */,
@@ -855,6 +873,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F20DC3562127F381005C0468 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F20DC35A2127F381005C0468 /* libRNFileSelector.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F2167E1C2120800D004D6106 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -893,6 +919,7 @@
 				367071722B9C40BA8B694D52 /* libRCTJShareModule.a */,
 				FED746A592214EF88E1EA095 /* libRNDeviceInfo.a */,
 				46439593ECB745D5BBB8DBBB /* libRNDeviceInfo-tvOS.a */,
+				F327E47530D1447898DF9ABB /* libRNFileSelector.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1109,6 +1136,10 @@
 				{
 					ProductGroup = F20DC2B32127E4A5005C0468 /* Products */;
 					ProjectRef = 2657AD1785704A5EB77D8ED0 /* RNDeviceInfo.xcodeproj */;
+				},
+				{
+					ProductGroup = F20DC3562127F381005C0468 /* Products */;
+					ProjectRef = DC09C0E50F9F4919B7959FB8 /* RNFileSelector.xcodeproj */;
 				},
 				{
 					ProductGroup = F2FF6F452115BE8900C4F3F0 /* Products */;
@@ -1442,6 +1473,13 @@
 			remoteRef = F20DC2B92127E4A5005C0468 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		F20DC35A2127F381005C0468 /* libRNFileSelector.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFileSelector.a;
+			remoteRef = F20DC3592127F381005C0468 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		F2167E212120800F004D6106 /* libRCTVideo.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1633,12 +1671,14 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = SlowChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1671,12 +1711,14 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = SlowChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1715,6 +1757,7 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1753,6 +1796,7 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1794,11 +1838,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1841,11 +1887,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1887,11 +1935,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1933,11 +1983,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2090,6 +2142,7 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2124,12 +2177,14 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = SlowChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2169,11 +2224,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2215,11 +2272,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/jshare-react-native/ios/RCTJShareModule",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-file-selector/ios/**",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
