@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 import Swiper from 'react-native-swiper';
-import Loading from './Loading'
 import ErrorTip from './ErrorTip'
 
 type Props = {};
@@ -49,7 +48,6 @@ export default class SwiperComponent extends PureComponent<Props> {
             <Text style={styles.tip}>让若干年后的自己回味一下</Text>
           </View>
         </TouchableOpacity>
-        { showLoading && <Loading /> }
         { showError && <View style={styles.errorTip}><ErrorTip onPress={this.props.onError} /></View> }
       </View>
     )

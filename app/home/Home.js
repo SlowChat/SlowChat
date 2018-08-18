@@ -15,6 +15,7 @@ import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
+import Loading from '../components/Loading'
 
 import { post } from '../utils/request'
 
@@ -186,8 +187,8 @@ export default class App extends Component<Props> {
     this.props.navigation.push('NewMail')
   }
   renderHeader = () => {
-    const { images, showLoading, showError } = this.state
-    return (<Swiper items={images} onNew={this.handleGoNew} showLoading={showLoading} showError={showError} onError={this.handleRefresh} />)
+    const { images, showError } = this.state
+    return (<Swiper items={images} onNew={this.handleGoNew} showError={showError} onError={this.handleRefresh} />)
   }
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
@@ -211,6 +212,7 @@ export default class App extends Component<Props> {
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
         />
+        { showLoading && <Loading /> }
         <Toast ref="toast" position="center" />
       </View>
     )
