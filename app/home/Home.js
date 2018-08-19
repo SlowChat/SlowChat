@@ -97,10 +97,10 @@ export default class Home extends Component<Props> {
         this.hasHeader = false
       }
     }, 300)
-    this.noupdate = true
-    this.props.navigation.setParams({
-      opacity: this.fadeInOpacity
-    })
+    // this.noupdate = true
+    // this.props.navigation.setParams({
+    //   opacity: this.fadeInOpacity
+    // })
   }
 
   handleScroll = (e) => {
