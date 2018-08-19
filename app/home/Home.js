@@ -28,15 +28,16 @@ const SIZE = 10
 let firstClick = 0
 
 type Props = {};
-export default class App extends Component<Props> {
+export default class Home extends Component<Props> {
   static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    const opacity = params.opacity || new Animated.Value(0)
+    // const { params = {} } = navigation.state
+    // const opacity = params.opacity || new Animated.Value(0)
     return {
-      header: () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
-        style={[styles.header, {opacity}]}>
-        <Text style={styles.headerTxt}>首页</Text>
-      </SafeAreaView>),
+      header: null,
+      // () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
+      //   style={[styles.header, {opacity}]}>
+      //   <Text style={styles.headerTxt}>首页</Text>
+      // </SafeAreaView>),
     }
   }
   state = {
@@ -46,6 +47,7 @@ export default class App extends Component<Props> {
     showLoading: false,
     showError: false,
     refreshing: false,
+    fadeInOpacity: new Animated.Value(0),
   }
   componentWillMount() {
     this.initData()
@@ -79,13 +81,13 @@ export default class App extends Component<Props> {
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
     const toValue = fadeIn ? 1 : 0
-    this.fadeInOpacity = this.fadeInOpacity || new Animated.Value(fromValue)
+    this.state.fadeInOpacity = this.state.fadeInOpacity || new Animated.Value(fromValue)
     if (!this.hasHeader) {
       this.hasHeader = true
     } else {
       this.hasHeader = false
     }
-    Animated.timing(this.fadeInOpacity, {
+    Animated.timing(this.state.fadeInOpacity, {
       toValue: toValue, // 目标值
       duration: 300, // 动画时间
       easing: fadeIn ? Easing.easeIn : Easing.easeOut // 缓动函数
@@ -194,9 +196,13 @@ export default class App extends Component<Props> {
     return <Footer showFoot={this.state.showFoot} />
   }
   render() {
-    const { showLoading, showError, images, items } = this.state
+    const { fadeInOpacity, showLoading, showError, images, items } = this.state
     return (
       <View style={styles.container}>
+        <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
+          style={[styles.header, {opacity: fadeInOpacity}]}>
+          <Text style={styles.headerTxt}>首页</Text>
+        </SafeAreaView>
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
@@ -236,6 +242,7 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 100,
   },
   headerTxt: {
     fontSize: 18,
