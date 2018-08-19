@@ -151,6 +151,7 @@ export default class AvatarHeader extends PureComponent {
     this.setState({ items }, () => {
       const { onChange } = this.props
       onChange && onChange(items)
+      console.log(items);
     })
   }
   chooseFile = () => {
@@ -174,7 +175,7 @@ export default class AvatarHeader extends PureComponent {
         }
         const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
         const type = fileName.substring(fileName.lastIndexOf('.') + 1)
-        dealSucc(uri, { fileName, fileSize })
+        this.dealSucc(path, { fileName, fileSize })
       },
       onCancel: () => {
         console.log('cancelled')

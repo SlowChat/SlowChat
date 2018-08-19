@@ -39,7 +39,7 @@ public class FileModule extends ReactContextBaseJavaModule {
             String fileName = mFile.getName();
             WritableMap map = Arguments.createMap();
             map.putString("fileName", fileName);
-            map.putInt("size", size);
+            map.putInt("fileSize", size);
             promise.resolve(map);
         } catch (Exception e) {
 //            e.printStackTrace();
