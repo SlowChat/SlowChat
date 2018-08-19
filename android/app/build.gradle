@@ -116,6 +116,11 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+    sourceSets {
+        main {
+            assets.srcDirs = ['assets']
+        }
+    }
     splits {
         abi {
             reset()
@@ -125,6 +130,14 @@ android {
         }
     }
     signingConfigs {
+        debug {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
         release {
             if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
@@ -137,6 +150,7 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "CODEPUSH_KEY", '""'
+            signingConfig signingConfigs.debug
         }
         releaseStaging {
             buildConfigField "String", "CODEPUSH_KEY", '"R7trBQZsettQBdO_gM0Q9KKBWpe00e07ebd4-06ad-443c-a76f-ec8e5a6301b2"'
