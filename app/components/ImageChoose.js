@@ -90,7 +90,7 @@ export default class AvatarHeader extends PureComponent {
       noData: true,
       storageOptions: {
         skipBackup: true,
-        path: 'images'
+        // path: 'images'
       }
     }
     ImagePicker.showImagePicker(options, (response) => {
@@ -99,6 +99,12 @@ export default class AvatarHeader extends PureComponent {
         // if(Platform.OS === 'ios'){
         //   file = file.replace('file://', '')
         // }
+        // console.log(file);
+        // upload(response.uri, response.fileName).then(res => {
+        //   console.log(res);
+        // }).catch(e => {
+        //   console.log(e)
+        // })
         this.dealSucc(file, response)
       }
     });
@@ -131,28 +137,39 @@ export default class AvatarHeader extends PureComponent {
     });
   }
   dealSucc(uri, response, type = 'image') {
-    const { items } = this.state
+    let { items } = this.state
     let { fileName, fileSize } = response
-    items.push({
-      uri,
-      url: uri,
-      fileName,
-      type,
-      fileSize
+    items = items.concat([
+      {
+        url: uri,
+        fileName,
+        type,
+        fileSize
+      }
+    ])
+    this.setState({ items }, () => {
+      const { onChange } = this.props
+      onChange && onChange(items)
     })
-    this.setState({ items })
-    console.log(items);
-    const { onChange } = this.props
-    onChange && onChange(items)
   }
   chooseFile = () => {
+    RNFileSelector.Show({
+      title: '文件选择',
+      onDone: (path, res) => {
+        console.log('file selected: ' + path, res)
+      },
+      onCancel: () => {
+        console.log('cancelled')
+      }
+    })
+    return
     const { onClose } = this.props
     onClose && onClose()
     setTimeout(() => {
       RNFileSelector.Show({
-        title: 'select',
-        onDone: (path) => {
-          console.log('file selected: ' + path)
+        title: '文件选择',
+        onDone: (path, res) => {
+          console.log('file selected: ' + path, res)
         },
         onCancel: () => {
           console.log('cancelled')

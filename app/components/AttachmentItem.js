@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
 } from 'react-native'
 
+import Video from 'react-native-video'
+
 function formatFileSize(fileSize) {
   if (fileSize > 1024 * 1024) {
     return Math.round(fileSize / 1024 / 1024) + 'M'
@@ -25,6 +27,7 @@ export default class Attachment extends PureComponent {
   }
   render() {
     const { item } = this.props
+    console.log(item);
     return (
       <View style={styles.imageItem}>
         <TouchableOpacity  activeOpacity={0.8} onPress={this.handleOpen}>

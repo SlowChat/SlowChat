@@ -169,7 +169,6 @@ export default class NewMail extends Component {
         } else {
           this.dealError(true)
         }
-        console.log(res)
       } catch (e) {
         console.log(e)
         this.dealError(true)
@@ -191,7 +190,6 @@ export default class NewMail extends Component {
         } else {
           this.dealError(false)
         }
-        console.log(res);
       } catch (e) {
         console.log(e);
         this.dealError(false)
@@ -206,8 +204,7 @@ export default class NewMail extends Component {
       for (let index = 0; index < attachs.length; i++) {
         const item = attachs[index]
         if (item.type == 'image') {
-          const res = await upload(item.uri, item.fileName)
-
+          const res = await upload(item.url, item.fileName)
           if (res.code == 1) {
             attachs[index].url = res.data.url
           } else {

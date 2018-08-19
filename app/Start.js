@@ -3,10 +3,13 @@ import { View, BackHandler, ToastAndroid, AppState } from 'react-native'
 import Storage from './utils/storage'
 import SplashScreen from 'react-native-splash-screen'
 
-import { CODE_PUSH_KEY } from './constants'
-import codePush from 'react-native-code-push'
-
 import configAppNavigator from './App'
+import { CODE_PUSH_KEY } from './constants'
+// import codePush from 'react-native-code-push'
+// import JPushModule from 'jpush-react-native';
+
+let codePush = null
+let JPushModule = null
 
 let routes = [];
 let lastBackPressed = null;
@@ -29,6 +32,7 @@ export default class Start extends PureComponent {
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
     AppState.addEventListener('change', this.handleChange)
+    this.addPushListener()
   }
 
 
@@ -36,9 +40,41 @@ export default class Start extends PureComponent {
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
     AppState.removeEventListener('change', this.handleChange)
     lastBackPressed = null;
+    this.removePushListener()
+  }
+
+  addPushListener() {
+    if (!JPushModule) {
+      JPushModule = require('jpush-react-native').default
+    }
+    JPushModule.notifyJSDidLoad((resultCode) => {
+        if (resultCode === 0) {}
+    });
+    // 接收自定义消息
+    JPushModule.addReceiveCustomMsgListener((message) => {
+      console.log("addReceiveCustomMsgListener===", message);
+    })
+    // 接收推送通知
+    JPushModule.addReceiveNotificationListener((message) => {
+      console.log("receive notification: ", JSON.stringify(message));
+    });
+    // 打开通知
+    JPushModule.addReceiveOpenNotificationListener((map) => {
+      // this.props.navigation.navigate("NewMail");
+    });
+  }
+
+  removePushListener() {
+    if (JPushModule) {
+      JPushModule.removeReceiveCustomMsgListener();
+      JPushModule.removeReceiveNotificationListener();
+    }
   }
 
   handleChange = (newState) => {
+    if (!codePush) {
+      codePush = require('react-native-code-push')
+    }
     newState === 'active' && codePush.sync({
       deploymentKey: CODE_PUSH_KEY
     });

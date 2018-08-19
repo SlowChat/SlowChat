@@ -7,8 +7,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
-import JPushModule from 'jpush-react-native';
-
 import ICONS from '../utils/icon'
 import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
@@ -91,29 +89,6 @@ export default class User extends Component {
     }).catch(e => {
       console.log(e)
     })
-  }
-
-  componentDidMount() {
-    // 接收自定义消息
-    JPushModule.addReceiveCustomMsgListener((message) => {
-      // this.setState({pushMsg: message});
-    })
-    // 接收推送通知
-    JPushModule.addReceiveNotificationListener((message) => {
-      console.log("receive notification: " + message);
-    });
-    // 打开通知
-    JPushModule.addReceiveOpenNotificationListener((map) => {
-      console.log("Opening notification!");
-      console.log("map.extra: " + map.extras);
-      // 可执行跳转操作，也可跳转原生页面
-      // this.props.navigation.navigate("SecondActivity");
-    });
-  }
-  
-  componentWillUnmount() {
-    JPushModule.removeReceiveCustomMsgListener();
-    JPushModule.removeReceiveNotificationListener();
   }
 
   handerSetting() {

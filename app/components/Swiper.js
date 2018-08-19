@@ -7,7 +7,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Platform
+  Platform,
+  Dimensions
 } from 'react-native';
 
 import Swiper from 'react-native-swiper';
@@ -56,14 +57,14 @@ export default class SwiperComponent extends PureComponent<Props> {
 
 // !items || items.length == 0 ? <Image source={ICONS.banner} style={styles.image} /> :
 
-
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   wrapper: {
     height: 225,
   },
   image: {
     height: 225,
-    width: 375,
+    width: width,
     resizeMode: 'cover',
   },
   pagination: {

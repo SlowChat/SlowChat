@@ -110,6 +110,7 @@ android {
                 JPUSH_APPKEY: "c4d58ccfd28897a5d21e93ea",
                 APP_CHANNEL : "default"
         ]
+        multiDexEnabled true //Howard 2017-08-31 解决方法数超过65536的问题
 
         ndk {
             abiFilters "armeabi-v7a", "x86"
