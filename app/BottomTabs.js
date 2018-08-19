@@ -31,6 +31,7 @@ const MimeStack = createStackNavigator({
     headerTitleContainerStyle: {
       justifyContent: 'center',
     },
+    // headerLayoutPreset: 'center',
     headerTitleStyle: {
       fontSize: 18,
       fontFamily: 'PingFangSC-Regular',

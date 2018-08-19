@@ -234,8 +234,10 @@ export default class NewMail extends Component {
   openImageChoose = () => {
     this.setState({ pickerModal: true })
   }
-  closeImageChoose = () => {
-    this.setState({ pickerModal: false })
+  closeImageChoose = (callback, open = false) => {
+    this.setState({ pickerModal: open }, () => {
+      callback && callback()
+    })
   }
   render() {
     const { showLoading, attachs, params, isSucc, isSend } = this.state

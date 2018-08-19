@@ -41,6 +41,7 @@ const StackApp = (isLogin) => createStackNavigator({
   NewMail: { screen: require('./scenes/NewMail').default },
   MailDetail: { screen: require('./scenes/MailDetail').default },
   DraftDetail: { screen: require('./scenes/DraftDetail').default },
+  Webview: { screen: require('./scenes/Webview').default },
   // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
     screen: require('./scenes/Share').default,
@@ -63,6 +64,7 @@ const StackApp = (isLogin) => createStackNavigator({
     headerTitleContainerStyle: {
       justifyContent: 'center',
     },
+    // headerLayoutPreset: 'center',
     headerTitleStyle: {
       fontSize: 18,
       fontFamily: 'PingFangSC-Regular',
@@ -71,6 +73,14 @@ const StackApp = (isLogin) => createStackNavigator({
     // headerStyle: {
     //   paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
     // }
+  },
+  transitionConfig: (
+    transitionConfigurer,
+    transitionProps,
+    prevTransitionProps,
+    isModal
+  ) => {
+
   }
 });
 

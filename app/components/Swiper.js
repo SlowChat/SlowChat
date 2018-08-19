@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Platform,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 
 import Swiper from 'react-native-swiper';
 import ErrorTip from './ErrorTip'
+import URL from '../utils/url'
 
 type Props = {};
 export default class SwiperComponent extends PureComponent<Props> {
@@ -20,12 +21,24 @@ export default class SwiperComponent extends PureComponent<Props> {
     items: []
   }
 
-  handlePress = () => {
+  handlePress({ url = '' }) {
+    const { onNav } = this.props
+    if (!url || !onNav) return
+    if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
+      onNav('Webview', { url })
+    } else if (url.indexOf('/') == 0) {
+      const { uri, query } = URL.parse(url)
+      onNav(uri, query)
+    }
+  }
 
+  handleGoNew = () => {
+    const { onNav } = this.props
+    onNav && onNav('NewMail')
   }
 
   render() {
-    const { items, onNew, showLoading, showError } = this.props
+    const { items, showLoading, showError } = this.props
     const dot = (<View style={styles.dot} />)
     const activeDot = (<View style={[styles.dot, styles.activeDot]} />)
     if (!items || items.length == 0) return <View style={styles.image} />
@@ -36,13 +49,15 @@ export default class SwiperComponent extends PureComponent<Props> {
             <Swiper autoplay autoplayTimeout={3} paginationStyle={styles.pagination} dotStyle={styles.dot} activeDotStyle={styles.activeDot}>
               {items.map((item, index) =>
                 <ImageBackground key={index} style={styles.image} source={require('../images/banner_placeholder.png')}>
-                  <Image source={{uri:item.image}} style={styles.image} />
+                  <TouchableWithoutFeedback onPress={() => this.handlePress(item)}>
+                    <Image source={{uri:item.image}} style={styles.image} />
+                  </TouchableWithoutFeedback>
                 </ImageBackground>
               )}
             </Swiper>
           }
         </View>
-        <TouchableOpacity activeOpacity={0.6} style={styles.tipWraper} onPress={onNew}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.tipWraper} onPress={this.handleGoNew}>
           <View style={styles.tipHeader}><Text style={styles.tipHeaderTxt}>回到未来</Text></View>
           <View>
             <Text style={styles.tip}>给未来的自己写封信吧，给自己炖一碗鸡汤</Text>

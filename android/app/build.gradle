@@ -108,7 +108,8 @@ android {
         versionName "1.0.0"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "c4d58ccfd28897a5d21e93ea",
-                APP_CHANNEL : "default"
+                APP_CHANNEL : "default",
+                TENCENT_APPID: ""
         ]
         multiDexEnabled true //Howard 2017-08-31 解决方法数超过65536的问题
 

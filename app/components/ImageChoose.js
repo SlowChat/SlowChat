@@ -8,7 +8,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  PermissionsAndroid
+  PermissionsAndroid,
+  NativeModules
 } from 'react-native';
 
 import Toast from 'react-native-easy-toast'
@@ -153,30 +154,32 @@ export default class AvatarHeader extends PureComponent {
     })
   }
   chooseFile = () => {
+    if (Platform.OS == 'ios') {
+      const { onClose } = this.props
+      onClose && onClose(() => {
+        setTimeout(() => this.showFSelector(), 30)
+      })
+    } else {
+      this.showFSelector()
+    }
+  }
+  showFSelector() {
     RNFileSelector.Show({
       title: '文件选择',
-      onDone: (path, res) => {
-        console.log('file selected: ' + path, res)
+      onDone: async (path) => {
+        if (Platform.OS == 'ios') {
+          const { onClose } = this.props
+          onClose && onClose(null, true)
+          path = path.replace('file://', '')
+        }
+        const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
+        const type = fileName.substring(fileName.lastIndexOf('.') + 1)
+        dealSucc(uri, { fileName, fileSize })
       },
       onCancel: () => {
         console.log('cancelled')
       }
     })
-    return
-    const { onClose } = this.props
-    onClose && onClose()
-    setTimeout(() => {
-      RNFileSelector.Show({
-        title: '文件选择',
-        onDone: (path, res) => {
-          console.log('file selected: ' + path, res)
-        },
-        onCancel: () => {
-          console.log('cancelled')
-        }
-      })
-    }, 60)
-
   }
   render() {
     const { items } = this.state

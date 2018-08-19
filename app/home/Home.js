@@ -138,7 +138,7 @@ export default class App extends Component<Props> {
       } else if (res.code == 10001) {
         this.props.navigation.replace('Login')
       } else {
-        this.refs.toast.show(res.msg || '慢聊飘走了')
+        this.refs.toast.show(res.msg || '慢聊信息飘走了')
         this.setState({ showFoot: 0 })
       }
     } catch (e) {
@@ -183,12 +183,12 @@ export default class App extends Component<Props> {
   renderItem = (item) => {
     return <HomeItem data={item} onPress={this.handleGoDetail} />
   }
-  handleGoNew = () => {
-    this.props.navigation.push('NewMail')
+  handleNav = (routeName, params = {}) => {
+    this.props.navigation.push(routeName, params)
   }
   renderHeader = () => {
     const { images, showError } = this.state
-    return (<Swiper items={images} onNew={this.handleGoNew} showError={showError} onError={this.handleRefresh} />)
+    return (<Swiper items={images} onNav={this.handleNav} showError={showError} onError={this.handleRefresh} />)
   }
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />

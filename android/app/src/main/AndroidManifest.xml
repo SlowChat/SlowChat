@@ -13,9 +13,6 @@
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-      
-      <meta-data android:name="JPUSH_CHANNEL" android:value="${APP_CHANNEL}"/>
-      <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}"/>
 
       <activity
         android:name=".MainActivity"
