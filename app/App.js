@@ -1,6 +1,6 @@
 import React, {Component, PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, StackViewTransitionConfigs } from 'react-navigation';
 // import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
 
 
@@ -80,7 +80,9 @@ const StackApp = (isLogin) => createStackNavigator({
     prevTransitionProps,
     isModal
   ) => {
-
+    return {
+      screenInterpolator: StackViewTransitionConfigs.SlideFromRightIOS.screenInterpolator,
+    }
   }
 });
 
