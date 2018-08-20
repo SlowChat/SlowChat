@@ -41,7 +41,7 @@ export default class EditPassowrd extends Component {
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
     const { mobile, vCode, password } = this.state;
-    const { params } = this.props.navigation.state;
+    const { params = {} } = this.props.navigation.state;
     console.log(params.source)
     let url = '', token = true
     if (params.source) {
