@@ -33,10 +33,10 @@ export default class EditPassowrd extends Component {
     isVcodeClick: false,
     isSucc: false   //成功提示框
   }
-  componentDidMount() {
-    const { params } = this.props.navigation.state;
-    console.log(params.source)
-  }
+  // componentDidMount() {
+  //   const { params } = this.props.navigation.state;
+  //   console.log(params.source)
+  // }
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
@@ -51,10 +51,10 @@ export default class EditPassowrd extends Component {
       url = 'api/user/passwordReset.html'
       token = true
     }
-    post(url, 
-      { username: mobile, 
-        verification_code: vCode, 
-        password: password 
+    post(url,
+      { username: mobile,
+        verification_code: vCode,
+        password: password
       }, token).then((res) => {
       console.log(res)
       if (res.code === 1) {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color: '#666'
   },
   input: {
-    width: '55%',
+    width: '50%',
     textAlign: 'left',
     color: '#333'
   },

@@ -28,6 +28,7 @@ export async function get(url, params, unneedLogin) {
       'Content-Type': 'application/json',
       ...headers,
     },
+    timeout: 10,
   }).then((response) => response.json()).catch((err) => {
     console.log(eval("("+ err +")"));
     throw err
@@ -46,6 +47,7 @@ export async function post(url, params, unneedLogin) {
       ...headers,
     },
     body: JSON.stringify(params),
+    timeout: 10,
   }).then((response) => response.json())
   // .catch((err) => {
   //   // console.log(eval("("+ err +")"));
