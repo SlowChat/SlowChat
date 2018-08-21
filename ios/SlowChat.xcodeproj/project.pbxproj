@@ -1579,7 +1579,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\nif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$DEST/main.jsbundle\" ]; then\n    echo \"--- Skip bundle building in 'Debug' mode\"\n    exit 0\nfi\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\nif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"$DEST/main.jsbundle\" ]; then\n    echo \"--- Skip bundle building in 'Debug' mode\"\n    exit 0\nfi\nexport BUNDLE_COMMAND=\"unbundle\"\nexport BUNDLE_CONFIG=\"packager/config.js\"\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
