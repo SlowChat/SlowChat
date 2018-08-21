@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems:'center',
     justifyContent: 'center',
+    zIndex: 10,
   },
   btnTxt: {
     color: '#fff'
@@ -123,6 +124,7 @@ const styles = StyleSheet.create({
   // 注册页面用
   registBtn: {
     width: 109,
+    zIndex: 10,
   },
   registTxt: {
     fontSize: 16,

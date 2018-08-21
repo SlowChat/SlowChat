@@ -131,7 +131,7 @@ export default class Home extends Component<Props> {
       if (res.code == 1) {
         const { total, items } = res.data
         const newData = page == 0 ? items : this.state.data.concat(items)
-        let showFoot = newData.length >= total ? 1 : 0
+        let showFoot = page > 0 && newData.length >= total ? 1 : 0
         this.setState({
           items: newData,
           showFoot,

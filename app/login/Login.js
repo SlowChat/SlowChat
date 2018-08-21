@@ -23,11 +23,14 @@ export default class Login extends PureComponent<Props> {
   static navigationOptions = {
     header: null
   }
+  state = {
+    username: '15216748429',
+    password: '123456',
+  }
   componentWillMount() {
-    this.username = '15216748429'
-    this.password = '123456'
-    const { back } = this.props.navigation.state.params || {}
-    this.back = back
+    // const { back } = this.props.navigation.state.params || {}
+    // this.back = back
+    this.back = true
   }
 
   regist = () => {
@@ -42,9 +45,10 @@ export default class Login extends PureComponent<Props> {
     }
   }
   handleLogin = async () => {
+    const { username, password } = this.state
     const params = {
-      username: this.username,
-      password: this.password,
+      username: username.trim(),
+      password: password.trim(),
       device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
     }
     try {
@@ -73,6 +77,9 @@ export default class Login extends PureComponent<Props> {
 
 
   render() {
+    const { username, password } = this.state
+    const disabled = !username.trim() || !password.trim()
+    const loginBtnStyle = disabled ? [styles.item, styles.loginBtn, styles.disabled] : [styles.item, styles.loginBtn]
     return (
       <View style={styles.container}>
         <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
@@ -85,14 +92,14 @@ export default class Login extends PureComponent<Props> {
         <View style={styles.wrap}>
           <Image style={styles.logo} source={require('../images/logo.png')} />
           <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
-            <TextInput style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.username = text}
+            <TextInput value={username} style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ username: text })}
               autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>
           <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
-            <TextInput secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.password = text}
+            <TextInput value={password} secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ password: text })}
               autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>
-          <TouchableOpacity activeOpacity={0.8} style={[styles.item, styles.loginBtn]} onPress={this.handleLogin}>
+          <TouchableOpacity activeOpacity={0.8} style={loginBtnStyle} onPress={this.handleLogin}>
             <Text style={styles.loginTxt}>登 录</Text>
           </TouchableOpacity>
           <View style={styles.bottomBtn}>
@@ -154,6 +161,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 44,
+  },
+  disabled: {
+    backgroundColor: '#efefef',
   },
   loginTxt: {
     fontSize: 18,

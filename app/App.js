@@ -35,6 +35,7 @@ const StackApp = (isLogin) => createStackNavigator({
   EditPassword: { screen: require('./user/EditPassword').default },
   About: { screen: require('./user/About').default },
   Rule: { screen: require('./user/Rule').default },
+  // Protocol: { screen: require('./user/Protocol').default },
   Notice: { screen: require('./user/Notice').default },
   Integral: { screen: require('./user/Integral').default },
   FeedBack: { screen: require('./user/FeedBack').default },
@@ -50,7 +51,8 @@ const StackApp = (isLogin) => createStackNavigator({
     }
   }
 }, {
-  initialRouteName: isLogin ? 'BottomTabs' : 'Login',
+  initialRouteName: 'Protocol',
+  // isLogin ? 'BottomTabs' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,

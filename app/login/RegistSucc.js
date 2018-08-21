@@ -21,6 +21,7 @@ export default class SuccessModal extends PureComponent {
       <View style={styles.container}>
         <Image source={require('../images/icon_succeed.png')} style={styles.succIcon} />
         <Text style={styles.succTxt}>注册成功</Text>
+        <Text style={styles.succAward}>奖励积分+20分</Text>
         <TouchableOpacity activeOpacity={0.8} style={styles.succBtn} onPress={this.handleComplete}>
           <Text style={styles.succBtnTxt}>完 成</Text>
         </TouchableOpacity>
@@ -52,7 +53,15 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
     color: '#E24B92',
     lineHeight: 25,
-    marginBottom: 75,
+  },
+  succAward: {
+    height: 22,
+    fontSize: 16,
+    fontFamily: 'PingFang-SC-Medium',
+    color: '#E24B92',
+    lineHeight: 22,
+    marginTop: 5,
+    marginBottom: 48,
   },
   succBtn: {
     width: 268,

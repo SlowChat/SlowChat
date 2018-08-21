@@ -135,23 +135,36 @@ export default class NewMail extends Component {
   checkParams(showTip) {
     if (this.state.showLoading) return false
     const { attachs } = this.state
-    const { title, content, email, send_time, attach } = this.state.params
+    const { title, content, email, send_time } = this.state.params
     const tips = []
     if (!email) tips.push('收件人')
     //  || !isEmail(email)
     if (!title) tips.push('主题')
     // if (attachs.length == 0) tips.push('附件')
-    if (!send_time) tips.push('发信时间')
+    // if (!send_time) tips.push('发信时间')
     if (!content) tips.push('内容')
+    let tip = ''
     if (tips.length > 0) {
+      tip = '请保证' + tips.join('，') + '填写正确！'
+    }
+    if (send_time && send_time < dateFormat()) {
+      tip += '发信时间不符合要求！'
+    }
+    if (tip) {
       if (showTip) {
-        const tip = '请保证' + tips.join('，') + '填写正确！'
         this.refs.toast.show(tip)
       }
       return false
-    } else {
-      return true
     }
+    return true
+  }
+
+  checkSave() {
+    if (this.state.showLoading) return false
+    const { title, content, email, send_time } = this.state.params
+    const { attachs } = this.state
+    if (!title || !content || !email || !attachs.length) return true
+    return false
   }
 
   handleSend = () => {
@@ -165,7 +178,7 @@ export default class NewMail extends Component {
         if (res.code == 10001) {
           this.props.navigation.replace('Login', {back: true})
         } else if (res.code == 1) {
-          this.setState({ isSucc: true, isSend: false, showLoading: false })
+          this.setState({ isSucc: true, isSend: true, showLoading: false })
         } else {
           this.dealError(true)
         }
@@ -176,7 +189,7 @@ export default class NewMail extends Component {
     })
   }
   handleSave = () => {
-    if (!this.checkParams(true)) return
+    if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
       try {
         const attachs = await this.uploadFile()
@@ -271,6 +284,7 @@ export default class NewMail extends Component {
         <View style={styles.item}>
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={params.send_time}
+            minDate={new Date()}
             locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
             confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
             customStyles={{

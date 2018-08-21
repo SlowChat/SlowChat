@@ -33,6 +33,7 @@ export default class Share extends PureComponent<Props> {
   }
   async componentWillMount() {
     const user = await Storage.getUser()
+    console.log(user)
     this.setState({
       userName: user.user_nickname
     })
@@ -152,7 +153,7 @@ export default class Share extends PureComponent<Props> {
                 <Image style={styles.avatar} source={ICONS.head} />
                 <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>
-                    <Text style={styles.name}>{this.state.userName}</Text>
+                    <Text style={styles.name}>{this.state.userName || 'zhaocw'}</Text>
                     <Text style={styles.desc}>邀请你来慢邮~</Text>
                   </View>
                   <Text style={styles.title}>让我们 回到未来 回忆现在</Text>

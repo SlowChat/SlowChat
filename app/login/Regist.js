@@ -72,6 +72,9 @@ export default class Regist extends PureComponent<Props> {
   goLogin = () => {
     this.props.navigation.goBack()
   }
+  goProtocol = () => {
+    this.props.navigation.navigate('Protocol')
+  }
   showTip = (msg) => {
     this.refs.toast.show(msg)
   }
@@ -147,7 +150,7 @@ export default class Regist extends PureComponent<Props> {
             }
           </TouchableOpacity>
           <Text style={styles.tip}>注册即同意《</Text>
-          <TouchableOpacity activeOpacity={0.8} onPress={this.goLogin}>
+          <TouchableOpacity activeOpacity={0.8} onPress={this.goProtocol}>
             <Text style={[styles.tip, styles.activeTip]}>慢邮Manyou.info 网站软件许可使用协议</Text>
           </TouchableOpacity>
           <Text style={styles.tip}>》</Text>

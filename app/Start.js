@@ -23,17 +23,17 @@ export default class Start extends PureComponent {
     isLogin: false
   }
   async componentWillMount() {
-    SplashScreen.hide()
-    const token = await Storage.getToken()
-    this.setState({
-      checkLogin: true,
-      isLogin: Boolean(token)
-    }, () => {
-      SplashScreen.hide()
-    })
+    // const token = await Storage.getToken()
+    // this.setState({
+    //   checkLogin: true,
+    //   isLogin: Boolean(token)
+    // }, () => {
+    //   SplashScreen.hide()
+    // })
   }
 
   componentDidMount() {
+    SplashScreen.hide()
     BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
     AppState.addEventListener('change', this.handleChange)
     this.addPushListener()
@@ -124,9 +124,11 @@ export default class Start extends PureComponent {
   }
 
   render() {
-    const { checkLogin, isLogin } = this.state
-    if (!checkLogin) return null
-    const AppNavigator = configAppNavigator(isLogin);
+    const AppNavigator = configAppNavigator();
     return <AppNavigator ref={this.getNavRef} onNavigationStateChange={this.navigationStateChange} />
+    // const { checkLogin, isLogin } = this.state
+    // if (!checkLogin) return null
+    // const AppNavigator = configAppNavigator(isLogin);
+    // return <AppNavigator ref={this.getNavRef} onNavigationStateChange={this.navigationStateChange} />
   }
 }
