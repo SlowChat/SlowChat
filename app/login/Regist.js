@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -11,6 +10,7 @@ import {
   CheckBox,
   TouchableOpacity,
   StatusBar,
+  Platform,
 } from 'react-native'
 
 import {SafeAreaView} from 'react-navigation'
@@ -18,7 +18,7 @@ import Toast from 'react-native-easy-toast'
 import Loading from '../components/Loading'
 import ErrorModal from '../components/ErrorModal'
 import VerifyCode from '../components/VerifyCode'
-
+import Storage from '../utils/storage'
 import { post } from '../utils/request'
 
 import { isMobileNumberSupport, isEmail } from '../utils/util'
@@ -74,7 +74,8 @@ export default class Regist extends PureComponent<Props> {
     }
     post('api/user/register.html', params, true).then(res => {
       if (res.code == 1) {
-        this.props.navigation.replace('RegistSucc')
+        // this.props.navigation.replace('RegistSucc')
+        this.handleLogin(username, password)
       } else {
         this.dealError(res.msg)
       }
@@ -86,6 +87,26 @@ export default class Regist extends PureComponent<Props> {
         this.setState({ showLoading: true })
       }
     }, 300)
+  }
+
+  handleLogin = async (username, password) => {
+    const params = {
+      username: username.trim(),
+      password: password.trim(),
+      device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
+    }
+    try {
+      const res = await post('api/user/login.html', params, true)
+      if (res.code == 1) {
+        const { token, user } = res.data
+        await Storage.setToken(token, user)
+        this.props.navigation.replace('RegistSucc')
+      } else {
+        this.dealError(res.msg)
+      }
+    } catch (err) {
+      this.dealError()
+    }
   }
 
   dealError(txt) {
