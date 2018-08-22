@@ -182,14 +182,18 @@ export default class AvatarHeader extends PureComponent {
       }
     })
   }
+  handleClose = () => {
+    const { onClose } = this.props
+    onClose && onClose()
+  }
   render() {
     const { items } = this.state
     const { visible, onClose } = this.props
     return (
       <Modal visible={visible} transparent={true}
-        animationType="slide" onRequestClose={() => onClose()}>
+        animationType="slide" onRequestClose={this.handleClose}>
         <View style={styles.wrap}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={onClose}></TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={this.handleClose}></TouchableOpacity>
           <View style={styles.content}>
             <View style={styles.header}>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>

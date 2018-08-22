@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
+import Loading from '../components/Loading'
 import ErrorModal from '../components/ErrorModal'
 
 import { post } from '../utils/request'
@@ -26,15 +27,21 @@ export default class Login extends PureComponent<Props> {
   state = {
     username: '15216748429',
     password: '123456',
+    showLoading: false
   }
   componentWillMount() {
     // const { back } = this.props.navigation.state.params || {}
     // this.back = back
     this.back = true
   }
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+  }
 
   regist = () => {
-    this.props.navigation.navigate('Regist')
+    this.props.navigation.replace('Regist')
   }
 
   forget = () => {
@@ -46,38 +53,54 @@ export default class Login extends PureComponent<Props> {
   }
   handleLogin = async () => {
     const { username, password } = this.state
+    const disabled = !username.trim() || !password.trim()
+    if (disabled || this.loading) return
     const params = {
       username: username.trim(),
       password: password.trim(),
       device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
     }
     try {
+      this.loading = true
       const res = await post('api/user/login.html', params, true)
       if (res.code == 1) {
         const { token, user } = res.data
         await Storage.setToken(token, user)
         const { navigation } = this.props
-        if (this.back) {
+        // if (this.back) {
           navigation.goBack()
-        } else {
-          navigation.replace('BottomTabs')
-        }
+        // } else {
+        //   navigation.replace('BottomTabs')
+        // }
       } else {
-        this.showErrorModal(res.msg || '登录失败，请稍后重试')
+        this.dealError(res.msg)
       }
     } catch (err) {
       console.log(err);
-      this.showErrorModal('登录失败，请稍后重试')
+      this.dealError()
     }
+    this.timer = setTimeout(() => {
+      if (this.loading) {
+        this.setState({ showLoading: true })
+      }
+    }, 300)
   }
 
-  showErrorModal(txt) {
-    this.refs.errorModalRef.show({txt})
+  dealError(txt) {
+    this.loading = false
+    if (this.state.showLoading) {
+      this.setState({ showLoading: false })
+    }
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+    this.refs.errorModalRef.show({
+      txt: txt || '登录失败，请稍后重试'
+    })
   }
-
 
   render() {
-    const { username, password } = this.state
+    const { username, password, showLoading } = this.state
     const disabled = !username.trim() || !password.trim()
     const loginBtnStyle = disabled ? [styles.item, styles.loginBtn, styles.disabled] : [styles.item, styles.loginBtn]
     return (
@@ -114,6 +137,7 @@ export default class Login extends PureComponent<Props> {
           </View>
         </View>
         </ScrollView>
+        {showLoading && <Loading />}
         <ErrorModal ref="errorModalRef" />
       </View>
     );
@@ -163,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 44,
   },
   disabled: {
-    backgroundColor: '#efefef',
+    backgroundColor: '#e4e4e4',
   },
   loginTxt: {
     fontSize: 18,

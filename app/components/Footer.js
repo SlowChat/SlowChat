@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   nomore: {
     height: 30,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   nomoreTxt: {
     color: '#999999',

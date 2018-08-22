@@ -20,6 +20,7 @@ import Loading from '../components/Loading'
 import ErrorTip from '../components/ErrorTip'
 
 import { post } from '../utils/request'
+import dateFormat from '../utils/date'
 
 const SIZE = 10
 const ITEMS = [{id: 0, name: '最新发布'}, {id: 1, name: '热门'}]
@@ -59,7 +60,6 @@ export default class Space extends Component<Props> {
   tabSwitch = (index) => {
     if (this.state.activeTab == index) return
     this.init({activeTab: index})
-    this._flatList.scrollToOffset({animated: true, offset: 0})
   }
   init = (state = {}) => {
     this.setState({ showFoot: 0, items: [], ...state }, () => {
@@ -89,15 +89,25 @@ export default class Space extends Component<Props> {
       })
       if (res.code == 1) {
         const { total, items } = res.data
+        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+        items.forEach(item => {
+          item.send_time = (item.send_time || '').split(' ')[0]
+          const [ add_date, add_time ] = item.add_time.split(' ')
+          item.add_time = curr_item == add_date ? add_time : add_date
+        })
         const newData = page == 0 ? items : this.state.data.concat(items)
         let showFoot = page > 0 && newData.length >= total ? 1 : 0
         let showBlank = page == 0 && newData.length == 0
+        this.page++
         this.setState({
           data: newData,
           showFoot,
           showBlank,
+        }, () => {
+          if (this.page < 2) {
+            this._flatList.scrollToOffset({animated: false, offset: 0})
+          }
         })
-        this.page++
       } else {
         this.dealError()
       }
@@ -122,7 +132,9 @@ export default class Space extends Component<Props> {
   }
   handleLoadmore = () => {
     requestAnimationFrame(() => {
-      this.getData(this.page+1)
+      if (this.page > 0) {
+        this.getData(this.page)
+      }
     })
   }
 
@@ -149,7 +161,7 @@ export default class Space extends Component<Props> {
           renderItem={(item) => <HomeItem key={item.id} data={item} onPress={this.handlePress} />}
           initialNumToRender={5}
           keyExtractor={(item) => String(item.id)}
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={0.5}
           onEndReached={this.handleLoadmore}
           ListFooterComponent={this.renderFooter}
         />

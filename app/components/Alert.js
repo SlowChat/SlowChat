@@ -11,26 +11,37 @@ import {
 
 export default class Alert extends PureComponent {
   state = {
-    visible: false
+    visible: false,
+    title: '',
+    txt: '',
+    leftBtnTxt: '取消',
+    rightBtnTxt: '确定'
   }
-  show() {
+  componentWillMount() {
+    const { title, txt, leftBtnTxt, rightBtnTxt } = this.props
+    this.setState({ title, txt, leftBtnTxt, rightBtnTxt })
+  }
+  show(data = {}, onOk) {
     this.setState({
       visible: true,
+      ...data
     })
+    if (onOk) {
+      this.onOk = onOk
+    }
   }
   hide() {
     this.setState({ visible: false })
   }
   handleOk = () => {
-    const { onOk } = this.props
+    const onOk = this.props.onOk || this.onOk
     onOk && onOk()
   }
   handleClose = () => {
     this.hide()
   }
   render() {
-    const { title, txt, leftBtnTxt = '取消', rightBtnTxt = '确定' } = this.props
-    const { visible } = this.state
+    const { visible, title, txt, leftBtnTxt, rightBtnTxt } = this.state
     return (
       <Modal
         animationType='fade'

@@ -14,10 +14,14 @@ import {
 } from 'react-native'
 
 import {SafeAreaView} from 'react-navigation'
+import Toast from 'react-native-easy-toast'
+import Loading from '../components/Loading'
 import ErrorModal from '../components/ErrorModal'
 import VerifyCode from '../components/VerifyCode'
+
 import { post } from '../utils/request'
-import Toast from 'react-native-easy-toast'
+
+import { isMobileNumberSupport, isEmail } from '../utils/util'
 
 type Props = {};
 export default class Regist extends PureComponent<Props> {
@@ -34,6 +38,13 @@ export default class Regist extends PureComponent<Props> {
     password: '',
     verification_code: '',
     resetVertify: false,
+    showLoading: false
+  }
+
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
   }
 
   switchTab(index) {
@@ -49,10 +60,12 @@ export default class Regist extends PureComponent<Props> {
 
   // 注册
   handleRegist = () => {
+    if (this.isDisable() || this.loading) return
     if (!this.state.checked) {
       this.showErrorModal('请同意慢邮Manyou.info网站软件许可使用协议')
       return
     }
+    this.loading = true
     const { username, password, verification_code } = this.state
     const params = {
       username,
@@ -63,14 +76,32 @@ export default class Regist extends PureComponent<Props> {
       if (res.code == 1) {
         this.props.navigation.replace('RegistSucc')
       } else {
-        this.showErrorModal(res.msg || '注册失败，请稍后重试')
+        this.dealError(res.msg)
       }
     }).catch(e => {
-      this.showErrorModal('注册失败，请稍后重试')
+      this.dealError()
     })
+    this.timer = setTimeout(() => {
+      if (this.loading) {
+        this.setState({ showLoading: true })
+      }
+    }, 300)
   }
+
+  dealError(txt) {
+    this.loading = false
+    if (this.state.showLoading) {
+      this.setState({ showLoading: false })
+    }
+    this.showErrorModal(txt || '注册失败，请稍后重试')
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+  }
+
   goLogin = () => {
-    this.props.navigation.goBack()
+    // this.props.navigation.goBack()
+    this.props.navigation.replace('Login')
   }
   goProtocol = () => {
     this.props.navigation.navigate('LocalWebview', {source: 'protocal'})
@@ -82,7 +113,16 @@ export default class Regist extends PureComponent<Props> {
   showErrorModal(txt) {
     this.refs.errorModalRef.show({txt})
   }
-
+  isDisable() {
+    const { switchTab, username, password, verification_code } = this.state
+    if (!verification_code || !username || !password) return true
+    if (switchTab == 0) {
+      if (!isMobileNumberSupport(username)) return true
+    } else {
+      if (!isEmail(username)) return true
+    }
+    return false
+  }
   renderTabs() {
     const { activeTab } = this.state
     // <StatusBar hidden={true} />
@@ -105,13 +145,14 @@ export default class Regist extends PureComponent<Props> {
   }
   render() {
     const { checked, username, password, verification_code, activeTab } = this.state
-    const verifyStyle = username ? [styles.verifyTxt, styles.activeVerifyTxt] : styles.verifyTxt
+    const verifyStyle = username.trim() ? [styles.verifyTxt, styles.activeVerifyTxt] : styles.verifyTxt
     const placeholder = activeTab == 0 ? '请输入手机号' : '请输入邮箱'
     const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
+    const registBtnStyle = !checked || this.isDisable() ? [styles.registBtn, styles.disabled] : styles.registBtn
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.safeview}>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => {this.props.navigation.goBack()}}>
+          <TouchableOpacity activeOpacity={0.8} onPress={this.goLogin}>
             <Image style={styles.back} source={require('../images/back_w.png')} />
           </TouchableOpacity>
         </SafeAreaView>
@@ -132,7 +173,7 @@ export default class Regist extends PureComponent<Props> {
               <TextInput maxLength={12} secureTextEntry value={password} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入6-12位密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({password: text})}
                 underlineColorAndroid='transparent' />
             </ImageBackground>
-            <TouchableOpacity activeOpacity={0.8} style={styles.registBtn} onPress={this.handleRegist}>
+            <TouchableOpacity activeOpacity={0.8} style={registBtnStyle} onPress={this.handleRegist}>
               <Text style={styles.registTxt}>注 册</Text>
             </TouchableOpacity>
             <View style={styles.tipWrap}>
@@ -156,6 +197,7 @@ export default class Regist extends PureComponent<Props> {
           <Text style={styles.tip}>》</Text>
         </View>
         <SafeAreaView></SafeAreaView>
+        {this.state.showLoading && <Loading />}
         <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
       </View>
@@ -265,7 +307,9 @@ const styles = StyleSheet.create({
   activeVerifyTxt: {
     color: '#E24B92',
   },
-
+  disabled: {
+    backgroundColor: '#E4E4E4',
+  },
   registBtn: {
     width: 268,
     height: 44,

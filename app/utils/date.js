@@ -1,4 +1,4 @@
-export default function format(time = new Date(), format = 'yyyy-MM-dd hh:mm') {
+export default function format(time = new Date(), format = 'yyyy-MM-dd HH') {
   const args = {
     "M+": time.getMonth() + 1,
     "d+": time.getDate(),

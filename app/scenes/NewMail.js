@@ -285,7 +285,7 @@ export default class NewMail extends Component {
           <Text style={styles.label}>发信时间：</Text>
           <DatePicker style={styles.datepicker} date={params.send_time}
             minDate={new Date()}
-            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
+            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH"
             confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
             customStyles={{
               dateInput: {

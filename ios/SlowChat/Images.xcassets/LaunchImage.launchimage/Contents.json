@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "orientation" : "portrait",
-      "idiom" : "iphone",
       "extent" : "full-screen",
-      "minimum-system-version" : "11.0",
+      "idiom" : "iphone",
       "subtype" : "2436h",
+      "filename" : "ios_1125x2436.png",
+      "minimum-system-version" : "11.0",
+      "orientation" : "portrait",
       "scale" : "3x"
     },
     {
@@ -46,6 +47,7 @@
     {
       "orientation" : "portrait",
       "idiom" : "ipad",
+      "filename" : "ios_768x1024.png",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
       "scale" : "1x"
@@ -53,6 +55,7 @@
     {
       "orientation" : "portrait",
       "idiom" : "ipad",
+      "filename" : "ios_1536x2048.png",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
       "scale" : "2x"

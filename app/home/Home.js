@@ -17,7 +17,9 @@ import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
 
+
 import { post } from '../utils/request'
+import dateFormat from '../utils/date'
 
 const IMGS = [
   'https://img.alicdn.com/bao/uploaded/i1/TB2Xy7fquySBuNjy1zdXXXPxFXa_!!0-paimai.jpg',
@@ -130,7 +132,13 @@ export default class Home extends Component<Props> {
       })
       if (res.code == 1) {
         const { total, items } = res.data
-        const newData = page == 0 ? items : this.state.data.concat(items)
+        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+        items.forEach(item => {
+          item.send_time = (item.send_time || '').split(' ')[0]
+          const [ add_date, add_time ] = item.add_time.split(' ')
+          item.add_time = curr_item == add_date ? add_time : add_date
+        })
+        const newData = page == 0 ? items : this.state.items.concat(items)
         let showFoot = page > 0 && newData.length >= total ? 1 : 0
         this.setState({
           items: newData,
@@ -138,7 +146,7 @@ export default class Home extends Component<Props> {
         })
         this.page++
       } else if (res.code == 10001) {
-        this.props.navigation.replace('Login')
+        this.props.navigation.navigate('Login')
       } else {
         this.refs.toast.show(res.msg || '慢聊信息飘走了')
         this.setState({ showFoot: 0 })
@@ -173,7 +181,9 @@ export default class Home extends Component<Props> {
 
   handleLoadmore = () => {
     requestAnimationFrame(() => {
-      this.getData(this.page + 1)
+      if (this.page > 0) {
+        this.getData(this.page)
+      }
     })
   }
   handleRefresh = () => {
@@ -211,7 +221,7 @@ export default class Home extends Component<Props> {
           initialNumToRender={5}
           keyExtractor={(item, index) => String(item.id)}
           onScroll={this.handleScroll}
-          onEndReachedThreshold={3}
+          onEndReachedThreshold={0.5}
           onEndReached={this.handleLoadmore}
           refreshing={this.state.refreshing}
           onRefresh={this.handleRefresh}
