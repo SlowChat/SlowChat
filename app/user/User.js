@@ -114,13 +114,17 @@ export default class User extends Component {
       console.log(e)
     })
   }
-
+  goInfo = () => {
+    const { navigate } = this.props.navigation;
+    const { username, avatar, sex, birthday } = this.state
+    navigate('Information', { username, avatar, sex, birthday })
+  }
   render() {
     const { navigate } = this.props.navigation;
     const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar username={username} avatar={avatar} level={level} />
+        <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} />
         <View style={styles.remind}>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
             <View style={styles.list}>
@@ -173,7 +177,7 @@ export default class User extends Component {
           }
         </View>
         <View style={styles.link}>
-          <TouchableWithoutFeedback onPress={() => navigate('Information', { username, avatar, sex, birthday })}>
+          <TouchableWithoutFeedback onPress={this.goInfo}>
             <View style={styles.menu}>
               <Image style={styles.menuImg} source={require('../images/icon_person.png')} />
               <Text style={styles.menuTxt}>个人资料</Text>
