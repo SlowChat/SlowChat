@@ -179,7 +179,7 @@ export default class MailDetail extends Component {
         this.ispub = !this.ispub
         this.setEye()
       } else if (res.code == 10001) {
-        this.props.navigation.navigate('Login', {back: true})
+        this.props.navigation.navigate('Login')
       } else {
         this.refs.toast.show(res.msg || '设置失败');
       }
@@ -232,7 +232,7 @@ export default class MailDetail extends Component {
         }
         this.setState({ comments })
       } else if (res.code == 10001) {
-        this.props.navigation.navigate('Login', { back: true })
+        this.props.navigation.navigate('Login')
       } else {
         this.refs.errorModalRef.show({txt: res.msg || '回复失败，稍后尝试'})
       }

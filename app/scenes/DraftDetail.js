@@ -68,7 +68,7 @@ export default class DraftDetail extends Component {
     if (res.code == 1) {
       this.props.navigation.goBack()
     } else if (res.code == 10001) {
-      this.props.navigation.navigate('Login', {back: true})
+      this.props.navigation.navigate('Login')
     } else {
       this.refs.alert.hide()
       this.refs.toast.show(res.msg || '请稍后重试')

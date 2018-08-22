@@ -73,7 +73,7 @@ export default class Regist extends PureComponent<Props> {
     this.props.navigation.goBack()
   }
   goProtocol = () => {
-    this.props.navigation.navigate('Protocol')
+    this.props.navigation.navigate('LocalWebview', {source: 'protocal'})
   }
   showTip = (msg) => {
     this.refs.toast.show(msg)

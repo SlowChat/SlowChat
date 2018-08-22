@@ -176,7 +176,7 @@ export default class NewMail extends Component {
         params.attach = attachs.map(item => item.url).join(',')
         const res = await post('api/mail/add.html', params)
         if (res.code == 10001) {
-          this.props.navigation.replace('Login', {back: true})
+          this.props.navigation.replace('Login')
         } else if (res.code == 1) {
           this.setState({ isSucc: true, isSend: true, showLoading: false })
         } else {
@@ -197,7 +197,7 @@ export default class NewMail extends Component {
         params.attach = attachs.map(item => item.url).join(',')
         const res = await post('api/mail/save.html', params)
         if (res.code == 10001) {
-          this.props.navigation.navigate('Login', { back: true })
+          this.props.navigation.navigate('Login')
         } else if (res.code == 1) {
           this.setState({ isSucc: true, isSend: false, showLoading: false })
         } else {
