@@ -6,14 +6,15 @@ import {
   Image,
 } from 'react-native';
 
-import ICONS from '../utils/icon'
-
-export default class AvatarHeader extends PureComponent {
+export default class Avatar extends PureComponent {
   render() {
     const { username, avatar, level } = this.props;
     return (
       <View style={styles.avatarWrap}>
-        <Image style={styles.avatar} source={ICONS.head} />
+        {
+          avatar ? <Image style={styles.avatar} source={{uri: avatar}} />
+        : <Image style={styles.avatar} source={require('../images/default_avatar_160.png')} />
+        }
         <View style={styles.avatarRight}>
           <Text style={styles.name}>{ username }</Text>
           <Text style={styles.level}>{level}</Text>
