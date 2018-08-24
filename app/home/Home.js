@@ -21,13 +21,7 @@ import Loading from '../components/Loading'
 import { post } from '../utils/request'
 import dateFormat from '../utils/date'
 
-const IMGS = [
-  'https://img.alicdn.com/bao/uploaded/i1/TB2Xy7fquySBuNjy1zdXXXPxFXa_!!0-paimai.jpg',
-  'https://img.alicdn.com/bao/uploaded/i3/TB2Hhn4quSSBuNjy0FlXXbBpVXa_!!0-paimai.jpg'
-]
-
 const SIZE = 10
-let firstClick = 0
 
 type Props = {};
 export default class Home extends Component<Props> {

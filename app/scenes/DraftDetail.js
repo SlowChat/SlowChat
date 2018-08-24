@@ -37,7 +37,7 @@ export default class DraftDetail extends Component {
     this.loading = true
     try {
       const id = this.getId()
-      const res = await post('api/mail/getInfo.html', { id })
+      const res = await post('api/mail/getDraftInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
         this.setState({

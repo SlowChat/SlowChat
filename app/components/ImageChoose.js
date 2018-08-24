@@ -15,64 +15,20 @@ import {
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import RNFileSelector from 'react-native-file-selector';
+import Actionsheet from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
 // import { upload } from '../utils/request'
+import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 
 export default class AvatarHeader extends PureComponent {
   state = {
     items: []
   }
 
-  async checkImagePermission() {
-    if (Platform.OS == 'ios') return false
-    let nopermission = false
-    try {
-      // PermissionsAndroid.PERMISSIONS.CAMERA
-      const granted = await PermissionsAndroid.requestMultiple(
-        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.CAMERA ],
-        {
-          title: '权限申请',
-          message: '慢聊需要访问你的相机和相册'
-        },
-      );
-      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
-        nopermission = true
-        this.refs.toast.show('授权拒绝，无法选择图片')
-      }
-    } catch (err) {
-      nopermission = true
-      this.refs.toast.show('授权失败，无法选择图片')
-    }
-    return nopermission
-  }
-
-  async checkVideoPermission() {
-    if (Platform.OS == 'ios') return false
-    let nopermission = false
-    try {
-      const granted = await PermissionsAndroid.requestMultiple(
-        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          // PermissionsAndroid.PERMISSIONS.CAMERA,
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, ],
-        {
-          title: '权限申请',
-          message: '慢聊需要访问你的视频文件和录制视频'
-        },
-      );
-      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
-        nopermission = true
-        this.refs.toast.show('授权拒绝，无法选择图片')
-      }
-    } catch (err) {
-      nopermission = true
-      this.refs.toast.show('授权失败，无法选择图片')
-    }
-    return nopermission
-  }
-
   chooseImage = async () => {
-    let nopermission = await this.checkImagePermission()
+    let nopermission = await checkImagePermission((msg) => {
+      this.refs.toast.show(msg)
+    })
     if (nopermission) return
     const options = {
       title: '选择图片',
@@ -117,7 +73,9 @@ export default class AvatarHeader extends PureComponent {
   //   this.refs.toast.show(res.msg || '上传失败')
   // }
   chooseVideo = async () => {
-    let nopermission = await this.checkVideoPermission()
+    let nopermission = await checkVideoPermission((msg) => {
+      this.refs.toast.show(msg)
+    })
     if (nopermission) return
     const options = {
       title: '选择视频',
@@ -143,9 +101,9 @@ export default class AvatarHeader extends PureComponent {
     items = items.concat([
       {
         url: uri,
-        fileName,
-        type,
-        fileSize
+        filename: filename,
+        ext: type,
+        size: fileSize,
       }
     ])
     this.setState({ items }, () => {
@@ -213,6 +171,7 @@ export default class AvatarHeader extends PureComponent {
             </ScrollView>
           </View>
         </View>
+        <Actionsheet />
         <Toast ref="toast" position="center" />
       </Modal>
     )

@@ -9,28 +9,29 @@ import { post } from '../utils/request'
 import Loading from '../components/Loading'
 import ErrorTip from '../components/ErrorTip'
 
+const DATA = {
+  faq: {
+    url: 'api/common/faq.html',
+    title: '常见问题'
+  },
+  protocal: {
+    url: 'api/common/agreement.html',
+    title: '网站软件许可使用协议'
+  }
+}
+
 type Props = {};
 export default class LocalWebview extends Component<Props> {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
+    const source = params.source || 'faq'
     return {
-      title: params.title || '',
+      title: DATA[source] || '',
     }
   }
   state = {
     showError: false,
     showLoading: false
-  }
-
-  DATA = {
-    faq: {
-      url: 'api/common/faq.html',
-      title: '常见问题'
-    },
-    protocal: {
-      url: 'api/common/agreement.html',
-      title: '网站软件许可使用协议'
-    }
   }
 
   componentWillMount() {
@@ -44,10 +45,10 @@ export default class LocalWebview extends Component<Props> {
     this.getData()
   }
 
-  componentDidMount() {
-    const { title } = this.DATA[this.source]
-    this.props.navigation.setParams({ title })
-  }
+  // componentDidMount() {
+  //   const { title } = this.DATA[this.source]
+  //   this.props.navigation.setParams({ title })
+  // }
 
   reload = () => {
     this.getData()

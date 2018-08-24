@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
@@ -52,6 +53,7 @@ export default class NewMail extends Component {
   state = {
     isSend: true,
     isSucc: false,
+    disabledSave: false,
     showLoading: false,
     showSendMe: true,
     pickerModal: false,
@@ -86,10 +88,11 @@ export default class NewMail extends Component {
   async getData() {
     if (this.loading) return
     const { id } = this.props.navigation.state.params || {}
+    console.log(id);
     if (typeof id == 'undefined') return
     this.loading = true
     try {
-      const res = await post('api/mail/getInfo.html', { id })
+      const res = await post('api/mail/getMyInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
@@ -219,7 +222,7 @@ export default class NewMail extends Component {
         if (item.type == 'image') {
           const res = await upload(item.url, item.fileName)
           if (res.code == 1) {
-            attachs[index].url = res.data.url
+            attachs[index] = {...res.data}
           } else {
             throw new Error(res)
           }
@@ -253,65 +256,67 @@ export default class NewMail extends Component {
     })
   }
   render() {
-    const { showLoading, attachs, params, isSucc, isSend } = this.state
+    const { showLoading, attachs, params, isSucc, isSend, disabledSave } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
-      <ScrollView style={styles.container}>
-        <HeaderTip tip="爱慢邮——让我们回到未来" />
-        <View style={styles.item}>
-          <Text style={styles.label}>收件人：</Text>
-          <TextInput keyboardType="email-address" autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-          <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
-            <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
+      <View style={styles.container}>
+        <ScrollView>
+          <HeaderTip tip="爱慢邮——让我们回到未来" />
+          <View style={styles.item}>
+            <Text style={styles.label}>收件人：</Text>
+            <TextInput keyboardType="email-address" autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
+              <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>主题：</Text>
+            <TextInput style={styles.input} value={params.title} onChangeText={(text) => this.setParams('title', text)}
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>附件：</Text>
+            <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
+              <View style={styles.icons}>
+                <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
+              </View>
+              <Text style={styles.attachmentNum}>{attachTxt}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>发信时间：</Text>
+            <DatePicker style={styles.datepicker} date={params.send_time}
+              minDate={new Date()}
+              locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH"
+              confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
+              customStyles={{
+                dateInput: {
+                  borderWidth: 0,
+                }
+              }}
+              onDateChange={(datetime) => {
+                this.setParams('send_time', datetime)
+              }} />
+            <Image style={styles.arrow} source={ICONS.forward} />
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.txt}>信件提交后在“慢友圈”公开</Text>
+            <Switch value={params.type == 2} onValueChange={(value) => {
+                this.setParams('type', value ? 2 : 1)
+              }} />
+          </View>
+          <View style={styles.content}>
+            <TextInput multiline value={params.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+          </View>
+        </ScrollView>
+        <SafeAreaView style={styles.bottom}>
+          <TouchableOpacity style={[styles.saveBtn, disabledSave && styles.disabledSaveBtn ]} onPress={this.handleSave}>
+            <Text style={[styles.saveBtnTxt, disabledSave && styles.disabledSaveBtnTxt]}>保存草稿</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>主题：</Text>
-          <TextInput style={styles.input} value={params.title} onChangeText={(text) => this.setParams('title', text)}
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>附件：</Text>
-          <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
-            <View style={styles.icons}>
-              <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
-            </View>
-            <Text style={styles.attachmentNum}>{attachTxt}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>发信时间：</Text>
-          <DatePicker style={styles.datepicker} date={params.send_time}
-            minDate={new Date()}
-            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH"
-            confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
-            customStyles={{
-              dateInput: {
-                borderWidth: 0,
-              }
-            }}
-            onDateChange={(datetime) => {
-              this.setParams('send_time', datetime)
-            }} />
-          <Image style={styles.arrow} source={ICONS.forward} />
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.txt}>信件提交后在“慢友圈”公开</Text>
-          <Switch value={params.type == 2} onValueChange={(value) => {
-              this.setParams('type', value ? 2 : 1)
-            }} />
-        </View>
-        <View style={styles.content}>
-          <TextInput multiline value={params.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-        </View>
-        <View style={styles.bottom}>
-          <TouchableOpacity style={styles.saveBtn} onPress={this.handleSave}>
-            <Text style={styles.saveBtnTxt}>保存草稿</Text>
-          </TouchableOpacity>
-        </View>
+        </SafeAreaView>
         <ImageChoose visible={this.state.pickerModal} onChange={this.handleImageChoose} onClose={this.closeImageChoose} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
@@ -324,7 +329,8 @@ export default class NewMail extends Component {
         <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
         {showLoading && <Loading />}
-      </ScrollView>
+      </View>
+
     )
   }
 }
@@ -430,6 +436,10 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottom: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     height: 44,
     paddingRight: 15,
     alignItems: 'flex-end',
@@ -450,6 +460,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#E24B92',
   },
+  disabledSaveBtn: {
+    borderColor: '#B4B4B4',
+  },
+  disabledSaveBtnTxt: {
+    color: '#686868',
+  }
 });
 
 // bottom

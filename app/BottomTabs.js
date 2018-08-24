@@ -96,7 +96,7 @@ export default createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Mime',
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarOnPress: ({navigation, defaultHandler}) => {

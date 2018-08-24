@@ -12,9 +12,11 @@ import {
 
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
+import ImagePicker from 'react-native-image-picker'
 import Avatar from '../components/Avatar'
 import Confirm from '../components/Confirm'
-import { get, post } from '../utils/request'
+import { post, upload } from '../utils/request'
+import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 import ICONS from '../utils/icon'
 
 const SEX_OBJ = {
@@ -44,8 +46,8 @@ export default class Information extends Component {
       isShow: false,
       sex: SEX_OBJ[sex] || '',
       date: birthday,
-      nickname: username,
-      avatar: avatar,
+      username,
+      avatar,
       isSucc: false
     }
   }
@@ -59,14 +61,13 @@ export default class Information extends Component {
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { sex, nickname, avatar, date } = this.state;
-    post('api/user/userInfo.html', { user_nickname: nickname, avatar, sex: SEXID_OBJ[sex], birthday: date}).then(res => {
-      console.log(res)
+    const { sex, username, avatar, date } = this.state;
+    post('api/user/userInfo.html', { user_username: username, avatar, sex: SEXID_OBJ[sex], birthday: date}).then(res => {
       if (res.code == 1) {
         this.refs.toast.show(res.msg);
         setTimeout(() => {
           pop()
-        })
+        }, 1000)
       }
     }).catch(e => {
       this.refs.toast.show(res.msg);
@@ -82,18 +83,61 @@ export default class Information extends Component {
   }
 
   onRightPress = () => {
-    this.setState({nickname: this.state.inputname, isSucc: false})
+    this.setState({username: this.state.inputname, isSucc: false})
+  }
+
+  chooseAndUpload = async () => {
+    let nopermission = await checkImagePermission((txt) => {
+      this.refs.toast.show(txt)
+    })
+    if (nopermission) return
+    const options = {
+      title: '选择图片',
+      cancelButtonTitle: '取消',
+      takePhotoButtonTitle: '拍照',
+      chooseFromLibraryButtonTitle: '选择照片',
+      cameraType: 'back',
+      mediaType: 'photo',
+      videoQuality: 'high',
+      durationLimit: 10,
+      maxWidth: 500,
+      maxHeight: 500,
+      // quality: 0.8,
+      angle: 0,
+      allowsEditing: false,
+      noData: true,
+      storageOptions: {
+        skipBackup: true,
+      }
+    }
+    ImagePicker.showImagePicker(options, async (response) => {
+      if (response && response.uri) {
+        let file = response.uri
+        // if(Platform.OS === 'ios'){
+        //   file = file.replace('file://', '')
+        // }
+        console.log(response);
+        const res = await upload(response.uri, response.fileName)
+        console.log(res);
+        if (res.code == 1) {
+          this.setState({ avatar: res.data.url })
+        } else {
+          this.refs.toast.show('上传失败，稍后重试！')
+        }
+      }
+    });
   }
 
   render() {
     const { params } = this.props.navigation.state;
+    const { avatar, username, level } = this.state
     return (
       <View style={styles.container}>
-        <Avatar />
+        <Avatar avatar={avatar} username={username} level={level} onPress={this.chooseAndUpload} />
         <View style={styles.link}>
           <View style={styles.menu}>
             <Text style={styles.label}>昵称</Text>
-            <Text style={styles.input} onPress={() => this.onChangeName()}>{this.state.nickname}</Text>
+            <Text style={styles.input} onPress={() => this.onChangeName()}>{this.state.username}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </View>
           <View style={styles.menu}>
@@ -152,7 +196,7 @@ export default class Information extends Component {
               <Picker.Item label="女" value="女" />
             </Picker>
         </View>
-        <Toast ref="toast" position="bottom" />
+        <Toast ref="toast" position="center" />
         <Confirm
           tit='请输入新的昵称'
           leftBtnTxt='取消'
@@ -162,7 +206,7 @@ export default class Information extends Component {
               style={styles.nickInput}
               onChangeText={(text) => this.setState({inputname: text})}
               placeholder='请输入填写您的用户名'
-              value={this.state.nickname}
+              value={this.state.username}
             />
           }
           visible={this.state.isSucc}

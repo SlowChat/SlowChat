@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { View, BackHandler, ToastAndroid, AppState, TouchableOpacity } from 'react-native'
+import { View, BackHandler, ToastAndroid, AppState, Platform, TouchableOpacity } from 'react-native'
 import { StackActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen'
 import Storage from './utils/storage'
@@ -51,14 +51,11 @@ export default class Start extends PureComponent {
     if (!JPushModule) {
       JPushModule = require('jpush-react-native').default
     }
-    try {
+    if (Platform.OS == 'android') {
       JPushModule.notifyJSDidLoad((resultCode) => {
           if (resultCode === 0) {}
       });
-    } catch (e) {
-      console.log(e)
     }
-
     // 接收自定义消息
     JPushModule.addReceiveCustomMsgListener((message) => {
       console.log("addReceiveCustomMsgListener===", message);
