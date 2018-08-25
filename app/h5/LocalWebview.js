@@ -5,7 +5,6 @@ import {
   StyleSheet
 } from 'react-native';
 import { post } from '../utils/request'
-// import HTMLView from 'react-native-htmlview';
 import Loading from '../components/Loading'
 import ErrorTip from '../components/ErrorTip'
 
@@ -26,7 +25,7 @@ export default class LocalWebview extends Component<Props> {
     const { params = {} } = navigation.state
     const source = params.source || 'faq'
     return {
-      title: DATA[source] || '',
+      title: DATA[source].title || '',
     }
   }
   state = {
@@ -37,7 +36,7 @@ export default class LocalWebview extends Component<Props> {
   componentWillMount() {
     console.log(this.props.navigation.state);
     let { source = 'faq' } = this.props.navigation.state.params || {}
-    const keys = Object.keys(this.DATA)
+    const keys = Object.keys(DATA)
     if (keys.indexOf(source) == -1) {
       source = 'faq'
     }
@@ -46,7 +45,7 @@ export default class LocalWebview extends Component<Props> {
   }
 
   // componentDidMount() {
-  //   const { title } = this.DATA[this.source]
+  //   const { title } = DATA[this.source]
   //   this.props.navigation.setParams({ title })
   // }
 
@@ -58,7 +57,7 @@ export default class LocalWebview extends Component<Props> {
     if (this.post_content) return this.post_content
     try {
       this.loading = true
-      const { url } = this.DATA[this.source]
+      const { url } = DATA[this.source]
       const res = await post(url)
       if (res.code == 1) {
         this.post_content = this.htmlDecodeByRegExp(res.data.post_content)
