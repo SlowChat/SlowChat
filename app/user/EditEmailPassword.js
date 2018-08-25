@@ -11,7 +11,7 @@ import {
 import { get, post } from '../utils/request'
 import Toast from 'react-native-easy-toast'
 
-import { isMobileNumberSupport } from '../utils/util'
+import { isEmail } from '../utils/util'
 import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
 
@@ -27,7 +27,7 @@ export default class EditPassowrd extends Component {
     }
   }
   state = {
-    mobile: '',
+    email: '',
     vCode: '',
     password: '',
     isVcodeClick: false,
@@ -38,7 +38,7 @@ export default class EditPassowrd extends Component {
 
   handleSubmit = () => {
     const { pop } = this.props.navigation;
-    const { mobile, vCode, password } = this.state;
+    const { email, vCode, password } = this.state;
     const { params = {} } = this.props.navigation.state;
     console.log(params.source)
     let url = '', token = true
@@ -50,7 +50,7 @@ export default class EditPassowrd extends Component {
       token = true
     }
     post(url,
-      { username: mobile,
+      { username: email,
         verification_code: vCode,
         password: password
       }, token).then((res) => {
@@ -67,8 +67,8 @@ export default class EditPassowrd extends Component {
   }
 
   handleVcode = () => {
-    const { mobile } = this.state;
-    post('api/verification_code/send.html', { username: mobile }, true).then((res) => {
+    const { email } = this.state;
+    post('api/verification_code/send.html', { username: email }, true).then((res) => {
       console.log(res)
       if (res.code == 1) {
         this.refs.toast.show(res.msg);
@@ -78,20 +78,20 @@ export default class EditPassowrd extends Component {
     })
   }
 
-  handleChangeMobile = (text) => {
+  handleChangeEmail = (text) => {
     this.setState({
-      mobile: text
+        email: text
     })
-    if (text.length >= 11 && isMobileNumberSupport(text)) {
+    if (text.length >= 11 && isEmail(text)) {
       this.setState({isVcodeClick: true})
     } else {
       this.setState({isVcodeClick: false})
     }
   }
 
-  handleMobile = () => {
-    const { mobile } = this.state;
-    if (!isMobileNumberSupport(mobile)) this.refs.toast.show('您的手机号输入有误');
+  handleEmail = () => {
+    const { email } = this.state;
+    if (!isEmail(email)) this.refs.toast.show('您的邮箱输入有误');
   }
 
   inputVcode = (text) => {
@@ -113,7 +113,7 @@ export default class EditPassowrd extends Component {
 
   handleJump = () => {
     const { navigate } = this.props.navigation;
-    navigate('EditEmailPassword')
+    navigate('EditPassword')
   }
 
   render() {
@@ -121,15 +121,15 @@ export default class EditPassowrd extends Component {
       <View style={styles.container}>
         <View style={styles.link}>
           <View style={styles.menu}>
-            <Text style={styles.label}>手机号</Text>
+            <Text style={styles.label}>邮箱</Text>
             <TextInput
               style={styles.input}
-              onChangeText={(text) => this.handleChangeMobile(text)}
-              onBlur={() => this.handleMobile()}
-              placeholder='请输入您的手机号'
+              onChangeText={(text) => this.handleChangeEmail(text)}
+              onBlur={() => this.handleEmail()}
+              placeholder='请输入您的邮箱地址'
               value={this.state.username}
             />
-          <VerifyCode username={this.state.mobile} onTip={this.showTip}/>
+          <VerifyCode username={this.state.email} onTip={this.showTip}/>
             {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
               <View style={styles.btn}>
                 <Text style={styles.btnTxt}>获取验证码</Text>
@@ -162,7 +162,7 @@ export default class EditPassowrd extends Component {
           </TouchableWithoutFeedback>
           <Text style={styles.remind}>没有绑定手机，
             <Text style={styles.links} onPress={() => this.handleJump()}>
-              邮箱验证修改密码
+              手机验证修改密码
             </Text>
           </Text>
         </View>

@@ -35,6 +35,7 @@ const StackApp = (isLogin) => createStackNavigator({
   EditMobile: { screen: require('./user/EditMobile').default },
   EditEmail: { screen: require('./user/EditEmail').default },
   EditPassword: { screen: require('./user/EditPassword').default },
+  EditEmailPassword: { screen: require('./user/EditEmailPassword').default },
   About: { screen: require('./user/About').default },
   Rule: { screen: require('./user/Rule').default },
   // Protocol: { screen: require('./user/Protocol').default },
