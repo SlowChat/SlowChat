@@ -38,11 +38,12 @@ export default class DraftDetail extends Component {
     try {
       const id = this.getId()
       const res = await post('api/mail/getDraftInfo.html', { id })
+      console.log(res);
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
           data: items,
-          attachs: items.attach.split(',')
+          attachs: items.attach || []
         })
       } else {
 
@@ -87,6 +88,7 @@ export default class DraftDetail extends Component {
   // })
   render() {
     const { data, attachs } = this.state
+    const hasAttach = attachs && attachs.length > 0
     return (
       <View style={styles.container}>
         <ScrollView style={styles.body}>
@@ -111,7 +113,7 @@ export default class DraftDetail extends Component {
           <View style={styles.item}>
             <Text style={styles.label}>附件：</Text>
             <Image style={styles.attachment} source={require('../images/icon_attachment.png')} />
-            <Text style={styles.attachmentNum}>{attachs.length}个附件</Text>
+            <Text style={styles.attachmentNum}>{hasAttach ? `${attachs.length}个附件` : ''}</Text>
           </View>
           <Attachment items={attachs} />
         </ScrollView>

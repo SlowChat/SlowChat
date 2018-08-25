@@ -18,10 +18,12 @@ const StackApp = (isLogin) => createStackNavigator({
   Login: {
     // screen: LoginScreen,
     screen: require('./login/Login').default,
-    mode: 'modal',
-    navigationOptions: {
-      header: null,
-    }
+    // mode: 'modal',
+    // transitionConfig: () => {
+    //   return {
+    //     screenInterpolator: StackViewTransitionConfigs.ModalSlideFromBottomIOS.screenInterpolator,
+    //   }
+    // }
   },
   Regist: { screen: require('./login/Regist').default },
   RegistSucc: { screen: require('./login/RegistSucc').default },
@@ -79,14 +81,14 @@ const StackApp = (isLogin) => createStackNavigator({
     //   paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
     // }
   },
-  transitionConfig: (
-    transitionConfigurer,
-    transitionProps,
-    prevTransitionProps,
-    isModal
-  ) => {
+  transitionConfig: () => {
+    // if (isModal) {
+    //   return {
+    //     screenInterpolator: StackViewTransitionConfigs.ModalSlideFromBottomIOS.screenInterpolator,
+    //   }
+    // }
     return {
-      screenInterpolator: StackViewTransitionConfigs.SlideFromRightIOS.screenInterpolator,
+      screenInterpolator: StackViewTransitionConfigs.SlideFromRightIOS.screenInterpolator
     }
   }
 });

@@ -22,17 +22,12 @@ import Storage from '../utils/storage'
 type Props = {};
 export default class Login extends PureComponent<Props> {
   static navigationOptions = {
-    header: null
+    header: null,
   }
   state = {
     username: '15216748429',
     password: '123456',
     showLoading: false
-  }
-  componentWillMount() {
-    // const { back } = this.props.navigation.state.params || {}
-    // this.back = back
-    this.back = true
   }
   componentWillUnmount() {
     if (this.timer) {
@@ -66,9 +61,8 @@ export default class Login extends PureComponent<Props> {
       if (res.code == 1) {
         const { token, user } = res.data
         await Storage.setToken(token, user)
-        const { navigation } = this.props
         // if (this.back) {
-          navigation.goBack()
+          this.goBack()
         // } else {
         //   navigation.replace('BottomTabs')
         // }
@@ -84,6 +78,10 @@ export default class Login extends PureComponent<Props> {
         this.setState({ showLoading: true })
       }
     }, 300)
+  }
+
+  goBack = () => {
+    this.props.navigation.goBack()
   }
 
   dealError(txt) {
@@ -107,9 +105,9 @@ export default class Login extends PureComponent<Props> {
       <View style={styles.container}>
         <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
            style={styles.header}>
-           {this.back && (<TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.goBack()}}>
+           <TouchableOpacity activeOpacity={0.8} onPress={() => { this.goBack()}}>
              <Image style={styles.close} source={require('../images/close.png')} />
-           </TouchableOpacity>)}
+           </TouchableOpacity>
         </SafeAreaView>
         <ScrollView style={{flex: 1}}>
         <View style={styles.wrap}>

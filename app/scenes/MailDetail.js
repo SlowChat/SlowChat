@@ -205,6 +205,8 @@ export default class MailDetail extends Component {
   }
 
   async addComment(pid, content) {
+    this.props.navigation.navigate('Login')
+    return
     try {
       const id = this.getId()
       const res = await post('api/mail_comment/add.html', {

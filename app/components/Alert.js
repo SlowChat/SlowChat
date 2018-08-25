@@ -21,14 +21,19 @@ export default class Alert extends PureComponent {
     const { title, txt, leftBtnTxt, rightBtnTxt } = this.props
     this.setState({ title, txt, leftBtnTxt, rightBtnTxt })
   }
-  show(data = {}, onOk) {
+  show(data = {}) {
+    if (data.onOk) {
+      this.onOk = data.onOk
+      delete data.onOk
+    }
+    if (data.onCancel) {
+      this.onCancel = data.onCancel
+      delete data.onCancel
+    }
     this.setState({
       visible: true,
       ...data
     })
-    if (onOk) {
-      this.onOk = onOk
-    }
   }
   hide() {
     this.setState({ visible: false })
@@ -38,7 +43,11 @@ export default class Alert extends PureComponent {
     onOk && onOk()
   }
   handleClose = () => {
-    this.hide()
+    if (this.onCancel) {
+      this.onCancel()
+    } else {
+      this.hide()
+    }
   }
   render() {
     const { visible, title, txt, leftBtnTxt, rightBtnTxt } = this.state

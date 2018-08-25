@@ -62,7 +62,8 @@ export async function upload(uri, fileName) {
   let file = {uri: uri, type: 'multipart/form-data', name: name};
   formData.append('file', file);
   const headers = await getHeaders()
-  return fetch(BASE_URL + 'api/upload/image.html', {
+  // return fetch(BASE_URL + 'api/upload/image.html', {
+  return fetch(BASE_URL + 'api/upload/files.html', {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -72,19 +73,19 @@ export async function upload(uri, fileName) {
   }).then((response) => response.json())
 }
 
-
-export async function uploadFile(uri, fileName) {
-  let formData = new FormData();
-  const name = fileName || uri.substring(uri.lastIndexOf('/') + 1, uri.length)
-  let file = {uri: uri, type: 'multipart/form-data', name};
-  formData.append('file', file);
-  const headers = await getHeaders()
-  return fetch(BASE_URL + 'api/upload/flies.html', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      ...headers
-    },
-    body: formData,
-  }).then((response) => response.json())
-}
+//
+// export async function uploadFile(uri, fileName) {
+//   let formData = new FormData();
+//   const name = fileName || uri.substring(uri.lastIndexOf('/') + 1, uri.length)
+//   let file = {uri: uri, type: 'multipart/form-data', name};
+//   formData.append('file', file);
+//   const headers = await getHeaders()
+//   return fetch(BASE_URL + 'api/upload/flies.html', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'multipart/form-data',
+//       ...headers
+//     },
+//     body: formData,
+//   }).then((response) => response.json())
+// }

@@ -11,7 +11,7 @@ import HomeScreen from './home/Home'
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  Login: LoginScreen,
+  // Login: LoginScreen,
 })
 const SpaceStack = createStackNavigator({
   Space: require('./home/Space').default,
@@ -96,7 +96,7 @@ export default createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Mime',
+    initialRouteName: 'Home',
     navigationOptions: ({ navigation }) => ({
       title: '',
       tabBarOnPress: ({navigation, defaultHandler}) => {

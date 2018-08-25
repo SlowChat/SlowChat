@@ -101,6 +101,7 @@ export default class Start extends PureComponent {
   }
 
   onBackAndroid() {
+    console.log(routes);
     if (routes.length < 2) { // 根界面
       if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
           return false;

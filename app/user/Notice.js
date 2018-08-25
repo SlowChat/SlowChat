@@ -67,7 +67,7 @@ export default class MsgList extends Component<Props> {
       const res = await post('api/user_msg/getList.html', {
         p: page,
         s: SIZE,
-        type: 0
+        t: 0
       })
       if (res.code == 1) {
         const { total, items } = res.data

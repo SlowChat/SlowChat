@@ -88,16 +88,16 @@ export default class NewMail extends Component {
   async getData() {
     if (this.loading) return
     const { id } = this.props.navigation.state.params || {}
-    console.log(id);
     if (typeof id == 'undefined') return
     this.loading = true
     try {
       const res = await post('api/mail/getMyInfo.html', { id })
+      console.log(res);
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
           params: items,
-          attachs: items.attach.split(',').map(item => ({url: item}))
+          attachs: items.attach,
         }, () => {
           this.noupdate = true
           this.sendBtnEnable = true
@@ -137,15 +137,13 @@ export default class NewMail extends Component {
   }
   checkParams(showTip) {
     if (this.state.showLoading) return false
-    const { attachs } = this.state
     const { title, content, email, send_time } = this.state.params
     const tips = []
     if (!email) tips.push('收件人')
     //  || !isEmail(email)
     if (!title) tips.push('主题')
-    // if (attachs.length == 0) tips.push('附件')
     // if (!send_time) tips.push('发信时间')
-    if (!content) tips.push('内容')
+    // if (!content) tips.push('内容')
     let tip = ''
     if (tips.length > 0) {
       tip = '请保证' + tips.join('，') + '填写正确！'
@@ -166,7 +164,7 @@ export default class NewMail extends Component {
     if (this.state.showLoading) return false
     const { title, content, email, send_time } = this.state.params
     const { attachs } = this.state
-    if (!title || !content || !email || !attachs.length) return true
+    if (!title.trim() || !content.trim() || !email.trim() || !attachs.length) return true
     return false
   }
 
@@ -174,9 +172,8 @@ export default class NewMail extends Component {
     if (!this.checkParams(true)) return
     this.setState({ showLoading: true }, async () => {
       try {
-        const attachs = await this.uploadFile()
         const params = {...this.state.params}
-        params.attach = attachs.map(item => item.url).join(',')
+        params.attach = await this.uploadFile()
         const res = await post('api/mail/add.html', params)
         if (res.code == 10001) {
           this.props.navigation.replace('Login')
@@ -195,9 +192,8 @@ export default class NewMail extends Component {
     if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
       try {
-        const attachs = await this.uploadFile()
         const params = {...this.state.params}
-        params.attach = attachs.map(item => item.url).join(',')
+        params.attach = await this.uploadFile()
         const res = await post('api/mail/save.html', params)
         if (res.code == 10001) {
           this.props.navigation.navigate('Login')
@@ -219,6 +215,9 @@ export default class NewMail extends Component {
     try {
       for (let index = 0; index < attachs.length; i++) {
         const item = attachs[index]
+        if (item.url.indexOf('http') == 0) {
+          break
+        }
         if (item.type == 'image') {
           const res = await upload(item.url, item.fileName)
           if (res.code == 1) {
@@ -256,6 +255,7 @@ export default class NewMail extends Component {
     })
   }
   render() {
+    // keyboardType="email-address"
     const { showLoading, attachs, params, isSucc, isSend, disabledSave } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
@@ -265,7 +265,7 @@ export default class NewMail extends Component {
           <HeaderTip tip="爱慢邮——让我们回到未来" />
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
-            <TextInput keyboardType="email-address" autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+            <TextInput autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
@@ -289,7 +289,7 @@ export default class NewMail extends Component {
             <Text style={styles.label}>发信时间：</Text>
             <DatePicker style={styles.datepicker} date={params.send_time}
               minDate={new Date()}
-              locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH"
+              locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {

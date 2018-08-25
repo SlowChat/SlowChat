@@ -51,24 +51,28 @@ export default class Setting extends Component {
       title: '提示',
       txt: '确定退出当前账户吗？',
       leftBtnTxt: '确定退出',
-      rightBtnTxt: '再想想'
-    }, () => {
-      const { email, vCode } = this.state;
-      post('api/user/logout.html').then(res => {
-        this.refs.alert.hide()
-        if (res.code == 1) {
-          Storage.clear()
-          const backAction = NavigationActions.back({
-            key: 'BottomTabs',
-          })
-          this.props.navigation.dispatch(backAction)
-        } else {
-          this.refs.toast.show(res.msg);
-        }
-      }).catch(e => {
-        this.refs.alert.hide()
-        this.refs.toast.show('退出失败，请稍后重试')
-      })
+      rightBtnTxt: '再想想',
+      onCancel: () => {
+        const { email, vCode } = this.state;
+        post('api/user/logout.html').then(res => {
+          this.refs.alert.hide()
+          if (res.code == 1) {
+            Storage.clear()
+            // this.props.navigation.popToTop()
+            this.props.navigation.replace('BottomTabs')
+            // const backAction = NavigationActions.back({
+            //   index: 0,
+            //   key: 'BottomTabs',
+            // })
+            // this.props.navigation.dispatch(backAction)
+          } else {
+            this.refs.toast.show(res.msg);
+          }
+        }).catch(e => {
+          this.refs.alert.hide()
+          this.refs.toast.show('退出失败，请稍后重试')
+        })
+      }
     })
   }
   checkUpdate = async () => {
