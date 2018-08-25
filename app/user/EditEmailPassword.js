@@ -14,6 +14,7 @@ import Toast from 'react-native-easy-toast'
 import { isEmail } from '../utils/util'
 import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
+import ErrorModal from '../components/ErrorModal'
 
 const ICONS = {
   forward: require('../images/icon_forward.png'),
@@ -30,6 +31,7 @@ export default class EditPassowrd extends Component {
     email: '',
     vCode: '',
     password: '',
+    isClick: false,
     isVcodeClick: false,
     isSucc: false,   //成功提示框
   }
@@ -38,7 +40,7 @@ export default class EditPassowrd extends Component {
 
   handleSubmit = () => {
     const { pop } = this.props.navigation;
-    const { email, vCode, password } = this.state;
+    const { email, vCode, password, isClick } = this.state;
     const { params = {} } = this.props.navigation.state;
     console.log(params.source)
     let url = '', token = true
@@ -49,21 +51,25 @@ export default class EditPassowrd extends Component {
       url = 'api/user/passwordReset.html'
       token = true
     }
-    post(url,
-      { username: email,
-        verification_code: vCode,
-        password: password
-      }, token).then((res) => {
-      console.log(res)
-      if (res.code === 1) {
-        this.refs.toast.show(res.msg);
-        setTimeout(() => {
-          pop();
-        }, 1000)
-      } else {
-        this.refs.toast.show(res.msg);
-      }
-    })
+    if (isClick) {
+      post(url,
+        { username: email,
+          verification_code: vCode,
+          password: password
+        }, token).then((res) => {
+        console.log(res)
+        if (res.code === 1) {
+          this.refs.toast.show(res.msg);
+          setTimeout(() => {
+            pop();
+          }, 1000)
+        } else {
+          this.refs.errorModalRef.show({
+            txt: res.msg
+          })
+        }
+      })
+    }
   }
 
   handleVcode = () => {
@@ -73,20 +79,19 @@ export default class EditPassowrd extends Component {
       if (res.code == 1) {
         this.refs.toast.show(res.msg);
       } else {
-        this.refs.toast.show(res.msg);
+        this.refs.errorModalRef.show({
+          txt: res.msg
+        })
       }
     })
   }
 
   handleChangeEmail = (text) => {
+    const { vCode, password } = this.state;
     this.setState({
         email: text
     })
-    if (text.length >= 11 && isEmail(text)) {
-      this.setState({isVcodeClick: true})
-    } else {
-      this.setState({isVcodeClick: false})
-    }
+    this.verifyInput(text, vCode, password)
   }
 
   handleEmail = () => {
@@ -95,8 +100,19 @@ export default class EditPassowrd extends Component {
   }
 
   inputVcode = (text) => {
+    const { email, password } = this.state;
     this.setState({vCode: text})
-    if (text.length >= 6) {
+    this.verifyInput(email, text, password)
+  }
+
+  inputNewPassword = (text) => {
+    const { email, vCode } = this.state;
+    this.setState({password: text})
+    this.verifyInput(email, vCode, text)
+  }
+
+  verifyInput = (email, vCode, password) => {
+    if (isEmail(email) && vCode.length >= 6 && password.length >= 6) {
       this.setState({
         isClick: true
       })
@@ -108,7 +124,9 @@ export default class EditPassowrd extends Component {
   }
 
   showTip = (msg) => {
-    this.refs.toast.show(msg)
+    this.refs.errorModalRef.show({
+      txt: msg
+    })
   }
 
   handleJump = () => {
@@ -127,7 +145,7 @@ export default class EditPassowrd extends Component {
               onChangeText={(text) => this.handleChangeEmail(text)}
               onBlur={() => this.handleEmail()}
               placeholder='请输入您的邮箱地址'
-              value={this.state.username}
+              value={this.state.email}
             />
           <VerifyCode username={this.state.email} onTip={this.showTip}/>
             {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
@@ -150,13 +168,13 @@ export default class EditPassowrd extends Component {
             <TextInput
               secureTextEntry
               style={styles.input}
-              onChangeText={(text) => this.setState({password: text})}
+              onChangeText={(text) => this.inputNewPassword(text)}
               placeholder='请输入您的新密码'
               value={this.state.password}
             />
           </View>
           <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={styles.save}>
+            <View style={[styles.save, this.state.isClick ? styles.active : '']}>
               <Text style={styles.saveTxt}>提交</Text>
             </View>
           </TouchableWithoutFeedback>
@@ -167,6 +185,7 @@ export default class EditPassowrd extends Component {
           </Text>
         </View>
         <Toast ref="toast" position="bottom" />
+        <ErrorModal ref="errorModalRef" />
         <SuccessModal
           txt={'手机号修改成功'}
           btn={'返回'}
@@ -234,9 +253,12 @@ const styles = StyleSheet.create({
     marginLeft: '10%',
     marginTop: 50,
     borderRadius: 25,
-    backgroundColor: '#E24B92',
+    backgroundColor: '#efefef',
     alignItems:'center',
     justifyContent: 'center',
+  },
+  active: {
+    backgroundColor: '#E24B92',
   },
   saveTxt: {
     color: '#fff',

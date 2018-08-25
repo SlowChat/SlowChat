@@ -14,8 +14,8 @@ export default class Avatar extends PureComponent {
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.avatarWrap}>
           {
-            avatar ? <Image style={styles.avatar} source={{uri: avatar}} />
-          : <Image style={styles.avatar} source={require('../images/default_avatar_160.png')} />
+            avatar ? <Image style={styles.avatar} borderRadius={40} source={{uri: avatar}} />
+          : <Image style={styles.avatar} borderRadius={40} source={require('../images/default_avatar_160.png')} />
           }
           <View style={styles.avatarRight}>
             <Text style={styles.name}>{ username }</Text>

@@ -9,7 +9,6 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
 import EmailList from '../components/EmailList'

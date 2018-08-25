@@ -119,7 +119,7 @@ export default class Setting extends Component {
     const { params = {} } = this.props.navigation.state;
     return (
       <View style={styles.container}>
-        <Avatar username={params.username} />
+        <Avatar username={params.username} level={params.level} avatar={params.avatar} />
         <View style={styles.link}>
           <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditMobile', { mobile: params.mobile })}>
             <Text style={styles.label}>绑定手机号</Text>
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   text: {
     // width: '62%',
     // textAlign: 'right',
-    color: '#B4B4B4'
+    color: '#333'
   },
   exitWrap: {
     backgroundColor: '#fff',

@@ -40,7 +40,7 @@ export default class Information extends Component {
   }
   constructor(props) {
     super(props)
-    const { avatar, birthday, username, sex } = this.props.navigation.state.params || {}
+    const { avatar, birthday, username, sex, level } = this.props.navigation.state.params || {}
     this.state = {
       switchBtn: true,
       isShow: false,
@@ -48,6 +48,7 @@ export default class Information extends Component {
       date: birthday || '1980-01-01',
       username,
       avatar,
+      level,
       isSucc: false
     }
   }
@@ -256,8 +257,9 @@ const styles = StyleSheet.create({
   input: {
     width: '62%',
     height: 40,
+    lineHeight: 40,
     textAlign: 'right',
-    color: '#B4B4B4',
+    color: '#333',
     alignItems:'center',
     justifyContent: 'center',
   },
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     borderRadius: 10,
-    color: '#B4B4B4',
+    color: '#333',
     backgroundColor: '#eee',
     alignItems:'center',
     justifyContent: 'center',
