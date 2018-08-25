@@ -16,11 +16,12 @@ import Confirm from '../components/Confirm'
 export default class EmailList extends Component {
 
   state ={
-    isSucc: false
+    isCancel: false,
+    isDelSel: false
   }
 
   cancel() {
-    this.setState({isSucc: true})
+    this.setState({isCancel: true})
   }
 
   onLeftPress() {
@@ -34,20 +35,31 @@ export default class EmailList extends Component {
   }
 
   onRightPress() {
-
-    this.onRequestClose()
+    const { status, onSubmitDelete } = this.props;
+    if (status === 'reservation') {
+      this.onRequestClose()
+    } else {
+      onSubmitDelete()
+      this.onRequestClose()
+    }
   }
 
   onRequestClose = () => {
-    this.setState({ isSucc: false })
+    this.setState({ isCancel: false })
+    this.props.onHandleDelClose()
   }
 
   handleNav = () => {
-    const { item, navigate, status } = this.props;
-    if (status == 'draft') {
-      navigate('DraftDetail', { id: item.id })
+    const { item, navigate, status, isDel, onSelDelItem, id } = this.props;
+    if (isDel) {
+      onSelDelItem(id)
+      this.setState({isDelSel: !this.state.isDelSel})
     } else {
-      navigate('MailDetail', { id: item.id, status: item.state })
+      if (status == 'draft') {
+        navigate('DraftDetail', { id: item.id })
+      } else {
+        navigate('MailDetail', { id: item.id, status: item.state })
+      }
     }
   }
 
@@ -102,7 +114,7 @@ export default class EmailList extends Component {
     }
   }
   render() {
-    const { item, status, score } = this.props;
+    const { item, status, score, isAllSelect, isDelClick } = this.props;
     let leftBtxTxt = ''
     if (status === 'draft') {
       leftBtxTxt = '取消'
@@ -113,8 +125,8 @@ export default class EmailList extends Component {
     }
     return (
         <View>
-          <TouchableWithoutFeedback onPress={this.handleNav}>
-            <View style={styles.list}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav()}>
+            <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
               <Image style={styles.icon} source={require('../images/icon_overt.png')} />
               <View style={styles.content}>
                 <Text style={styles.name}>{item.email}</Text>
@@ -138,10 +150,12 @@ export default class EmailList extends Component {
                   <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>{score >= 10 ? `我的积分：${score}` : `当前积分：${score}（不足）`}</Text>
                 </View>
               ) : (
-                <Text>草稿删除后将不能修复</Text>
+                <View style={styles.cont}>
+                  <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>草稿删除后将不能修复</Text>
+                </View>
               )
             }
-            visible={this.state.isSucc}
+            visible={this.state.isCancel || isDelClick}
             onLeftPress={() => {
               this.onLeftPress()
             }}

@@ -138,7 +138,7 @@ export default class EditMobile extends Component {
               value={this.state.mobile}
               maxLength={11}
             />
-          <VerifyCode mobile={this.state.mobile} onTip={this.showTip}  />
+          <VerifyCode username={this.state.mobile} onTip={this.showTip}  />
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>

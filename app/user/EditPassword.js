@@ -31,15 +31,16 @@ export default class EditPassowrd extends Component {
     vCode: '',
     password: '',
     isVcodeClick: false,
-    isSucc: false   //成功提示框
+    isSucc: false,   //成功提示框
   }
-  // componentDidMount() {
-  //   const { params } = this.props.navigation.state;
-  //   console.log(params.source)
-  // }
+  componentDidMount() {
+    // const { params } = this.props.navigation.state;
+    // params.type === 'mobile' ? this.setState({name: '手机号'}) : this.setState({name: '邮箱'})
+    // params.type === 'mobile' ? this.setState({editTxt: '邮箱验证修改密码'}) : this.setState({editTxt: '手机验证修改密码'})
+  }
 
   handleSubmit = () => {
-    const { navigate, pop } = this.props.navigation;
+    const { pop } = this.props.navigation;
     const { mobile, vCode, password } = this.state;
     const { params = {} } = this.props.navigation.state;
     console.log(params.source)
@@ -113,6 +114,11 @@ export default class EditPassowrd extends Component {
     this.refs.toast.show(msg)
   }
 
+  handleJump = () => {
+    const { navigate } = this.props.navigation;
+    navigate('EditEmailPassword')
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -145,6 +151,7 @@ export default class EditPassowrd extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>新密码</Text>
             <TextInput
+              secureTextEntry
               style={styles.input}
               onChangeText={(text) => this.setState({password: text})}
               placeholder='请输入您的新密码'
@@ -157,7 +164,7 @@ export default class EditPassowrd extends Component {
             </View>
           </TouchableWithoutFeedback>
           <Text style={styles.remind}>没有绑定手机，
-            <Text style={styles.links}>
+            <Text style={styles.links} onPress={() => this.handleJump()}>
               邮箱验证修改密码
             </Text>
           </Text>
