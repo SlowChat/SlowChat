@@ -10,19 +10,20 @@ import {
 } from 'react-native'
 
 import Toast from 'react-native-easy-toast'
-// import ImageViewer from 'react-native-image-zoom-viewer'
+
+import ImageViewer from 'react-native-image-zoom-viewer'
 import AttachmentItem from './AttachmentItem'
-
 import { openFile } from '../utils/opendoc'
-
+// let ImageViewer = null
 
 export default class Attachment extends PureComponent {
   state = {
     visible: false,
     index: 1,
+    images: [],
   }
   handleClick = (index) => {
-    this.setState({ visible: false })
+    this.setState({ visible: false, images: [] })
   }
   handleChange = (index) => {
     this.setState({ index })
@@ -31,7 +32,10 @@ export default class Attachment extends PureComponent {
     const { items } = this.props
     const item = items[index]
     const { filename, url, ext } = item
-    if (ext != 'video') {
+    if (ext == 'image' && Platform.OS == 'android') {
+      // ImageViewer = require('react-native-image-zoom-viewer')
+      this.setState({ images: [item] })
+    } else if (ext != 'video') {
       try {
         await openFile(url, filename)
       } catch (e) {
@@ -48,19 +52,24 @@ export default class Attachment extends PureComponent {
     if (!items || items.length == 0) {
       return null
     }
-    // const items = (this.props.items || []).map(item => ({url: item}))
-    const { visible, index } = this.state
-    const images = items.filter(item => item.ext == 'image')
+    const { index, images } = this.state
+    // const images = items.filter(item => item.ext == 'image')
     return (
       <View>
         <View style={styles.imageList}>
           { items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
         </View>
+        <Modal visible={images.length > 0} transparent={true} onRequestClose={this.handleClick}>
+          <ImageViewer enableImageZoom imageUrls={images} onClick={this.handleClick} />
+        </Modal>
         <Toast ref="toast" />
       </View>
     )
   }
 }
+
+// <ImageViewer enableImageZoom index={index} imageUrls={images} onChange={this.handleChange} onClick={this.handleClick} />
+
 
 const styles = StyleSheet.create({
   imageList: {
@@ -94,11 +103,3 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 });
-
-
-
-// { images.length > 0 &&
-//     <Modal visible={visible} transparent={true} onRequestClose={this.handleClick}>
-//       <ImageViewer enableImageZoom index={index} imageUrls={images} onChange={this.handleChange} onClick={this.handleClick} />
-//     </Modal>
-// }
