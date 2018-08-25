@@ -45,7 +45,8 @@ export default class EmailList extends Component {
   }
 
   onRequestClose = () => {
-    this.setState({ isSucc: false })
+    this.setState({ isCancel: false })
+    this.props.onHandleDelClose()
   }
 
   handleNav = () => {

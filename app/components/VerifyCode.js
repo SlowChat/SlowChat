@@ -47,10 +47,10 @@ export default class VerifyCode extends PureComponent {
 
   onVrfyCode = () => {
     if (this.loading) return
-    const { mobile } = this.props;
+    const { username } = this.props;
     this.loading = true
     if (this.isActive) {
-      post('api/verification_code/send.html', { username: mobile }, true).then((res) => {
+      post('api/verification_code/send.html', { username: username }, true).then((res) => {
         if (res.code == 1) {
           this.startTimer()
         }
@@ -92,8 +92,8 @@ export default class VerifyCode extends PureComponent {
   }
 
   render() {
-    const { type, mobile } = this.props
-    this.isActive = this.state.isVrfy && (isMobileNumberSupport(mobile) || isEmail(mobile))
+    const { type, username } = this.props
+    this.isActive = this.state.isVrfy && (isMobileNumberSupport(username) || isEmail(username))
     if (this.props.type == 'regist') {
       return (<TouchableOpacity activeOpacity={0.7} style={[styles.registBtn]} onPress={this.onVrfyCode}>
         <Text style={[styles.registTxt, this.isActive ? styles.activeRegistTxt : {}]}>{this.state.vrfyText}</Text>

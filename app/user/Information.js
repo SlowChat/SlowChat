@@ -26,9 +26,9 @@ const SEX_OBJ = {
 }
 
 const SEXID_OBJ = {
-  '保密': 0,
-  '男': 1,
-  '女': 2
+  '保密': "0",
+  '男': "1",
+  '女': "2"
 }
 
 export default class Information extends Component {
@@ -45,7 +45,7 @@ export default class Information extends Component {
       switchBtn: true,
       isShow: false,
       sex: SEX_OBJ[sex] || '',
-      date: birthday,
+      date: birthday || '1980-01-01',
       username,
       avatar,
       isSucc: false
@@ -60,9 +60,9 @@ export default class Information extends Component {
   }
 
   handleSubmit = () => {
-    const { navigate, pop } = this.props.navigation;
+    const { pop } = this.props.navigation;
     const { sex, username, avatar, date } = this.state;
-    post('api/user/userInfo.html', { user_username: username, avatar, sex: SEXID_OBJ[sex], birthday: date}).then(res => {
+    post('api/user/userInfo.html', { user_nickname: username, avatar, sex: SEXID_OBJ[sex], birthday: date}).then(res => {
       if (res.code == 1) {
         this.refs.toast.show(res.msg);
         setTimeout(() => {
@@ -186,16 +186,15 @@ export default class Information extends Component {
             <Text style={styles.exitTxt}>保 存</Text>
           </TouchableOpacity>
         </SafeAreaView>
-        <View>
-            <Picker
-              selectedValue={this.state.sex}
-              style={[styles.picker, {display: `${this.state.isShow ? 'flex' : 'none'}`}]}
-              onValueChange={(itemValue, itemIndex) => this.changeSex(itemValue)}>
-              <Picker.Item label="保密" value="保密" />
-              <Picker.Item label="男" value="男" />
-              <Picker.Item label="女" value="女" />
-            </Picker>
-        </View>
+        <Picker
+          selectedValue={this.state.sex}
+          style={[styles.picker, {display: `${this.state.isShow ? 'flex' : 'none'}`}]}
+          onValueChange={(itemValue, itemIndex) => this.changeSex(itemValue)}>
+          <Picker.Item label="保密" value="保密" />
+          <Picker.Item label="男" value="男" />
+          <Picker.Item label="女" value="女" />
+        </Picker>
+        
         <Toast ref="toast" position="center" />
         <Confirm
           tit='请输入新的昵称'
@@ -256,8 +255,11 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '62%',
+    height: 40,
     textAlign: 'right',
     color: '#B4B4B4',
+    alignItems:'center',
+    justifyContent: 'center',
   },
   nickInput: {
     width: '80%',
@@ -269,13 +271,15 @@ const styles = StyleSheet.create({
     color: '#B4B4B4',
     backgroundColor: '#eee',
     alignItems:'center',
+    justifyContent: 'center',
   },
   picker: {
+    flex: 1,
     position: 'absolute',
-    top: 100,
-    bottom: 0,
+    bottom: 250,
     left: 0,
     width: '100%',
+    height: 50,
   },
   exitWrap: {
     backgroundColor: '#fff',

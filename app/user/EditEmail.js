@@ -135,11 +135,12 @@ export default class EditEmail extends Component {
               placeholder='请输入您的邮箱'
               value={this.state.email}
             />
-            <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
+            <VerifyCode username={this.state.email} onTip={this.showTip}  />
+            {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
               <View style={styles.btn}>
                 <Text style={styles.btnTxt}>获取验证码</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback> */}
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>

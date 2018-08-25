@@ -72,8 +72,8 @@ export default class Email extends Component {
     this.props.navigation.setParams({
       title,
       headerLeft: '',
-      headerRight: status == 'sent' ? (
-      // headerRight: status == 'draft' ? (
+      // headerRight: status == 'sent' ? (
+      headerRight: status == 'draft' ? (
         <Button title="编辑" color="#666666" onPress={this.handleEdit} />
       ) : <View />,
     })
@@ -133,6 +133,7 @@ export default class Email extends Component {
       params.state = this.sendState
     }
     post(this.returnUrl(), params).then(res => {
+      console.log(111111, res)
       const { code, data } = res
       if (code === 1) {
         let foot = 0
@@ -173,6 +174,7 @@ export default class Email extends Component {
         onSelDelItem = {(id) => this.onSelDelItem(id)}
         isDelClick={this.state.isDelClick}
         onSubmitDelete={() => this.submitDelete()}
+        onHandleDelClose={() => this.handleDelClose()}
       />
     )
   }
@@ -253,20 +255,26 @@ export default class Email extends Component {
     this.setState({isDelClick: true})
   }
 
+  handleDelClose = () => {
+    this.setState({isDelClick: false})
+  }
+
   submitDelete = () => {
     console.log(this.state.idList)
     post('api/mail/delDraft.html', {id: this.state.idList}).then(res => {
       const { code } = res
-      consoel.log('------', res)
       if (code === 1) {
         this.refs.toast.show('删除成功');
         this.setState({
           dataArray: [],
-          idList: []
+          idList: [],
+          isDelClick: false
         })
         this.pageNo = 0
         // 删除成功，重新请求接口
         this.fetchData()
+      } else {
+        this.refs.toast.show(res.msg);
       }
     }).catch(e => {
       // console.log(e)

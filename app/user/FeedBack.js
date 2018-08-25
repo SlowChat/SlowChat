@@ -5,8 +5,10 @@ import {
   View,
   Image,
   TextInput,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from 'react-native';
+import Toast from 'react-native-easy-toast'
+import { post } from '../utils/request'
 
 export default class FeedBack extends Component {
   static navigationOptions = ({navigation}) => {
@@ -15,8 +17,27 @@ export default class FeedBack extends Component {
       title: '用户反馈',
     }
   }
+  state = {
+    content: '',
+    contact: ''
+  }
   componentDidMount() {
 
+  }
+
+  handleSubmit = () => {
+    const { pop } = this.props.navigation;
+    const { content, contact } = this.state;
+    post('api/user/feedback.html', { content, contact}).then(res => {
+      if (res.code == 1) {
+        this.refs.toast.show(res.msg);
+        setTimeout(() => {
+          pop()
+        }, 1000)
+      }
+    }).catch(e => {
+      this.refs.toast.show(res.msg);
+    })
   }
 
   render() {
@@ -24,23 +45,25 @@ export default class FeedBack extends Component {
       <View style={styles.container}>
         <Text style={styles.label}>问题与意见</Text>
         <TextInput
+          multiline
           style={styles.textArea}
-          onChangeText={(text) => this.setState({text})}
+          onChangeText={(text) => this.setState({content: text})}
           placeholder='请填写10个字以上的问题描述以便我们提供更好的帮助'
-          value=''
+          value={this.state.content}
         />
         <Text style={styles.label}>联系方式</Text>
         <TextInput
           style={styles.input}
-          onChangeText={(text) => this.setState({text})}
+          onChangeText={(text) => this.setState({contact: text})}
           placeholder='选填，便于我们与您联系'
-          value=''
+          value={this.state.contact}
         />
-        <TouchableWithoutFeedback>
+        <TouchableOpacity onPress={() => this.handleSubmit()}>
           <View style={styles.save}>
-            <Text style={styles.saveTxt}>绑定</Text>
+            <Text style={styles.saveTxt}>提交</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
+        <Toast ref="toast" position="center" />
       </View>
     );
   }
