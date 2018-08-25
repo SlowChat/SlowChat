@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   FlatList,
   TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
@@ -22,7 +23,7 @@ export default class Email extends Component {
     const { params = {} } = navigation.state
     return {
       title: params.title || '',
-      // headerLeft: params.headerLeft,
+      headerLeft: params.headerLeft,
       headerRight: params.headerRight
     }
   }
@@ -38,7 +39,11 @@ export default class Email extends Component {
     isSpacePage: true,
     total: 0,
     searchText: '',
-    isShowResult: false
+    isShowResult: false,
+    isDel: false,
+    isAllSelect: false,
+    isDelClick: false,
+    idList: [] // 全选删除id
   }
   sendState = null //邮件状态 1 待发送 2已发送 3取消
   type = null  //公开状态 1 不公开 2公开
@@ -66,38 +71,51 @@ export default class Email extends Component {
     }
     this.props.navigation.setParams({
       title,
-      headerLeft: status == 'draft' ? (
-        <Button title="全选" color="#666666" onPress={this.handleAllSelect} />
-      ) : <View />,
-      headerRight: status == 'draft' ? (
+      headerLeft: '',
+      headerRight: status == 'sent' ? (
+      // headerRight: status == 'draft' ? (
         <Button title="编辑" color="#666666" onPress={this.handleEdit} />
       ) : <View />,
     })
   }
 
   handleEdit = () => {
-    const status = this.getStatus()
-    let title = '已选择邮件'
+    this.setState({
+      isDel: true
+    })
+    let title = `已选择${this.state.idList.length}邮件`
     this.props.navigation.setParams({
       title,
-      headerLeft: status == 'draft' ? (
+      headerLeft: (
         <Button title="全选" color="#666666" onPress={this.handleAllSelect} />
-      ) : <View />,
-      headerRight: status == 'draft' ? (
-        <Button title="取消" color="#666666" onPress={this.handleCancel} />
-      ) : <View />,
+      ),
+      headerRight: (
+        <Button title="取消" color="#E24B92" onPress={this.handleCancel} />
+      ),
     })
   }
 
   handleCancel = () => {
     this.setDefault()
+    this.setState({
+      isAllSelect: false,
+      isDel: false,
+      idList: []
+    })
   }
 
   handleAllSelect = () => {
-
+    this.state.dataArray.map((item, index) => (
+      this.setState({
+        idList: this.state.idList.push(item.id)
+      })
+      
+    ))
+    console.log(this.state.idList)
+    this.setState({isAllSelect: true})
   }
  
-  getStatus() {
+  getStatus = () => {
     const { params = {} } = this.props.navigation.state;
     return params.status
   }
@@ -145,8 +163,36 @@ export default class Email extends Component {
     const status = this.getStatus()
     const { navigate, state } = this.props.navigation;
     return (
-      <EmailList status={status} item={item} id={item.id} score={state.params.score} navigate={navigate} onPress= {(id) => this.onPressCancel(id)} />
+      <EmailList status={status} 
+        isAllSelect={this.state.isAllSelect} 
+        item={item} id={item.id} 
+        score={state.params.score} 
+        navigate={navigate} 
+        onPress= {(id) => this.onPressCancel(id)} 
+        isDel={this.state.isDel}
+        onSelDelItem = {(id) => this.onSelDelItem(id)}
+        isDelClick={this.state.isDelClick}
+        onSubmitDelete={() => this.submitDelete()}
+      />
     )
+  }
+
+  
+
+  onSelDelItem = (id) => {
+    var newArr = this.state.idList;
+    if (newArr.length >= 1) {
+      for(var i in newArr) {
+        if(newArr.indexOf(id) === -1) {
+          newArr.push(id)
+        } 
+      }
+    } else {
+      newArr.push(id)
+    }
+    this.setState({
+      idList: newArr
+    })
   }
 
     // 列表底部显示
@@ -180,9 +226,10 @@ export default class Email extends Component {
     post('api/mail/cancel.html', {id: id}).then(res => {
       const { code } = res
       if (code === 1) {
-        this.refs.toast.show('删除成功');
+        this.refs.toast.show('取消发送成功');
         this.setState({
-          dataArray: []
+          dataArray: [],
+          idList: []
         })
         this.pageNo = 0
         // 删除成功，重新请求接口
@@ -193,12 +240,37 @@ export default class Email extends Component {
     })
   }
 
-  handleSearch() {
+  handleSearch = () => {
     this.setState({
-      dataArray: []
+      dataArray: [],
+      idList: []
     })
     this.pageNo = 0
     this.fetchData()
+  }
+
+  handleDelete = () => {
+    this.setState({isDelClick: true})
+  }
+
+  submitDelete = () => {
+    console.log(this.state.idList)
+    post('api/mail/delDraft.html', {id: this.state.idList}).then(res => {
+      const { code } = res
+      consoel.log('------', res)
+      if (code === 1) {
+        this.refs.toast.show('删除成功');
+        this.setState({
+          dataArray: [],
+          idList: []
+        })
+        this.pageNo = 0
+        // 删除成功，重新请求接口
+        this.fetchData()
+      }
+    }).catch(e => {
+      // console.log(e)
+    })
   }
 
   // 加载等待的view
@@ -262,6 +334,13 @@ export default class Email extends Component {
         }
         <SafeAreaView />
         <Toast ref="toast" position="bottom" />
+        {
+          this.state.isDel && (
+            <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleDelete}>
+              <Text style={styles.exitTxt}>删除</Text>
+            </TouchableOpacity>
+          )
+        }
       </View>
     )
   }
@@ -356,5 +435,18 @@ const styles = StyleSheet.create({
   spaceImg: {
     width: 64,
     height: 64
+  },
+  exitWrap: {
+    backgroundColor: '#fff',
+  },
+  exit: {
+    height: 50,
+    alignItems:'center',
+    justifyContent: 'center',
+  },
+  exitTxt: {
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#EC3632'
   },
 });
