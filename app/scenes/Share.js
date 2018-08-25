@@ -40,6 +40,7 @@ export default class Share extends PureComponent<Props> {
   }
   handleWechat = (platform) => {
     JShareModule.isWeChatInstalled((isInstalled) => {
+      console.log("===isInstalled====");
       if (isInstalled === true) {
         this.share(platform)
       } else {

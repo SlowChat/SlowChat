@@ -91,13 +91,14 @@ export default class NewMail extends Component {
     if (typeof id == 'undefined') return
     this.loading = true
     try {
-      const res = await post('api/mail/getMyInfo.html', { id })
-      console.log(res);
+      const res = await post('api/mail/getDraftInfo.html', { id })
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
+          showSendMe: items.email == '发给自己',
           params: items,
           attachs: items.attach,
+          disabledSave: true,
         }, () => {
           this.noupdate = true
           this.sendBtnEnable = true
