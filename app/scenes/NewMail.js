@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
@@ -19,8 +20,9 @@ import HeaderTip from '../components/HeaderTip'
 import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
+import Loading from '../components/Loading'
 import ICONS from '../utils/icon'
-
+import dateFormat from '../utils/date'
 import { post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
@@ -51,6 +53,8 @@ export default class NewMail extends Component {
   state = {
     isSend: true,
     isSucc: false,
+    disabledSave: false,
+    showLoading: false,
     showSendMe: true,
     pickerModal: false,
     attachs: [],
@@ -58,7 +62,7 @@ export default class NewMail extends Component {
       title: '',
       content: '',
       email: '',
-      send_time: '',
+      send_time: dateFormat(),
       type: 2,
     },
   }
@@ -87,12 +91,13 @@ export default class NewMail extends Component {
     if (typeof id == 'undefined') return
     this.loading = true
     try {
-      const res = await post('api/mail/getInfo.html', { id })
+      const res = await post('api/mail/getMyInfo.html', { id })
+      console.log(res);
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
           params: items,
-          attachs: items.attach.split(',').map(item => ({url: item}))
+          attachs: items.attach,
         }, () => {
           this.noupdate = true
           this.sendBtnEnable = true
@@ -131,68 +136,92 @@ export default class NewMail extends Component {
     })
   }
   checkParams(showTip) {
-    const { attachs } = this.state
-    const { title, content, email, send_time, attach } = this.state.params
+    if (this.state.showLoading) return false
+    const { title, content, email, send_time } = this.state.params
     const tips = []
-    if (!email || !isEmail(email)) tips.push('收件人')
+    if (!email) tips.push('收件人')
+    //  || !isEmail(email)
     if (!title) tips.push('主题')
-    // if (attachs.length == 0) tips.push('附件')
-    if (!send_time) tips.push('发信时间')
-    if (!content) tips.push('内容')
+    // if (!send_time) tips.push('发信时间')
+    // if (!content) tips.push('内容')
+    let tip = ''
     if (tips.length > 0) {
+      tip = '请保证' + tips.join('，') + '填写正确！'
+    }
+    if (send_time && send_time < dateFormat()) {
+      tip += '发信时间不符合要求！'
+    }
+    if (tip) {
       if (showTip) {
-        const tip = '请保证' + tips.join('，') + '填写正确！'
         this.refs.toast.show(tip)
       }
       return false
-    } else {
-      return true
     }
+    return true
+  }
+
+  checkSave() {
+    if (this.state.showLoading) return false
+    const { title, content, email, send_time } = this.state.params
+    const { attachs } = this.state
+    if (!title.trim() || !content.trim() || !email.trim() || !attachs.length) return true
+    return false
   }
 
   handleSend = () => {
     if (!this.checkParams(true)) return
-    const params = {...this.state.params}
-    params.attach = this.state.attachs.map(item => item.url).join(',')
-    post('api/mail/add.html', params).then(res => {
-      if (res.code == 10001) {
-        this.props.navigation.replace('Login', {back: true})
-      } else if (res.code == 1) {
-        this.setState({ isSucc: true, isSend: false })
-      } else {
+    this.setState({ showLoading: true }, async () => {
+      try {
+        const params = {...this.state.params}
+        params.attach = await this.uploadFile()
+        const res = await post('api/mail/add.html', params)
+        if (res.code == 10001) {
+          this.props.navigation.replace('Login')
+        } else if (res.code == 1) {
+          this.setState({ isSucc: true, isSend: true, showLoading: false })
+        } else {
+          this.dealError(true)
+        }
+      } catch (e) {
+        console.log(e)
         this.dealError(true)
       }
-    }).catch(e => {
-      this.dealError(true)
     })
   }
-  handleSave = async () => {
-    if (!this.checkParams(true)) return
-    try {
-      const attachs = await uploadFile()
-      const params = {...this.state.params}
-      params.attach = attachs.map(item => item.url).join(',')
-      const res = post('api/mail/save.html', params)
-      if (res.code == 10001) {
-        this.props.navigation.navigate('Login', { back: true })
-      } else if (res.code == 1) {
-        this.setState({ isSucc: true, isSend: false })
-      } else {
+  handleSave = () => {
+    if (!this.checkSave()) return
+    this.setState({ showLoading: true }, async () => {
+      try {
+        const params = {...this.state.params}
+        params.attach = await this.uploadFile()
+        const res = await post('api/mail/save.html', params)
+        if (res.code == 10001) {
+          this.props.navigation.navigate('Login')
+        } else if (res.code == 1) {
+          this.setState({ isSucc: true, isSend: false, showLoading: false })
+        } else {
+          this.dealError(false)
+        }
+      } catch (e) {
+        console.log(e);
         this.dealError(false)
       }
-    } catch (e) {
-      this.dealError(false)
-    }
+    })
   }
 
   async uploadFile() {
     const { attachs } = this.state
+    if (attachs.length == 0) return []
     try {
       for (let index = 0; index < attachs.length; i++) {
+        const item = attachs[index]
+        if (item.url.indexOf('http') == 0) {
+          break
+        }
         if (item.type == 'image') {
-          const res = await upload(item.uri, item.fileName)
+          const res = await upload(item.url, item.fileName)
           if (res.code == 1) {
-            attachs[index].url = res.data.url
+            attachs[index] = {...res.data}
           } else {
             throw new Error(res)
           }
@@ -207,6 +236,9 @@ export default class NewMail extends Component {
   dealError(isSend) {
     let txt = (isSend ? '发送' : '保存草稿') + '失败，再试一次吧'
     this.refs.errorModalRef.show({txt})
+    this.setState({
+      showLoading: false
+    })
   }
   handelSuccClose = () => {
     this.setState({ isSucc: false })
@@ -217,70 +249,74 @@ export default class NewMail extends Component {
   openImageChoose = () => {
     this.setState({ pickerModal: true })
   }
-  closeImageChoose = () => {
-    this.setState({ pickerModal: false })
+  closeImageChoose = (callback, open = false) => {
+    this.setState({ pickerModal: open }, () => {
+      callback && callback()
+    })
   }
   render() {
-    const { attachs, params, isSucc, isSend } = this.state
+    // keyboardType="email-address"
+    const { showLoading, attachs, params, isSucc, isSend, disabledSave } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
-      <ScrollView style={styles.container}>
-        <HeaderTip tip="爱慢邮——让我们回到未来" />
-        <View style={styles.item}>
-          <Text style={styles.label}>收件人：</Text>
-          <TextInput keyboardType="email-address" autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-          <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
-            <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
+      <View style={styles.container}>
+        <ScrollView>
+          <HeaderTip tip="爱慢邮——让我们回到未来" />
+          <View style={styles.item}>
+            <Text style={styles.label}>收件人：</Text>
+            <TextInput autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
+              <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>主题：</Text>
+            <TextInput style={styles.input} value={params.title} onChangeText={(text) => this.setParams('title', text)}
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>附件：</Text>
+            <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
+              <View style={styles.icons}>
+                <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
+              </View>
+              <Text style={styles.attachmentNum}>{attachTxt}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>发信时间：</Text>
+            <DatePicker style={styles.datepicker} date={params.send_time}
+              minDate={new Date()}
+              locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
+              confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
+              customStyles={{
+                dateInput: {
+                  borderWidth: 0,
+                }
+              }}
+              onDateChange={(datetime) => {
+                this.setParams('send_time', datetime)
+              }} />
+            <Image style={styles.arrow} source={ICONS.forward} />
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.txt}>信件提交后在“慢友圈”公开</Text>
+            <Switch value={params.type == 2} onValueChange={(value) => {
+                this.setParams('type', value ? 2 : 1)
+              }} />
+          </View>
+          <View style={styles.content}>
+            <TextInput multiline value={params.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+          </View>
+        </ScrollView>
+        <SafeAreaView style={styles.bottom}>
+          <TouchableOpacity style={[styles.saveBtn, disabledSave && styles.disabledSaveBtn ]} onPress={this.handleSave}>
+            <Text style={[styles.saveBtnTxt, disabledSave && styles.disabledSaveBtnTxt]}>保存草稿</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>主题：</Text>
-          <TextInput style={styles.input} value={params.title} onChangeText={(text) => this.setParams('title', text)}
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>附件：</Text>
-          <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
-            <View style={styles.icons}>
-              <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
-            </View>
-            <Text style={styles.attachmentNum}>{attachTxt}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.label}>发信时间：</Text>
-          <DatePicker style={styles.datepicker} date={params.send_time}
-            locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD hh:mm"
-            confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
-            customStyles={{
-              dateInput: {
-                borderWidth: 0,
-              }
-            }}
-            onDateChange={(datetime) => {
-              this.setParams('send_time', datetime)
-            }} />
-          <Image style={styles.arrow} source={ICONS.forward} />
-        </View>
-        <View style={styles.item}>
-          <Text style={styles.txt}>信件提交后在“慢友圈”公开</Text>
-          <Switch value={params.type == 2} onValueChange={(value) => {
-              this.setParams('type', value ? 2 : 1)
-            }} />
-        </View>
-        <View style={styles.content}>
-          <TextInput multiline value={params.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-        </View>
-        <View style={styles.bottom}>
-          <TouchableOpacity onPress={this.handleSave}>
-            <View style={styles.saveBtn}>
-              <Text style={styles.saveBtnTxt}>保存草稿</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        </SafeAreaView>
         <ImageChoose visible={this.state.pickerModal} onChange={this.handleImageChoose} onClose={this.closeImageChoose} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
@@ -292,7 +328,9 @@ export default class NewMail extends Component {
         />
         <ErrorModal ref="errorModalRef" />
         <Toast ref="toast" position="center" />
-      </ScrollView>
+        {showLoading && <Loading />}
+      </View>
+
     )
   }
 }
@@ -398,6 +436,10 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottom: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     height: 44,
     paddingRight: 15,
     alignItems: 'flex-end',
@@ -418,6 +460,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#E24B92',
   },
+  disabledSaveBtn: {
+    borderColor: '#B4B4B4',
+  },
+  disabledSaveBtnTxt: {
+    color: '#686868',
+  }
 });
 
 // bottom

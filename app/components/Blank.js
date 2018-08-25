@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 import {
   Text,
@@ -6,7 +6,10 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class Blank extends PureComponent {
+export default class Blank extends Component {
+  shouldComponentUpdate() {
+    return false
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -27,6 +30,7 @@ const styles = StyleSheet.create({
   spaceTit: {
     fontSize: 18,
     color: '#999',
+    marginBottom: 8,
   },
   spaceTxt: {
     fontSize: 14,

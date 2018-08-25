@@ -19,6 +19,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "RNSplashScreen.h" // 导入启动屏包
+#import <RCTJShareModule.h>
+
 
 @implementation AppDelegate
 
@@ -98,6 +100,22 @@
   [RNSplashScreen show]; // SplashScreen 显示启动屏幕
   // 视频
   [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];  // allow
+  return YES;
+}
+
+// work in iOS(8.0)
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+  [JSHAREService handleOpenUrl:url];
+  return YES;
+}
+// work in iOS(9_0)
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+  [JSHAREService handleOpenUrl:url];
+  return YES;
+}
+// work in iOS(9_0,++)
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  [JSHAREService handleOpenUrl:url];
   return YES;
 }
 

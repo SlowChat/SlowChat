@@ -94,21 +94,14 @@ export default class VerifyCode extends PureComponent {
   render() {
     const { type, mobile } = this.props
     this.isActive = this.state.isVrfy && (isMobileNumberSupport(mobile) || isEmail(mobile))
-    return (
-      <View>
-        {
-          this.props.type == 'regist' ? (
-            <TouchableOpacity activeOpacity={0.8} style={[styles.registBtn]} onPress={this.onVrfyCode}>
-              <Text style={[styles.registTxt, this.isActive ? styles.activeRegistTxt : {}]}>{this.state.vrfyText}</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity activeOpacity={0.8} style={[styles.btn, this.isActive ? styles.active : {}]} onPress={this.onVrfyCode}>
-              <Text style={styles.btnTxt}>{this.state.vrfyText}</Text>
-            </TouchableOpacity>
-          )
-        }
-      </View>
-    )
+    if (this.props.type == 'regist') {
+      return (<TouchableOpacity activeOpacity={0.7} style={[styles.registBtn]} onPress={this.onVrfyCode}>
+        <Text style={[styles.registTxt, this.isActive ? styles.activeRegistTxt : {}]}>{this.state.vrfyText}</Text>
+      </TouchableOpacity>)
+    }
+    return (<TouchableOpacity activeOpacity={0.7} style={[styles.btn, this.isActive ? styles.active : {}]} onPress={this.onVrfyCode}>
+      <Text style={styles.btnTxt}>{this.state.vrfyText}</Text>
+    </TouchableOpacity>)
   }
 }
 
@@ -120,6 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems:'center',
     justifyContent: 'center',
+    zIndex: 10,
   },
   btnTxt: {
     color: '#fff'
@@ -130,6 +124,7 @@ const styles = StyleSheet.create({
   // 注册页面用
   registBtn: {
     width: 109,
+    zIndex: 10,
   },
   registTxt: {
     fontSize: 16,

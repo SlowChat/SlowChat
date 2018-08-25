@@ -11,7 +11,7 @@ import HomeScreen from './home/Home'
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  Login: LoginScreen,
+  // Login: LoginScreen,
 })
 const SpaceStack = createStackNavigator({
   Space: require('./home/Space').default,
@@ -31,6 +31,7 @@ const MimeStack = createStackNavigator({
     headerTitleContainerStyle: {
       justifyContent: 'center',
     },
+    // headerLayoutPreset: 'center',
     headerTitleStyle: {
       fontSize: 18,
       fontFamily: 'PingFangSC-Regular',

@@ -22,7 +22,6 @@ export default class HomeItem extends PureComponent<Props> {
   }
   render() {
     const { item } = this.props.data
-    const [send_date, send_time] = (item.send_time || '').split(' ')
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this.handlePress}>
         <View style={styles.avatarWrap}>
@@ -30,9 +29,9 @@ export default class HomeItem extends PureComponent<Props> {
           <View style={styles.avatarRight}>
             <View style={styles.nameWrap}>
               <Text style={styles.name}>{item.user.user_nickname}</Text>
-              <Text style={styles.time}>{send_time}</Text>
+              <Text style={styles.time}>{item.add_time}</Text>
             </View>
-            <Text style={styles.date}>发信时间：{send_date}</Text>
+            <Text style={styles.date}>发信时间：{item.send_time}</Text>
           </View>
         </View>
         <View style={styles.content}>

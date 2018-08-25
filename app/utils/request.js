@@ -28,6 +28,7 @@ export async function get(url, params, unneedLogin) {
       'Content-Type': 'application/json',
       ...headers,
     },
+    timeout: 10,
   }).then((response) => response.json()).catch((err) => {
     console.log(eval("("+ err +")"));
     throw err
@@ -46,6 +47,7 @@ export async function post(url, params, unneedLogin) {
       ...headers,
     },
     body: JSON.stringify(params),
+    timeout: 10,
   }).then((response) => response.json())
   // .catch((err) => {
   //   // console.log(eval("("+ err +")"));
@@ -60,7 +62,8 @@ export async function upload(uri, fileName) {
   let file = {uri: uri, type: 'multipart/form-data', name: name};
   formData.append('file', file);
   const headers = await getHeaders()
-  return fetch(BASE_URL + 'api/upload/image.html', {
+  // return fetch(BASE_URL + 'api/upload/image.html', {
+  return fetch(BASE_URL + 'api/upload/files.html', {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -69,3 +72,20 @@ export async function upload(uri, fileName) {
     body: formData,
   }).then((response) => response.json())
 }
+
+//
+// export async function uploadFile(uri, fileName) {
+//   let formData = new FormData();
+//   const name = fileName || uri.substring(uri.lastIndexOf('/') + 1, uri.length)
+//   let file = {uri: uri, type: 'multipart/form-data', name};
+//   formData.append('file', file);
+//   const headers = await getHeaders()
+//   return fetch(BASE_URL + 'api/upload/flies.html', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'multipart/form-data',
+//       ...headers
+//     },
+//     body: formData,
+//   }).then((response) => response.json())
+// }

@@ -5,14 +5,14 @@ import {
   View,
   Image,
   Switch,
-  Alert,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation'
+import {SafeAreaView, NavigationActions} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
-import Storage from '../utils/storage'
 import Avatar from '../components/Avatar'
+import Alert from '../components/Alert'
+import Storage from '../utils/storage'
 import { post } from '../utils/request'
 
 import { CODE_PUSH_KEY } from '../constants'
@@ -47,21 +47,37 @@ export default class Setting extends Component {
   }
 
   handleLogout = () => {
-    const { email, vCode } = this.state;
-    post('api/user/logout.html').then(res => {
-      console.log(res)
-      if (res.code == 1) {
-        Storage.clear()
-        this.props.navigation.replace('Login')
-      } else {
-        this.refs.toast.show(res.msg);
+    this.refs.alert.show({
+      title: '提示',
+      txt: '确定退出当前账户吗？',
+      leftBtnTxt: '确定退出',
+      rightBtnTxt: '再想想',
+      onCancel: () => {
+        const { email, vCode } = this.state;
+        post('api/user/logout.html').then(res => {
+          this.refs.alert.hide()
+          if (res.code == 1) {
+            Storage.clear()
+            // this.props.navigation.popToTop()
+            this.props.navigation.replace('BottomTabs')
+            // const backAction = NavigationActions.back({
+            //   index: 0,
+            //   key: 'BottomTabs',
+            // })
+            // this.props.navigation.dispatch(backAction)
+          } else {
+            this.refs.toast.show(res.msg);
+          }
+        }).catch(e => {
+          this.refs.alert.hide()
+          this.refs.toast.show('退出失败，请稍后重试')
+        })
       }
-    }).catch(e => {
-      this.refs.toast.show('退出失败，请稍后重试');
     })
   }
   checkUpdate = async () => {
     const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
+    console.log(update, "=======");
     if (!update) {
       Alert.alert("提示", "已是最新版本--", [
         {
@@ -142,7 +158,7 @@ export default class Setting extends Component {
             <Text style={styles.exitTxt}>退出当前账户</Text>
           </TouchableOpacity>
         </SafeAreaView>
-
+        <Alert ref="alert" />
         <Toast ref="toast" position="bottom" />
       </View>
     );

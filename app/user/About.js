@@ -26,13 +26,13 @@ export default class About extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.link}>
-          <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
+          <TouchableWithoutFeedback onPress={() => navigate('LocalWebview', {source: 'protocal'})}>
             <View style={styles.menu}>
               <Text style={styles.label}>网站软件许可协议</Text>
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
+          <TouchableWithoutFeedback onPress={() => navigate('LocalWebview')}>
             <View style={styles.menu}>
               <Text style={styles.label}>常见问题</Text>
               <Image style={styles.forward} source={ICONS.forward} />

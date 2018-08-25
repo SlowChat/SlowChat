@@ -7,8 +7,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
-import JPushModule from 'jpush-react-native';
-
 import ICONS from '../utils/icon'
 import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
@@ -19,6 +17,7 @@ export default class User extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     const { navigate } = navigation;
+    const { msgCount } = params
     return {
       title: '个人中心',
       headerLeft: (
@@ -35,7 +34,7 @@ export default class User extends Component {
               <Image style={styles.info} source={require('../images/icon_info.png')} />
               {
                 msgCount ? (
-                  <View style={styles.msgCount}><Text style={{color: '#fff'}}>{msgCount}</Text></View>
+                  <View style={styles.msgCount}><Text style={styles.msgCountTxt}>{msgCount}</Text></View>
                 ) : null
               }
             </View>
@@ -63,10 +62,22 @@ export default class User extends Component {
   }
 
   componentWillMount() {
+    this.viewAppear = this.props.navigation.addListener(
+      'willFocus', payload => {
+        this.getData()
+      }
+    )
+  }
+
+  componentWillUnmount() {
+    this.viewAppear.remove()
+  }
+
+  getData() {
     get('api/user/userInfo.html').then(res => {
+      console.log(res);
       const { code, data } = res
       if (code === 1) {
-        console.log(data)
         if (data.sign && data.sign.count) this.setState({ sign: data.sign })
         mobile = data.mobile
         userEmail = data.user_email
@@ -87,33 +98,15 @@ export default class User extends Component {
           msgCount: data.msg_count,
           score: data.score
         })
+        this.props.navigation.setParams({
+          msgCount: data.msg_count
+        })
+      } else if (code == 10001) {
+        this.props.navigation.navigate('Login')
       }
     }).catch(e => {
       console.log(e)
     })
-  }
-
-  componentDidMount() {
-    // 接收自定义消息
-    JPushModule.addReceiveCustomMsgListener((message) => {
-      // this.setState({pushMsg: message});
-    })
-    // 接收推送通知
-    JPushModule.addReceiveNotificationListener((message) => {
-      console.log("receive notification: " + message);
-    });
-    // 打开通知
-    JPushModule.addReceiveOpenNotificationListener((map) => {
-      console.log("Opening notification!");
-      console.log("map.extra: " + map.extras);
-      // 可执行跳转操作，也可跳转原生页面
-      // this.props.navigation.navigate("SecondActivity");
-    });
-  }
-  
-  componentWillUnmount() {
-    JPushModule.removeReceiveCustomMsgListener();
-    JPushModule.removeReceiveNotificationListener();
   }
 
   handerSetting() {
@@ -139,13 +132,17 @@ export default class User extends Component {
       console.log(e)
     })
   }
-
+  goInfo = () => {
+    const { navigate } = this.props.navigation;
+    const { username, avatar, sex, birthday } = this.state
+    navigate('Information', { username, avatar, sex, birthday })
+  }
   render() {
     const { navigate } = this.props.navigation;
     const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar username={username} avatar={avatar} level={level} />
+        <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} />
         <View style={styles.remind}>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
             <View style={styles.list}>
@@ -198,7 +195,7 @@ export default class User extends Component {
           }
         </View>
         <View style={styles.link}>
-          <TouchableWithoutFeedback onPress={() => navigate('Information', { username, avatar, sex, birthday })}>
+          <TouchableWithoutFeedback onPress={this.goInfo}>
             <View style={styles.menu}>
               <Image style={styles.menuImg} source={require('../images/icon_person.png')} />
               <Text style={styles.menuTxt}>个人资料</Text>
@@ -212,12 +209,12 @@ export default class User extends Component {
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
+          <TouchableWithoutFeedback onPress={() => navigate('Push')}>
             <View style={styles.menu}>
               <Image style={styles.menuImg} source={require('../images/icon_info.png')} />
               {
                 msgCount ? (
-                  <View style={styles.msgCount}><Text style={{color: '#fff'}}>{msgCount}</Text></View>
+                  <View style={styles.msgCount}><Text style={styles.msgCountTxt}>{msgCount}</Text></View>
                 ) : null
               }
               <Text style={styles.menuTxt}>消息通知</Text>
@@ -268,7 +265,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   list: {
-    width: '25%',
+    flex: 1,
     height: 50,
     fontSize: 14,
     color: '#666',
@@ -342,8 +339,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   forward: {
-    position: 'absolute',
-    right: 8,
+    marginRight: 8,
     width: 24,
     height: 24,
   },
@@ -353,18 +349,23 @@ const styles = StyleSheet.create({
     marginRight: 15
   },
   menuTxt: {
-    flexDirection: 'row',
+    flex: 1,
   },
   msgCount: {
     position: 'absolute',
     top: 5,
     left: 25,
-    width: 18,
-    height: 18,
-    borderRadius: 25,
+    width: 14,
+    height: 14,
+    borderRadius: 14,
+    padding: 0,
     backgroundColor: '#EC3632',
-    color: '#fff',
-    justifyContent: 'center',
     alignItems:'center',
+  },
+  msgCountTxt: {
+    fontSize: 12,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#FFFFFF',
+    marginTop: -2,
   }
 });

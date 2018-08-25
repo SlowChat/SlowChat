@@ -25,17 +25,29 @@ export default class Attachment extends PureComponent {
     this.setState({ index })
   }
   handleOpen(index) {
-    this.setState({ index, visible: true })
+    const { items } = this.props
+    const item = items[index]
+    if (item.ext == 'image') {
+      const imageIndex = items.slice(0, index).filter(item.ext == 'image')
+      this.setState({ index: imageIndex, visible: true })
+    }
   }
   render() {
-    const items = (this.props.items || []).map(item => ({url: item}))
+    if (!items || item.length == 0) {
+      return null
+    }
+    // const items = (this.props.items || []).map(item => ({url: item}))
     const { visible, index } = this.state
+    const { items = [] } = this.props
+    const images = items.filter(item => item.ext == 'image')
     return (
       <View style={styles.imageList}>
-        { items && items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
-        <Modal visible={visible} transparent={true} onRequestClose={this.handleClick}>
-          <ImageViewer enableImageZoom index={index} imageUrls={items} onChange={this.handleChange} onClick={this.handleClick} />
-        </Modal>
+        { items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
+        { images.length > 0 &&
+            <Modal visible={visible} transparent={true} onRequestClose={this.handleClick}>
+              <ImageViewer enableImageZoom index={index} imageUrls={items} onChange={this.handleChange} onClick={this.handleClick} />
+            </Modal>
+        }
       </View>
     )
   }

@@ -17,26 +17,23 @@ import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
 
-import { post } from '../utils/request'
 
-const IMGS = [
-  'https://img.alicdn.com/bao/uploaded/i1/TB2Xy7fquySBuNjy1zdXXXPxFXa_!!0-paimai.jpg',
-  'https://img.alicdn.com/bao/uploaded/i3/TB2Hhn4quSSBuNjy0FlXXbBpVXa_!!0-paimai.jpg'
-]
+import { post } from '../utils/request'
+import dateFormat from '../utils/date'
 
 const SIZE = 10
-let firstClick = 0
 
 type Props = {};
-export default class App extends Component<Props> {
+export default class Home extends Component<Props> {
   static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    const opacity = params.opacity || new Animated.Value(0)
+    // const { params = {} } = navigation.state
+    // const opacity = params.opacity || new Animated.Value(0)
     return {
-      header: () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
-        style={[styles.header, {opacity}]}>
-        <Text style={styles.headerTxt}>首页</Text>
-      </SafeAreaView>),
+      header: null,
+      // () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
+      //   style={[styles.header, {opacity}]}>
+      //   <Text style={styles.headerTxt}>首页</Text>
+      // </SafeAreaView>),
     }
   }
   state = {
@@ -46,6 +43,7 @@ export default class App extends Component<Props> {
     showLoading: false,
     showError: false,
     refreshing: false,
+    fadeInOpacity: new Animated.Value(0),
   }
   componentWillMount() {
     this.initData()
@@ -79,13 +77,13 @@ export default class App extends Component<Props> {
   fadeInOrOut(fadeIn) {
     const fromValue = fadeIn ? 0 : 1
     const toValue = fadeIn ? 1 : 0
-    this.fadeInOpacity = this.fadeInOpacity || new Animated.Value(fromValue)
+    this.state.fadeInOpacity = this.state.fadeInOpacity || new Animated.Value(fromValue)
     if (!this.hasHeader) {
       this.hasHeader = true
     } else {
       this.hasHeader = false
     }
-    Animated.timing(this.fadeInOpacity, {
+    Animated.timing(this.state.fadeInOpacity, {
       toValue: toValue, // 目标值
       duration: 300, // 动画时间
       easing: fadeIn ? Easing.easeIn : Easing.easeOut // 缓动函数
@@ -95,10 +93,10 @@ export default class App extends Component<Props> {
         this.hasHeader = false
       }
     }, 300)
-    this.noupdate = true
-    this.props.navigation.setParams({
-      opacity: this.fadeInOpacity
-    })
+    // this.noupdate = true
+    // this.props.navigation.setParams({
+    //   opacity: this.fadeInOpacity
+    // })
   }
 
   handleScroll = (e) => {
@@ -128,17 +126,23 @@ export default class App extends Component<Props> {
       })
       if (res.code == 1) {
         const { total, items } = res.data
-        const newData = page == 0 ? items : this.state.data.concat(items)
-        let showFoot = newData.length >= total ? 1 : 0
+        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+        items.forEach(item => {
+          item.send_time = (item.send_time || '').split(' ')[0]
+          const [ add_date, add_time ] = item.add_time.split(' ')
+          item.add_time = curr_item == add_date ? add_time : add_date
+        })
+        const newData = page == 0 ? items : this.state.items.concat(items)
+        let showFoot = page > 0 && newData.length >= total ? 1 : 0
         this.setState({
           items: newData,
           showFoot,
         })
         this.page++
       } else if (res.code == 10001) {
-        this.props.navigation.replace('Login')
+        this.props.navigation.navigate('Login')
       } else {
-        this.refs.toast.show(res.msg || '慢聊飘走了')
+        this.refs.toast.show(res.msg || '慢聊信息飘走了')
         this.setState({ showFoot: 0 })
       }
     } catch (e) {
@@ -171,7 +175,9 @@ export default class App extends Component<Props> {
 
   handleLoadmore = () => {
     requestAnimationFrame(() => {
-      this.getData(this.page + 1)
+      if (this.page > 0) {
+        this.getData(this.page)
+      }
     })
   }
   handleRefresh = () => {
@@ -183,20 +189,24 @@ export default class App extends Component<Props> {
   renderItem = (item) => {
     return <HomeItem data={item} onPress={this.handleGoDetail} />
   }
-  handleGoNew = () => {
-    this.props.navigation.push('NewMail')
+  handleNav = (routeName, params = {}) => {
+    this.props.navigation.push(routeName, params)
   }
   renderHeader = () => {
     const { images, showError } = this.state
-    return (<Swiper items={images} onNew={this.handleGoNew} showError={showError} onError={this.handleRefresh} />)
+    return (<Swiper items={images} onNav={this.handleNav} showError={showError} onError={this.handleRefresh} />)
   }
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
   }
   render() {
-    const { showLoading, showError, images, items } = this.state
+    const { fadeInOpacity, showLoading, showError, images, items } = this.state
     return (
       <View style={styles.container}>
+        <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
+          style={[styles.header, {opacity: fadeInOpacity}]}>
+          <Text style={styles.headerTxt}>首页</Text>
+        </SafeAreaView>
         <FlatList
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
@@ -205,7 +215,7 @@ export default class App extends Component<Props> {
           initialNumToRender={5}
           keyExtractor={(item, index) => String(item.id)}
           onScroll={this.handleScroll}
-          onEndReachedThreshold={3}
+          onEndReachedThreshold={0.5}
           onEndReached={this.handleLoadmore}
           refreshing={this.state.refreshing}
           onRefresh={this.handleRefresh}
@@ -236,6 +246,7 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 100,
   },
   headerTxt: {
     fontSize: 18,

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
+import Loading from '../components/Loading'
 import ErrorModal from '../components/ErrorModal'
 
 import { post } from '../utils/request'
@@ -21,17 +22,21 @@ import Storage from '../utils/storage'
 type Props = {};
 export default class Login extends PureComponent<Props> {
   static navigationOptions = {
-    header: null
+    header: null,
   }
-  componentWillMount() {
-    this.username = '15216748429'
-    this.password = '123456'
-    const { back } = this.props.navigation.state.params || {}
-    this.back = back
+  state = {
+    username: '15216748429',
+    password: '123456',
+    showLoading: false
+  }
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
   }
 
   regist = () => {
-    this.props.navigation.navigate('Regist')
+    this.props.navigation.replace('Regist')
   }
 
   forget = () => {
@@ -42,57 +47,80 @@ export default class Login extends PureComponent<Props> {
     }
   }
   handleLogin = async () => {
+    const { username, password } = this.state
+    const disabled = !username.trim() || !password.trim()
+    if (disabled || this.loading) return
     const params = {
-      username: this.username,
-      password: this.password,
+      username: username.trim(),
+      password: password.trim(),
       device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
     }
     try {
+      this.loading = true
       const res = await post('api/user/login.html', params, true)
       if (res.code == 1) {
         const { token, user } = res.data
         await Storage.setToken(token, user)
-        const { navigation } = this.props
-        if (this.back) {
-          navigation.goBack()
-        } else {
-          navigation.replace('BottomTabs')
-        }
+        // if (this.back) {
+          this.goBack()
+        // } else {
+        //   navigation.replace('BottomTabs')
+        // }
       } else {
-        this.showErrorModal(res.msg || '登录失败，请稍后重试')
+        this.dealError(res.msg)
       }
     } catch (err) {
       console.log(err);
-      this.showErrorModal('登录失败，请稍后重试')
+      this.dealError()
     }
+    this.timer = setTimeout(() => {
+      if (this.loading) {
+        this.setState({ showLoading: true })
+      }
+    }, 300)
   }
 
-  showErrorModal(txt) {
-    this.refs.errorModalRef.show({txt})
+  goBack = () => {
+    this.props.navigation.goBack()
   }
 
+  dealError(txt) {
+    this.loading = false
+    if (this.state.showLoading) {
+      this.setState({ showLoading: false })
+    }
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+    this.refs.errorModalRef.show({
+      txt: txt || '登录失败，请稍后重试'
+    })
+  }
 
   render() {
+    const { username, password, showLoading } = this.state
+    const disabled = !username.trim() || !password.trim()
+    const loginBtnStyle = disabled ? [styles.item, styles.loginBtn, styles.disabled] : [styles.item, styles.loginBtn]
     return (
       <View style={styles.container}>
         <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
            style={styles.header}>
-           {this.back && (<TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.goBack()}}>
+           <TouchableOpacity activeOpacity={0.8} onPress={() => { this.goBack()}}>
              <Image style={styles.close} source={require('../images/close.png')} />
-           </TouchableOpacity>)}
+           </TouchableOpacity>
         </SafeAreaView>
         <ScrollView style={{flex: 1}}>
         <View style={styles.wrap}>
           <Image style={styles.logo} source={require('../images/logo.png')} />
           <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
-            <TextInput style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.username = text}
+            <TextInput value={username} style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ username: text })}
               autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>
           <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
-            <TextInput secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.password = text}
+            <TextInput value={password} secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ password: text })}
               autoCapitalize="none" underlineColorAndroid='transparent' />
           </ImageBackground>
-          <TouchableOpacity activeOpacity={0.8} style={[styles.item, styles.loginBtn]} onPress={this.handleLogin}>
+          <TouchableOpacity activeOpacity={0.8} style={loginBtnStyle} onPress={this.handleLogin}>
             <Text style={styles.loginTxt}>登 录</Text>
           </TouchableOpacity>
           <View style={styles.bottomBtn}>
@@ -107,6 +135,7 @@ export default class Login extends PureComponent<Props> {
           </View>
         </View>
         </ScrollView>
+        {showLoading && <Loading />}
         <ErrorModal ref="errorModalRef" />
       </View>
     );
@@ -154,6 +183,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 44,
+  },
+  disabled: {
+    backgroundColor: '#e4e4e4',
   },
   loginTxt: {
     fontSize: 18,

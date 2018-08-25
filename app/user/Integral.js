@@ -5,10 +5,14 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-  ActivityIndicator,
   FlatList
 } from 'react-native';
 import { get, post } from '../utils/request'
+
+import Footer from '../components/Footer'
+import Blank from '../components/Blank'
+import Loading from '../components/Loading'
+import ErrorTip from '../components/ErrorTip'
 
 export default class Integral extends Component {
   static navigationOptions = ({navigation}) => {
@@ -17,7 +21,7 @@ export default class Integral extends Component {
     return {
       title: '我的积分',
       headerRight: (
-        <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
+        <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
           <View style={styles.icon}>
             <Text style={styles.ruleBtn}>积分规则</Text>
           </View>
@@ -32,7 +36,6 @@ export default class Integral extends Component {
     dataArray: [],
     showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
     isRefreshing: false, // 下拉控制
-    spaceTxt: '请尝试搜索其他关键词',
     isSpacePage: true,
     total: 0
   }
@@ -40,6 +43,11 @@ export default class Integral extends Component {
   pageSize = 10
 
   componentDidMount() {
+    this.fetchData()
+  }
+
+  initData = () => {
+    this.pageNo = 0
     this.fetchData()
   }
 
@@ -80,7 +88,7 @@ export default class Integral extends Component {
           <Text style={styles.detail}>{item.item}</Text>
         </View>
         <Text style={styles.right}>
-          {item.score}
+          +{item.score}
         </Text>
       </View>
     )
@@ -88,29 +96,7 @@ export default class Integral extends Component {
 
     // 列表底部显示
   _renderFooter = () => {
-    console.log(this.state.showFoot)
-    if (this.state.showFoot === 1) {
-      return (
-        <View style={styles.footer}>
-          <Text style={{color: '#999'}}>
-              没有更多数据了
-          </Text>
-        </View>
-      )
-    } else if (this.state.showFoot === 2) {
-      return (
-        <View style={styles.footer}>
-          <ActivityIndicator />
-          <Text style={{color: '#999'}}>正在加载更多数据...</Text>
-        </View>
-      )
-    } else if (this.state.showFoot === 0) {
-      return (
-        <View style={styles.footer}>
-          <Text />
-        </View>
-      )
-    }
+    return <Footer showFoot={this.state.showFoot} />
   }
 
     // 下拉加载更多
@@ -134,20 +120,6 @@ export default class Integral extends Component {
     // 列表分隔线
   _separator = () => {
     return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
-  }
-
-  // 加载等待的view
-  renderLoadingView = () => {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator
-          animating
-          style={[styles.gray, {height: 80}]}
-          color='red'
-          size='large'
-        />
-      </View>
-    )
   }
 
     // 加载失败view
@@ -181,23 +153,7 @@ export default class Integral extends Component {
               ItemSeparatorComponent={this._separator}
               // keyExtractor={(item, index) => item}
             />
-
-          ) : (
-            <View style={styles.space}>
-              {
-                this.state.isSpacePage && (
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}>
-                    <Text style={styles.spaceTit}>没有找到相匹配的结果</Text>
-                    <Text style={styles.spaceTxt}>{this.state.spaceTxt}</Text>
-                  </View>
-                )
-              }
-            </View>
-          )
+          ) : this.state.isSpacePage && <Blank />
         }
       </View>
     )
@@ -206,10 +162,10 @@ export default class Integral extends Component {
   render () {
     // 第一次加载等待的view
     if (this.state.isLoading && !this.state.error) {
-      return this.renderLoadingView()
+      return <Loading />
     } else if (this.state.error) {
       // 请求失败view
-      return this.renderErrorView()
+      return <ErrorTip onPress={this.initData}  />
     }
     // 加载数据
     return this.renderData()
@@ -282,28 +238,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderStyle: 'solid'
   },
-  space: {
-    width: '100%',
-    paddingLeft: '10%',
-    paddingRight: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f6f7f8',
-    paddingTop: 200,
-    paddingBottom: 200
-  },
-  spaceImg: {
-    width: 64,
-    height: 64
-  },
-  spaceTit: {
-    fontSize: 18,
-    color: '#999',
-  },
-  spaceTxt: {
-    fontSize: 14,
-    color: '#999',
-    textAlign: 'center',
-    lineHeight: 24
-  }
 });

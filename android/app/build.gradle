@@ -74,7 +74,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "index.js",
-    bundleCommand: "ram-bundle",
+    bundleCommand: "unbundle",
     bundleConfig: "packager/config.js"
 ]
 
@@ -94,7 +94,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -108,13 +108,20 @@ android {
         versionName "1.0.0"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "c4d58ccfd28897a5d21e93ea",
-                APP_CHANNEL : "default"
+                APP_CHANNEL : "default",
+                TENCENT_APPID: ""
         ]
+        multiDexEnabled true //Howard 2017-08-31 解决方法数超过65536的问题
 
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+//    sourceSets {
+//        main {
+//            assets.srcDirs = ['assets']
+//        }
+//    }
     splits {
         abi {
             reset()
@@ -124,6 +131,14 @@ android {
         }
     }
     signingConfigs {
+        debug {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
         release {
             if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
@@ -136,6 +151,7 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "CODEPUSH_KEY", '""'
+            signingConfig signingConfigs.debug
         }
         releaseStaging {
             buildConfigField "String", "CODEPUSH_KEY", '"R7trBQZsettQBdO_gM0Q9KKBWpe00e07ebd4-06ad-443c-a76f-ec8e5a6301b2"'

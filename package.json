@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start --config ../../../../packager/config.js",
     "test": "jest",
-    "bundle-ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
+    "bundle-ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "build-android": "npm run bundle-android && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "jcore-react-native": "^1.2.9",
@@ -21,6 +23,7 @@
     "react-native-device-info": "^0.22.2",
     "react-native-easy-toast": "^1.1.0",
     "react-native-file-selector": "^0.0.3",
+    "react-native-htmlview": "^0.13.0",
     "react-native-image-picker": "^0.26.10",
     "react-native-image-zoom-viewer": "^2.2.13",
     "react-native-qrcode": "^0.2.7",

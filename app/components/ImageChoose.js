@@ -8,70 +8,27 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  PermissionsAndroid
+  PermissionsAndroid,
+  NativeModules
 } from 'react-native';
 
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import RNFileSelector from 'react-native-file-selector';
+import Actionsheet from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
 // import { upload } from '../utils/request'
+import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 
 export default class AvatarHeader extends PureComponent {
   state = {
     items: []
   }
 
-  async checkImagePermission() {
-    if (Platform.OS == 'ios') return false
-    let nopermission = false
-    try {
-      // PermissionsAndroid.PERMISSIONS.CAMERA
-      const granted = await PermissionsAndroid.requestMultiple(
-        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.CAMERA ],
-        {
-          title: '权限申请',
-          message: '慢聊需要访问你的相机和相册'
-        },
-      );
-      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
-        nopermission = true
-        this.refs.toast.show('授权拒绝，无法选择图片')
-      }
-    } catch (err) {
-      nopermission = true
-      this.refs.toast.show('授权失败，无法选择图片')
-    }
-    return nopermission
-  }
-
-  async checkVideoPermission() {
-    if (Platform.OS == 'ios') return false
-    let nopermission = false
-    try {
-      const granted = await PermissionsAndroid.requestMultiple(
-        [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          // PermissionsAndroid.PERMISSIONS.CAMERA,
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, ],
-        {
-          title: '权限申请',
-          message: '慢聊需要访问你的视频文件和录制视频'
-        },
-      );
-      if (granted != PermissionsAndroid.RESULTS.GRANTED) {
-        nopermission = true
-        this.refs.toast.show('授权拒绝，无法选择图片')
-      }
-    } catch (err) {
-      nopermission = true
-      this.refs.toast.show('授权失败，无法选择图片')
-    }
-    return nopermission
-  }
-
   chooseImage = async () => {
-    let nopermission = await this.checkImagePermission()
+    let nopermission = await checkImagePermission((msg) => {
+      this.refs.toast.show(msg)
+    })
     if (nopermission) return
     const options = {
       title: '选择图片',
@@ -90,15 +47,21 @@ export default class AvatarHeader extends PureComponent {
       noData: true,
       storageOptions: {
         skipBackup: true,
-        path: 'images'
+        // path: 'images'
       }
     }
     ImagePicker.showImagePicker(options, (response) => {
       if (response && response.uri) {
         let file = response.uri
-        if(Platform.OS === 'ios'){
-          file = file.replace('file://', '')
-        }
+        // if(Platform.OS === 'ios'){
+        //   file = file.replace('file://', '')
+        // }
+        // console.log(file);
+        // upload(response.uri, response.fileName).then(res => {
+        //   console.log(res);
+        // }).catch(e => {
+        //   console.log(e)
+        // })
         this.dealSucc(file, response)
       }
     });
@@ -110,7 +73,9 @@ export default class AvatarHeader extends PureComponent {
   //   this.refs.toast.show(res.msg || '上传失败')
   // }
   chooseVideo = async () => {
-    let nopermission = await this.checkVideoPermission()
+    let nopermission = await checkVideoPermission((msg) => {
+      this.refs.toast.show(msg)
+    })
     if (nopermission) return
     const options = {
       title: '选择视频',
@@ -123,50 +88,70 @@ export default class AvatarHeader extends PureComponent {
     ImagePicker.showImagePicker(options, (response) => {
       if (response.uri) {
         let file = response.uri
-        if(Platform.OS === 'ios'){
-          file = file.replace('file://', '')
-        }
+        // if(Platform.OS === 'ios'){
+        //   file = file.replace('file://', '')
+        // }
         this.dealSucc(file, response, 'video')
       }
     });
   }
   dealSucc(uri, response, type = 'image') {
-    const { items } = this.state
+    let { items } = this.state
     let { fileName, fileSize } = response
-    items.push({
-      uri,
-      fileName,
-      type,
-      fileSize
+    items = items.concat([
+      {
+        url: uri,
+        filename: filename,
+        ext: type,
+        size: fileSize,
+      }
+    ])
+    this.setState({ items }, () => {
+      const { onChange } = this.props
+      onChange && onChange(items)
+      console.log(items);
     })
-    this.setState({ items })
-    const { onChange } = this.props
-    onChange && onChange(items)
   }
   chooseFile = () => {
+    if (Platform.OS == 'ios') {
+      const { onClose } = this.props
+      onClose && onClose(() => {
+        setTimeout(() => this.showFSelector(), 30)
+      })
+    } else {
+      this.showFSelector()
+    }
+  }
+  showFSelector() {
+    RNFileSelector.Show({
+      title: '文件选择',
+      onDone: async (path) => {
+        if (Platform.OS == 'ios') {
+          const { onClose } = this.props
+          onClose && onClose(null, true)
+          path = path.replace('file://', '')
+        }
+        const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
+        const type = fileName.substring(fileName.lastIndexOf('.') + 1)
+        this.dealSucc(path, { fileName, fileSize })
+      },
+      onCancel: () => {
+        console.log('cancelled')
+      }
+    })
+  }
+  handleClose = () => {
     const { onClose } = this.props
     onClose && onClose()
-    setTimeout(() => {
-      RNFileSelector.Show({
-        title: 'select',
-        onDone: (path) => {
-          console.log('file selected: ' + path)
-        },
-        onCancel: () => {
-          console.log('cancelled')
-        }
-      })
-    }, 60)
-
   }
   render() {
     const { items } = this.state
     const { visible, onClose } = this.props
     return (
       <Modal visible={visible} transparent={true}
-        animationType="slide" onRequestClose={onClose}>
+        animationType="slide" onRequestClose={this.handleClose}>
         <View style={styles.wrap}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={onClose}></TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={this.handleClose}></TouchableOpacity>
           <View style={styles.content}>
             <View style={styles.header}>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
@@ -186,6 +171,7 @@ export default class AvatarHeader extends PureComponent {
             </ScrollView>
           </View>
         </View>
+        <Actionsheet />
         <Toast ref="toast" position="center" />
       </Modal>
     )

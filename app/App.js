@@ -1,16 +1,16 @@
 import React, {Component, PureComponent} from 'react';
 import { StyleSheet, View } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, StackViewTransitionConfigs } from 'react-navigation';
 // import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
 
 
-// import BottomTabs from './BottomTabs'
+import BottomTabs from './BottomTabs'
 // import LoginScreen from './login/Login'
 
 const StackApp = (isLogin) => createStackNavigator({
   BottomTabs: {
-    // screen: BottomTabs,
-    screen: require('./BottomTabs').default,
+    screen: BottomTabs,
+    // screen: require('./BottomTabs').default,
     navigationOptions: {
       header: null
     }
@@ -18,10 +18,12 @@ const StackApp = (isLogin) => createStackNavigator({
   Login: {
     // screen: LoginScreen,
     screen: require('./login/Login').default,
-    mode: 'modal',
-    navigationOptions: {
-      header: null,
-    }
+    // mode: 'modal',
+    // transitionConfig: () => {
+    //   return {
+    //     screenInterpolator: StackViewTransitionConfigs.ModalSlideFromBottomIOS.screenInterpolator,
+    //   }
+    // }
   },
   Regist: { screen: require('./login/Regist').default },
   RegistSucc: { screen: require('./login/RegistSucc').default },
@@ -35,12 +37,17 @@ const StackApp = (isLogin) => createStackNavigator({
   EditPassword: { screen: require('./user/EditPassword').default },
   About: { screen: require('./user/About').default },
   Rule: { screen: require('./user/Rule').default },
+  // Protocol: { screen: require('./user/Protocol').default },
+  Push: { screen: require('./user/Push').default },
   Notice: { screen: require('./user/Notice').default },
+  Message: { screen: require('./user/Message').default },
   Integral: { screen: require('./user/Integral').default },
   FeedBack: { screen: require('./user/FeedBack').default },
   NewMail: { screen: require('./scenes/NewMail').default },
   MailDetail: { screen: require('./scenes/MailDetail').default },
   DraftDetail: { screen: require('./scenes/DraftDetail').default },
+  Webview: { screen: require('./h5/Webview').default },
+  LocalWebview: { screen: require('./h5/LocalWebview').default },
   // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
     screen: require('./scenes/Share').default,
@@ -49,7 +56,8 @@ const StackApp = (isLogin) => createStackNavigator({
     }
   }
 }, {
-  initialRouteName: isLogin ? 'BottomTabs' : 'Login',
+  initialRouteName: 'BottomTabs',
+  // isLogin ? 'BottomTabs' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
@@ -63,6 +71,7 @@ const StackApp = (isLogin) => createStackNavigator({
     headerTitleContainerStyle: {
       justifyContent: 'center',
     },
+    // headerLayoutPreset: 'center',
     headerTitleStyle: {
       fontSize: 18,
       fontFamily: 'PingFangSC-Regular',
@@ -71,6 +80,16 @@ const StackApp = (isLogin) => createStackNavigator({
     // headerStyle: {
     //   paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
     // }
+  },
+  transitionConfig: () => {
+    // if (isModal) {
+    //   return {
+    //     screenInterpolator: StackViewTransitionConfigs.ModalSlideFromBottomIOS.screenInterpolator,
+    //   }
+    // }
+    return {
+      screenInterpolator: StackViewTransitionConfigs.SlideFromRightIOS.screenInterpolator
+    }
   }
 });
 
