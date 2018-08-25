@@ -39,8 +39,12 @@ export default class Alert extends PureComponent {
     this.setState({ visible: false })
   }
   handleOk = () => {
-    const onOk = this.props.onOk || this.onOk
-    onOk && onOk()
+    const onOk = this.onOk || this.props.onOk
+    if (onOk) {
+      onOk()
+    } else {
+      this.hide()
+    }
   }
   handleClose = () => {
     if (this.onCancel) {

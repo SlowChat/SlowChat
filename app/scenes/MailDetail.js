@@ -150,6 +150,7 @@ export default class MailDetail extends Component {
       const id = this.getId()
       const url = this.status == null ? 'api/mail/getInfo.html' : 'api/mail/getMyInfo.html'
       const res = await post(url, { id })
+      console.log(res);
       if (res.code == 1) {
         const { comment, ...items } = res.data.items
         const comments = comment && comment.length > 0 ? comment : []
@@ -205,8 +206,6 @@ export default class MailDetail extends Component {
   }
 
   async addComment(pid, content) {
-    this.props.navigation.navigate('Login')
-    return
     try {
       const id = this.getId()
       const res = await post('api/mail_comment/add.html', {
@@ -283,7 +282,7 @@ export default class MailDetail extends Component {
           ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
             <MailContent data={detail} />
             {
-              detail.comments ? (
+              detail.looks ? (
                 <View style={styles.replyHeader}>
                   <Text style={[styles.replyComment, styles.replyNum]}>评论 {detail.comments}</Text>
                   <Text style={styles.replyNum}>浏览 {detail.looks}</Text>

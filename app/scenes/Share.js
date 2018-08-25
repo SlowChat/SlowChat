@@ -22,12 +22,13 @@ import Storage from '../utils/storage'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
+const SHARE_URL = 'https://www.baidu.com'
 // ICONS.bg = require('../images/bg_share.png')
 
 type Props = {};
 export default class Share extends PureComponent<Props> {
   state = {
-    qrcodeUrl: 'https://www.baidu.com',
+    shareUrl: '',
     moreModal: false,
     userName: ''
   }
@@ -37,9 +38,26 @@ export default class Share extends PureComponent<Props> {
     this.setState({
       userName: user.user_nickname
     })
+    this.getData()
   }
+
+  async getData() {
+    let shareUrl = ''
+    try {
+      const res = await post('api/user_msg/getList.html')
+      if (res.code == 1) {
+        shareUrl = res.data
+      }
+    } catch (e) {
+
+    } finally {
+      this.setState({ shareUrl: shareUrl || SHARE_URL })
+    }
+  }
+
   handleWechat = (platform) => {
     JShareModule.isWeChatInstalled((isInstalled) => {
+      console.log("===isInstalled====");
       if (isInstalled === true) {
         this.share(platform)
       } else {
@@ -161,7 +179,7 @@ export default class Share extends PureComponent<Props> {
               </View>
               <View style={styles.qrcodeWrap}>
                 <View style={styles.qrcode}>
-                  <QRCode value={this.state.qrcodeUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+                  <QRCode value={this.state.shareUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
                 </View>
               </View>
             </ImageBackground>

@@ -6,11 +6,15 @@ import {
   View,
   Image,
   Modal,
+  Platform,
 } from 'react-native'
 
-import ImageViewer from 'react-native-image-zoom-viewer'
-
+import Toast from 'react-native-easy-toast'
+// import ImageViewer from 'react-native-image-zoom-viewer'
+import OpenFile from 'react-native-doc-viewer'
 import AttachmentItem from './AttachmentItem'
+
+import { openNetworkFile } from '../utils/opendoc'
 
 
 export default class Attachment extends PureComponent {
@@ -24,30 +28,36 @@ export default class Attachment extends PureComponent {
   handleChange = (index) => {
     this.setState({ index })
   }
-  handleOpen(index) {
+  async handleOpen(index) {
     const { items } = this.props
     const item = items[index]
-    if (item.ext == 'image') {
-      const imageIndex = items.slice(0, index).filter(item.ext == 'image')
-      this.setState({ index: imageIndex, visible: true })
+    const { filename, url, ext } = item
+    if (ext != 'video') {
+      try {
+        await openNetworkFile(url, filename)
+      } catch (e) {
+        this.refs.toast.show('文件打开失败！')
+      }
     }
+    // if (item.ext == 'image') {
+    //   const imageIndex = items.slice(0, index).filter(item => item.ext == 'image').length
+    //   this.setState({ index: imageIndex, visible: true })
+    // }
   }
   render() {
-    if (!items || item.length == 0) {
+    const { items = [] } = this.props
+    if (!items || items.length == 0) {
       return null
     }
     // const items = (this.props.items || []).map(item => ({url: item}))
     const { visible, index } = this.state
-    const { items = [] } = this.props
     const images = items.filter(item => item.ext == 'image')
     return (
-      <View style={styles.imageList}>
-        { items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
-        { images.length > 0 &&
-            <Modal visible={visible} transparent={true} onRequestClose={this.handleClick}>
-              <ImageViewer enableImageZoom index={index} imageUrls={items} onChange={this.handleChange} onClick={this.handleClick} />
-            </Modal>
-        }
+      <View>
+        <View style={styles.imageList}>
+          { items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
+        </View>
+        <Toast ref="toast" />
       </View>
     )
   }
@@ -57,7 +67,7 @@ const styles = StyleSheet.create({
   imageList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 26,
+    marginTop: 15,
     marginLeft: 15,
     marginRight: 15,
   },
@@ -85,3 +95,11 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 });
+
+
+
+// { images.length > 0 &&
+//     <Modal visible={visible} transparent={true} onRequestClose={this.handleClick}>
+//       <ImageViewer enableImageZoom index={index} imageUrls={images} onChange={this.handleChange} onClick={this.handleClick} />
+//     </Modal>
+// }

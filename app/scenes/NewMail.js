@@ -58,6 +58,7 @@ export default class NewMail extends Component {
     showSendMe: true,
     pickerModal: false,
     attachs: [],
+    initAttaches: [],
     params: {
       title: '',
       content: '',
@@ -91,13 +92,21 @@ export default class NewMail extends Component {
     if (typeof id == 'undefined') return
     this.loading = true
     try {
-      const res = await post('api/mail/getMyInfo.html', { id })
+      const res = await post('api/mail/getDraftInfo.html', { id })
       console.log(res);
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
-          params: items,
+          showSendMe: items.email == '发给自己',
+          params: {
+            id: items.id,
+            email: items.email,
+            title: items.title,
+            content: items.content,
+          },
           attachs: items.attach,
+          initAttaches: items.attach,
+          disabledSave: false,
         }, () => {
           this.noupdate = true
           this.sendBtnEnable = true
@@ -136,7 +145,6 @@ export default class NewMail extends Component {
     })
   }
   checkParams(showTip) {
-    if (this.state.showLoading) return false
     const { title, content, email, send_time } = this.state.params
     const tips = []
     if (!email) tips.push('收件人')
@@ -161,14 +169,14 @@ export default class NewMail extends Component {
   }
 
   checkSave() {
-    if (this.state.showLoading) return false
     const { title, content, email, send_time } = this.state.params
     const { attachs } = this.state
-    if (!title.trim() || !content.trim() || !email.trim() || !attachs.length) return true
+    if (title.trim() || content.trim() || email.trim() || attachs.length > 0) return true
     return false
   }
 
   handleSend = () => {
+    if (this.state.showLoading) return false
     if (!this.checkParams(true)) return
     this.setState({ showLoading: true }, async () => {
       try {
@@ -176,19 +184,22 @@ export default class NewMail extends Component {
         params.attach = await this.uploadFile()
         const res = await post('api/mail/add.html', params)
         if (res.code == 10001) {
-          this.props.navigation.replace('Login')
+          this.setState({showLoading: false}, () => {
+            this.props.navigation.navigate('Login')
+          })
         } else if (res.code == 1) {
           this.setState({ isSucc: true, isSend: true, showLoading: false })
         } else {
-          this.dealError(true)
+          this.dealError(res.msg, true)
         }
       } catch (e) {
         console.log(e)
-        this.dealError(true)
+        this.dealError('', true)
       }
     })
   }
   handleSave = () => {
+    if (this.state.showLoading) return
     if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
       try {
@@ -196,15 +207,16 @@ export default class NewMail extends Component {
         params.attach = await this.uploadFile()
         const res = await post('api/mail/save.html', params)
         if (res.code == 10001) {
-          this.props.navigation.navigate('Login')
+          this.setState({showLoading: false}, () => {
+            this.props.navigation.navigate('Login')
+          })
         } else if (res.code == 1) {
           this.setState({ isSucc: true, isSend: false, showLoading: false })
         } else {
-          this.dealError(false)
+          this.dealError(res.msg, false)
         }
       } catch (e) {
-        console.log(e);
-        this.dealError(false)
+        this.dealError('', false)
       }
     })
   }
@@ -213,18 +225,16 @@ export default class NewMail extends Component {
     const { attachs } = this.state
     if (attachs.length == 0) return []
     try {
-      for (let index = 0; index < attachs.length; i++) {
+      for (let index = 0; index < attachs.length; index++) {
         const item = attachs[index]
         if (item.url.indexOf('http') == 0) {
-          break
+          continue
         }
-        if (item.type == 'image') {
-          const res = await upload(item.url, item.fileName)
-          if (res.code == 1) {
-            attachs[index] = {...res.data}
-          } else {
-            throw new Error(res)
-          }
+        const res = await upload(item.url, item.fileName)
+        if (res.code == 1) {
+          attachs[index] = {...res.data, ext: item.ext}
+        } else {
+          throw new Error(res)
         }
       }
       return attachs
@@ -233,12 +243,16 @@ export default class NewMail extends Component {
     }
   }
 
-  dealError(isSend) {
-    let txt = (isSend ? '发送' : '保存草稿') + '失败，再试一次吧'
-    this.refs.errorModalRef.show({txt})
+  dealError(msg, isSend) {
+    let txt = msg || ((isSend ? '发送' : '保存草稿') + '失败，再试一次吧')
     this.setState({
       showLoading: false
+    }, () => {
+      this.showErrorModal(txt)
     })
+  }
+  showErrorModal = (txt) => {
+    this.refs.errorModalRef.show({txt})
   }
   handelSuccClose = () => {
     this.setState({ isSucc: false })
@@ -256,7 +270,7 @@ export default class NewMail extends Component {
   }
   render() {
     // keyboardType="email-address"
-    const { showLoading, attachs, params, isSucc, isSend, disabledSave } = this.state
+    const { showLoading, attachs, params, isSucc, isSend, disabledSave, initAttaches } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
@@ -317,7 +331,9 @@ export default class NewMail extends Component {
             <Text style={[styles.saveBtnTxt, disabledSave && styles.disabledSaveBtnTxt]}>保存草稿</Text>
           </TouchableOpacity>
         </SafeAreaView>
-        <ImageChoose visible={this.state.pickerModal} onChange={this.handleImageChoose} onClose={this.closeImageChoose} />
+        <ImageChoose visible={this.state.pickerModal} initValue={initAttaches}
+          onChange={this.handleImageChoose} onClose={this.closeImageChoose}
+          onError={this.showErrorModal} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           btn="返回首页"

@@ -35,7 +35,7 @@ export default class HomeItem extends PureComponent<Props> {
           </View>
         </View>
         <View style={styles.content}>
-          <Text style={styles.contentTxt}>{item.content}</Text>
+          <Text style={styles.contentTxt}>{item.title}</Text>
         </View>
         <View style={styles.attention}>
           <Image style={styles.eyeIcon} source={ICONS.eye} />

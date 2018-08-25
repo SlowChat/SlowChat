@@ -12,8 +12,8 @@
         AppKey=""/>
 
     <Wechat
-        AppId=""
-        AppSecret=""/>
+        AppId="wxb610a04380ef85e1"
+        AppSecret="4e6d5732a4d2403f4c95f318a7df2455"/>
 
     <Facebook
         AppId=""
