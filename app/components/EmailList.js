@@ -123,11 +123,12 @@ export default class EmailList extends Component {
     } else {
       leftBtxTxt = '查看积分规则'
     }
+    const icon = status === 'draft' ? null : <Image style={styles.icon} source={item.type == 1 ? require('../images/icon_hide.png') : require('../images/icon_overt.png')} />
     return (
         <View>
-          <TouchableWithoutFeedback onPress={() => this.handleNav()}>
+          <TouchableWithoutFeedback onPress={this.handleNav}>
             <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
-              <Image style={styles.icon} source={require('../images/icon_overt.png')} />
+              {icon}
               <View style={styles.content}>
                 <Text style={styles.name}>{item.email}</Text>
                 <Text style={styles.name}>{item.title}</Text>
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   content: {
-    width: '80%'
+    flex: 1,
   },
   name: {
     marginBottom: 5,
