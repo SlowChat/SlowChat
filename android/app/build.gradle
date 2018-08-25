@@ -179,6 +179,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
+    compile project(':react-native-doc-viewer')
     compile project(':react-native-file-selector')
     compile project(':react-native-device-info')
     compile project(':jshare-react-native')

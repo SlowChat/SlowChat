@@ -6,6 +6,8 @@ import Storage from './utils/storage'
 import configAppNavigator from './App'
 import URL from './utils/url'
 import { CODE_PUSH_KEY } from './constants'
+import Global from './utils/global'
+import { post } from './utils/request'
 // import codePush from 'react-native-code-push'
 // import JPushModule from 'jpush-react-native';
 
@@ -51,6 +53,13 @@ export default class Start extends PureComponent {
     if (!JPushModule) {
       JPushModule = require('jpush-react-native').default
     }
+    JPushModule.getRegistrationID(registrationId => {
+      if (Global.token && Global.user && !Global.user.registrationId) {
+        post('api/mail/setPushCode.html', {
+          code: registrationId
+        })
+      }
+    })
     if (Platform.OS == 'android') {
       JPushModule.notifyJSDidLoad((resultCode) => {
           if (resultCode === 0) {}

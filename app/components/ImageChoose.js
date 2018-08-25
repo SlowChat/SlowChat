@@ -12,17 +12,31 @@ import {
   NativeModules
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
-import RNFileSelector from 'react-native-file-selector';
-import Actionsheet from 'react-native-actionsheet'
+import RNFS from 'react-native-fs'
+import OpenFile from 'react-native-doc-viewer'
+import RNFileSelector from 'react-native-file-selector'
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
+import Alert from './Alert'
 // import { upload } from '../utils/request'
 import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 
-export default class AvatarHeader extends PureComponent {
+const SavePath = Platform.OS === 'ios' ? RNFS.MainBundlePath : RNFS.DocumentDirectoryPath;
+
+export default class ImageChoose extends PureComponent {
   state = {
-    items: []
+    items: [],
+    sheetTitle: '',
+    current: {}
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.initValue.length !== this.props.initValue.length) {
+      this.setState({ items: nextProps.initValue })
+    }
   }
 
   chooseImage = async () => {
@@ -52,6 +66,7 @@ export default class AvatarHeader extends PureComponent {
     }
     ImagePicker.showImagePicker(options, (response) => {
       if (response && response.uri) {
+
         let file = response.uri
         // if(Platform.OS === 'ios'){
         //   file = file.replace('file://', '')
@@ -95,13 +110,21 @@ export default class AvatarHeader extends PureComponent {
       }
     });
   }
+  checkExt() {
+    return true
+  }
   dealSucc(uri, response, type = 'image') {
-    let { items } = this.state
     let { fileName, fileSize } = response
+    if (!this.checkExt()) {
+      const { onError } = this.props
+      onError && onError('附件格式不支持上传')
+      return
+    }
+    let { items } = this.state
     items = items.concat([
       {
         url: uri,
-        filename: filename,
+        filename: fileName,
         ext: type,
         size: fileSize,
       }
@@ -109,7 +132,6 @@ export default class AvatarHeader extends PureComponent {
     this.setState({ items }, () => {
       const { onChange } = this.props
       onChange && onChange(items)
-      console.log(items);
     })
   }
   chooseFile = () => {
@@ -144,6 +166,41 @@ export default class AvatarHeader extends PureComponent {
     const { onClose } = this.props
     onClose && onClose()
   }
+  openActionSheet = (item) => {
+    this.actionSheet.show()
+    this.setState({ current: item })
+  }
+  handleActionSheet = (index) => {
+    if (index == 0) {
+      this.alert.show({
+        title: '附件删除',
+        txt: '确定要删除附件吗？',
+        leftBtnTxt: '确定删除',
+        rightBtnTxt: '再想想',
+        onCancel: () => {
+          this.alert.hide()
+          const { items } = this.state
+          items.splice(index, 1)
+          this.setState({ items: [...items] }, () => {
+            this.refs.toast.show('附件删除成功')
+          })
+        }
+      })
+    } else if (index == 1) {
+      const { filename, url } = this.state.current
+      this.setState({ sheetTitle: filename })
+      OpenFile.openDoc([{url: SavePath + filename,
+        fileNameOptional: filename
+      }], (error, url) => {
+         if (error) {
+          this.setState({animating: false});
+         } else {
+          this.setState({animating: false});
+           console.log(url)
+         }
+       })
+    }
+  }
   render() {
     const { items } = this.state
     const { visible, onClose } = this.props
@@ -157,21 +214,32 @@ export default class AvatarHeader extends PureComponent {
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
                 <Image style={styles.icon} source={require('../images/picture.png')}></Image>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
-                <Image style={styles.icon} source={require('../images/video.png')}></Image>
-              </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
                 <Image style={styles.icon} source={require('../images/document.png')}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
+                <Image style={styles.icon} source={require('../images/video.png')}></Image>
               </TouchableOpacity>
             </View>
             <ScrollView horizontal contentContainerStyle={styles.body} showsHorizontalScrollIndicator={false}>
               {
-                items.map((item, index) => <AttachmentItem key={index} item={item} />)
+                items.map((item, index) => <AttachmentItem key={index} item={item} onPress={this.openActionSheet} />)
               }
             </ScrollView>
           </View>
         </View>
-        <Actionsheet />
+        <ActionSheet
+          ref={ref => this.actionSheet = ref}
+          title={this.state.sheetTitle}
+          options={[
+            <Text style={[styles.sheetBtn, {color: '#EC3632'}]}>删除</Text>,
+            <Text style={styles.sheetBtn}>预览</Text>,
+            <Text style={styles.sheetBtn}>返回</Text>
+          ]}
+          cancelButtonIndex={2}
+          onPress={this.handleActionSheet}
+          />
+        <Alert ref={ref => this.alert = ref} />
         <Toast ref="toast" position="center" />
       </Modal>
     )
@@ -195,19 +263,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
-    paddingLeft: 26,
-    paddingRight: 26,
+    paddingLeft: 25,
+    paddingRight: 25,
   },
   icon: {
     width: 30,
     height: 30,
-    marginLeft: 26,
-    marginRight: 26,
+    marginLeft: 25,
+    marginRight: 25,
   },
   body: {
     height: 235,
     alignItems: 'center',
     paddingLeft: 15,
     paddingRight: 15,
+  },
+  sheetBtn: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
   }
 });

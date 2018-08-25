@@ -23,10 +23,11 @@ function formatFileSize(fileSize) {
 export default class Attachment extends PureComponent {
   handleOpen = () => {
     const { onPress } = this.props
-    onPress && onPress()
+    onPress && onPress(this.props.item)
   }
   renderItem() {
-    const { ext } = this.props.item
+    const { item } = this.props
+    const { ext } = item
     if (ext == 'image') {
       return <Image source={{uri: item.url}} style={styles.image}></Image>
     } else if (ext == 'video') {
@@ -36,13 +37,20 @@ export default class Attachment extends PureComponent {
   }
   render() {
     const { item } = this.props
+    const filename = item.filename || ''
+    const lastIndex = filename.lastIndexOf('.')
+    let name = filename.substring(0, lastIndex)
+    let ext = filename.substring(lastIndex + 1)
     return (
       <View style={styles.imageItem}>
         <TouchableOpacity  activeOpacity={0.8} onPress={this.handleOpen}>
           {this.renderItem()}
         </TouchableOpacity>
-        { item.filename && <Text numberOfLines={1} style={styles.filename}>{item.filename}</Text> }
-        { item.size && <Text style={styles.size}>{formatsize(item.size)}</Text> }
+        { item.filename && <View style={styles.file}>
+          <Text numberOfLines={1} style={styles.filename}>{name}</Text>
+          <Text style={styles.filename}>{ext}</Text>
+        </View>}
+        { item.size && <Text style={styles.size}>{formatFileSize(item.size)}</Text> }
       </View>
     )
   }
@@ -58,7 +66,13 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
+  file: {
+    width: 80,
+    display: 'flex',
+    flexDirection: 'row',
+  },
   filename: {
+    flex: 1,
     height: 17,
     fontSize: 12,
     color: '#333333',

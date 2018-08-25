@@ -12,17 +12,14 @@ import Attachment from './Attachment'
 export default class MailContent extends PureComponent {
   render() {
     const { data } = this.props
-    const attachs = (data.attach || '').split(',')
     return (
       <View style={styles.container}>
         <AvatarHeader data={data} />
-        <View>
-          <Text style={styles.header}>{data.title}</Text>
-        </View>
-        <View>
+        <Text style={styles.header}>{data.title}</Text>
+        <View style={styles.contentWrap}>
           <Text style={styles.content}>{data.content}</Text>
         </View>
-        <Attachment items={attachs} />
+        <Attachment items={data.attach} />
       </View>
     )
   }
@@ -46,6 +43,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 10,
     marginBottom: 10,
+  },
+  contentWrap: {
+    marginBottom: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEEEEE',
   },
   content: {
     width: 345,
