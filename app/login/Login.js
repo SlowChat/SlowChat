@@ -55,17 +55,23 @@ export default class Login extends PureComponent<Props> {
       password: password.trim(),
       device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
     }
+    const code = Storage.getPushID()
+    if (code) {
+      params.code = code
+    }
     try {
       this.loading = true
       const res = await post('api/user/login.html', params, true)
       if (res.code == 1) {
         const { token, user } = res.data
         await Storage.setToken(token, user)
-        // if (this.back) {
-          this.goBack()
-        // } else {
-        //   navigation.replace('BottomTabs')
-        // }
+        const { state, replace, goBack } = this.props.navigation
+        const { url } = state.params || {}
+        if (url) {
+          replace(url)
+        } else {
+          goBack()
+        }
       } else {
         this.dealError(res.msg)
       }
@@ -81,7 +87,7 @@ export default class Login extends PureComponent<Props> {
   }
 
   goBack = () => {
-    this.props.navigation.goBack()
+    this.props.navigation,goBack()
   }
 
   dealError(txt) {

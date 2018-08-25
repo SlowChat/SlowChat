@@ -11,10 +11,9 @@ import {
 
 import Toast from 'react-native-easy-toast'
 // import ImageViewer from 'react-native-image-zoom-viewer'
-import OpenFile from 'react-native-doc-viewer'
 import AttachmentItem from './AttachmentItem'
 
-import { openNetworkFile } from '../utils/opendoc'
+import { openFile } from '../utils/opendoc'
 
 
 export default class Attachment extends PureComponent {
@@ -34,7 +33,7 @@ export default class Attachment extends PureComponent {
     const { filename, url, ext } = item
     if (ext != 'video') {
       try {
-        await openNetworkFile(url, filename)
+        await openFile(url, filename)
       } catch (e) {
         this.refs.toast.show('文件打开失败！')
       }

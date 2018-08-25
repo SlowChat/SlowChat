@@ -60,6 +60,7 @@ export async function upload(uri, fileName) {
   let formData = new FormData();
   const name = fileName || uri.substring(uri.lastIndexOf('/') + 1, uri.length)
   let file = {uri: uri, type: 'multipart/form-data', name: name};
+  console.log(file)
   formData.append('file', file);
   const headers = await getHeaders()
   // return fetch(BASE_URL + 'api/upload/image.html', {

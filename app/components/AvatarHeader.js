@@ -13,12 +13,13 @@ export default class AvatarHeader extends PureComponent {
     const data = this.props.data || {}
     const [send_date, send_time] = (data.send_time || '').split(' ')
     let { avatar, user_nickname } = data.user || {}
+    let source = {uri: avatar}
     if (!avatar || avatar.indexOf('http') != 0) {
-      avatar = ICONS.head
+      source = ICONS.head
     }
     return (
       <View style={styles.avatarWrap}>
-        <Image style={styles.avatar} source={avatar} />
+        <Image style={styles.avatar} source={source} />
         <View style={styles.avatarRight}>
           <View style={styles.nameWrap}>
             <Text style={styles.name}>{user_nickname}</Text>
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
+    borderRadius: 20,
   },
   avatarRight: {
     flex: 1,

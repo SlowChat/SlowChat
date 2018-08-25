@@ -55,6 +55,7 @@ export default class Start extends PureComponent {
     }
     JPushModule.getRegistrationID(registrationId => {
       if (Global.token && Global.user && !Global.user.registrationId) {
+        Global.pushId = registrationId
         post('api/mail/setPushCode.html', {
           code: registrationId
         })
@@ -110,8 +111,10 @@ export default class Start extends PureComponent {
   }
 
   onBackAndroid() {
-    console.log(routes);
     if (routes.length < 2) { // 根界面
+      if (routes.length == 1 && routes[0].index != 0) {
+        return false
+      }
       if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
           return false;
       }
@@ -119,7 +122,7 @@ export default class Start extends PureComponent {
       ToastAndroid.show('再点击一次退出应用', ToastAndroid.SHORT);
       return true;
     }
-    return true
+    return false
   }
 
   getNavRef = (ref) => {
@@ -127,7 +130,7 @@ export default class Start extends PureComponent {
   }
 
   navigationStateChange = (prevNav, nav, action) => {
-    routes = nav.routes
+    routes = nav.routes || []
   }
 
   render() {

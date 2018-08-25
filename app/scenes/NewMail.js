@@ -230,7 +230,7 @@ export default class NewMail extends Component {
         if (item.url.indexOf('http') == 0) {
           continue
         }
-        const res = await upload(item.url, item.fileName)
+        const res = await upload(item.url, item.filename)
         if (res.code == 1) {
           attachs[index] = {...res.data, ext: item.ext}
         } else {
@@ -239,6 +239,7 @@ export default class NewMail extends Component {
       }
       return attachs
     } catch (e) {
+      console.log(e);
       throw e
     }
   }

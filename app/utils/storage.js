@@ -11,8 +11,6 @@ let storage = new Storage({
 });
 
 
-
-
 export default {
   setToken: (token, user) => {
     Global.token = token
@@ -55,6 +53,9 @@ export default {
     } catch (e) {
       return {}
     }
+  },
+  getPushID: () => {
+    return Global.pushId
   },
   clear: () => {
     Global.token = ''

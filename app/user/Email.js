@@ -18,13 +18,22 @@ import Blank from '../components/Blank'
 import Footer from '../components/Footer'
 import { get, post } from '../utils/request'
 
+const DATA = {
+  reservation: '预定发送信件',
+  sent: '完成发送信件',
+  public: '我公开的信件',
+  // let title = '草稿箱'
+}
+
 export default class Email extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
-      title: params.title || '',
-      headerLeft: params.headerLeft,
-      headerRight: params.headerRight
+      title: DATA[params.status] || '草稿箱',
+      // headerLeft: params.headerLeft,
+      headerRight: params.status == 'draft' ? (
+        <Button title="编辑" color="#666666" onPress={this.handleEdit} />
+      ) : <View />
     }
   }
 
@@ -53,30 +62,18 @@ export default class Email extends Component {
   componentDidMount() {
     this.setDefault()
     this.fetchData()
-    
+
   }
 
   setDefault = () => {
     const status = this.getStatus()
-    let title = '草稿箱'
     if (status === 'reservation') {
       this.sendState = 0
-      title = '预定发送信件'
     } else if (status === 'sent') {
       this.sendState = 10
-      title = '完成发送信件'
     } else if (status === 'public') {
       this.type = 2
-      title = '我公开的信件'
     }
-    this.props.navigation.setParams({
-      title,
-      headerLeft: '',
-      // headerRight: status == 'sent' ? (
-      headerRight: status == 'draft' ? (
-        <Button title="编辑" color="#666666" onPress={this.handleEdit} />
-      ) : <View />,
-    })
   }
 
   handleEdit = () => {
@@ -109,12 +106,12 @@ export default class Email extends Component {
       this.setState({
         idList: this.state.idList.push(item.id)
       })
-      
+
     ))
     console.log(this.state.idList)
     this.setState({isAllSelect: true})
   }
- 
+
   getStatus = () => {
     const { params = {} } = this.props.navigation.state;
     return params.status
@@ -164,12 +161,12 @@ export default class Email extends Component {
     const status = this.getStatus()
     const { navigate, state } = this.props.navigation;
     return (
-      <EmailList status={status} 
-        isAllSelect={this.state.isAllSelect} 
-        item={item} id={item.id} 
-        score={state.params.score} 
-        navigate={navigate} 
-        onPress= {(id) => this.onPressCancel(id)} 
+      <EmailList status={status}
+        isAllSelect={this.state.isAllSelect}
+        item={item} id={item.id}
+        score={state.params.score}
+        navigate={navigate}
+        onPress= {(id) => this.onPressCancel(id)}
         isDel={this.state.isDel}
         onSelDelItem = {(id) => this.onSelDelItem(id)}
         isDelClick={this.state.isDelClick}
@@ -179,7 +176,7 @@ export default class Email extends Component {
     )
   }
 
-  
+
 
   onSelDelItem = (id) => {
     var newArr = this.state.idList;
@@ -187,7 +184,7 @@ export default class Email extends Component {
       for(var i in newArr) {
         if(newArr.indexOf(id) === -1) {
           newArr.push(id)
-        } 
+        }
       }
     } else {
       newArr.push(id)
@@ -409,6 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 1,
     borderColor: '#CCCCCC',
+    padding: 0
   },
   result: {
     textAlign: 'center',

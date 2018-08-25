@@ -22,10 +22,15 @@ export default class HomeItem extends PureComponent<Props> {
   }
   render() {
     const { item } = this.props.data
+    let { avatar } = (item || {}).user || {}
+    let source = {uri: avatar}
+    if (!avatar || avatar.indexOf('http') != 0) {
+      source = ICONS.head
+    }
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this.handlePress}>
         <View style={styles.avatarWrap}>
-          <Image style={styles.avatar} source={ICONS.head} />
+          <Image style={styles.avatar} source={source} />
           <View style={styles.avatarRight}>
             <View style={styles.nameWrap}>
               <Text style={styles.name}>{item.user.user_nickname}</Text>
@@ -73,6 +78,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
+    borderRadius: 20,
   },
   avatarRight: {
     flex: 1,

@@ -21,12 +21,13 @@ export default class ReplyItem extends PureComponent {
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
 
     let { avatar } = item.user || {}
+    let source = {uri: avatar}
     if (!avatar || avatar.indexOf('http') != 0) {
-      avatar = ICONS.head
+      source = ICONS.head
     }
     return (
       <View style={styles.wrap}>
-        <Image style={styles.avatar} source={avatar} />
+        <Image style={styles.avatar} source={source} />
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>
           <Text style={styles.content}>{item.content}</Text>
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
     minWidth: 40,
     height: 40,
     marginRight: 10,
+    borderRadius: 20,
   },
   avatarRight: {
     flex: 1,
