@@ -33,7 +33,7 @@ export default class SendTip extends PureComponent {
         <Image style={styles.icon} source={ICONS[type]} />
         <Text style={styles.txt}>{STATUS[type]}</Text>
         {
-          type == 0 && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+          type == 1 && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
             <View style={styles.btnWrap}>
               <Text style={styles.btn}>取消发送</Text>
             </View>

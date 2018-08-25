@@ -47,8 +47,7 @@ export default class EditEmail extends Component {
   }
 
   handleSubmit = () => {
-    const { navigate, pop } = this.props.navigation;
-    const { email, vCode, status } = this.state;
+    const { email, vCode, status, isClick } = this.state;
     let url = ''
     if (status=== 'bind') {
       url = 'api/user/bind_email.html'
@@ -57,28 +56,30 @@ export default class EditEmail extends Component {
     } else {
       url = 'api/user/edit_email.html'
     }
-    post(url, { email: email, verification_code: vCode }, false).then((res) => {
-      if (res.code == 1) {
-        
-        if (status === 'check') {
-          this.refs.toast.show(res.msg);
-          this.setState({
-            email: '',
-            vCode: '',
-            status: '',
-            status: '',
-            btnText: '绑定',
-            isClick: false,
-            initStatus: true,
-            isVcodeClick: false
-          })
+    if (isClick) {
+      post(url, { email: email, verification_code: vCode }, false).then((res) => {
+        if (res.code == 1) {
+          
+          if (status === 'check') {
+            this.refs.toast.show(res.msg);
+            this.setState({
+              email: '',
+              vCode: '',
+              status: '',
+              status: '',
+              btnText: '绑定',
+              isClick: false,
+              initStatus: true,
+              isVcodeClick: false
+            })
+          } else {
+            this.setState({isSucc: true})
+          }
         } else {
-          this.setState({isSucc: true})
+          this.refs.toast.show(res.msg);
         }
-      } else {
-        this.refs.toast.show(res.msg);
-      }
-    })
+      })
+    }
   }
 
   handleVcode = () => {
@@ -228,6 +229,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
     alignItems:'center',
     justifyContent: 'center',
+  },
+  active: {
+    backgroundColor: '#E24B92',
   },
   saveTxt: {
     color: '#fff',

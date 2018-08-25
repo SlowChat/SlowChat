@@ -12,13 +12,14 @@ import {
 export default class Alert extends PureComponent {
   state = {
     visible: false,
+    type: 'confirm',
     title: '',
     txt: '',
     leftBtnTxt: '取消',
     rightBtnTxt: '确定'
   }
   componentWillMount() {
-    const { title, txt, leftBtnTxt, rightBtnTxt } = this.props
+    const { title, txt, leftBtnTxt = '取消', rightBtnTxt = '确定' } = this.props
     this.setState({ title, txt, leftBtnTxt, rightBtnTxt })
   }
   show(data = {}) {
@@ -54,7 +55,7 @@ export default class Alert extends PureComponent {
     }
   }
   render() {
-    const { visible, title, txt, leftBtnTxt, rightBtnTxt } = this.state
+    const { type, visible, title, txt, leftBtnTxt, rightBtnTxt } = this.state
     return (
       <Modal
         animationType='fade'
@@ -70,15 +71,21 @@ export default class Alert extends PureComponent {
             <View style={styles.txtView}>
               <Text style={styles.txt}>{txt}</Text>
             </View>
-            <View style={styles.btn}>
-              <TouchableOpacity activeOpacity={0.8} style={styles.leftBtn} onPress={this.handleClose}>
-                <Text style={styles.leftBtnTxt}>{leftBtnTxt}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.8} style={styles.rightBtn} onPress={this.handleOk}>
-                <Text style={styles.rightBtnTxt}>{rightBtnTxt}</Text>
-              </TouchableOpacity>
-            </View>
-
+            {
+              type == 'confirm' ? (<View style={styles.btn}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.leftBtn} onPress={this.handleClose}>
+                  <Text style={styles.leftBtnTxt}>{leftBtnTxt}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.8} style={styles.rightBtn} onPress={this.handleOk}>
+                  <Text style={styles.rightBtnTxt}>{rightBtnTxt}</Text>
+                </TouchableOpacity>
+              </View>)
+              : (<View style={styles.btn}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.rightBtn} onPress={this.handleOk}>
+                  <Text style={styles.rightBtnTxt}>{rightBtnTxt}</Text>
+                </TouchableOpacity>
+              </View>)
+            }
           </View>
         </View>
       </Modal>

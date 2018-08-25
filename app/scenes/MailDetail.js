@@ -44,7 +44,7 @@ export default class MailDetail extends Component {
   }
   state = {
     top: -44,
-    status: 0, // 0 待发送  10 已发送 20 取消
+    status: 0,
     activeTab: 0,
     translateValue: new Animated.Value(-44),
     detail: {},
@@ -52,7 +52,6 @@ export default class MailDetail extends Component {
     showLoading: false,
   }
   componentWillMount() {
-    this.getData()
     const { params = {} } = this.props.navigation.state
     let status = params.status
     let top = -44
@@ -62,6 +61,7 @@ export default class MailDetail extends Component {
     }
     this.status = status
     this.setState({ status, top })
+    this.getData()
   }
   componentDidMount() {
     if (this.status != null) {
@@ -148,7 +148,7 @@ export default class MailDetail extends Component {
     }).start();
   }
   getId() {
-    const { id = 29 } = this.props.navigation.state.params || {}
+    const { id } = this.props.navigation.state.params || {}
     return id
   }
   async getData() {

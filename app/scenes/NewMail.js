@@ -36,7 +36,7 @@ export default class NewMail extends Component {
     return {
       title: '写信',
       headerRight: (
-        <TouchableOpacity style={styles.headerRight} onPress={params.rightOnPress}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
           <Text style={[{color: params.enable ? '#E24B92' : '#F9DBE9'}, styles.headerRightTxt]}>发送</Text>
         </TouchableOpacity>
       ),

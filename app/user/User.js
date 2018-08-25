@@ -12,7 +12,7 @@ import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
 import SuccessModal from '../components/SuccessModal'
 
-let mobile='', userEmail='', username='', msgCount=0;
+let mobile='', userEmail='', username='', msgCount=0, level, avatar;
 export default class User extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -22,7 +22,7 @@ export default class User extends Component {
       title: '个人中心',
       headerLeft: (
         <View style={styles.icon}>
-          <TouchableWithoutFeedback onPress={() => navigate('Setting', { mobile, userEmail, username })}>
+          <TouchableWithoutFeedback onPress={() => navigate('Setting', { mobile, userEmail, username, level, avatar })}>
             <Image style={styles.set} source={require('../images/icon_set.png')} />
           </TouchableWithoutFeedback>
         </View>
@@ -83,6 +83,8 @@ export default class User extends Component {
         userEmail = data.user_email
         username = data.user_nickname
         msgCount = data.msg_count
+        level = data.level
+        avatar = data.avatar
         this.setState({
           mobile: data.mobile,
           userEmail: data.user_email,
@@ -134,8 +136,8 @@ export default class User extends Component {
   }
   goInfo = () => {
     const { navigate } = this.props.navigation;
-    const { username, avatar, sex, birthday } = this.state
-    navigate('Information', { username, avatar, sex, birthday })
+    const { username, avatar, sex, birthday, level } = this.state
+    navigate('Information', { username, avatar, sex, birthday, level })
   }
   render() {
     const { navigate } = this.props.navigation;

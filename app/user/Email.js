@@ -9,13 +9,14 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
 import EmailList from '../components/EmailList'
 import Toast from 'react-native-easy-toast'
+import Loading from '../components/Loading'
 import Blank from '../components/Blank'
 import Footer from '../components/Footer'
+import ErrorTip from '../components/ErrorTip'
 import { get, post } from '../utils/request'
 
 const DATA = {
@@ -32,7 +33,9 @@ export default class Email extends Component {
       title: DATA[params.status] || '草稿箱',
       // headerLeft: params.headerLeft,
       headerRight: params.status == 'draft' ? (
-        <Button title="编辑" color="#666666" onPress={this.handleEdit} />
+        <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
+          <Text style={styles.headerRightTxt}>编辑</Text>
+        </TouchableOpacity>
       ) : <View />
     }
   }
@@ -59,18 +62,22 @@ export default class Email extends Component {
   pageNo = 0
   pageSize = 10
 
-  componentDidMount() {
+  componentWillMount() {
     this.setDefault()
     this.fetchData()
-
+  }
+  componentDidMount() {
+    this.props.navigation.setParams({
+      rightOnPress: this.handleEdit
+    })
   }
 
   setDefault = () => {
     const status = this.getStatus()
     if (status === 'reservation') {
-      this.sendState = 0
+      this.sendState = 1
     } else if (status === 'sent') {
-      this.sendState = 10
+      this.sendState = 2
     } else if (status === 'public') {
       this.type = 2
     }
@@ -115,6 +122,11 @@ export default class Email extends Component {
   getStatus = () => {
     const { params = {} } = this.props.navigation.state;
     return params.status
+  }
+
+  initData = () => {
+    this.pageNo = 0
+    this.fetchData()
   }
 
   fetchData = () => {
@@ -163,12 +175,12 @@ export default class Email extends Component {
     return (
       <EmailList status={status}
         isAllSelect={this.state.isAllSelect}
-        item={item} id={item.id}
+        item={item}
         score={state.params.score}
         navigate={navigate}
-        onPress= {(id) => this.onPressCancel(id)}
+        onPress= {this.onPressCancel}
         isDel={this.state.isDel}
-        onSelDelItem = {(id) => this.onSelDelItem(id)}
+        onSelDelItem = {this.onSelDelItem}
         isDelClick={this.state.isDelClick}
         onSubmitDelete={() => this.submitDelete()}
         onHandleDelClose={() => this.handleDelClose()}
@@ -278,30 +290,6 @@ export default class Email extends Component {
     })
   }
 
-  // 加载等待的view
-  renderLoadingView = () => {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator
-          animating
-          style={[styles.gray, {height: 80}]}
-          color='red'
-          size='large'
-        />
-      </View>
-    )
-  }
-
-    // 加载失败view
-  renderErrorView = () => {
-    return (
-      <View style={styles.container}>
-        <Image style={styles.spaceImg} source={require('../images/icon_error.png')} />
-        <Text>您遇到网络问题</Text>
-      </View>
-    )
-  }
-
   renderData = () => {
     const { isShowResult } = this.state
     const { params } = this.props.navigation.state;
@@ -362,10 +350,10 @@ export default class Email extends Component {
   render () {
     // 第一次加载等待的view
     if (this.state.isLoading && !this.state.error) {
-      return this.renderLoadingView()
+      return <Loading />
     } else if (this.state.error) {
       // 请求失败view
-      return this.renderErrorView()
+      return <ErrorTip onPress={this.initData} />
     }
     // 加载数据
     return this.renderData()
@@ -376,6 +364,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f6f7f8',
+  },
+  headerRight: {
+    width: 64,
+    paddingRight: 20,
+    alignItems: 'flex-end',
   },
   searchBox: {
     flexDirection: 'row',
@@ -420,10 +413,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#E24B92'
   },
-  editBtn: {
-    paddingRight: 15,
+  headerRightTxt: {
+    fontFamily: 'PingFangSC-Regular',
     color: '#666',
-    fontSize: 18
+    fontSize: 16
   },
   emailList: {
     marginTop: 10,

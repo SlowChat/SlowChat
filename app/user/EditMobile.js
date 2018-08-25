@@ -48,7 +48,7 @@ export default class EditMobile extends Component {
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { mobile, vCode, status } = this.state;
+    const { mobile, vCode, status, isClick } = this.state;
     let url = ''
     if (status=== 'bind') {
       url = 'api/user/bind_mobile.html'
@@ -57,26 +57,29 @@ export default class EditMobile extends Component {
     } else {
       url = 'api/user/edit_mobile.html'
     }
-    post(url, { mobile: mobile, verification_code: vCode }).then((res) => {
-      console.log(res)
-      if (res.code == 1) {
-        if (status === 'check') {
-          this.refs.toast.show(res.msg);
-          this.setState({
-            mobile: '',
-            vCode: '',
-            status: '',
-            btnText: '绑定',
-            isClick: false,
-            initStatus: true,
-          })
+    if  (isClick) {
+      post(url, { mobile: mobile, verification_code: vCode }).then((res) => {
+        console.log(res)
+        if (res.code == 1) {
+          if (status === 'check') {
+            this.refs.toast.show(res.msg);
+            this.setState({
+              mobile: '',
+              vCode: '',
+              status: '',
+              btnText: '绑定',
+              isClick: false,
+              initStatus: true,
+            })
+          } else {
+            this.setState({isSucc: true})
+          }
         } else {
-          this.setState({isSucc: true})
+          this.refs.toast.show(res.msg);
         }
-      } else {
-        this.refs.toast.show(res.msg);
-      }
-    })
+      })
+    }
+    
   }
 
   handleVcode = () => {
