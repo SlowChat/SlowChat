@@ -123,8 +123,9 @@ const styles = StyleSheet.create({
   },
   // 注册页面用
   registBtn: {
-    width: 109,
+    width: 105,
     zIndex: 10,
+    alignItems: 'center'
   },
   registTxt: {
     fontSize: 16,

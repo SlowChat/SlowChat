@@ -180,7 +180,8 @@ export default class Regist extends Component {
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
                keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
-             <VerifyCode type="regist" reset={this.state.resetVertify} username={username} onTip={this.showTip} />
+              <View style={styles.divider}></View>
+              <VerifyCode type="regist" reset={this.state.resetVertify} username={username} onTip={this.showTip} />
             </ImageBackground>
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
@@ -233,7 +234,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: 170,
   },
-
   safeview: {
     flex: 1,
     position: 'absolute',
@@ -367,5 +367,10 @@ const styles = StyleSheet.create({
     height: 12,
     marginRight: 3,
     resizeMode: 'contain'
-  }
+  },
+  divider: {
+    width: 2,
+    backgroundColor: '#FFFFFF',
+    height: 44,
+  },
 });
