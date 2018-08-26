@@ -141,6 +141,9 @@ export default class Space extends Component<Props> {
   handlePress = (id) => {
     this.props.navigation.push('MailDetail', {id})
   }
+  renderHeader = () => {
+    return <View style={styles.divider}></View>
+  }
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
   }
@@ -163,6 +166,7 @@ export default class Space extends Component<Props> {
           keyExtractor={(item) => String(item.id)}
           onEndReachedThreshold={0.5}
           onEndReached={this.handleLoadmore}
+          // ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
         />
         <Toast ref="toast" position="center" />
@@ -175,7 +179,7 @@ export default class Space extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: '#F6F6F6',
     fontFamily: 'PingFangSC-Regular',
   },
   header: {

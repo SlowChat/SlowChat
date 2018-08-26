@@ -77,7 +77,7 @@ export default class Information extends Component {
   }
 
   onChangeName = () => {
-    this.setState({ 
+    this.setState({
       isSucc: true,
       isShow: false
     })
@@ -199,7 +199,7 @@ export default class Information extends Component {
           <Picker.Item label="男" value="男" />
           <Picker.Item label="女" value="女" />
         </Picker>
-        
+
         <Toast ref="toast" position="center" />
         <Confirm
           tit='请输入新的昵称'
@@ -230,12 +230,12 @@ export default class Information extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#F6F6F6',
   },
   link: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#F6F6F6',
   },
   menu: {
     flexDirection: 'row',

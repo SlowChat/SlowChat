@@ -155,8 +155,8 @@ export default class NewMail extends Component {
     const { params } = this.state
     params[key] = value
     this.throttle(() => {
-      this.setState({ 
-        params, 
+      this.setState({
+        params,
         showSendMe }, () => {
         const sendBtnEnable = this.checkParams()
         if (this.sendBtnEnable != sendBtnEnable) {
@@ -319,13 +319,8 @@ export default class NewMail extends Component {
             <TextInput autoFocus style={styles.input}
               value={params.email}
               onChangeText={(text) => this.setParams('email', text)}
-<<<<<<< HEAD
-              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => this.setState({params:{'email': '发给自己'}})}>
-=======
               returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
->>>>>>> 6dba388dde7b2ded3aebfbfc78967b330ccc15f3
+            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => this.setState({params:{'email': '发给自己'}})}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
           </View>

@@ -115,6 +115,8 @@ export default createBottomTabNavigator(
       style: {
         height: 50,
         backgroundColor: '#fff',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderTopColor: '#EEEEEE',
      },
     },
   }

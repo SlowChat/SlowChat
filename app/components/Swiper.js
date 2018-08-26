@@ -75,12 +75,28 @@ export default class SwiperComponent extends PureComponent<Props> {
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   wrapper: {
-    height: 225,
+    // height: 225,
+    ...Platform.select({                //不同的平台执行不同的样式
+      ios: {
+        height: 225,
+      },
+      android: {
+        height: 205,
+      },
+    })
   },
   image: {
-    height: 225,
+    // height: 225,
     width: width,
     resizeMode: 'cover',
+    ...Platform.select({                //不同的平台执行不同的样式
+      ios: {
+        height: 225,
+      },
+      android: {
+        height: 205,
+      },
+    })
   },
   pagination: {
     bottom: 10,

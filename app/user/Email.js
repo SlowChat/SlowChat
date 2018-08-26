@@ -306,8 +306,9 @@ export default class Email extends Component {
   }
 
   renderData = () => {
-    const { isShowResult } = this.state
+    const { isShowResult, searchText } = this.state
     const { params } = this.props.navigation.state;
+    const isSearch = Boolean(searchText)
     return (
       <View style={styles.container}>
         <View style={styles.searchBox}>
@@ -316,7 +317,7 @@ export default class Email extends Component {
             style={styles.search}
             onChangeText={(text) => this.setState({searchText: text})}
             placeholder='搜索'
-            value={this.state.searchText}
+            value={searchText}
           />
           <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
         </View>
@@ -338,7 +339,7 @@ export default class Email extends Component {
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => String(item.id)}
             />
-          ) : this.state.isSpacePage && <Blank searchTxt={this.state.searchText} />
+          ) : this.state.isSpacePage && <Blank searchTxt={isSearch} />
         }
         <SafeAreaView />
         <Toast ref="toast" position="bottom" />
