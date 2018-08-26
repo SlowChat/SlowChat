@@ -45,20 +45,24 @@ export default class User extends Component {
   }
 
   state = {
-    mobile: '',
-    userEmail: '',
-    username: '',
-    sex: 0,
-    avatar: '',
-    draftCount: 0,
-    unsendCount: 0,
-    sentCount: 0,
-    publicCount: 0,
-    birthday: '',
+    user: {
+      mobile: '',
+      userEmail: '',
+      username: '',
+      sex: 0,
+      avatar: '',
+      birthday: '',
+      level: '',
+    },
+    count: {
+      draftCount: 0,
+      unsendCount: 0,
+      sentCount: 0,
+      publicCount: 0,
+    },
     sign: {},
     msgCount: 0,
     isSucc: false,
-    level: '',
     isLogin: null
   }
 
@@ -91,20 +95,24 @@ export default class User extends Component {
         level = data.level
         avatar = data.avatar
         this.setState({
-          mobile: data.mobile,
-          userEmail: data.user_email,
-          username: data.user_nickname,
-          sex: data.sex,
-          avatar: data.avatar,
-          draftCount: data.draft_count,
-          unsendCount: data.unsend_count,
-          sentCount: data.send_count,
-          publicCount: data.public_count,
-          level: data.level,
-          birthday: data.birthday,
+          isLogin: false,
           msgCount: data.msg_count,
           score: data.score,
-          isLogin: false
+          user: {
+            mobile: data.mobile,
+            userEmail: data.user_email,
+            username: data.user_nickname,
+            sex: data.sex,
+            avatar: data.avatar,
+            level: data.level,
+            birthday: data.birthday,
+          },
+          count: {
+            draftCount: data.draft_count,
+            unsendCount: data.unsend_count,
+            sentCount: data.send_count,
+            publicCount: data.public_count,
+          },
         })
         this.props.navigation.setParams({
           msgCount: data.msg_count
@@ -120,7 +128,7 @@ export default class User extends Component {
 
   handerSetting() {
     const { navigate } = this.props.navigation;
-    const { mobile, userEmail } = this.state;
+    const { mobile, userEmail } = this.state.user;
     navigate('Setting', { mobile, userEmail })
   }
 
@@ -143,17 +151,19 @@ export default class User extends Component {
   }
   goInfo = () => {
     const { navigate } = this.props.navigation;
-    const { username, avatar, sex, birthday, isLogin } = this.state
+    const { isLogin } = this.state
     if (isLogin) {
       navigate('Login')
     } else {
-      navigate('Information', { username, avatar, sex, birthday, type: 'Information' })
+      navigate('Information', { ...this.state.user, type: 'Information' })
     }
   }
-  
+
   render() {
     const { navigate } = this.props.navigation;
-    const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score, isLogin } = this.state;
+    const { username, sex, avatar, birthday, level } = this.state
+    const { draftCount, unsendCount, sentCount, publicCount } = this.state.count
+    const { sign, msgCount, score, isLogin } = this.state;
     return (
       <View style={styles.container}>
         <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />
