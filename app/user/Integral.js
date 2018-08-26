@@ -7,8 +7,8 @@ import {
   TouchableWithoutFeedback,
   FlatList
 } from 'react-native';
-import { get, post } from '../utils/request'
-
+import { post } from '../utils/request'
+import { SafeAreaView } from 'react-navigation'
 import Footer from '../components/Footer'
 import Blank from '../components/Blank'
 import Loading from '../components/Loading'
@@ -44,6 +44,12 @@ export default class Integral extends Component {
 
   componentDidMount() {
     this.fetchData()
+  }
+
+  componentWillUnmount(){
+    this.setState = (state,callback)=>{
+      return;
+    };
   }
 
   initData = () => {
@@ -118,9 +124,9 @@ export default class Integral extends Component {
   }
 
     // 列表分隔线
-  _separator = () => {
-    return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
-  }
+  // _separator = () => {
+  //   return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
+  // }
 
     // 加载失败view
   renderErrorView = () => {
@@ -155,6 +161,7 @@ export default class Integral extends Component {
             />
           ) : this.state.isSpacePage && <Blank />
         }
+        <SafeAreaView />
       </View>
     )
   }
@@ -199,6 +206,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   list: {
+    flex: 1,
     flexDirection: 'row',
     paddingLeft: 15,
     paddingRight: 15,
@@ -206,13 +214,13 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     alignItems:'center',
     justifyContent: 'center',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
-    borderBottomColor: '#eee',
+    borderBottomColor: '#e0e0e0',
     backgroundColor: '#fff',
   },
   left: {
-    width: '80%'
+    flex: 1,
   },
   time: {
     fontSize: 14,
@@ -223,8 +231,8 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   right: {
+    flex: 1,
     flexDirection: 'row',
-    width: '20%',
     textAlign: 'right',
     color: '#E24B92',
     fontSize: 18
@@ -235,7 +243,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     borderColor: '#e0e0e0',
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid'
   },
 });

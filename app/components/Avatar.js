@@ -9,19 +9,30 @@ import {
 
 export default class Avatar extends PureComponent {
   render() {
-    const { username, avatar, level, onPress } = this.props;
+    const { username, avatar, level, onPress, type } = this.props;
+    console.log(type)
     let source = avatar ? {uri: avatar} : require('../images/default_avatar_160.png')
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={styles.avatarWrap}>
-          <Image style={styles.avatar} source={source} />
-          <View style={styles.avatarRight}>
-            <Text style={styles.name}>{ username }</Text>
-            <View style={styles.levelWrap}>
-                <Text style={styles.level}>{level}</Text>
+        {
+          type ? (
+            <View style={styles.avatarWrap}>
+              <Text style={styles.tit}>头像</Text>
+              <Image style={styles.avatarInfo} source={source} />
             </View>
-          </View>
-        </View>
+          ) : (
+            <View style={styles.avatarWrap}>
+              <Image style={styles.avatar} source={source} />
+              <View style={styles.avatarRight}>
+                <Text style={styles.name}>{ username }</Text>
+                <View style={styles.levelWrap}>
+                    <Text style={styles.level}>{level}</Text>
+                </View>
+              </View>
+            </View>
+          )
+        }
+        
       </TouchableWithoutFeedback>
     )
   }
@@ -30,19 +41,38 @@ export default class Avatar extends PureComponent {
 const styles = StyleSheet.create({
   avatarWrap: {
     flexDirection: 'row',
-    padding: 30,
+    padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    alignItems: 'center'
   },
   avatar: {
     width: 80,
     height: 80,
     marginRight: 30,
     borderRadius: 40,
+    borderWidth: 5,
+    borderColor: '#F6F6F6',
+    // borderStyle: 'solid'
   },
   avatarRight: {
     flex: 1,
+  },
+  tit: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  avatarInfo: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 5,
+    borderColor: '#F6F6F6',
+    backgroundColor: '#ff0000'
   },
   name: {
     fontFamily: 'PingFangSC-Regular',

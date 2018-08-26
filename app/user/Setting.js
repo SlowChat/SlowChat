@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-import {SafeAreaView, NavigationActions} from 'react-navigation'
+import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
 import Alert from '../components/Alert'
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',

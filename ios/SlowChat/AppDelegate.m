@@ -75,11 +75,12 @@
   NSURL *jsCodeLocation;
 
   
-    #ifdef DEBUG
-        jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-    #else
-        jsCodeLocation = [CodePush bundleURL];
-    #endif
+    //#ifdef DEBUG
+     //   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+   // #else
+   //     jsCodeLocation = [CodePush bundleURL];
+   // #endif
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.105:8081/index.bundle?platform=ios&dev=true"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"SlowChat"

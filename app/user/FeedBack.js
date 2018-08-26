@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
+  ScrollView,
   TextInput,
   TouchableOpacity
 } from 'react-native';
@@ -42,7 +42,7 @@ export default class FeedBack extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps>
         <Text style={styles.label}>问题与意见</Text>
         <TextInput
           multiline
@@ -64,7 +64,7 @@ export default class FeedBack extends Component {
           </View>
         </TouchableOpacity>
         <Toast ref="toast" position="center" />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     backgroundColor: '#fff',
+    textAlignVertical: 'top',
   },
   input: {
     height: 44,

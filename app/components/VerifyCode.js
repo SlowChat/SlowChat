@@ -94,7 +94,7 @@ export default class VerifyCode extends PureComponent {
   render() {
     const { type, username } = this.props
     this.isActive = this.state.isVrfy && (isMobileNumberSupport(username) || isEmail(username))
-    if (this.props.type == 'regist') {
+    if (type == 'regist') {
       return (<TouchableOpacity activeOpacity={0.7} style={[styles.registBtn]} onPress={this.onVrfyCode}>
         <Text style={[styles.registTxt, this.isActive ? styles.activeRegistTxt : {}]}>{this.state.vrfyText}</Text>
       </TouchableOpacity>)

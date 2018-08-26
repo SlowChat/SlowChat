@@ -14,7 +14,7 @@ export default class SuccessModal extends PureComponent {
     this.props.navigation.goBack()
   }
   handleImprove = () => {
-    this.props.navigation.replace('Information')
+    this.props.navigation.replace('Information', { type: 'Information' })
   }
   render() {
     return (

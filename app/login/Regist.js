@@ -7,9 +7,7 @@ import {
   ScrollView,
   Image,
   ImageBackground,
-  CheckBox,
   TouchableOpacity,
-  StatusBar,
   Platform,
 } from 'react-native'
 
@@ -183,7 +181,7 @@ export default class Regist extends PureComponent<Props> {
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
                keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
-             <VerifyCode type="regist" reset={this.state.resetVertify} mobile={username} onTip={this.showTip} />
+             <VerifyCode type="regist" reset={this.state.resetVertify} username={username} onTip={this.showTip} />
             </ImageBackground>
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}

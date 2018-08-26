@@ -77,6 +77,7 @@ export default class NewMail extends Component {
       rightOnPress: this.handleSend
     })
   }
+  
 
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -123,7 +124,9 @@ export default class NewMail extends Component {
   }
 
   setParams(key, value) {
+      // this.setState({email: value})
     let { showSendMe } = this.state
+    console.log('--------', showSendMe)
     if (key == 'email') {
       if (value == '发给自己' && showSendMe != false) {
         showSendMe = false
@@ -132,8 +135,12 @@ export default class NewMail extends Component {
       }
     }
     const { params } = this.state
-    params[key] = value
-    this.setState({ params, showSendMe }, () => {
+    setTimeout(() => {
+      params[key] = value
+    }, 100)
+    this.setState({ 
+      params, 
+      showSendMe }, () => {
       const sendBtnEnable = this.checkParams()
       if (this.sendBtnEnable != sendBtnEnable) {
         this.noupdate = true
@@ -280,7 +287,11 @@ export default class NewMail extends Component {
           <HeaderTip tip="爱慢邮——让我们回到未来" />
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
-            <TextInput autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
+            <TextInput autoFocus value={params.email} style={styles.input} 
+              onChangeText={(text) => this.setParams('email', text)}
+              // onChange={(evt) => this.setState({ text: evt.nativeEvent.text })}
+              // onChangeText={(text) => setTimeout(() => {this.setState({ text: text })})}
+              // onEndEditing={(evt) => this.setState({ text: evt.nativeEvent.text })}
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>

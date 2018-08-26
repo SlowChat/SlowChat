@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
+  ScrollView,
   TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -126,7 +126,7 @@ export default class EditEmail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.link}>
+        <ScrollView style={styles.link} keyboardShouldPersistTaps>
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
@@ -157,7 +157,7 @@ export default class EditEmail extends Component {
               <Text style={styles.saveTxt}>{this.state.btnText}</Text>
             </View>
           </TouchableWithoutFeedback>
-        </View>
+        </ScrollView>
         <Toast ref="toast" position="bottom" />
         <SuccessModal
           txt={'邮箱绑定成功'}
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',

@@ -5,7 +5,6 @@ import {
   View,
   Image,
   Button,
-  ActivityIndicator,
   FlatList,
   TextInput,
   TouchableOpacity,
@@ -19,12 +18,12 @@ import Footer from '../components/Footer'
 import ErrorTip from '../components/ErrorTip'
 import { post } from '../utils/request'
 import dateFormat from '../utils/date'
+import SuccessModal from '../components/SuccessModal'
 
 const DATA = {
   reservation: '预定发送信件',
   sent: '完成发送信件',
   public: '我公开的信件',
-  // let title = '草稿箱'
 }
 
 export default class Email extends Component {
@@ -32,7 +31,6 @@ export default class Email extends Component {
     const { params = {} } = navigation.state
     return {
       title: DATA[params.status] || '草稿箱',
-      // headerLeft: params.headerLeft,
       headerRight: params.status == 'draft' ? (
         <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
           <Text style={styles.headerRightTxt}>编辑</Text>
@@ -56,7 +54,8 @@ export default class Email extends Component {
     isDel: false,
     isAllSelect: false,
     isDelClick: false,
-    idList: [] // 全选删除id
+    idList: [], // 全选删除id
+    isSucc: false
   }
   sendState = null //邮件状态 1 待发送 2已发送 3取消
   type = null  //公开状态 1 不公开 2公开
@@ -71,6 +70,12 @@ export default class Email extends Component {
     this.props.navigation.setParams({
       rightOnPress: this.handleEdit
     })
+  }
+
+  componentWillUnmount(){
+    this.setState = (state,callback)=>{
+      return;
+    };
   }
 
   setDefault = () => {
@@ -242,10 +247,11 @@ export default class Email extends Component {
     post('api/mail/cancel.html', {id: id}).then(res => {
       const { code } = res
       if (code === 1) {
-        this.refs.toast.show('取消发送成功');
+        // this.refs.toast.show('取消发送成功');
         this.setState({
           dataArray: [],
-          idList: []
+          idList: [],
+          isSucc: true
         })
         this.pageNo = 0
         // 删除成功，重新请求接口
@@ -295,6 +301,10 @@ export default class Email extends Component {
     })
   }
 
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
+  }
+
   renderData = () => {
     const { isShowResult } = this.state
     const { params } = this.props.navigation.state;
@@ -328,7 +338,7 @@ export default class Email extends Component {
               onEndReachedThreshold={0.1}
               keyExtractor={(item, index) => String(item.id)}
             />
-          ) : this.state.isSpacePage && <Blank />
+          ) : this.state.isSpacePage && <Blank searchTxt={this.state.searchText} />
         }
         <SafeAreaView />
         <Toast ref="toast" position="bottom" />
@@ -339,6 +349,15 @@ export default class Email extends Component {
             </TouchableOpacity>
           )
         }
+        <SuccessModal
+          txt={'取消发送成功'}
+          btn={'返回'}
+          visible={this.state.isSucc}
+          onPress={() => {
+            this.props.navigation.pop() // navigate
+          }}
+          onClose={this.onRequestClose}
+        />
       </View>
     )
   }
@@ -401,7 +420,7 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: '#fff',
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#CCCCCC',
     padding: 0
   },
@@ -431,7 +450,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     borderColor: '#e0e0e0',
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid'
   },
 
