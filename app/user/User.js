@@ -126,7 +126,7 @@ export default class User extends Component {
           isSucc: true,
           sign: {
             score: data.score,
-            desc: data.count
+            count: data.count,
           }
         })
       }
