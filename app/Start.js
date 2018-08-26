@@ -54,6 +54,7 @@ export default class Start extends PureComponent {
       JPushModule = require('jpush-react-native').default
     }
     JPushModule.getRegistrationID(registrationId => {
+      console.log(registrationId, "==getRegistrationID====");
       if (Global.token && Global.user && !Global.user.registrationId) {
         Global.pushId = registrationId
         post('api/mail/setPushCode.html', {

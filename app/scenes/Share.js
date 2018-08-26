@@ -130,6 +130,7 @@ export default class Share extends PureComponent<Props> {
       uri = uri.replace('file://', '')
       this.uri = uri
     }
+    post('api/user/addShareScore.html')
     const message = {
       type: 'image',
       platform,

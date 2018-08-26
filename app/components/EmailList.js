@@ -130,9 +130,9 @@ export default class EmailList extends Component {
             <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
               {icon}
               <View style={styles.content}>
-                <Text style={styles.name}>{item.email}</Text>
-                <Text style={styles.name}>{item.title}</Text>
-                <Text style={styles.sendTime}>发送时间：{item.send_time}</Text>
+                <Text style={styles.name}>{item.email ? item.email : '无收件人'}</Text>
+                <Text style={styles.name}>{item.title ? item.title : '无主题'}</Text>
+                <Text style={styles.sendTime}>{item.send_time ? `发信时间：${item.send_time}` : '无发信时间'}</Text>
               </View>
               <View style={styles.time}>
                 <Text style={styles.timeTxt}>{item.add_time}</Text>
@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
   time: {
     flexDirection: 'row',
     textAlign: 'right',
-    alignItems: 'center',
   },
   timeTxt: {
     color: '#B4B4B4'

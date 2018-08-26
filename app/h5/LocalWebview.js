@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
   View,
   WebView,
+  Platform,
   StyleSheet
 } from 'react-native';
 import { post } from '../utils/request'
@@ -118,6 +119,7 @@ export default class LocalWebview extends Component<Props> {
         {showError && <ErrorTip onPress={this.reload} />}
         <WebView ref={ref => this.webview = ref}
           source={require('./h5.html')}
+          // source={Platform.OS == 'ios' ? require('./h5.html') : require('file:///android_asset/h5.html')}
           mixedContentMode="compatibility"
           userAgent="com.slowchat"
           scalesPageToFit

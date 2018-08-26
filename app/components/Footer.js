@@ -6,26 +6,28 @@ import {
   ActivityIndicator
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
+
 export default class Footer extends PureComponent {
   render() {
     const { showFoot } = this.props
     if (showFoot === 1) {
       return (
-        <View style={styles.nomore}>
+        <SafeAreaView style={styles.nomore}>
           <Text style={styles.nomoreTxt}>
               没有更多数据了
           </Text>
-        </View>
+        </SafeAreaView>
       )
     } else if(showFoot === 2) {
       return (
-        <View style={styles.footer}>
+        <SafeAreaView style={styles.footer}>
           <ActivityIndicator />
           <Text style={styles.footerTxt}>正在加载更多数据...</Text>
-        </View>
+        </SafeAreaView>
       )
     } else if(showFoot === 0){
-      return null
+      return <SafeAreaView />
     }
   }
 }
