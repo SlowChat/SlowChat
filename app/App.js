@@ -57,12 +57,13 @@ const StackApp = (isLogin) => createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'BottomTabs',
+  initialRouteName: 'NewMail',
   // isLogin ? 'BottomTabs' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,
     headerBackTitle: null,
     headerTintColor: '#E24B92',
+    // headerBackImage: './images/icon_back.png',
     headerRight: <View />,
     headerStyle: {
       backgroundColor: '#FFFFFF',

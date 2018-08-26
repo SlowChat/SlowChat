@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,7 +12,6 @@ import {
   StatusBar,
   Platform,
 } from 'react-native'
-
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Loading from '../components/Loading'
@@ -23,8 +22,7 @@ import { post } from '../utils/request'
 
 import { isMobileNumberSupport, isEmail } from '../utils/util'
 
-type Props = {};
-export default class Regist extends PureComponent<Props> {
+export default class Regist extends Component {
   static navigationOptions = ({navigation}) => {
     return {
       header: null,
@@ -135,15 +133,16 @@ export default class Regist extends PureComponent<Props> {
     this.refs.errorModalRef.show({txt})
   }
   isDisable() {
-    const { switchTab, username, password, verification_code } = this.state
+    const { activeTab, username, password, verification_code } = this.state
     if (!verification_code || !username || !password) return true
-    if (switchTab == 0) {
+    if (activeTab == 0) {
       if (!isMobileNumberSupport(username)) return true
     } else {
       if (!isEmail(username)) return true
     }
     return false
   }
+
   renderTabs() {
     const { activeTab } = this.state
     // <StatusBar hidden={true} />
@@ -169,7 +168,7 @@ export default class Regist extends PureComponent<Props> {
     const verifyStyle = username.trim() ? [styles.verifyTxt, styles.activeVerifyTxt] : styles.verifyTxt
     const placeholder = activeTab == 0 ? '请输入手机号' : '请输入邮箱'
     const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
-    const registBtnStyle = !checked || this.isDisable() ? [styles.registBtn, styles.disabled] : styles.registBtn
+    const registBtnStyle = (!checked || this.isDisable()) ? [styles.registBtn, styles.disabled] : styles.registBtn
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.safeview}>
@@ -177,22 +176,22 @@ export default class Regist extends PureComponent<Props> {
             <Image style={styles.back} source={require('../images/back_w.png')} />
           </TouchableOpacity>
         </SafeAreaView>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="always">
           {this.renderTabs()}
           <View style={styles.wrap}>
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
-               keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
+                keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' onLayout={this.onInputLayout} />
              <VerifyCode type="regist" reset={this.state.resetVertify} mobile={username} onTip={this.showTip} />
             </ImageBackground>
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
-                autoCapitalize="none" underlineColorAndroid='transparent' />
+                autoCapitalize="none" underlineColorAndroid='transparent' onLayout={this.onInputLayout} />
             </ImageBackground>
 
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput maxLength={12} secureTextEntry value={password} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入6-12位密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({password: text})}
-                underlineColorAndroid='transparent' />
+                underlineColorAndroid='transparent' onLayout={this.onInputLayout} />
             </ImageBackground>
             <TouchableOpacity activeOpacity={0.8} style={registBtnStyle} onPress={this.handleRegist}>
               <Text style={styles.registTxt}>注 册</Text>

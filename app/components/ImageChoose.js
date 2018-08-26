@@ -201,29 +201,24 @@ export default class ImageChoose extends PureComponent {
     const { items } = this.state
     const { visible, onClose } = this.props
     return (
-      <Modal visible={visible} transparent={true}
-        animationType="slide" onRequestClose={this.handleClose}>
-        <View style={styles.wrap}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={this.handleClose}></TouchableOpacity>
-          <SafeAreaView style={styles.content}>
-            <View style={styles.header}>
-              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
-                <Image style={styles.icon} source={require('../images/picture.png')}></Image>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
-                <Image style={styles.icon} source={require('../images/document.png')}></Image>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
-                <Image style={styles.icon} source={require('../images/video.png')}></Image>
-              </TouchableOpacity>
-            </View>
-            <ScrollView horizontal contentContainerStyle={styles.body} showsHorizontalScrollIndicator={false}>
-              {
-                items.map((item, index) => <AttachmentItem key={index} item={item} onPress={this.openActionSheet} />)
-              }
-            </ScrollView>
-          </SafeAreaView>
+      <View style={styles.wrap}>
+        <View style={styles.header}>
+          <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
+            <Image style={styles.icon} source={require('../images/picture.png')}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
+            <Image style={styles.icon} source={require('../images/document.png')}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
+            <Image style={styles.icon} source={require('../images/video.png')}></Image>
+          </TouchableOpacity>
         </View>
+        <ScrollView horizontal contentContainerStyle={styles.body} showsHorizontalScrollIndicator={false}>
+          {
+            items.map((item, index) => <AttachmentItem key={index} item={item} onPress={this.openActionSheet} />)
+          }
+        </ScrollView>
+        <SafeAreaView />
         <ActionSheet
           ref={ref => this.actionSheet = ref}
           title={this.state.sheetTitle}
@@ -235,20 +230,19 @@ export default class ImageChoose extends PureComponent {
           cancelButtonIndex={2}
           onPress={this.handleActionSheet}
           />
+
         <Alert ref={ref => this.alert = ref} />
         <Toast ref="toast" position="center" />
-      </Modal>
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    flex: 1,
-    justifyContent:'flex-end',
-  },
-  bg: {
-    flex: 1,
+    // flex: 1,
+    // justifyContent:'flex-end',
+    backgroundColor: '#F6F6F6',
   },
   content: {
     backgroundColor: '#F6F6F6',

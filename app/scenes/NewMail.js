@@ -11,7 +11,6 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-
 import {SafeAreaView} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
@@ -53,7 +52,6 @@ export default class NewMail extends Component {
   state = {
     isSend: true,
     isSucc: false,
-    disabledSave: false,
     showLoading: false,
     showSendMe: true,
     pickerModal: false,
@@ -66,6 +64,11 @@ export default class NewMail extends Component {
       send_time: dateFormat(),
       type: 2,
     },
+    defaultValue: {
+      title: '',
+      content: '',
+      email: '',
+    }
   }
 
   componentWillMount() {
@@ -103,10 +106,15 @@ export default class NewMail extends Component {
             email: items.email,
             title: items.title,
             content: items.content,
+            send_time: items.send_time,
+          },
+          defaultValue: {
+            email: items.email,
+            title: items.title,
+            content: items.content,
           },
           attachs: items.attach,
           initAttaches: items.attach,
-          disabledSave: false,
         }, () => {
           this.noupdate = true
           this.sendBtnEnable = true
@@ -124,16 +132,22 @@ export default class NewMail extends Component {
 
   setParams(key, value) {
     let { showSendMe } = this.state
+    let defaultValue
     if (key == 'email') {
       if (value == '发给自己' && showSendMe != false) {
         showSendMe = false
+        defaultValue = {email: '发给自己'}
       } else if (value != '发给自己' && showSendMe != true) {
         showSendMe = true
       }
     }
     const { params } = this.state
     params[key] = value
-    this.setState({ params, showSendMe }, () => {
+    const state = { params, showSendMe }
+    if (defaultValue) {
+      state.defaultValue = {...this.state.defaultValue, ...defaultValue}
+    }
+    this.setState(state, () => {
       const sendBtnEnable = this.checkParams()
       if (this.sendBtnEnable != sendBtnEnable) {
         this.noupdate = true
@@ -193,8 +207,14 @@ export default class NewMail extends Component {
           this.dealError(res.msg, true)
         }
       } catch (e) {
-        console.log(e)
-        this.dealError('', true)
+        console.log(e);
+        if (e.code == 10001) {
+          this.setState({showLoading: false}, () => {
+            this.props.navigation.navigate('Login')
+          })
+        } else {
+          this.dealError('', false)
+        }
       }
     })
   }
@@ -216,7 +236,13 @@ export default class NewMail extends Component {
           this.dealError(res.msg, false)
         }
       } catch (e) {
-        this.dealError('', false)
+        if (e.code == 10001) {
+          this.setState({showLoading: false}, () => {
+            this.props.navigation.navigate('Login')
+          })
+        } else {
+          this.dealError('', false)
+        }
       }
     })
   }
@@ -234,7 +260,7 @@ export default class NewMail extends Component {
         if (res.code == 1) {
           attachs[index] = {...res.data, ext: item.ext}
         } else {
-          throw new Error(res)
+          throw res
         }
       }
       return attachs
@@ -264,32 +290,33 @@ export default class NewMail extends Component {
   openImageChoose = () => {
     this.setState({ pickerModal: true })
   }
-  closeImageChoose = (callback, open = false) => {
-    this.setState({ pickerModal: open }, () => {
-      callback && callback()
-    })
+  closeImageChoose = () => {
+    this.setState({ pickerModal: false })
   }
+
   render() {
     // keyboardType="email-address"
-    const { showLoading, attachs, params, isSucc, isSend, disabledSave, initAttaches } = this.state
+    const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="always">
           <HeaderTip tip="爱慢邮——让我们回到未来" />
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
-            <TextInput autoFocus value={params.email} style={styles.input} onChangeText={(text) => this.setParams('email', text)}
-              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            <TextInput autoFocus style={styles.input}
+              defaultValue={defaultValue.email}
+              onChangeText={(text) => this.setParams('email', text)}
+              returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>主题：</Text>
-            <TextInput style={styles.input} value={params.title} onChangeText={(text) => this.setParams('title', text)}
-              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            <TextInput style={styles.input} defaultValue={defaultValue.title} onChangeText={(text) => this.setParams('title', text)}
+              returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>附件：</Text>
@@ -323,18 +350,28 @@ export default class NewMail extends Component {
               }} />
           </View>
           <View style={styles.content}>
-            <TextInput multiline value={params.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
+            <TextInput multiline defaultValue={defaultValue.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
         </ScrollView>
-        <SafeAreaView style={styles.bottom}>
-          <TouchableOpacity style={[styles.saveBtn, disabledSave && styles.disabledSaveBtn ]} onPress={this.handleSave}>
-            <Text style={[styles.saveBtnTxt, disabledSave && styles.disabledSaveBtnTxt]}>保存草稿</Text>
+        <SafeAreaView style={[styles.bottom, styles.saveBtnWrap]}>
+          <TouchableOpacity style={[styles.saveBtn ]} onPress={this.handleSave}>
+            <Text style={[styles.saveBtnTxt]}>保存草稿</Text>
           </TouchableOpacity>
         </SafeAreaView>
-        <ImageChoose visible={this.state.pickerModal} initValue={initAttaches}
-          onChange={this.handleImageChoose} onClose={this.closeImageChoose}
-          onError={this.showErrorModal} />
+
+        <Modal visible={this.state.pickerModal} transparent={true}
+          animationType="slide" onRequestClose={this.closeImageChoose}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
+          <View style={styles.saveBtnWrap}>
+            <TouchableOpacity style={[styles.saveBtn ]} onPress={this.handleSave}>
+              <Text style={[styles.saveBtnTxt]}>保存草稿</Text>
+            </TouchableOpacity>
+          </View>
+          <ImageChoose initValue={initAttaches}
+            onChange={this.handleImageChoose}
+            onError={this.showErrorModal} />
+        </Modal>
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           btn="返回首页"
@@ -451,18 +488,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333333',
     lineHeight: 22,
+    textAlignVertical: 'top',
   },
   bottom: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  saveBtnWrap: {
     height: 44,
     paddingRight: 15,
     alignItems: 'flex-end',
     justifyContent: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
+    backgroundColor: '#FFFFFF'
   },
   saveBtn: {
     width: 90,
@@ -477,11 +518,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#E24B92',
   },
-  disabledSaveBtn: {
-    borderColor: '#B4B4B4',
-  },
-  disabledSaveBtnTxt: {
-    color: '#686868',
+  imgchoosebg: {
+    flex: 1,
   }
 });
 

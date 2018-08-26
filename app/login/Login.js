@@ -7,6 +7,7 @@ import {
   View,
   ScrollView,
   Image,
+  Keyboard,
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
@@ -115,31 +116,31 @@ export default class Login extends PureComponent<Props> {
              <Image style={styles.close} source={require('../images/close.png')} />
            </TouchableOpacity>
         </SafeAreaView>
-        <ScrollView style={{flex: 1}}>
-        <View style={styles.wrap}>
-          <Image style={styles.logo} source={require('../images/logo.png')} />
-          <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
-            <TextInput value={username} style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ username: text })}
-              autoCapitalize="none" underlineColorAndroid='transparent' />
-          </ImageBackground>
-          <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
-            <TextInput value={password} secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ password: text })}
-              autoCapitalize="none" underlineColorAndroid='transparent' />
-          </ImageBackground>
-          <TouchableOpacity activeOpacity={0.8} style={loginBtnStyle} onPress={this.handleLogin}>
-            <Text style={styles.loginTxt}>登 录</Text>
-          </TouchableOpacity>
-          <View style={styles.bottomBtn}>
-            <View style={styles.leftBtn}>
-              <TouchableOpacity activeOpacity={0.8} onPress={this.regist}>
-                <Text style={styles.btnTxt}>立即注册</Text>
+        <ScrollView style={{flex: 1}} keyboardShouldPersistTaps="always">
+          <View style={styles.wrap} >
+            <Image style={styles.logo} source={require('../images/logo.png')} />
+            <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
+              <TextInput value={username} style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ username: text })}
+                autoCapitalize="none" underlineColorAndroid='transparent'/>
+            </ImageBackground>
+            <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
+              <TextInput value={password} secureTextEntry style={styles.input} placeholder="请输入密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ password: text })}
+                autoCapitalize="none" underlineColorAndroid='transparent'/>
+            </ImageBackground>
+            <TouchableOpacity activeOpacity={0.8} style={loginBtnStyle} onPress={this.handleLogin}>
+              <Text style={styles.loginTxt}>登 录</Text>
+            </TouchableOpacity>
+            <View style={styles.bottomBtn}>
+              <View style={styles.leftBtn}>
+                <TouchableOpacity activeOpacity={0.8} onPress={this.regist}>
+                  <Text style={styles.btnTxt}>立即注册</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity activeOpacity={0.8} style={styles.rightBtn} onPress={this.forget}>
+                <Text style={styles.btnTxt}>忘记密码</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity activeOpacity={0.8} style={styles.rightBtn} onPress={this.forget}>
-              <Text style={styles.btnTxt}>忘记密码</Text>
-            </TouchableOpacity>
           </View>
-        </View>
         </ScrollView>
         {showLoading && <Loading />}
         <ErrorModal ref="errorModalRef" />
