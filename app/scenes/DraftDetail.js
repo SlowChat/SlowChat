@@ -28,6 +28,13 @@ export default class DraftDetail extends Component {
   componentWillMount() {
     this.getData()
   }
+
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+  }
+
   getId() {
     const { id = 30 } = this.props.navigation.state.params || {}
     return id
@@ -52,7 +59,13 @@ export default class DraftDetail extends Component {
       console.log(e)
     } finally {
       this.loading = false
+      this.setState({ showLoading: false })
     }
+    this.timer = setTimeout(() => {
+      if (this.loading) {
+        this.setState({ showLoading: true })
+      }
+    }, 300)
   }
 
   closeConfirm = () => {

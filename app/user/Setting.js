@@ -22,7 +22,7 @@ import DeviceInfo from 'react-native-device-info'
 
 import ICONS from '../utils/icon'
 
-export default class Setting extends Component {
+class Setting extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
@@ -38,16 +38,31 @@ export default class Setting extends Component {
       appVersion: DeviceInfo.getVersion()
     })
   }
-  handleSwitch = async (value) => {
-    const token = await Storage.getToken()
-    console.log(token);
+  handleSwitch = (value) => {
     this.setState({
       switchBtn: value
+    }, async () => {
+      const state = this.stata.switchBtn ? 0 : 1
+      const code = Storage.getPushId()
+      try {
+        await post('api/user_msg/setPushState.html', { code, state })
+        if (res.code == 1) {
+          this.refs.toast.show('设置成功')
+        } else if (res.code == 10001) {
+          this.props.navigation.navigate('Login')
+        } else {
+          this.setState({ switchBtn: !this.state.switchBtn })
+          this.refs.toast.show('设置失败')
+        }
+      } catch (e) {
+          this.setState({ switchBtn: !this.state.switchBtn })
+          this.refs.toast.show('设置失败')
+      }
     })
   }
 
   handleLogout = () => {
-    this.refs.alert.show({
+    this.alert.show({
       title: '提示',
       txt: '确定退出当前账户吗？',
       leftBtnTxt: '确定退出',
@@ -55,7 +70,7 @@ export default class Setting extends Component {
       onCancel: () => {
         const { email, vCode } = this.state;
         post('api/user/logout.html').then(res => {
-          this.refs.alert.hide()
+          this.alert.hide()
           if (res.code == 1) {
             Storage.clear()
             // this.props.navigation.popToTop()
@@ -69,7 +84,7 @@ export default class Setting extends Component {
             this.refs.toast.show(res.msg);
           }
         }).catch(e => {
-          this.refs.alert.hide()
+          this.alert.hide()
           this.refs.toast.show('退出失败，请稍后重试')
         })
       }
@@ -77,16 +92,12 @@ export default class Setting extends Component {
   }
   checkUpdate = async () => {
     const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
-    console.log(update, "=======");
     if (!update) {
-      Alert.alert("提示", "已是最新版本--", [
-        {
-          text: "确定",
-          onPress: () => {
-            console.log("点了OK");
-          }
-        }
-      ])
+      this.alert.show({
+        type: 'alert',
+        title: '提示',
+        txt: '已是最新版本',
+      })
       return
     }
     codePush.sync({
@@ -107,6 +118,9 @@ export default class Setting extends Component {
           break;
         case codePush.SyncStatus.INSTALLING_UPDATE:
           console.log(" INSTALLING_UPDATE");
+          break;
+        case CodePush.SyncStatus.UPDATE_INSTALLED:
+          codePush.notifyAppReady();
           break;
       }
     }, (progress) => {
@@ -158,12 +172,15 @@ export default class Setting extends Component {
             <Text style={styles.exitTxt}>退出当前账户</Text>
           </TouchableOpacity>
         </SafeAreaView>
-        <Alert ref="alert" />
+        <Alert ref={ref => this.alert = ref} />
         <Toast ref="toast" position="bottom" />
       </View>
     );
   }
 }
+
+let codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
+export default codePush(codePushOptions)(Setting);
 
 const styles = StyleSheet.create({
   container: {

@@ -13,17 +13,31 @@ import {
 import {SafeAreaView} from 'react-navigation'
 import EmailList from '../components/EmailList'
 import Toast from 'react-native-easy-toast'
+import Loading from '../components/Loading'
 import Blank from '../components/Blank'
 import Footer from '../components/Footer'
-import { get, post } from '../utils/request'
+import ErrorTip from '../components/ErrorTip'
+import { post } from '../utils/request'
+import dateFormat from '../utils/date'
+
+const DATA = {
+  reservation: '预定发送信件',
+  sent: '完成发送信件',
+  public: '我公开的信件',
+  // let title = '草稿箱'
+}
 
 export default class Email extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
-      title: params.title || '',
-      headerLeft: params.headerLeft,
-      headerRight: params.headerRight
+      title: DATA[params.status] || '草稿箱',
+      // headerLeft: params.headerLeft,
+      headerRight: params.status == 'draft' ? (
+        <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
+          <Text style={styles.headerRightTxt}>编辑</Text>
+        </TouchableOpacity>
+      ) : <View />
     }
   }
 
@@ -49,33 +63,26 @@ export default class Email extends Component {
   pageNo = 0
   pageSize = 10
 
-  componentDidMount() {
+  componentWillMount() {
     this.setDefault()
     this.fetchData()
-    
+  }
+  componentDidMount() {
+    this.props.navigation.setParams({
+      rightOnPress: this.handleEdit
+    })
   }
 
   setDefault = () => {
-    const status = this.getStatus()
-    let title = '草稿箱'
+    const { status } = this.props.navigation.state.params || {};
     if (status === 'reservation') {
-      this.sendState = 0
-      title = '预定发送信件'
+      this.sendState = 1
     } else if (status === 'sent') {
-      this.sendState = 10
-      title = '完成发送信件'
+      this.sendState = 2
     } else if (status === 'public') {
       this.type = 2
-      title = '我公开的信件'
     }
-    this.props.navigation.setParams({
-      title,
-      headerLeft: '',
-      // headerRight: status == 'sent' ? (
-      headerRight: status == 'draft' ? (
-        <Button title="编辑" color="#666666" onPress={this.handleEdit} />
-      ) : <View />,
-    })
+    this.status = status
   }
 
   handleEdit = () => {
@@ -108,15 +115,15 @@ export default class Email extends Component {
       this.setState({
         idList: this.state.idList.push(item.id)
       })
-      
+
     ))
     console.log(this.state.idList)
     this.setState({isAllSelect: true})
   }
- 
-  getStatus = () => {
-    const { params = {} } = this.props.navigation.state;
-    return params.status
+
+  initData = () => {
+    this.pageNo = 0
+    this.fetchData()
   }
 
   fetchData = () => {
@@ -133,25 +140,34 @@ export default class Email extends Component {
     }
     post(this.returnUrl(), params).then(res => {
       console.log(111111, res)
-      const { code, data } = res
+      const { code } = res
       if (code === 1) {
         let foot = 0
-        if (this.pageNo + 1 >= Math.ceil(data.total / this.pageSize)) {
+        const { total, items } = res.data
+        if (this.pageNo + 1 >= Math.ceil(total / this.pageSize)) {
           // listView底部显示没有更多数据了
           foot = 1
         }
-        if (data.items && data.items.length <= 0) {
+
+        if (items && items.length <= 0) {
           this.setState({
             isSpacePage: true
           })
         }
+        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+        items.forEach(item => {
+          item.send_time = (item.send_time || '').split(' ')[0]
+          const [ add_date, add_time ] = item.add_time.split(' ')
+          item.add_time = curr_item == add_date ? add_time : add_date
+        })
+
         this.state.searchText !== '' ? this.setState({isShowResult: true}) : this.setState({isShowResult: false})
         this.setState({
-          total: data.total,
-          dataArray: this.state.dataArray.concat(data.items),
+          total: total,
+          dataArray: this.state.dataArray.concat(items),
           isLoading: false,
           showFoot: foot,
-          isRefreshing: data.total / this.pageSize > 1,
+          isRefreshing: total / this.pageSize > 1,
         })
       }
     }).catch(e => {
@@ -160,17 +176,16 @@ export default class Email extends Component {
   }
 
   _renderItem = ({item}) => {
-    const status = this.getStatus()
     const { navigate, state } = this.props.navigation;
     return (
-      <EmailList status={status} 
-        isAllSelect={this.state.isAllSelect} 
-        item={item} id={item.id} 
-        score={state.params.score} 
-        navigate={navigate} 
-        onPress= {(id) => this.onPressCancel(id)} 
+      <EmailList status={this.status}
+        isAllSelect={this.state.isAllSelect}
+        item={item}
+        score={state.params.score}
+        navigate={navigate}
+        onPress= {this.onPressCancel}
         isDel={this.state.isDel}
-        onSelDelItem = {(id) => this.onSelDelItem(id)}
+        onSelDelItem = {this.onSelDelItem}
         isDelClick={this.state.isDelClick}
         onSubmitDelete={() => this.submitDelete()}
         onHandleDelClose={() => this.handleDelClose()}
@@ -178,7 +193,7 @@ export default class Email extends Component {
     )
   }
 
-  
+
 
   onSelDelItem = (id) => {
     var newArr = this.state.idList;
@@ -186,7 +201,7 @@ export default class Email extends Component {
       for(var i in newArr) {
         if(newArr.indexOf(id) === -1) {
           newArr.push(id)
-        } 
+        }
       }
     } else {
       newArr.push(id)
@@ -280,30 +295,6 @@ export default class Email extends Component {
     })
   }
 
-  // 加载等待的view
-  renderLoadingView = () => {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator
-          animating
-          style={[styles.gray, {height: 80}]}
-          color='red'
-          size='large'
-        />
-      </View>
-    )
-  }
-
-    // 加载失败view
-  renderErrorView = () => {
-    return (
-      <View style={styles.container}>
-        <Image style={styles.spaceImg} source={require('../images/icon_error.png')} />
-        <Text>您遇到网络问题</Text>
-      </View>
-    )
-  }
-
   renderData = () => {
     const { isShowResult } = this.state
     const { params } = this.props.navigation.state;
@@ -353,8 +344,7 @@ export default class Email extends Component {
   }
 
   returnUrl() {
-    const status = this.getStatus()
-    if (status === 'draft') {
+    if (this.status === 'draft') {
       return 'api/mail/getDraftList.html'
     } else {
       return 'api/mail/getMyList.html'
@@ -364,10 +354,10 @@ export default class Email extends Component {
   render () {
     // 第一次加载等待的view
     if (this.state.isLoading && !this.state.error) {
-      return this.renderLoadingView()
+      return <Loading />
     } else if (this.state.error) {
       // 请求失败view
-      return this.renderErrorView()
+      return <ErrorTip onPress={this.initData} />
     }
     // 加载数据
     return this.renderData()
@@ -378,6 +368,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f6f7f8',
+  },
+  headerRight: {
+    width: 64,
+    paddingRight: 20,
+    alignItems: 'flex-end',
   },
   searchBox: {
     flexDirection: 'row',
@@ -408,6 +403,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 1,
     borderColor: '#CCCCCC',
+    padding: 0
   },
   result: {
     textAlign: 'center',
@@ -421,10 +417,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#E24B92'
   },
-  editBtn: {
-    paddingRight: 15,
+  headerRightTxt: {
+    fontFamily: 'PingFangSC-Regular',
     color: '#666',
-    fontSize: 18
+    fontSize: 16
   },
   emailList: {
     marginTop: 10,

@@ -15,16 +15,13 @@ import {
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
-import RNFS from 'react-native-fs'
-import OpenFile from 'react-native-doc-viewer'
 import RNFileSelector from 'react-native-file-selector'
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
 import Alert from './Alert'
 // import { upload } from '../utils/request'
+import { openFile } from '../utils/opendoc'
 import { checkImagePermission, checkVideoPermission } from '../utils/permission'
-
-const SavePath = Platform.OS === 'ios' ? RNFS.MainBundlePath : RNFS.DocumentDirectoryPath;
 
 export default class ImageChoose extends PureComponent {
   state = {
@@ -40,10 +37,12 @@ export default class ImageChoose extends PureComponent {
   }
 
   chooseImage = async () => {
-    let nopermission = await checkImagePermission((msg) => {
-      this.refs.toast.show(msg)
-    })
-    if (nopermission) return
+    try {
+      await checkImagePermission()
+    } catch (e) {
+      this.refs.toast.show(e.message)
+      return
+    }
     const options = {
       title: '选择图片',
       cancelButtonTitle: '取消',
@@ -88,10 +87,12 @@ export default class ImageChoose extends PureComponent {
   //   this.refs.toast.show(res.msg || '上传失败')
   // }
   chooseVideo = async () => {
-    let nopermission = await checkVideoPermission((msg) => {
-      this.refs.toast.show(msg)
-    })
-    if (nopermission) return
+    try {
+      await checkVideoPermission()
+    } catch (e) {
+      this.refs.toast.show(e.message)
+      return
+    }
     const options = {
       title: '选择视频',
       takePhotoButtonTitle: '拍摄视频',
@@ -103,9 +104,6 @@ export default class ImageChoose extends PureComponent {
     ImagePicker.showImagePicker(options, (response) => {
       if (response.uri) {
         let file = response.uri
-        // if(Platform.OS === 'ios'){
-        //   file = file.replace('file://', '')
-        // }
         this.dealSucc(file, response, 'video')
       }
     });
@@ -114,12 +112,14 @@ export default class ImageChoose extends PureComponent {
     return true
   }
   dealSucc(uri, response, type = 'image') {
+    console.log(response)
     let { fileName, fileSize } = response
     if (!this.checkExt()) {
       const { onError } = this.props
       onError && onError('附件格式不支持上传')
       return
     }
+
     let { items } = this.state
     items = items.concat([
       {
@@ -170,7 +170,7 @@ export default class ImageChoose extends PureComponent {
     this.actionSheet.show()
     this.setState({ current: item })
   }
-  handleActionSheet = (index) => {
+  handleActionSheet = async (index) => {
     if (index == 0) {
       this.alert.show({
         title: '附件删除',
@@ -189,16 +189,12 @@ export default class ImageChoose extends PureComponent {
     } else if (index == 1) {
       const { filename, url } = this.state.current
       this.setState({ sheetTitle: filename })
-      OpenFile.openDoc([{url: SavePath + filename,
-        fileNameOptional: filename
-      }], (error, url) => {
-         if (error) {
-          this.setState({animating: false});
-         } else {
-          this.setState({animating: false});
-           console.log(url)
-         }
-       })
+      try {
+        await openFile(url, filename)
+      } catch (e) {
+        this.refs.toast.show('打开文件失败')
+      }
+
     }
   }
   render() {
@@ -209,7 +205,7 @@ export default class ImageChoose extends PureComponent {
         animationType="slide" onRequestClose={this.handleClose}>
         <View style={styles.wrap}>
           <TouchableOpacity activeOpacity={0.6} style={styles.bg} onPress={this.handleClose}></TouchableOpacity>
-          <View style={styles.content}>
+          <SafeAreaView style={styles.content}>
             <View style={styles.header}>
               <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
                 <Image style={styles.icon} source={require('../images/picture.png')}></Image>
@@ -226,7 +222,7 @@ export default class ImageChoose extends PureComponent {
                 items.map((item, index) => <AttachmentItem key={index} item={item} onPress={this.openActionSheet} />)
               }
             </ScrollView>
-          </View>
+          </SafeAreaView>
         </View>
         <ActionSheet
           ref={ref => this.actionSheet = ref}
@@ -273,10 +269,11 @@ const styles = StyleSheet.create({
     marginRight: 25,
   },
   body: {
-    height: 235,
+    height: 156,
     alignItems: 'center',
     paddingLeft: 15,
     paddingRight: 15,
+    paddingTop: 20,
   },
   sheetBtn: {
     fontSize: 16,

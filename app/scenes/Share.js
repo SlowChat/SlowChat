@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Modal,
+  AppState,
   Platform,
   CameraRoll,
   TouchableOpacity,
@@ -19,6 +20,7 @@ import Toast from 'react-native-easy-toast'
 
 import ICONS from '../utils/icon'
 import Storage from '../utils/storage'
+import { post } from '../utils/request'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
@@ -28,36 +30,57 @@ const SHARE_URL = 'https://www.baidu.com'
 type Props = {};
 export default class Share extends PureComponent<Props> {
   state = {
-    shareUrl: '',
+    shareUrl: SHARE_URL,
     moreModal: false,
     userName: ''
   }
   async componentWillMount() {
-    const user = await Storage.getUser()
-    console.log(user)
-    this.setState({
-      userName: user.user_nickname
-    })
-    this.getData()
+    try {
+      const user = await Storage.getUser()
+      this.setState({
+        userName: user.user_nickname,
+        avatar: user.avatar
+      })
+      this.getData()
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange)
+  }
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    console.log("===handleAppStateChange===", nextAppState)
+    if (nextAppState!= null && nextAppState === 'active') {
+      if (this.shareSucc) {
+        this.awardTip.show()
+      }
+      this.shareSucc = false
+    }
   }
 
   async getData() {
     let shareUrl = ''
     try {
-      const res = await post('api/user_msg/getList.html')
+      const res = await post('api/user/getShareUrl.html')
+      console.log(res);
       if (res.code == 1) {
         shareUrl = res.data
+        this.setState({ shareUrl: shareUrl || SHARE_URL })
+      } else if (res.code == 10001) {
+        this.props.navigation.replace('Login', {url: 'Share'})
       }
     } catch (e) {
-
-    } finally {
-      this.setState({ shareUrl: shareUrl || SHARE_URL })
     }
   }
 
   handleWechat = (platform) => {
     JShareModule.isWeChatInstalled((isInstalled) => {
-      console.log("===isInstalled====");
       if (isInstalled === true) {
         this.share(platform)
       } else {
@@ -103,7 +126,8 @@ export default class Share extends PureComponent<Props> {
   async share(platform) {
     let uri = this.uri
     if (!uri) {
-      uri = await this.refs.viewShot.capture()
+      uri = await this.viewShot.capture()
+      uri = uri.replace('file://', '')
       this.uri = uri
     }
     const message = {
@@ -112,12 +136,22 @@ export default class Share extends PureComponent<Props> {
       imagePath: this.uri,
       imageArray: [this.uri]
     }
-    JShareModule.share(message, (map) => {
-      console.log("share succeed, map: " + map);
-      this.refs.awardTip.show()
+    JShareModule.share(message, ({ state }) => {
+      if (state == 'success') {
+        this.shareSucc = true
+      } else if (state == 'fail') {
+        this.refs.toast.show('分享失败')
+      }
+      console.log("share succeed, map: ", state);
     }, (map) => {
-      console.log("share failed, map: " + map);
-      this.refs.toast.show('分享失败')
+      console.log("share failed, map: ", map);
+      if (this.state.moreModal) {
+        this.setState({ moreModal: false }, () => {
+          this.refs.toast.show('分享失败')
+        })
+      } else {
+        this.refs.toast.show('分享失败')
+      }
     })
   }
 
@@ -145,7 +179,7 @@ export default class Share extends PureComponent<Props> {
     try {
       let uri = this.uri
       if (!uri) {
-        uri = await this.refs.viewShot.capture()
+        uri = await this.viewShot.capture()
         this.uri = uri
       }
       try {
@@ -162,26 +196,28 @@ export default class Share extends PureComponent<Props> {
   render() {
     // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
+    const { userName, avatar } = this.state
+    const source = avatar ? { uri: avatar } : ICONS.head
     return (
       <View style={styles.container}>
-        <ViewShot ref="viewShot">
+        <ViewShot ref={ref => this.viewShot = ref}>
           <View style={styles.shot}>
             <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
               <View style={styles.avatarWrap}>
-                <Image style={styles.avatar} source={ICONS.head} />
+                <Image style={styles.avatar} source={source} />
                 <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>
-                    <Text style={styles.name}>{this.state.userName || 'zhaocw'}</Text>
+                    <Text style={styles.name}>{userName}</Text>
                     <Text style={styles.desc}>邀请你来慢邮~</Text>
                   </View>
                   <Text style={styles.title}>让我们 回到未来 回忆现在</Text>
                 </View>
               </View>
               <View style={styles.qrcodeWrap}>
-                <View style={styles.qrcode}>
-                  <QRCode value={this.state.shareUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+                  <View style={styles.qrcode}>
+                    <QRCode value={this.state.shareUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+                  </View>
                 </View>
-              </View>
             </ImageBackground>
             <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
           </View>
@@ -229,7 +265,7 @@ export default class Share extends PureComponent<Props> {
             </View>
           </View>
         </Modal>
-        <AwardTip ref="awardTip" num="30" txt="分享成功" />
+        <AwardTip ref={(ref) => this.awardTip = ref} num="30" txt="分享成功" />
         <Toast ref="toast" position="center" />
       </View>
     );
@@ -302,6 +338,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 40,
     height: 40,
+    borderRadius: 20,
     marginLeft: 25,
     marginRight: 15,
   },

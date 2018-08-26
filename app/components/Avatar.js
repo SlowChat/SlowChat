@@ -10,16 +10,16 @@ import {
 export default class Avatar extends PureComponent {
   render() {
     const { username, avatar, level, onPress } = this.props;
+    let source = avatar ? {uri: avatar} : require('../images/default_avatar_160.png')
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.avatarWrap}>
-          {
-            avatar ? <Image style={styles.avatar} borderRadius={40} source={{uri: avatar}} />
-          : <Image style={styles.avatar} borderRadius={40} source={require('../images/default_avatar_160.png')} />
-          }
+          <Image style={styles.avatar} source={source} />
           <View style={styles.avatarRight}>
             <Text style={styles.name}>{ username }</Text>
-            <Text style={styles.level}>{level}</Text>
+            <View style={styles.levelWrap}>
+                <Text style={styles.level}>{level}</Text>
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -38,26 +38,31 @@ const styles = StyleSheet.create({
   avatar: {
     width: 80,
     height: 80,
-    marginRight: 10,
+    marginRight: 30,
+    borderRadius: 40,
   },
   avatarRight: {
     flex: 1,
   },
   name: {
-    height: 24,
-    marginTop: 15,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 18,
-    color: '#333'
+    color: '#333',
+    height: 25,
+    lineHeight: 25,
+    marginTop: 15,
+  },
+  levelWrap: {
+    marginTop: 10,
+    height: 20,
+    width: 62,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: '#eee'
   },
   level: {
-    width: 70,
-    height: 20,
-    lineHeight: 20,
-    marginTop: 5,
     fontSize: 12,
-    textAlign: 'center',
-    borderRadius: 10,
     color: '#999',
-    backgroundColor: '#eee'
   },
 });

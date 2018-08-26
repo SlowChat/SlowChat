@@ -20,21 +20,21 @@ export default class EmailList extends Component {
     isDelSel: false
   }
 
-  cancel() {
+  cancel = () => {
     this.setState({isCancel: true})
   }
 
-  onLeftPress() {
-    const { id, onPress, score, navigate } = this.props;
+  onLeftPress = () => {
+    const { item, onPress, score, navigate } = this.props;
     if (score >= 10) {
-      onPress(id) 
+      onPress(item.id)
     } else {
       navigate('Rule')
     }
     this.onRequestClose()
   }
 
-  onRightPress() {
+  onRightPress = () => {
     const { status, onSubmitDelete } = this.props;
     if (status === 'reservation') {
       this.onRequestClose()
@@ -50,15 +50,15 @@ export default class EmailList extends Component {
   }
 
   handleNav = () => {
-    const { item, navigate, status, isDel, onSelDelItem, id } = this.props;
+    const { item, navigate, isDel, onSelDelItem } = this.props;
     if (isDel) {
-      onSelDelItem(id)
+      onSelDelItem(item.id)
       this.setState({isDelSel: !this.state.isDelSel})
     } else {
-      if (status == 'draft') {
-        navigate('DraftDetail', { id: item.id })
-      } else {
+      if (item.state) {
         navigate('MailDetail', { id: item.id, status: item.state })
+      } else {
+        navigate('DraftDetail', { id: item.id })
       }
     }
   }
@@ -70,7 +70,7 @@ export default class EmailList extends Component {
     sent: 发送
     public: 公开
     */
-    const { status } = this.props;
+    const { status, item } = this.props;
     if (status === 'draft') {
       return null
     } else if (status === 'reservation') {
@@ -78,7 +78,7 @@ export default class EmailList extends Component {
         <View style={styles.status}>
           <View style={styles.statusLeft}>
           </View>
-          <TouchableOpacity style={styles.btn} onPress={() => this.cancel()}>
+          <TouchableOpacity style={styles.btn} onPress={this.cancel}>
             <Text style={styles.btnTxt}>取消发送</Text>
           </TouchableOpacity>
         </View>
@@ -88,9 +88,9 @@ export default class EmailList extends Component {
         <View style={styles.status}>
           <View style={styles.statusLeft}>
             <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
-            <Text style={styles.num}>10</Text>
+            <Text style={styles.num}>{item.looks}</Text>
             <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
-            <Text style={styles.num}>10</Text>
+            <Text style={styles.num}>{item.comments}</Text>
           </View>
           <View style={styles.statusRight}>
           <Image style={styles.finish} source={require('../images/icon_finish.png')} />
@@ -103,9 +103,9 @@ export default class EmailList extends Component {
         <View style={styles.status}>
           <View style={styles.statusLeft}>
             <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
-            <Text style={styles.num}>10</Text>
+            <Text style={styles.num}>{item.looks}</Text>
             <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
-            <Text style={styles.num}>10</Text>
+            <Text style={styles.num}>{item.comments}</Text>
           </View>
           <View style={styles.statusRight}>
           </View>
@@ -123,18 +123,19 @@ export default class EmailList extends Component {
     } else {
       leftBtxTxt = '查看积分规则'
     }
+    const icon = status === 'draft' ? null : <Image style={styles.icon} source={item.type == 1 ? require('../images/icon_hide.png') : require('../images/icon_overt.png')} />
     return (
         <View>
-          <TouchableWithoutFeedback onPress={() => this.handleNav()}>
+          <TouchableWithoutFeedback onPress={this.handleNav}>
             <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
-              <Image style={styles.icon} source={require('../images/icon_overt.png')} />
+              {icon}
               <View style={styles.content}>
                 <Text style={styles.name}>{item.email}</Text>
                 <Text style={styles.name}>{item.title}</Text>
-                <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
+                <Text style={styles.sendTime}>发送时间：{item.send_time}</Text>
               </View>
               <View style={styles.time}>
-                <Text style={styles.timeTxt}>6-16</Text>
+                <Text style={styles.timeTxt}>{item.add_time}</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -156,12 +157,8 @@ export default class EmailList extends Component {
               )
             }
             visible={this.state.isCancel || isDelClick}
-            onLeftPress={() => {
-              this.onLeftPress()
-            }}
-            onRightPress={() => {
-              this.onRightPress() // navigate
-            }}
+            onLeftPress={this.onLeftPress}
+            onRightPress={this.onRightPress}
             onRequestClose={this.onRequestClose}
           />
       </View>
@@ -188,7 +185,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   content: {
-    width: '80%'
+    flex: 1,
   },
   name: {
     marginBottom: 5,

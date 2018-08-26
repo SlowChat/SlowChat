@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native'
 
 import Video from 'react-native-video'
@@ -21,17 +22,33 @@ function formatFileSize(fileSize) {
 }
 
 export default class Attachment extends PureComponent {
-  handleOpen = () => {
-    const { onPress } = this.props
-    onPress && onPress(this.props.item)
+  state = {
+    paused: true
   }
+  handleOpen = () => {
+    const { item, onPress } = this.props
+    if (item.ext =='video') {
+      this.player.presentFullscreenPlayer()
+      this.setState({ paused: false })
+    } else {
+      onPress && onPress(this.props.item)
+    }
+  }
+
+  handleDismiss = () => {
+    this.setState({ paused: true })
+  }
+
   renderItem() {
     const { item } = this.props
-    const { ext } = item
+    const { url, ext } = item
+    if (!url) return null
     if (ext == 'image') {
       return <Image source={{uri: item.url}} style={styles.image}></Image>
     } else if (ext == 'video') {
-      // return
+      const { paused } = this.state
+      return <Video ref={(ref) => this.player = ref } paused={paused} playWhenInactive
+          source={{uri: item.url}} style={styles.image} onFullscreenPlayerWillDismiss={this.handleDismiss} />
     }
     return <Image source={{uri: item.url}} style={styles.image}></Image>
   }

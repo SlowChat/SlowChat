@@ -19,6 +19,7 @@ import ReplyItem from '../components/ReplyItem'
 import ReplyBox from '../components/ReplyBox'
 import AwardTip from '../components/AwardTip'
 import ErrorModal from '../components/ErrorModal'
+import Loading from '../components/Loading'
 
 import Global from '../utils/global'
 import { post } from '../utils/request'
@@ -43,14 +44,14 @@ export default class MailDetail extends Component {
   }
   state = {
     top: -44,
-    status: 0, // 0 待发送  10 已发送 20 取消
+    status: 0,
     activeTab: 0,
     translateValue: new Animated.Value(-44),
     detail: {},
     comments: [],
+    showLoading: false,
   }
   componentWillMount() {
-    this.getData()
     const { params = {} } = this.props.navigation.state
     let status = params.status
     let top = -44
@@ -60,6 +61,7 @@ export default class MailDetail extends Component {
     }
     this.status = status
     this.setState({ status, top })
+    this.getData()
   }
   componentDidMount() {
     if (this.status != null) {
@@ -74,6 +76,12 @@ export default class MailDetail extends Component {
       return false
     }
     return true
+  }
+
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
   }
 
   handleScroll = (e) => {
@@ -140,7 +148,7 @@ export default class MailDetail extends Component {
     }).start();
   }
   getId() {
-    const { id = 29 } = this.props.navigation.state.params || {}
+    const { id } = this.props.navigation.state.params || {}
     return id
   }
   async getData() {
@@ -156,7 +164,7 @@ export default class MailDetail extends Component {
         const comments = comment && comment.length > 0 ? comment : []
         this.setState({
           detail: items,
-          comments
+          comments,
         }, () => {
           this.ispub = this.state.detail.type == 2
           this.setEye()
@@ -168,7 +176,13 @@ export default class MailDetail extends Component {
       console.log(e)
     } finally {
       this.loading = false
+      this.setState({ showLoading: false })
     }
+    this.timer = setTimeout(() => {
+      if (this.loading) {
+        this.setState({ showLoading: true })
+      }
+    }, 300)
   }
 
   rightBtnOnPress = () => {
@@ -262,7 +276,7 @@ export default class MailDetail extends Component {
 
   }
   render() {
-    const { status, activeTab, detail, comments } = this.state
+    const { status, activeTab, detail, comments, showLoading } = this.state
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.topbar, {top: this.state.top}, {transform: [{translateY: this.state.translateValue}]}]}>
@@ -294,6 +308,7 @@ export default class MailDetail extends Component {
         <ReplyBox ref="replyBox" onReply={this.handleReply} />
         <AwardTip ref="awardTipRef" num="10" txt="发表评论成功" />
         <ErrorModal ref="errorModalRef" />
+        {showLoading && <Loading />}
         <Toast ref="toast" position="center" />
       </View>
     )

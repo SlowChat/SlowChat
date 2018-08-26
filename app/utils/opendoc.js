@@ -1,9 +1,11 @@
 import { Platform } from 'react-native'
+// import RNFS from 'react-native-fs'
 import OpenFile from 'react-native-doc-viewer'
 
-export const openNetworkFile = (url, filename) => {
+export const openFile = (url, filename) => {
   return new Promise((resolve, reject) => {
     if (Platform.OS == 'ios') {
+      url = url.replace('file://', '')
       OpenFile.openDoc([{
         url,
         fileNameOptional: filename
@@ -31,33 +33,3 @@ export const openNetworkFile = (url, filename) => {
     }
   })
 }
-
-//
-// const openVideo = (local) => {
-//   if(Platform.OS === 'ios'){
-//         OpenFile.openDoc([{url:SavePath+"/react-native-logo.jpg",
-//         fileNameOptional:"test filename"
-//       }], (error, url) => {
-//          if (error) {
-//           this.setState({animating: false});
-//          } else {
-//           this.setState({animating: false});
-//            console.log(url)
-//          }
-//        })
-//     }else{
-//       OpenFile.openDoc([{url:SavePath+"/demo.jpg",
-//         fileName:"sample",
-//         cache:false,
-//         fileType:"jpg"
-//       }], (error, url) => {
-//          if (error) {
-//           this.setState({animating: false});
-//          } else {
-//           this.setState({animating: false});
-//            console.log(url)
-//          }
-//        })
-//
-//     }
-// }

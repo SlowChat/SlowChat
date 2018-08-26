@@ -36,7 +36,7 @@ export default class NewMail extends Component {
     return {
       title: '写信',
       headerRight: (
-        <TouchableOpacity style={styles.headerRight} onPress={params.rightOnPress}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
           <Text style={[{color: params.enable ? '#E24B92' : '#F9DBE9'}, styles.headerRightTxt]}>发送</Text>
         </TouchableOpacity>
       ),
@@ -230,7 +230,7 @@ export default class NewMail extends Component {
         if (item.url.indexOf('http') == 0) {
           continue
         }
-        const res = await upload(item.url, item.fileName)
+        const res = await upload(item.url, item.filename)
         if (res.code == 1) {
           attachs[index] = {...res.data, ext: item.ext}
         } else {
@@ -239,6 +239,7 @@ export default class NewMail extends Component {
       }
       return attachs
     } catch (e) {
+      console.log(e);
       throw e
     }
   }
