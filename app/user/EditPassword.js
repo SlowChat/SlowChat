@@ -26,24 +26,31 @@ export default class EditPassowrd extends Component {
       title: '修改登录密码',
     }
   }
-  state = {
-    mobile: '',
-    vCode: '',
-    password: '',
-    isClick: false,
-    isVcodeClick: false,
-    isSucc: false,   //成功提示框
+  constructor(props) {
+    super(props)
+    const { mobile, userEmail } = this.props.navigation.state.params || {}
+    this.state = {
+      mobile: mobile || '',
+      vCode: '',
+      password: '',
+      isClick: false,
+      isVcodeClick: false,
+      isSucc: false,   //成功提示框
+      editable: mobile ? false : true,
+      userEmail: userEmail || ''
+    }
   }
+  
   componentDidMount() {
   }
 
   handleSubmit = () => {
     const { pop } = this.props.navigation;
     const { mobile, vCode, password, isClick } = this.state;
-    const { params = {} } = this.props.navigation.state;
-    console.log(params.source)
+    // const { params = {} } = this.props.navigation.state;
+    // console.log(params.source)
     let url = '', token = true
-    if (params.source) {
+    if (mobile.length > 0) {
       url = 'api/user/passwordForget.html'
       token = false
     } else {
@@ -56,7 +63,6 @@ export default class EditPassowrd extends Component {
           verification_code: vCode,
           password: password
         }, token).then((res) => {
-        console.log(res)
         if (res.code === 1) {
           this.refs.toast.show(res.msg);
           setTimeout(() => {
@@ -132,7 +138,7 @@ export default class EditPassowrd extends Component {
 
   handleJump = () => {
     const { navigate } = this.props.navigation;
-    navigate('EditEmailPassword')
+    navigate('EditEmailPassword', {userEmail: this.state.userEmail})
   }
 
   render() {
@@ -142,6 +148,7 @@ export default class EditPassowrd extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>手机号</Text>
             <TextInput
+              editable={this.state.editable}
               style={styles.input}
               onChangeText={(text) => this.handleChangeMobile(text)}
               onBlur={() => this.handleMobile()}
@@ -171,7 +178,7 @@ export default class EditPassowrd extends Component {
               secureTextEntry
               style={styles.input}
               onChangeText={(text) => this.inputNewPassword(text)}
-              placeholder='请输入您的新密码'
+              placeholder='请输入6-12位新密码'
               value={this.state.password}
             />
           </View>

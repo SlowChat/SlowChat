@@ -9,7 +9,7 @@ import {
 
 export default class Avatar extends PureComponent {
   render() {
-    const { username, avatar, level, onPress, type } = this.props;
+    const { username, avatar, level, onPress, type, isLogin } = this.props;
     console.log(type)
     let source = avatar ? {uri: avatar} : require('../images/default_avatar_160.png')
     return (
@@ -23,12 +23,19 @@ export default class Avatar extends PureComponent {
           ) : (
             <View style={styles.avatarWrap}>
               <Image style={styles.avatar} source={source} />
-              <View style={styles.avatarRight}>
-                <Text style={styles.name}>{ username }</Text>
-                <View style={styles.levelWrap}>
-                    <Text style={styles.level}>{level}</Text>
-                </View>
-              </View>
+              {
+                isLogin ? (
+                  <Text style={styles.login}>登录/注册</Text>
+                ) : (
+                  <View style={styles.avatarRight}>
+                    <Text style={styles.name}>{ username }</Text>
+                    <View style={styles.levelWrap}>
+                        <Text style={styles.level}>{level}</Text>
+                    </View>
+                  </View>
+                )
+              }
+              
             </View>
           )
         }
@@ -41,6 +48,7 @@ export default class Avatar extends PureComponent {
 const styles = StyleSheet.create({
   avatarWrap: {
     flexDirection: 'row',
+    height: 140,
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
@@ -48,10 +56,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   avatar: {
-    width: 80,
-    height: 80,
-    marginRight: 30,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+    marginRight: 20,
+    borderRadius: 45,
     borderWidth: 5,
     borderColor: '#F6F6F6',
     // borderStyle: 'solid'
@@ -67,8 +75,8 @@ const styles = StyleSheet.create({
   avatarInfo: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     borderRadius: 40,
     borderWidth: 5,
     borderColor: '#F6F6F6',
@@ -80,7 +88,7 @@ const styles = StyleSheet.create({
     color: '#333',
     height: 25,
     lineHeight: 25,
-    marginTop: 15,
+    marginTop: 0,
   },
   levelWrap: {
     marginTop: 10,
@@ -95,4 +103,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
   },
+  login: {
+    flex: 1,
+    flexDirection: 'row',
+    height: '100%',
+    fontSize: 18,
+    color: '#666',
+    alignItems: 'center',
+    paddingTop: 30,
+  }
 });

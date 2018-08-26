@@ -145,7 +145,7 @@ class Setting extends Component {
             <Text style={styles.text}>{params.userEmail}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditPassword')}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditPassword', { mobile: params.mobile, userEmail: params.userEmail })}>
             <Text style={styles.label}>修改密码</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>

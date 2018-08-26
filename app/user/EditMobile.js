@@ -21,15 +21,20 @@ export default class EditMobile extends Component {
       title: '修改绑定手机号',
     }
   }
-  state = {
-    mobile: this.props.navigation.state.params.mobile,
-    vCode: '',
-    btnText: '',
-    status: '',
-    isClick: false,
-    isVcodeClick: false,
-    initStatus: false,  //验证手机
-    isSucc: false   //成功提示框
+  constructor(props) {
+    super(props)
+    const { mobile } = this.props.navigation.state.params || {}
+    this.state = {
+      mobile: mobile || '',
+      vCode: '',
+      btnText: '',
+      status: '',
+      isClick: false,
+      isVcodeClick: false,
+      initStatus: false,  //验证手机
+      isSucc: false,   //成功提示框
+      editable: mobile ? false : true
+    }
   }
   componentDidMount() {
     if (this.props.navigation.state.params.mobile !== '') {
@@ -134,6 +139,7 @@ export default class EditMobile extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>手机号</Text>
             <TextInput
+              editable={this.state.editable}
               style={styles.input}
               onChangeText={(text) => this.handleChangeMobile(text)}
               onBlur={() => this.handleMobile()}

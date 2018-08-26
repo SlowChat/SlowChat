@@ -58,10 +58,12 @@ export default class User extends Component {
     sign: {},
     msgCount: 0,
     isSucc: false,
-    level: ''
+    level: '',
+    isLogin: null
   }
 
   componentWillMount() {
+
     this.viewAppear = this.props.navigation.addListener(
       'willFocus', payload => {
         this.getData()
@@ -101,13 +103,15 @@ export default class User extends Component {
           level: data.level,
           birthday: data.birthday,
           msgCount: data.msg_count,
-          score: data.score
+          score: data.score,
+          isLogin: false
         })
         this.props.navigation.setParams({
           msgCount: data.msg_count
         })
       } else if (code == 10001) {
-        this.props.navigation.navigate('Login')
+        this.setState({isLogin: true})
+        // this.props.navigation.navigate('Login')
       }
     }).catch(e => {
       console.log(e)
@@ -139,15 +143,20 @@ export default class User extends Component {
   }
   goInfo = () => {
     const { navigate } = this.props.navigation;
-    const { username, avatar, sex, birthday } = this.state
-    navigate('Information', { username, avatar, sex, birthday, type: 'Information' })
+    const { username, avatar, sex, birthday, isLogin } = this.state
+    if (isLogin) {
+      navigate('Login')
+    } else {
+      navigate('Information', { username, avatar, sex, birthday, type: 'Information' })
+    }
   }
+  
   render() {
     const { navigate } = this.props.navigation;
-    const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score } = this.state;
+    const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score, isLogin } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} />
+        <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />
         <View style={styles.remind}>
           <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
             <View style={styles.list}>
@@ -229,7 +238,7 @@ export default class User extends Component {
         </View>
         <SuccessModal
           icon={require('../images/daka_l.png')}
-          txt={sign.desc}
+          txt={`本月连续打卡第${sign.count}天`}
           award={sign.score}
           btn={'返回'}
           visible={this.state.isSucc}
@@ -252,16 +261,16 @@ const styles = StyleSheet.create({
     height: 50,
   },
   set: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
     marginLeft: 8,
-    marginTop: 8,
+    marginTop: 6,
   },
   info: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
     marginLeft: 15,
-    marginTop: 8,
+    marginTop: 6,
   },
   remind: {
     flexDirection: 'row',
@@ -327,6 +336,7 @@ const styles = StyleSheet.create({
     width: '23%',
     color: '#E24B92',
     textAlign: 'right',
+    fontSize: 16
   },
   link: {
     flex: 1,
@@ -355,6 +365,8 @@ const styles = StyleSheet.create({
   },
   menuTxt: {
     flex: 1,
+    color: '#666',
+    fontSize: 15
   },
   msgCount: {
     position: 'absolute',

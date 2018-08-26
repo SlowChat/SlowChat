@@ -27,14 +27,20 @@ export default class EditPassowrd extends Component {
       title: '修改登录密码',
     }
   }
-  state = {
-    email: '',
-    vCode: '',
-    password: '',
-    isClick: false,
-    isVcodeClick: false,
-    isSucc: false,   //成功提示框
+  constructor(props) {
+    super(props)
+    const { userEmail } = this.props.navigation.state.params || {}
+    this.state = {
+      email: userEmail || '',
+      vCode: '',
+      password: '',
+      isClick: false,
+      isVcodeClick: false,
+      editable: userEmail ? false : true,
+      isSucc: false,   //成功提示框
+    }
   }
+  
   componentDidMount() {
   }
 
@@ -154,6 +160,7 @@ export default class EditPassowrd extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
+              editable={this.state.editable}
               style={styles.input}
               onChangeText={(text) => this.handleChangeEmail(text)}
               onBlur={() => this.handleEmail()}
@@ -182,7 +189,7 @@ export default class EditPassowrd extends Component {
               secureTextEntry
               style={styles.input}
               onChangeText={(text) => this.inputNewPassword(text)}
-              placeholder='请输入您的新密码'
+              placeholder='请输入6-12位新密码'
               value={this.state.password}
             />
           </View>
