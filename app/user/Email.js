@@ -154,14 +154,12 @@ export default class Email extends Component {
             isSpacePage: true
           })
         }
-        if (this.status != 'draft') {
-          const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
-          items.forEach(item => {
-            item.send_time = (item.send_time || '').split(' ')[0]
-            const [ add_date, add_time ] = item.add_time.split(' ')
-            item.add_time = curr_item == add_date ? add_time : add_date
-          })
-        }
+        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+        items.forEach(item => {
+          item.send_time = (item.send_time || '').split(' ')[0]
+          const [ add_date, add_time ] = item.add_time.split(' ')
+          item.add_time = curr_item == add_date ? add_time : add_date
+        })
 
         this.state.searchText !== '' ? this.setState({isShowResult: true}) : this.setState({isShowResult: false})
         this.setState({
