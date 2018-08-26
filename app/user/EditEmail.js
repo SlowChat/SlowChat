@@ -22,16 +22,22 @@ export default class EditEmail extends Component {
       title: '修改绑定邮箱',
     }
   }
-  state = {
-    email: this.props.navigation.state.params.userEmail,
-    vCode: '',
-    btnText: '',
-    status: '',
-    isClick: false,
-    isVcodeClick: false,
-    initStatus: false,  //验证手机
-    isSucc: false   //成功提示框
+  constructor(props) {
+    super(props)
+    const { userEmail } = this.props.navigation.state.params || {}
+    this.state = {
+      email: userEmail || '',
+      vCode: '',
+      btnText: '',
+      status: '',
+      isClick: false,
+      isVcodeClick: false,
+      initStatus: false,  //验证手机
+      isSucc: false,   //成功提示框
+      editable: userEmail ? false : true
+    }
   }
+  
   componentDidMount() {
     if (this.props.navigation.state.params.userEmail !== '') {
       this.setState({
@@ -130,6 +136,7 @@ export default class EditEmail extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
+              editable={this.state.editable}
               style={styles.input}
               onChangeText={(text) => this.handleChangeEmail(text)}
               onBlur={() => this.handleEmail()}

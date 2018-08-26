@@ -320,7 +320,7 @@ export default class NewMail extends Component {
             <TextInput autoFocus style={styles.input}
               value={params.email}
               onChangeText={(text) => this.setParams('email', text)}
-              returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => this.setState({params:{'email': '发给自己'}})}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
