@@ -11,10 +11,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
+import SaveBtn from '../components/SaveBtn'
 import HeaderTip from '../components/HeaderTip'
 import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
@@ -57,6 +57,7 @@ export default class NewMail extends Component {
     pickerModal: false,
     attachs: [],
     initAttaches: [],
+    images: [],
     params: {
       title: '',
       content: '',
@@ -365,24 +366,12 @@ export default class NewMail extends Component {
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
         </ScrollView>
-        <SafeAreaView style={[styles.bottom, styles.saveBtnWrap]}>
-          <TouchableOpacity style={[styles.saveBtn ]} onPress={this.handleSave}>
-            <Text style={[styles.saveBtnTxt]}>保存草稿</Text>
-          </TouchableOpacity>
-        </SafeAreaView>
-
-        <Modal visible={this.state.pickerModal} transparent={true}
-          animationType="slide" onRequestClose={this.closeImageChoose}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
-          <View style={styles.saveBtnWrap}>
-            <TouchableOpacity style={[styles.saveBtn ]} onPress={this.handleSave}>
-              <Text style={[styles.saveBtnTxt]}>保存草稿</Text>
-            </TouchableOpacity>
-          </View>
-          <ImageChoose initValue={initAttaches}
-            onChange={this.handleImageChoose}
-            onError={this.showErrorModal} />
-        </Modal>
+        <SaveBtn type="bottom" onPress={this.handleSave} />
+        <ImageChoose visible={this.state.pickerModal}
+          initValue={initAttaches}
+          onSave={this.handleSave}
+          onChange={this.handleImageChoose}
+          onError={this.showErrorModal} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           btn="返回首页"
@@ -501,39 +490,4 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlignVertical: 'top',
   },
-  bottom: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  saveBtnWrap: {
-    height: 44,
-    paddingRight: 15,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#EEEEEE',
-    backgroundColor: '#FFFFFF'
-  },
-  saveBtn: {
-    width: 90,
-    height: 30,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E24B92',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveBtnTxt: {
-    fontSize: 16,
-    color: '#E24B92',
-  },
-  imgchoosebg: {
-    flex: 1,
-  }
 });
-
-// bottom
-// saveBtn
-// saveBtnTxt

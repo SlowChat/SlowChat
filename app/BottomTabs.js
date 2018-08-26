@@ -13,9 +13,9 @@ const HomeStack = createStackNavigator({
   Home: HomeScreen,
   // Login: LoginScreen,
 })
-const SpaceStack = createStackNavigator({
-  Space: require('./home/Space').default,
-})
+// const SpaceStack = createStackNavigator({
+//   Space: require('./home/Space').default,
+// })
 const MimeStack = createStackNavigator({
   Mime: require('./user/User').default,
 }, {
@@ -56,7 +56,7 @@ export default createBottomTabNavigator(
       },
     },
     Space: {
-      screen: SpaceStack,
+      screen: require('./home/Space').default,
       navigationOptions: {
         tabBarIcon:({focused,tintColor}) => (
           <Image style={styles.icon} source={

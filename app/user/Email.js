@@ -9,7 +9,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation'
 import EmailList from '../components/EmailList'
 import Toast from 'react-native-easy-toast'
 import Loading from '../components/Loading'
@@ -341,7 +340,6 @@ export default class Email extends Component {
             />
           ) : this.state.isSpacePage && <Blank searchTxt={isSearch} />
         }
-        <SafeAreaView />
         <Toast ref="toast" position="bottom" />
         {
           this.state.isDel && (

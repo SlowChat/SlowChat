@@ -8,7 +8,6 @@ import {
   FlatList
 } from 'react-native';
 import { post } from '../utils/request'
-import { SafeAreaView } from 'react-navigation'
 import Footer from '../components/Footer'
 import Blank from '../components/Blank'
 import Loading from '../components/Loading'
@@ -161,7 +160,6 @@ export default class Integral extends Component {
             />
           ) : this.state.isSpacePage && <Blank />
         }
-        <SafeAreaView />
       </View>
     )
   }
