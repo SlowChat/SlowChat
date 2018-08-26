@@ -123,10 +123,21 @@ export default class NewMail extends Component {
     }
   }
 
+  throttle(fn, delay) {
+    var timer = null;
+    return function(){
+      var context = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        fn.apply(context, args);
+      }, delay);
+    };
+  };
+
   setParams(key, value) {
       // this.setState({email: value})
     let { showSendMe } = this.state
-    console.log('--------', showSendMe)
+    console.log(key, '--------', value)
     if (key == 'email') {
       if (value == '发给自己' && showSendMe != false) {
         showSendMe = false
@@ -135,21 +146,22 @@ export default class NewMail extends Component {
       }
     }
     const { params } = this.state
-    setTimeout(() => {
-      params[key] = value
-    }, 100)
-    this.setState({ 
-      params, 
-      showSendMe }, () => {
-      const sendBtnEnable = this.checkParams()
-      if (this.sendBtnEnable != sendBtnEnable) {
-        this.noupdate = true
-        this.sendBtnEnable = sendBtnEnable
-        this.props.navigation.setParams({
-          enable: sendBtnEnable,
-        })
-      }
-    })
+    params[key] = value
+    this.throttle(() => {
+      this.setState({ 
+        params, 
+        showSendMe }, () => {
+        const sendBtnEnable = this.checkParams()
+        if (this.sendBtnEnable != sendBtnEnable) {
+          this.noupdate = true
+          this.sendBtnEnable = sendBtnEnable
+          this.props.navigation.setParams({
+            enable: sendBtnEnable,
+          })
+        }
+      })
+    }, 0)
+    
   }
   checkParams(showTip) {
     const { title, content, email, send_time } = this.state.params
@@ -289,11 +301,8 @@ export default class NewMail extends Component {
             <Text style={styles.label}>收件人：</Text>
             <TextInput autoFocus value={params.email} style={styles.input} 
               onChangeText={(text) => this.setParams('email', text)}
-              // onChange={(evt) => this.setState({ text: evt.nativeEvent.text })}
-              // onChangeText={(text) => setTimeout(() => {this.setState({ text: text })})}
-              // onEndEditing={(evt) => this.setState({ text: evt.nativeEvent.text })}
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>
+            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => this.setState({params:{'email': '发给自己'}})}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
           </View>
