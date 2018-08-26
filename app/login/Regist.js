@@ -7,9 +7,7 @@ import {
   ScrollView,
   Image,
   ImageBackground,
-  CheckBox,
   TouchableOpacity,
-  StatusBar,
   Platform,
 } from 'react-native'
 import {SafeAreaView} from 'react-navigation'
@@ -181,17 +179,17 @@ export default class Regist extends Component {
           <View style={styles.wrap}>
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
-                keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' onLayout={this.onInputLayout} />
-             <VerifyCode type="regist" reset={this.state.resetVertify} mobile={username} onTip={this.showTip} />
+               keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
+             <VerifyCode type="regist" reset={this.state.resetVertify} username={username} onTip={this.showTip} />
             </ImageBackground>
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}
-                autoCapitalize="none" underlineColorAndroid='transparent' onLayout={this.onInputLayout} />
+                autoCapitalize="none" underlineColorAndroid='transparent' />
             </ImageBackground>
 
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput maxLength={12} secureTextEntry value={password} style={[styles.input, styles.password]} autoCapitalize="none" placeholder="请输入6-12位密码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({password: text})}
-                underlineColorAndroid='transparent' onLayout={this.onInputLayout} />
+                underlineColorAndroid='transparent' />
             </ImageBackground>
             <TouchableOpacity activeOpacity={0.8} style={registBtnStyle} onPress={this.handleRegist}>
               <Text style={styles.registTxt}>注 册</Text>

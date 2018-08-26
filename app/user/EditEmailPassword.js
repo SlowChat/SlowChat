@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
+  ScrollView,
   TextInput,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -134,10 +134,23 @@ export default class EditPassowrd extends Component {
     navigate('EditPassword')
   }
 
+  inputComponents = []
+  onStartShouldSetResponderCapture = (e) => {
+    let target = e.nativeEvent.target
+    if(!this.inputComponents.includes(target)) {
+      dismissKeyboard()
+    }
+    return false
+  }
+  onInputLayout = (e) => {
+    this.inputComponents.push(e.nativeEvent.target)
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.link}>
+        <ScrollView style={styles.link} keyboardShouldPersistTaps>
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
@@ -183,7 +196,7 @@ export default class EditPassowrd extends Component {
               手机验证修改密码
             </Text>
           </Text>
-        </View>
+        </ScrollView>
         <Toast ref="toast" position="bottom" />
         <ErrorModal ref="errorModalRef" />
         <SuccessModal
@@ -216,7 +229,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',

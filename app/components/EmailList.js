@@ -168,13 +168,14 @@ export default class EmailList extends Component {
 
 const styles = StyleSheet.create({
   list: {
+    flex: 1,
     flexDirection: 'row',
-    height: 100,
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 10,
-    paddingBottom: 5,
-    borderBottomWidth: 1,
+    paddingBottom: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
     borderBottomColor: '#efefef',
     backgroundColor: '#FFFFFF',
   },
@@ -186,6 +187,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    justifyContent: 'center',
   },
   name: {
     marginBottom: 5,
@@ -198,25 +200,25 @@ const styles = StyleSheet.create({
   },
   time: {
     flexDirection: 'row',
-    width: '15%',
     textAlign: 'right',
+    alignItems: 'center',
   },
   timeTxt: {
     color: '#B4B4B4'
   },
   status: {
+    flex: 1,
     flexDirection: 'row',
     height: 50,
     paddingLeft: 15,
     paddingRight: 15,
     marginBottom: 10,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
   },
   statusLeft: {
+    flex: 1,
     flexDirection: 'row',
-    width: '65%',
   },
   statusIcon: {
     width: 20,
@@ -229,9 +231,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   statusRight: {
+    flex: 1,
     flexDirection: 'row',
-    width: '30%',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   finish: {
@@ -260,7 +262,7 @@ const styles = StyleSheet.create({
   },
   cont: {
     padding: 30,
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderTopColor: '#d8d8d8'
   }

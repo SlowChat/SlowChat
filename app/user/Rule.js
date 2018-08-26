@@ -6,10 +6,9 @@ import {
   Image,
   ScrollView
 } from 'react-native';
-import Avatar from '../components/Avatar'
+import {SafeAreaView} from 'react-navigation'
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class Rule extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
     return {
@@ -99,6 +98,7 @@ export default class App extends Component<Props> {
             <Text style={styles.txt}>已经提交等待发送的邮件想要撤回删除时，每一次消耗1000积分，若积分累计不足时无法撤回删除</Text>
           </View>
         </View>
+        <SafeAreaView />
       </ScrollView>
     );
   }
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingTop: 10,
     paddingBottom: 10,
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee'
   },

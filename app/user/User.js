@@ -71,6 +71,9 @@ export default class User extends Component {
 
   componentWillUnmount() {
     this.viewAppear.remove()
+    this.setState = (state,callback)=>{
+      return;
+    };
   }
 
   getData() {
@@ -126,7 +129,7 @@ export default class User extends Component {
           isSucc: true,
           sign: {
             score: data.score,
-            desc: data.count
+            count: data.count,
           }
         })
       }
@@ -136,8 +139,8 @@ export default class User extends Component {
   }
   goInfo = () => {
     const { navigate } = this.props.navigation;
-    const { username, avatar, sex, birthday, level } = this.state
-    navigate('Information', { username, avatar, sex, birthday, level })
+    const { username, avatar, sex, birthday } = this.state
+    navigate('Information', { username, avatar, sex, birthday, type: 'Information' })
   }
   render() {
     const { navigate } = this.props.navigation;
@@ -273,7 +276,7 @@ const styles = StyleSheet.create({
     color: '#666',
     alignItems:'center',
     justifyContent: 'center',
-    borderRightWidth: 1,
+    borderRightWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderRightColor: '#eee'
   },
@@ -335,7 +338,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',

@@ -81,6 +81,7 @@ export default class NewMail extends Component {
     })
   }
 
+
   shouldComponentUpdate() {
     if (this.noupdate) {
       this.noupdate = false
@@ -131,23 +132,22 @@ export default class NewMail extends Component {
   }
 
   setParams(key, value) {
+      // this.setState({email: value})
     let { showSendMe } = this.state
-    let defaultValue
     if (key == 'email') {
       if (value == '发给自己' && showSendMe != false) {
         showSendMe = false
-        defaultValue = {email: '发给自己'}
       } else if (value != '发给自己' && showSendMe != true) {
         showSendMe = true
       }
     }
     const { params } = this.state
-    params[key] = value
-    const state = { params, showSendMe }
-    if (defaultValue) {
-      state.defaultValue = {...this.state.defaultValue, ...defaultValue}
-    }
-    this.setState(state, () => {
+    setTimeout(() => {
+      params[key] = value
+    }, 100)
+    this.setState({
+      params,
+      showSendMe }, () => {
       const sendBtnEnable = this.checkParams()
       if (this.sendBtnEnable != sendBtnEnable) {
         this.noupdate = true
@@ -306,7 +306,7 @@ export default class NewMail extends Component {
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
             <TextInput autoFocus style={styles.input}
-              defaultValue={defaultValue.email}
+              value={params.email}
               onChangeText={(text) => this.setParams('email', text)}
               returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => { this.setParams('email', '发给自己') }}>

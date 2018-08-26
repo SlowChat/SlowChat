@@ -40,7 +40,7 @@ export default class Information extends Component {
   }
   constructor(props) {
     super(props)
-    const { avatar, birthday, username, sex, level } = this.props.navigation.state.params || {}
+    const { avatar, birthday, username, sex, level, type } = this.props.navigation.state.params || {}
     this.state = {
       switchBtn: true,
       isShow: false,
@@ -49,6 +49,7 @@ export default class Information extends Component {
       username,
       avatar,
       level,
+      type,
       isSucc: false
     }
   }
@@ -76,7 +77,10 @@ export default class Information extends Component {
   }
 
   onChangeName = () => {
-    this.setState({ isSucc: true })
+    this.setState({ 
+      isSucc: true,
+      isShow: false
+    })
   }
 
   onRequestClose = () => {
@@ -131,27 +135,27 @@ export default class Information extends Component {
 
   render() {
     const { params } = this.props.navigation.state;
-    const { avatar, username, level } = this.state
+    const { avatar, username, level, type } = this.state
     return (
       <View style={styles.container}>
-        <Avatar avatar={avatar} username={username} level={level} onPress={this.chooseAndUpload} />
+        <Avatar avatar={avatar} username={username} level={level} type={type} onPress={this.chooseAndUpload} />
         <View style={styles.link}>
-          <View style={styles.menu}>
+          <TouchableOpacity style={styles.menu} onPress={() => this.onChangeName()}>
             <Text style={styles.label}>昵称</Text>
-            <Text style={styles.input} onPress={() => this.onChangeName()}>{this.state.username}</Text>
+            <Text style={styles.input}>{this.state.username}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menu} onPress = {() => this.setState({isShow: true})}>
             <Text style={styles.label}>性别</Text>
-            <Text style={styles.input} onPress = {() => this.setState({isShow: true})}>
+            <Text style={styles.input}>
               {this.state.sex}
             </Text>
             <Image style={styles.forward} source={ICONS.forward} />
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.label}>生日</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menu}>
+            <Text style={styles.sexLabel}>生日</Text>
             <DatePicker
-              style={{width: '62%', justifyContent: 'flex-end'}}
+              style={{width: '100%', paddingRight: 20, justifyContent: 'flex-end', alignItems: 'flex-end'}}
               date={this.state.date}
               mode="date"
               placeholder="select date"
@@ -173,14 +177,14 @@ export default class Information extends Component {
                   borderWidth: 0,
                   color: '#B4B4B4',
                   alignItems: 'flex-end',
-                  justifyContent: 'center',
                 },
               }}
               onDateChange={(date) => {this.setState({date: date})}}
+              onOpenModal={() => {this.setState({isShow: false})}}
               locale="zh"
             />
             <Image style={styles.forward} source={ICONS.forward} />
-          </View>
+          </TouchableOpacity>
         </View>
         <SafeAreaView style={styles.exitWrap}>
           <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleSubmit}>
@@ -236,10 +240,10 @@ const styles = StyleSheet.create({
   menu: {
     flexDirection: 'row',
     height: 44,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',
@@ -251,17 +255,25 @@ const styles = StyleSheet.create({
     height: 24,
   },
   label: {
-    width: '30%',
+    flex:1,
+    flexDirection: 'row',
+    color: '#666'
+  },
+  sexLabel: {
+    position: 'absolute',
+    left: 15,
     color: '#666'
   },
   input: {
-    width: '62%',
+    flex:1,
+    flexDirection: 'row',
     height: 40,
     lineHeight: 40,
+    paddingRight: 20,
     textAlign: 'right',
     color: '#333',
     alignItems:'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   nickInput: {
     width: '80%',
