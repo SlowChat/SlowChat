@@ -38,11 +38,26 @@ class Setting extends Component {
       appVersion: DeviceInfo.getVersion()
     })
   }
-  handleSwitch = async (value) => {
-    const token = await Storage.getToken()
-    console.log(token);
+  handleSwitch = (value) => {
     this.setState({
       switchBtn: value
+    }, async () => {
+      const state = this.stata.switchBtn ? 0 : 1
+      const code = Storage.getPushId()
+      try {
+        await post('api/user_msg/setPushState.html', { code, state })
+        if (res.code == 1) {
+          this.refs.toast.show('设置成功')
+        } else if (res.code == 10001) {
+          this.props.navigation.navigate('Login')
+        } else {
+          this.setState({ switchBtn: !this.state.switchBtn })
+          this.refs.toast.show('设置失败')
+        }
+      } catch (e) {
+          this.setState({ switchBtn: !this.state.switchBtn })
+          this.refs.toast.show('设置失败')
+      }
     })
   }
 
