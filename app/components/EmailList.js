@@ -132,10 +132,10 @@ export default class EmailList extends Component {
               <View style={styles.content}>
                 <Text style={styles.name}>{item.email}</Text>
                 <Text style={styles.name}>{item.title}</Text>
-                <Text style={styles.sendTime}>发送时间：2020-01-01 18：00</Text>
+                <Text style={styles.sendTime}>发送时间：{item.send_time}</Text>
               </View>
               <View style={styles.time}>
-                <Text style={styles.timeTxt}>6-16</Text>
+                <Text style={styles.timeTxt}>{item.add_time}</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>

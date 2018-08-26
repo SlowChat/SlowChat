@@ -17,7 +17,8 @@ import Loading from '../components/Loading'
 import Blank from '../components/Blank'
 import Footer from '../components/Footer'
 import ErrorTip from '../components/ErrorTip'
-import { get, post } from '../utils/request'
+import { post } from '../utils/request'
+import dateFormat from '../utils/date'
 
 const DATA = {
   reservation: '预定发送信件',
@@ -73,7 +74,7 @@ export default class Email extends Component {
   }
 
   setDefault = () => {
-    const status = this.getStatus()
+    const { status } = this.props.navigation.state.params || {};
     if (status === 'reservation') {
       this.sendState = 1
     } else if (status === 'sent') {
@@ -81,6 +82,7 @@ export default class Email extends Component {
     } else if (status === 'public') {
       this.type = 2
     }
+    this.status = status
   }
 
   handleEdit = () => {
@@ -119,11 +121,6 @@ export default class Email extends Component {
     this.setState({isAllSelect: true})
   }
 
-  getStatus = () => {
-    const { params = {} } = this.props.navigation.state;
-    return params.status
-  }
-
   initData = () => {
     this.pageNo = 0
     this.fetchData()
@@ -143,25 +140,36 @@ export default class Email extends Component {
     }
     post(this.returnUrl(), params).then(res => {
       console.log(111111, res)
-      const { code, data } = res
+      const { code } = res
       if (code === 1) {
         let foot = 0
-        if (this.pageNo + 1 >= Math.ceil(data.total / this.pageSize)) {
+        const { total, items } = res.data
+        if (this.pageNo + 1 >= Math.ceil(total / this.pageSize)) {
           // listView底部显示没有更多数据了
           foot = 1
         }
-        if (data.items && data.items.length <= 0) {
+
+        if (items && items.length <= 0) {
           this.setState({
             isSpacePage: true
           })
         }
+        if (this.status != 'draft') {
+          const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+          items.forEach(item => {
+            item.send_time = (item.send_time || '').split(' ')[0]
+            const [ add_date, add_time ] = item.add_time.split(' ')
+            item.add_time = curr_item == add_date ? add_time : add_date
+          })
+        }
+
         this.state.searchText !== '' ? this.setState({isShowResult: true}) : this.setState({isShowResult: false})
         this.setState({
-          total: data.total,
-          dataArray: this.state.dataArray.concat(data.items),
+          total: total,
+          dataArray: this.state.dataArray.concat(items),
           isLoading: false,
           showFoot: foot,
-          isRefreshing: data.total / this.pageSize > 1,
+          isRefreshing: total / this.pageSize > 1,
         })
       }
     }).catch(e => {
@@ -170,10 +178,9 @@ export default class Email extends Component {
   }
 
   _renderItem = ({item}) => {
-    const status = this.getStatus()
     const { navigate, state } = this.props.navigation;
     return (
-      <EmailList status={status}
+      <EmailList status={this.status}
         isAllSelect={this.state.isAllSelect}
         item={item}
         score={state.params.score}
@@ -339,8 +346,7 @@ export default class Email extends Component {
   }
 
   returnUrl() {
-    const status = this.getStatus()
-    if (status === 'draft') {
+    if (this.status === 'draft') {
       return 'api/mail/getDraftList.html'
     } else {
       return 'api/mail/getMyList.html'
