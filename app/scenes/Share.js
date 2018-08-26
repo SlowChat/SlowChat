@@ -208,7 +208,7 @@ export default class Share extends PureComponent<Props> {
                 <Image style={styles.avatar} source={source} />
                 <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>
-                    <Text style={styles.name}>{userName}</Text>
+                    <Text numberOfLines={1} style={styles.name}>{userName}</Text>
                     <Text style={styles.desc}>邀请你来慢邮~</Text>
                   </View>
                   <Text style={styles.title}>让我们 回到未来 回忆现在</Text>
@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
     alignItems: 'baseline'
   },
   name: {
+    maxWidth: 110,
     height: 25,
     fontFamily: 'PingFangSC-Regular',
     fontSize: 18,

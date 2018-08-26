@@ -232,7 +232,7 @@ export default class Home extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: '#F6F6F6',
   },
   itemWrap: {
     backgroundColor: '#F6F6F6',

@@ -42,9 +42,11 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'flex-end',
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
     borderStyle: 'solid',
+    marginBottom: 1,
   },
   wrap: {
     flexDirection: 'row',
@@ -54,8 +56,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txtWrap: {
-    borderBottomWidth: StyleSheet.hairlineWidth * 2,
-    borderBottomColor: '#B4B4B4',
+    // borderBottomWidth: StyleSheet.hairlineWidth * 2,
+    // borderBottomColor: '#B4B4B4',
     borderStyle: 'solid',
     height: 28,
     textAlign: 'center'
@@ -67,6 +69,7 @@ const styles = StyleSheet.create({
   },
   activeTxtWrap: {
     borderBottomColor: '#E24B92',
+    borderBottomWidth: StyleSheet.hairlineWidth * 2,
   },
   activeTxt: {
     color: '#E24B92',

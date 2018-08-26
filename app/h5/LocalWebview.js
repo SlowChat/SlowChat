@@ -118,8 +118,8 @@ export default class LocalWebview extends Component<Props> {
         {showLoading && <Loading />}
         {showError && <ErrorTip onPress={this.reload} />}
         <WebView ref={ref => this.webview = ref}
-          source={require('./h5.html')}
-          // source={Platform.OS == 'ios' ? require('./h5.html') : require('file:///android_asset/h5.html')}
+          // source={require('./h5.html')}
+          source={Platform.OS == 'ios' ? require('./h5.html') : {uri: 'file:///android_asset/h5.html'}}
           mixedContentMode="compatibility"
           userAgent="com.slowchat"
           scalesPageToFit

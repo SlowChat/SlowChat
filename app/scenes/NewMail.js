@@ -155,8 +155,8 @@ export default class NewMail extends Component {
     const { params } = this.state
     params[key] = value
     this.throttle(() => {
-      this.setState({ 
-        params, 
+      this.setState({
+        params,
         showSendMe }, () => {
         const sendBtnEnable = this.checkParams()
         if (this.sendBtnEnable != sendBtnEnable) {
