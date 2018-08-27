@@ -12,7 +12,6 @@ import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
 import SuccessModal from '../components/SuccessModal'
 
-let mobile='', userEmail='', username='', msgCount=0, level, avatar;
 export default class User extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -22,14 +21,14 @@ export default class User extends Component {
       title: '个人中心',
       headerLeft: (
         <View style={styles.icon}>
-          <TouchableWithoutFeedback onPress={() => navigate('Setting', { mobile, userEmail, username, level, avatar })}>
+          <TouchableWithoutFeedback onPress={params.leftOnPress}>
             <Image style={styles.set} source={require('../images/icon_set.png')} />
           </TouchableWithoutFeedback>
         </View>
       ),
       headerRight: (
         <View style={styles.icon}>
-          <TouchableWithoutFeedback onPress={() => navigate('Notice')}>
+          <TouchableWithoutFeedback onPress={params.rightOnPress}>
             <View>
               <Image style={styles.info} source={require('../images/icon_info.png')} />
               {
@@ -45,20 +44,24 @@ export default class User extends Component {
   }
 
   state = {
-    mobile: '',
-    userEmail: '',
-    username: '',
-    sex: 0,
-    avatar: '',
-    draftCount: 0,
-    unsendCount: 0,
-    sentCount: 0,
-    publicCount: 0,
-    birthday: '',
+    user: {
+      mobile: '',
+      userEmail: '',
+      username: '',
+      sex: 0,
+      avatar: '',
+      birthday: '',
+      level: '',
+    },
+    count: {
+      draftCount: 0,
+      unsendCount: 0,
+      sentCount: 0,
+      publicCount: 0,
+    },
     sign: {},
     msgCount: 0,
     isSucc: false,
-    level: '',
     isLogin: null
   }
 
@@ -69,6 +72,17 @@ export default class User extends Component {
         this.getData()
       }
     )
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({
+      leftOnPress: () => {
+        this.handleNav('Setting', {...this.state.user})
+      },
+      rightOnPress: () => {
+        this.handleNav('Push')
+      }
+    })
   }
 
   componentWillUnmount() {
@@ -84,27 +98,25 @@ export default class User extends Component {
       const { code, data } = res
       if (code === 1) {
         if (data.sign && data.sign.count) this.setState({ sign: data.sign })
-        mobile = data.mobile
-        userEmail = data.user_email
-        username = data.user_nickname
-        msgCount = data.msg_count
-        level = data.level
-        avatar = data.avatar
         this.setState({
-          mobile: data.mobile,
-          userEmail: data.user_email,
-          username: data.user_nickname,
-          sex: data.sex,
-          avatar: data.avatar,
-          draftCount: data.draft_count,
-          unsendCount: data.unsend_count,
-          sentCount: data.send_count,
-          publicCount: data.public_count,
-          level: data.level,
-          birthday: data.birthday,
+          isLogin: false,
           msgCount: data.msg_count,
           score: data.score,
-          isLogin: false
+          user: {
+            mobile: data.mobile,
+            userEmail: data.user_email,
+            username: data.user_nickname,
+            sex: data.sex,
+            avatar: data.avatar,
+            level: data.level,
+            birthday: data.birthday,
+          },
+          count: {
+            draftCount: data.draft_count,
+            unsendCount: data.unsend_count,
+            sentCount: data.send_count,
+            publicCount: data.public_count,
+          },
         })
         this.props.navigation.setParams({
           msgCount: data.msg_count
@@ -120,11 +132,15 @@ export default class User extends Component {
 
   handerSetting() {
     const { navigate } = this.props.navigation;
-    const { mobile, userEmail } = this.state;
+    const { mobile, userEmail } = this.state.user;
     navigate('Setting', { mobile, userEmail })
   }
 
   handleDaka() {
+    if (this.state.isLogin) {
+      this.props.navigation.navigate('Login')
+      return
+    }
     post('api/user/sign.html').then(res => {
       const { code, data } = res
       console.log('1111111', res)
@@ -142,41 +158,46 @@ export default class User extends Component {
     })
   }
   goInfo = () => {
+    this.handleNav('Information', { ...this.state.user, type: 'Information' })
+  }
+
+  handleNav = (url, params = {}) => {
     const { navigate } = this.props.navigation;
-    const { username, avatar, sex, birthday, isLogin } = this.state
-    if (isLogin) {
-      navigate('Login')
+    if (this.state.isLogin) {
+      navigate('Login', { url, params })
     } else {
-      navigate('Information', { username, avatar, sex, birthday, type: 'Information' })
+      navigate(url, params)
     }
   }
-  
+
   render() {
     const { navigate } = this.props.navigation;
-    const { username, sex, avatar, birthday, draftCount, level, unsendCount, sentCount, publicCount, sign, msgCount, score, isLogin } = this.state;
+    const { username, sex, avatar, birthday, level } = this.state
+    const { draftCount, unsendCount, sentCount, publicCount } = this.state.count
+    const { sign, msgCount, score, isLogin } = this.state;
     return (
       <View style={styles.container}>
         <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />
         <View style={styles.remind}>
-          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'draft' })}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav('Email', { status: 'draft' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>草稿箱</Text>
               <Text style={styles.num}>{ draftCount }</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'reservation', score: score })}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav('Email', { status: 'reservation', score: score })}>
             <View style={styles.list}>
               <Text style={styles.txt}>预定发送</Text>
               <Text style={styles.num}>{ unsendCount }</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'sent' })}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav('Email', { status: 'sent' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>已发送</Text>
               <Text style={styles.num}>{ sentCount }</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Email', { status: 'public' })}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav('Email', { status: 'public' })}>
             <View style={styles.list}>
               <Text style={styles.txt}>公开内容</Text>
               <Text style={styles.num}>{ publicCount }</Text>
@@ -216,14 +237,14 @@ export default class User extends Component {
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Integral')}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav('Integral')}>
             <View style={styles.menu}>
               <Image style={styles.menuImg} source={require('../images/icon_jifen.png')} />
               <Text style={styles.menuTxt}>我的积分</Text>
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('Push')}>
+          <TouchableWithoutFeedback onPress={() => this.handleNav('Push')}>
             <View style={styles.menu}>
               <Image style={styles.menuImg} source={require('../images/icon_info.png')} />
               {

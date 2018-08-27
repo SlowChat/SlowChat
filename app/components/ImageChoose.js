@@ -15,9 +15,12 @@ import {
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
+import ImageViewer from 'react-native-image-zoom-viewer'
 import RNFileSelector from 'react-native-file-selector'
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+import ActionSheet from 'react-native-actionsheet'
+// import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
+import SaveBtn from './SaveBtn'
 import Alert from './Alert'
 // import { upload } from '../utils/request'
 import { openFile } from '../utils/opendoc'
@@ -26,12 +29,12 @@ import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 export default class ImageChoose extends PureComponent {
   state = {
     items: [],
-    sheetTitle: '',
-    current: {}
+    current: {},
+    images: [],
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.initValue.length !== this.props.initValue.length) {
+    if (nextProps.initValue.length > 0 && nextProps.initValue.length !== this.props.initValue.length) {
       this.setState({ items: nextProps.initValue })
     }
   }
@@ -162,13 +165,9 @@ export default class ImageChoose extends PureComponent {
       }
     })
   }
-  handleClose = () => {
-    const { onClose } = this.props
-    onClose && onClose()
-  }
-  openActionSheet = (item) => {
-    this.actionSheet.show()
-    this.setState({ current: item })
+  handlePress = (item) => {
+    const { onPress } = this.props
+    onPress && onPress(item)
   }
   handleActionSheet = async (index) => {
     if (index == 0) {
@@ -187,21 +186,63 @@ export default class ImageChoose extends PureComponent {
         }
       })
     } else if (index == 1) {
-      const { filename, url } = this.state.current
-      this.setState({ sheetTitle: filename })
+      const { filename, url, ext } = this.state.current
       try {
-        await openFile(url, filename)
+        this.closeImageChoose()
+        if (Platform.OS == 'android' && ext == 'image') {
+          this.setState({ images: [this.state.current] })
+        } else {
+          await openFile(url, filename)
+        }
+        // if (Platform.OS == 'ios') {
+        //
+        // }
       } catch (e) {
         this.refs.toast.show('打开文件失败')
       }
-
     }
   }
-  render() {
+  closeImageViewer = () => {
+    this.setState({ images: [] })
+    this.openImageChoose()
+  }
+  openActionSheet = (item) => {
+    this.actionSheet.show()
+    this.setState({ current: item })
+  }
+  openImageChoose = () => {
+    const { onClose } = this.props
+    onClose && onClose(true)
+  }
+  closeImageChoose = () => {
+    const { onClose } = this.props
+    onClose && onClose(false)
+  }
+  renderActionSheet() {
+    return <ActionSheet
+      ref={ref => this.actionSheet = ref}
+      title={this.state.current.filename}
+      // tintColor="#333333"
+      options={['删除', '预览', '返回']}
+      // options={[
+      //   <Text style={[styles.sheetBtn, {color: '#EC3632'}]}>删除</Text>,
+      //   <Text style={styles.sheetBtn}>预览</Text>,
+      //   <Text style={styles.sheetBtn}>返回</Text>
+      // ]}
+      cancelButtonIndex={2}
+      destructiveButtonIndex={0}
+      onPress={this.handleActionSheet}
+      />
+  }
+
+  renderImageChoose() {
     const { items } = this.state
-    const { visible, onClose } = this.props
-    return (
-      <View style={styles.wrap}>
+    const { visible } = this.props
+    return <Modal style={styles.wrap} visible={this.props.visible} transparent={true}
+      animationType="slide" onRequestClose={this.closeImageChoose}>
+      <TouchableOpacity style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
+      <SaveBtn onPress={this.props.onSave} />
+      <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} style={styles.content}>
         <View style={styles.header}>
           <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
             <Image style={styles.icon} source={require('../images/picture.png')}></Image>
@@ -218,19 +259,25 @@ export default class ImageChoose extends PureComponent {
             items.map((item, index) => <AttachmentItem key={index} item={item} onPress={this.openActionSheet} />)
           }
         </ScrollView>
-        <SafeAreaView />
-        <ActionSheet
-          ref={ref => this.actionSheet = ref}
-          title={this.state.sheetTitle}
-          options={[
-            <Text style={[styles.sheetBtn, {color: '#EC3632'}]}>删除</Text>,
-            <Text style={styles.sheetBtn}>预览</Text>,
-            <Text style={styles.sheetBtn}>返回</Text>
-          ]}
-          cancelButtonIndex={2}
-          onPress={this.handleActionSheet}
-          />
+      </SafeAreaView>
+    </Modal>
+  }
+  // <SafeAreaView style={{backgroundColor: '#F6F6F6'}} />
 
+  renderImageViewer() {
+    const { images } = this.state
+    return <Modal visible={images.length > 0} transparent={true} onRequestClose={this.closeImageViewer}>
+      <ImageViewer enableImageZoom imageUrls={images} onClick={this.closeImageViewer} />
+    </Modal>
+  }
+  render() {
+    const { items } = this.state
+    const { visible, onClose } = this.props
+    return (
+      <View>
+        {this.renderImageChoose()}
+        {this.renderActionSheet()}
+        {this.renderImageViewer()}
         <Alert ref={ref => this.alert = ref} />
         <Toast ref="toast" position="center" />
       </View>
@@ -240,9 +287,9 @@ export default class ImageChoose extends PureComponent {
 
 const styles = StyleSheet.create({
   wrap: {
-    // flex: 1,
-    // justifyContent:'flex-end',
-    backgroundColor: '#F6F6F6',
+    flex: 1,
+    justifyContent:'flex-end',
+    // backgroundColor: '#F6F6F6',
   },
   content: {
     backgroundColor: '#F6F6F6',
@@ -273,5 +320,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
     color: '#333333',
+  },
+  imgchoosebg: {
+    flex: 1,
   }
 });

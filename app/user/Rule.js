@@ -21,7 +21,7 @@ export default class Rule extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} forceInset={{top: 'never', bottom: 'always'}}>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
             <Image style={styles.icon} source={require('../images/icon_info.png')} />
@@ -98,7 +98,7 @@ export default class Rule extends Component {
             <Text style={styles.txt}>已经提交等待发送的邮件想要撤回删除时，每一次消耗1000积分，若积分累计不足时无法撤回删除</Text>
           </View>
         </View>
-        <SafeAreaView />
+        <SafeAreaView style={{backgroundColor: '#FFFFFF'}} forceInset={{top: 'never', bottom: 'always'}} />
       </ScrollView>
     );
   }

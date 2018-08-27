@@ -5,7 +5,6 @@ import {
   FlatList,
 } from 'react-native';
 
-import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import Swiper from '../components/Swiper'
 import NoticeItem from '../components/NoticeItem'
@@ -133,7 +132,6 @@ export default class MsgList extends Component<Props> {
           onEndReached={this.handleLoadmore}
           ListFooterComponent={this.renderFooter}
         />
-        <SafeAreaView />
         { showLoading && <Loading /> }
         <Toast ref="toast" position="center" />
       </View>

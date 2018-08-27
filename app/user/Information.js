@@ -186,7 +186,7 @@ export default class Information extends Component {
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
         </View>
-        <SafeAreaView style={styles.exitWrap}>
+        <SafeAreaView style={styles.exitWrap} forceInset={{top: 'never', bottom: 'always'}}>
           <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleSubmit}>
             <Text style={styles.exitTxt}>保 存</Text>
           </TouchableOpacity>

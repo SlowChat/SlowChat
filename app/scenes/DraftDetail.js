@@ -130,7 +130,7 @@ export default class DraftDetail extends Component {
           </View>
           <Attachment items={attachs} />
         </ScrollView>
-        <SafeAreaView style={styles.bottom}>
+        <SafeAreaView style={styles.bottom} forceInset={{top: 'never', bottom: 'always'}}>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.openDelete}>
             <Image style={styles.bottomIcon} source={require('../images/delete.png')} />
           </TouchableOpacity>

@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F6F6F6',
     paddingBottom: 10,
+    paddingBottom: 50,
   },
 
   topbar: {

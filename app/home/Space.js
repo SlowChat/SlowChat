@@ -27,14 +27,14 @@ const ITEMS = [{id: 0, name: '最新发布'}, {id: 1, name: '热门'}]
 
 type Props = {};
 export default class Space extends Component<Props> {
-  static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    return {
-      header: () => (<SafeAreaView style={styles.header} forceInset={{ top: 'always', horizontal: 'never' }}>
-          <SearchBox onPress={params.searchBoxPress} />
-        </SafeAreaView>)
-    }
-  }
+  // static navigationOptions = ({navigation}) => {
+  //   const { params = {} } = navigation.state
+  //   return {
+  //     header: () => (<SafeAreaView style={styles.header} forceInset={{ top: 'always', horizontal: 'never' }}>
+  //         <SearchBox onPress={params.searchBoxPress} />
+  //       </SafeAreaView>)
+  //   }
+  // }
 
   state = {
     showFoot: 0,
@@ -48,14 +48,19 @@ export default class Space extends Component<Props> {
   componentWillMount() {
     this.init()
   }
-  componentDidMount() {
-    this.props.navigation.setParams({
-      searchBoxPress: (txt) => {
-        this.keyword = txt || ''
-        this.init()
-        this._flatList.scrollToOffset({animated: true, offset: 0})
-      }
-    })
+  // componentDidMount() {
+  //   this.props.navigation.setParams({
+  //     searchBoxPress: (txt) => {
+  //       this.keyword = txt || ''
+  //       this.init()
+  //       this._flatList.scrollToOffset({animated: true, offset: 0})
+  //     }
+  //   })
+  // }
+  searchBoxPress = (txt) => {
+    this.keyword = txt || ''
+    this.init()
+    this._flatList.scrollToOffset({animated: true, offset: 0})
   }
   tabSwitch = (index) => {
     if (this.state.activeTab == index) return
@@ -150,12 +155,16 @@ export default class Space extends Component<Props> {
   render() {
     const { showLoading, showError, showBlank } = this.state
     const { activeTab, data } = this.state
+    const isSearch = Boolean(this.keyword)
     return (
       <View style={styles.container}>
+        <SafeAreaView style={styles.header} forceInset={{ top: 'always', horizontal: 'never' }}>
+          <SearchBox onPress={this.searchBoxPress} />
+        </SafeAreaView>
         <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
         { showLoading && <Loading /> }
-        { showBlank && <Blank /> }
+        { showBlank && <Blank searchTxt={isSearch} /> }
         { showError && <ErrorTip onPress={this.init} /> }
         <FlatList
           style={styles.flatlist}

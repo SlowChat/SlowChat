@@ -11,10 +11,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
+import SaveBtn from '../components/SaveBtn'
 import HeaderTip from '../components/HeaderTip'
 import ImageChoose from '../components/ImageChoose'
 import SuccessModal from '../components/SuccessModal'
@@ -57,6 +57,7 @@ export default class NewMail extends Component {
     pickerModal: false,
     attachs: [],
     initAttaches: [],
+    images: [],
     params: {
       title: '',
       content: '',
@@ -242,7 +243,7 @@ export default class NewMail extends Component {
             this.props.navigation.navigate('Login')
           })
         } else if (res.code == 1) {
-          this.setState({ isSucc: true, isSend: false, showLoading: false })
+          this.setState({ pickerModal: false, isSucc: true, isSend: false, showLoading: false })
         } else {
           this.dealError(res.msg, false)
         }
@@ -301,8 +302,8 @@ export default class NewMail extends Component {
   openImageChoose = () => {
     this.setState({ pickerModal: true })
   }
-  closeImageChoose = () => {
-    this.setState({ pickerModal: false })
+  closeImageChoose = (open = false) => {
+    this.setState({ pickerModal: open })
   }
 
   render() {
@@ -310,6 +311,7 @@ export default class NewMail extends Component {
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
+    console.log(isSucc);
     return (
       <View style={styles.container}>
         <ScrollView keyboardShouldPersistTaps="always">
@@ -341,8 +343,8 @@ export default class NewMail extends Component {
           <View style={styles.item}>
             <Text style={styles.label}>发信时间：</Text>
             <DatePicker style={styles.datepicker} date={params.send_time}
-              minDate={new Date()}
               locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
+              minuteInterval={30} minDate={new Date()}
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {
@@ -365,24 +367,13 @@ export default class NewMail extends Component {
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
         </ScrollView>
-        <SafeAreaView style={[styles.bottom, styles.saveBtnWrap]}>
-          <TouchableOpacity style={[styles.saveBtn ]} onPress={this.handleSave}>
-            <Text style={[styles.saveBtnTxt]}>保存草稿</Text>
-          </TouchableOpacity>
-        </SafeAreaView>
-
-        <Modal visible={this.state.pickerModal} transparent={true}
-          animationType="slide" onRequestClose={this.closeImageChoose}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
-          <View style={styles.saveBtnWrap}>
-            <TouchableOpacity style={[styles.saveBtn ]} onPress={this.handleSave}>
-              <Text style={[styles.saveBtnTxt]}>保存草稿</Text>
-            </TouchableOpacity>
-          </View>
-          <ImageChoose initValue={initAttaches}
-            onChange={this.handleImageChoose}
-            onError={this.showErrorModal} />
-        </Modal>
+        <SaveBtn type="bottom" onPress={this.handleSave} />
+        <ImageChoose visible={this.state.pickerModal}
+          initValue={initAttaches}
+          onSave={this.handleSave}
+          onChange={this.handleImageChoose}
+          onClose={this.closeImageChoose}
+          onError={this.showErrorModal} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           btn="返回首页"
@@ -501,39 +492,4 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlignVertical: 'top',
   },
-  bottom: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  saveBtnWrap: {
-    height: 44,
-    paddingRight: 15,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#EEEEEE',
-    backgroundColor: '#FFFFFF'
-  },
-  saveBtn: {
-    width: 90,
-    height: 30,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E24B92',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveBtnTxt: {
-    fontSize: 16,
-    color: '#E24B92',
-  },
-  imgchoosebg: {
-    flex: 1,
-  }
 });
-
-// bottom
-// saveBtn
-// saveBtnTxt
