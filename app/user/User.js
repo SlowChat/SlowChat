@@ -98,6 +98,7 @@ export default class User extends Component {
       const { code, data } = res
       if (code === 1) {
         if (data.sign && data.sign.count) this.setState({ sign: data.sign })
+        console.log(1111,data.user_nickname)
         this.setState({
           isLogin: false,
           msgCount: data.msg_count,
@@ -164,7 +165,7 @@ export default class User extends Component {
   handleNav = (url, params = {}) => {
     const { navigate } = this.props.navigation;
     if (this.state.isLogin) {
-      navigate('Login', { url, params })
+      navigate('Login')
     } else {
       navigate(url, params)
     }
@@ -172,9 +173,10 @@ export default class User extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { username, sex, avatar, birthday, level } = this.state
     const { draftCount, unsendCount, sentCount, publicCount } = this.state.count
-    const { sign, msgCount, score, isLogin } = this.state;
+    const { sign, msgCount, score, isLogin, user } = this.state;
+    const { username, sex, avatar, birthday, level } = user
+
     return (
       <View style={styles.container}>
         <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />

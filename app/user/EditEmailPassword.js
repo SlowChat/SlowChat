@@ -65,10 +65,13 @@ export default class EditPassowrd extends Component {
         }, token).then((res) => {
         console.log(res)
         if (res.code === 1) {
-          this.refs.toast.show(res.msg);
-          setTimeout(() => {
-            pop();
-          }, 1000)
+          this.setState({
+            isSucc: true
+          })
+          // this.refs.toast.show(res.msg);
+          // setTimeout(() => {
+          //   pop();
+          // }, 1000)
         } else {
           this.refs.errorModalRef.show({
             txt: res.msg
@@ -130,9 +133,10 @@ export default class EditPassowrd extends Component {
   }
 
   showTip = (msg) => {
-    this.refs.errorModalRef.show({
-      txt: msg
-    })
+    this.refs.toast.show(msg);
+    // this.refs.errorModalRef.show({
+    //   txt: msg
+    // })
   }
 
   handleJump = () => {
@@ -207,7 +211,7 @@ export default class EditPassowrd extends Component {
         <Toast ref="toast" position="bottom" />
         <ErrorModal ref="errorModalRef" />
         <SuccessModal
-          txt={'手机号修改成功'}
+          txt={'邮箱修改成功'}
           btn={'返回'}
           visible={this.state.isSucc}
           onPress={() => {

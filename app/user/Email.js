@@ -143,7 +143,6 @@ export default class Email extends Component {
       params.state = this.sendState
     }
     post(this.returnUrl(), params).then(res => {
-      console.log(111111, res)
       const { code } = res
       if (code === 1) {
         let foot = 0
@@ -169,7 +168,7 @@ export default class Email extends Component {
         this.setState({
           total: total,
           dataArray: this.state.dataArray.concat(items),
-          cancelScore: total_score,
+          totalScore: total_score,
           cancelScore: cancel_score,
           isLoading: false,
           showFoot: foot,
