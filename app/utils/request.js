@@ -59,6 +59,7 @@ export async function post(url, params, unneedLogin) {
 export async function upload(uri, fileName) {
   let formData = new FormData();
   const name = fileName || uri.substring(uri.lastIndexOf('/') + 1, uri.length)
+  uri = uri.replace('file://', '')
   let file = {uri: uri, type: 'multipart/form-data', name: name};
   console.log(file)
   formData.append('file', file);

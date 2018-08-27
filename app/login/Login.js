@@ -67,9 +67,9 @@ export default class Login extends PureComponent<Props> {
         const { token, user } = res.data
         await Storage.setToken(token, user)
         const { state, replace, goBack } = this.props.navigation
-        const { url } = state.params || {}
+        const { url, params } = state.params || {}
         if (url) {
-          replace(url)
+          replace(url, params)
         } else {
           goBack()
         }
@@ -88,7 +88,7 @@ export default class Login extends PureComponent<Props> {
   }
 
   goBack = () => {
-    this.props.navigation,goBack()
+    this.props.navigation.goBack()
   }
 
   dealError(txt) {

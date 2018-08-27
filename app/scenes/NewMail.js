@@ -243,7 +243,7 @@ export default class NewMail extends Component {
             this.props.navigation.navigate('Login')
           })
         } else if (res.code == 1) {
-          this.setState({ isSucc: true, isSend: false, showLoading: false })
+          this.setState({ pickerModal: false, isSucc: true, isSend: false, showLoading: false })
         } else {
           this.dealError(res.msg, false)
         }
@@ -302,8 +302,8 @@ export default class NewMail extends Component {
   openImageChoose = () => {
     this.setState({ pickerModal: true })
   }
-  closeImageChoose = () => {
-    this.setState({ pickerModal: false })
+  closeImageChoose = (open = false) => {
+    this.setState({ pickerModal: open })
   }
 
   render() {
@@ -311,6 +311,7 @@ export default class NewMail extends Component {
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
+    console.log(isSucc);
     return (
       <View style={styles.container}>
         <ScrollView keyboardShouldPersistTaps="always">
@@ -342,8 +343,8 @@ export default class NewMail extends Component {
           <View style={styles.item}>
             <Text style={styles.label}>发信时间：</Text>
             <DatePicker style={styles.datepicker} date={params.send_time}
-              minDate={new Date()}
               locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
+              minuteInterval={30} minDate={new Date()}
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {
@@ -371,6 +372,7 @@ export default class NewMail extends Component {
           initValue={initAttaches}
           onSave={this.handleSave}
           onChange={this.handleImageChoose}
+          onClose={this.closeImageChoose}
           onError={this.showErrorModal} />
         <SuccessModal
           txt={`信件${tipTxt}成功`}

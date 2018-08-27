@@ -29,8 +29,8 @@ import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 export default class ImageChoose extends PureComponent {
   state = {
     items: [],
-    sheetTitle: '',
-    current: {}
+    current: {},
+    images: [],
   }
 
   componentWillReceiveProps(nextProps) {
@@ -188,11 +188,15 @@ export default class ImageChoose extends PureComponent {
     } else if (index == 1) {
       const { filename, url, ext } = this.state.current
       try {
-        if (ext == 'image') {
+        this.closeImageChoose()
+        if (Platform.OS == 'android' && ext == 'image') {
           this.setState({ images: [this.state.current] })
         } else {
           await openFile(url, filename)
         }
+        // if (Platform.OS == 'ios') {
+        //
+        // }
       } catch (e) {
         this.refs.toast.show('打开文件失败')
       }
@@ -200,15 +204,25 @@ export default class ImageChoose extends PureComponent {
   }
   closeImageViewer = () => {
     this.setState({ images: [] })
+    this.openImageChoose()
   }
   openActionSheet = (item) => {
     this.actionSheet.show()
     this.setState({ current: item })
   }
+  openImageChoose = () => {
+    const { onClose } = this.props
+    onClose && onClose(true)
+  }
+  closeImageChoose = () => {
+    const { onClose } = this.props
+    onClose && onClose(false)
+  }
   renderActionSheet() {
     return <ActionSheet
       ref={ref => this.actionSheet = ref}
-      // title={this.state.current}
+      title={this.state.current.filename}
+      // tintColor="#333333"
       options={['删除', '预览', '返回']}
       // options={[
       //   <Text style={[styles.sheetBtn, {color: '#EC3632'}]}>删除</Text>,
@@ -223,10 +237,11 @@ export default class ImageChoose extends PureComponent {
 
   renderImageChoose() {
     const { items } = this.state
+    const { visible } = this.props
     return <Modal style={styles.wrap} visible={this.props.visible} transparent={true}
       animationType="slide" onRequestClose={this.closeImageChoose}>
       <TouchableOpacity style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
-      <SaveBtn onPress={this.onSave} />
+      <SaveBtn onPress={this.props.onSave} />
       <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} style={styles.content}>
         <View style={styles.header}>
           <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
@@ -258,11 +273,11 @@ export default class ImageChoose extends PureComponent {
   render() {
     const { items } = this.state
     const { visible, onClose } = this.props
-    return this.renderImageChoose()
     return (
       <View>
         {this.renderImageChoose()}
         {this.renderActionSheet()}
+        {this.renderImageViewer()}
         <Alert ref={ref => this.alert = ref} />
         <Toast ref="toast" position="center" />
       </View>
