@@ -148,7 +148,7 @@ export default class Email extends Component {
       const { code } = res
       if (code === 1) {
         let foot = 0
-        const { total, items } = res.data
+        const { total, items, total_score, cancel_score } = res.data
         if (this.pageNo + 1 >= Math.ceil(total / this.pageSize)) {
           // listView底部显示没有更多数据了
           foot = 1
@@ -170,6 +170,8 @@ export default class Email extends Component {
         this.setState({
           total: total,
           dataArray: this.state.dataArray.concat(items),
+          cancelScore: total_score,
+          cancelScore: cancel_score,
           isLoading: false,
           showFoot: foot,
           isRefreshing: total / this.pageSize > 1,
@@ -181,17 +183,18 @@ export default class Email extends Component {
   }
 
   _renderItem = ({item}) => {
-    const { navigate, state } = this.props.navigation;
+    const { navigate } = this.props.navigation;
     return (
       <EmailList status={this.status}
         isAllSelect={this.state.isAllSelect}
         item={item}
-        score={state.params.score}
         navigate={navigate}
         onPress= {this.onPressCancel}
         isDel={this.state.isDel}
         onSelDelItem = {this.onSelDelItem}
         isDelClick={this.state.isDelClick}
+        totalScore={this.state.totalScore}
+        cancelScore={this.state.cancelScore}
         onSubmitDelete={() => this.submitDelete()}
         onHandleDelClose={() => this.handleDelClose()}
       />
