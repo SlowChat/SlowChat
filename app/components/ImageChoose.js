@@ -6,6 +6,7 @@ import {
   Image,
   Modal,
   ScrollView,
+  Animated,
   TouchableOpacity,
   Platform,
   PermissionsAndroid,
@@ -17,7 +18,8 @@ import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import RNFileSelector from 'react-native-file-selector'
-import ActionSheet from 'react-native-actionsheet'
+// import ActionSheet from 'react-native-actionsheet'
+import ActionSheet from './ActionSheet'
 // import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
 import SaveBtn from './SaveBtn'
@@ -26,6 +28,8 @@ import Alert from './Alert'
 import { openFile } from '../utils/opendoc'
 import { checkImagePermission, checkVideoPermission } from '../utils/permission'
 
+const TRANSLATE_Y = 320
+
 export default class ImageChoose extends PureComponent {
   state = {
     items: [],
@@ -33,9 +37,24 @@ export default class ImageChoose extends PureComponent {
     images: [],
   }
 
+  chooseY = new Animated.Value(TRANSLATE_Y)
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.initValue.length > 0 && nextProps.initValue.length !== this.props.initValue.length) {
       this.setState({ items: nextProps.initValue })
+    }
+    if (nextProps.visible != this.props.visible) {
+      if (nextProps.visible) {
+        Animated.timing(this.chooseY, {
+          toValue: 0,
+          duration: 250,
+        }).start()
+      } else {
+        Animated.timing(this.chooseY, {
+          toValue: TRANSLATE_Y,
+          duration: 250,
+        }).start()
+      }
     }
   }
 
@@ -67,9 +86,10 @@ export default class ImageChoose extends PureComponent {
       }
     }
     ImagePicker.showImagePicker(options, (response) => {
+      console.log(response);
       if (response && response.uri) {
-
         let file = response.uri
+        this.dealSucc(file, response)
         // if(Platform.OS === 'ios'){
         //   file = file.replace('file://', '')
         // }
@@ -79,7 +99,7 @@ export default class ImageChoose extends PureComponent {
         // }).catch(e => {
         //   console.log(e)
         // })
-        this.dealSucc(file, response)
+
       }
     });
   }
@@ -104,20 +124,26 @@ export default class ImageChoose extends PureComponent {
       mediaType: 'video',
       videoQuality: 'medium'
     }
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       if (response.uri) {
         let file = response.uri
+        const path = file.replace('file://', '')
+        const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
+        response.fileName = fileName
+        response.fileSize = fileSize
         this.dealSucc(file, response, 'video')
       }
     });
   }
-  checkExt() {
+  checkExt(fileName) {
     return true
+    const ext = fileName.substring(fileName.lastIndexOf('.') + 1)
+    return ['jpg', 'png', 'gif', 'doc', 'docs', 'xls', 'pdf', 'txt'].indexOf(ext) > -1
   }
   dealSucc(uri, response, type = 'image') {
     console.log(response)
-    let { fileName, fileSize } = response
-    if (!this.checkExt()) {
+    let { fileName, fileSize, path } = response
+    if (!this.checkExt(fileName || uri)) {
       const { onError } = this.props
       onError && onError('附件格式不支持上传')
       return
@@ -130,6 +156,7 @@ export default class ImageChoose extends PureComponent {
         filename: fileName,
         ext: type,
         size: fileSize,
+        path: path || uri
       }
     ])
     this.setState({ items }, () => {
@@ -138,27 +165,21 @@ export default class ImageChoose extends PureComponent {
     })
   }
   chooseFile = () => {
-    if (Platform.OS == 'ios') {
-      const { onClose } = this.props
-      onClose && onClose(() => {
-        setTimeout(() => this.showFSelector(), 30)
-      })
-    } else {
-      this.showFSelector()
-    }
+    this.showFSelector()
   }
   showFSelector() {
     RNFileSelector.Show({
       title: '文件选择',
       onDone: async (path) => {
-        if (Platform.OS == 'ios') {
-          const { onClose } = this.props
-          onClose && onClose(null, true)
-          path = path.replace('file://', '')
-        }
+        // if (Platform.OS == 'ios') {
+        //   const { onClose } = this.props
+        //   onClose && onClose(null, true)
+        //   path = path.replace('file://', '')
+        // }
+        // path = path.replace('file://', '')
         const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
         const type = fileName.substring(fileName.lastIndexOf('.') + 1)
-        this.dealSucc(path, { fileName, fileSize })
+        this.dealSucc(path, { fileName, fileSize }, type)
       },
       onCancel: () => {
         console.log('cancelled')
@@ -186,17 +207,14 @@ export default class ImageChoose extends PureComponent {
         }
       })
     } else if (index == 1) {
-      const { filename, url, ext } = this.state.current
+      const { filename, url, path, ext } = this.state.current
       try {
-        this.closeImageChoose()
-        if (Platform.OS == 'android' && ext == 'image') {
-          this.setState({ images: [this.state.current] })
-        } else {
-          await openFile(url, filename)
-        }
-        // if (Platform.OS == 'ios') {
-        //
+        // if (Platform.OS == 'android' && ext == 'image') {
+        //   this.setState({ images: [this.state.current] })
+        // } else {
+        //   await openFile(url, filename)
         // }
+        await openFile(path || url, filename)
       } catch (e) {
         this.refs.toast.show('打开文件失败')
       }
@@ -207,8 +225,9 @@ export default class ImageChoose extends PureComponent {
     this.openImageChoose()
   }
   openActionSheet = (item) => {
-    this.actionSheet.show()
-    this.setState({ current: item })
+    this.setState({ current: item }, async () => {
+      this.actionSheet.show()
+    })
   }
   openImageChoose = () => {
     const { onClose } = this.props
@@ -219,6 +238,7 @@ export default class ImageChoose extends PureComponent {
     onClose && onClose(false)
   }
   renderActionSheet() {
+    console.log(this.state.current.filename);
     return <ActionSheet
       ref={ref => this.actionSheet = ref}
       title={this.state.current.filename}
@@ -238,9 +258,10 @@ export default class ImageChoose extends PureComponent {
   renderImageChoose() {
     const { items } = this.state
     const { visible } = this.props
-    return <Modal style={styles.wrap} visible={this.props.visible} transparent={true}
-      animationType="slide" onRequestClose={this.closeImageChoose}>
-      <TouchableOpacity style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
+    // <TouchableOpacity style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
+    // <Modal style={styles.wrap} visible={visible} transparent
+    //   animationType="slide" onRequestClose={this.closeImageChoose}>
+    return <Animated.View style={[styles.imgchoose, {transform: [{translateY: this.chooseY }]}]}>
       <SaveBtn onPress={this.props.onSave} />
       <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} style={styles.content}>
         <View style={styles.header}>
@@ -256,11 +277,11 @@ export default class ImageChoose extends PureComponent {
         </View>
         <ScrollView horizontal contentContainerStyle={styles.body} showsHorizontalScrollIndicator={false}>
           {
-            items.map((item, index) => <AttachmentItem key={index} item={item} onPress={this.openActionSheet} />)
+            items.map((item, index) => <AttachmentItem key={index} source="ImageChoose" item={item} onPress={this.openActionSheet} />)
           }
         </ScrollView>
       </SafeAreaView>
-    </Modal>
+    </Animated.View>
   }
   // <SafeAreaView style={{backgroundColor: '#F6F6F6'}} />
 
@@ -271,8 +292,6 @@ export default class ImageChoose extends PureComponent {
     </Modal>
   }
   render() {
-    const { items } = this.state
-    const { visible, onClose } = this.props
     return (
       <View>
         {this.renderImageChoose()}
@@ -321,7 +340,12 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
     color: '#333333',
   },
-  imgchoosebg: {
-    flex: 1,
-  }
+  imgchoose: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 5,
+    transform: [{translateY: TRANSLATE_Y }]
+  },
 });

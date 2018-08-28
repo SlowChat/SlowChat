@@ -35,5 +35,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     zIndex: 100,
+    marginTop: -40,
   }
 })

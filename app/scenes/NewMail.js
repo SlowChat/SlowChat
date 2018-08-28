@@ -9,8 +9,12 @@ import {
   TextInput,
   Switch,
   ScrollView,
+  Keyboard,
   TouchableOpacity,
 } from 'react-native';
+
+// import { openFile } from '../utils/opendoc'
+
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
@@ -22,9 +26,8 @@ import ErrorModal from '../components/ErrorModal'
 import Loading from '../components/Loading'
 import ICONS from '../utils/icon'
 import dateFormat from '../utils/date'
-import { post, upload } from '../utils/request'
+import { post, upload, rnfsUpload } from '../utils/request'
 import { isEmail } from '../utils/validate'
-
 
 export default class NewMail extends Component {
   static navigationOptions = ({navigation}) => {
@@ -62,7 +65,7 @@ export default class NewMail extends Component {
       title: '',
       content: '',
       email: '',
-      send_time: dateFormat(),
+      send_time: this.getSendTime(),
       type: 2,
     },
     defaultValue: {
@@ -89,6 +92,17 @@ export default class NewMail extends Component {
       return false
     }
     return true
+  }
+
+  getSendTime(send_time) {
+    let curr = send_time || dateFormat()
+    if (curr.indexOf(':00') > -1) {
+      return curr
+    }
+    curr = curr.replace(/\-/g, '/')
+    const timesample = new Date(curr).getTime()
+    const next_hour = Math.ceil(timesample / 1000 / 3600) * 1000 * 3600
+    return dateFormat(new Date(next_hour))
   }
 
   async getData() {
@@ -143,6 +157,15 @@ export default class NewMail extends Component {
     };
   };
 
+  handleDatePicker = (datetime) => {
+    let send_time = datetime
+    if (datetime.indexOf(':00') == -1) {
+      this.refs.toast.show('邮件发送时间为整点，将自动调整为下一时刻整点')
+      send_time = this.getSendTime(datetime)
+    }
+    this.setParams('send_time', send_time)
+  }
+
   setParams(key, value) {
       // this.setState({email: value})
     let { showSendMe } = this.state
@@ -168,10 +191,10 @@ export default class NewMail extends Component {
           })
         }
       })
-    }, 0)
+    }, 100)()
   }
   checkParams(showTip) {
-    const { title, content, email, send_time } = this.state.params
+    const { title, content, email } = this.state.params
     const tips = []
     if (!email) tips.push('收件人')
     //  || !isEmail(email)
@@ -181,9 +204,6 @@ export default class NewMail extends Component {
     let tip = ''
     if (tips.length > 0) {
       tip = '请保证' + tips.join('，') + '填写正确！'
-    }
-    if (send_time && send_time < dateFormat()) {
-      tip += '发信时间不符合要求！'
     }
     if (tip) {
       if (showTip) {
@@ -203,6 +223,10 @@ export default class NewMail extends Component {
 
   handleSend = () => {
     if (this.state.showLoading) return false
+    if (this.state.params.send_time < dateFormat()) {
+      let tip = '发信时间不符合要求！'
+      this.refs.toast.show(tip)
+    }
     if (!this.checkParams(true)) return
     this.setState({ showLoading: true }, async () => {
       try {
@@ -231,6 +255,13 @@ export default class NewMail extends Component {
     })
   }
   handleSave = () => {
+    if (this.state.params.send_time < dateFormat()) {
+      let tip = '发信时间不符合要求！'
+      this.refs.toast.show(tip)
+      return
+    }
+    // rnfsUpload(this.state.attachs)
+    // return
     if (this.state.showLoading) return
     if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
@@ -275,7 +306,13 @@ export default class NewMail extends Component {
           throw res
         }
       }
-      return attachs
+      console.log(attachs);
+      return attachs.map(item => ({
+        filename: item.name,
+        url: item.url,
+        size: item.size,
+        ext: item.ext
+      }))
     } catch (e) {
       console.log(e);
       throw e
@@ -300,6 +337,8 @@ export default class NewMail extends Component {
     this.setState({ attachs: items })
   }
   openImageChoose = () => {
+    // openFile()
+    Keyboard.dismiss()
     this.setState({ pickerModal: true })
   }
   closeImageChoose = (open = false) => {
@@ -311,7 +350,6 @@ export default class NewMail extends Component {
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
     const tipTxt = isSend ? '发送' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
-    console.log(isSucc);
     return (
       <View style={styles.container}>
         <ScrollView keyboardShouldPersistTaps="always">
@@ -348,12 +386,16 @@ export default class NewMail extends Component {
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {
+                  // marginLeft: 0,
                   borderWidth: 0,
+                  color: '#333333',
+                  alignItems: 'flex-start',
+                },
+                btnTextConfirm: {
+                  color: '#E24B92',
                 }
               }}
-              onDateChange={(datetime) => {
-                this.setParams('send_time', datetime)
-              }} />
+              onDateChange={this.handleDatePicker} />
             <Image style={styles.arrow} source={ICONS.forward} />
           </View>
           <View style={styles.item}>
@@ -367,13 +409,19 @@ export default class NewMail extends Component {
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
         </ScrollView>
+
         <SaveBtn type="bottom" onPress={this.handleSave} />
+        {
+          this.state.pickerModal &&
+            <Text style={styles.imgchoosebg} onPress={this.closeImageChoose.bind(this, false)}></Text>
+        }
         <ImageChoose visible={this.state.pickerModal}
           initValue={initAttaches}
           onSave={this.handleSave}
           onChange={this.handleImageChoose}
           onClose={this.closeImageChoose}
           onError={this.showErrorModal} />
+        <Toast ref="toast" position="center" />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
           btn="返回首页"
@@ -383,7 +431,6 @@ export default class NewMail extends Component {
           }}
         />
         <ErrorModal ref="errorModalRef" />
-        <Toast ref="toast" position="center" />
         {showLoading && <Loading />}
       </View>
 
@@ -458,6 +505,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 2,
     borderWidth: 1,
+    // borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#B4B4B4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -492,4 +540,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlignVertical: 'top',
   },
+  hide: {
+    display: 'none',
+  },
+  imgchoosebg: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }
 });
