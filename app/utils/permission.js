@@ -27,12 +27,13 @@ export const checkVideoPermission = async (onTip) => {
     const granted = await PermissionsAndroid.requestMultiple(
       [ PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         // PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, ],
-      {
+        // PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      ], {
         title: '权限申请',
         message: '慢聊需要访问你的视频文件和录制视频'
       },
     );
+    console.log(granted);
     if (!checkGranted(granted)) {
       throw new Error('授权拒绝，无法获取视频')
     }

@@ -21,22 +21,31 @@ function formatFileSize(fileSize) {
   }
 }
 
-export default class Attachment extends PureComponent {
+export default class AttachmentItem extends PureComponent {
   state = {
+    rate: 0,
     paused: true
   }
   handleOpen = () => {
     const { item, onPress } = this.props
-    if (item.ext =='video') {
-      this.player.presentFullscreenPlayer()
-      this.setState({ paused: false })
+    if (this.props.source == 'ImageChoose') {
+      if (item.ext =='video') {
+        onPress && onPress(item, this.player)
+      } else {
+        onPress && onPress(item)
+      }
     } else {
-      onPress && onPress(this.props.item)
+      if (item.ext =='video') {
+        this.player.presentFullscreenPlayer()
+        this.setState({ paused: false, rate: 1 })
+      } else {
+        onPress && onPress(item)
+      }
     }
   }
 
   handleDismiss = () => {
-    this.setState({ paused: true })
+    this.setState({ paused: true, rate: 0 })
   }
 
   renderItem() {
@@ -46,7 +55,7 @@ export default class Attachment extends PureComponent {
     if (ext == 'image') {
       return <Image source={{uri: item.url}} style={styles.image}></Image>
     } else if (ext == 'video') {
-      const { paused } = this.state
+      const { paused, rate } = this.state
       return <Video ref={(ref) => this.player = ref } paused={paused} playWhenInactive
           source={{uri: item.url}} style={styles.image} onFullscreenPlayerWillDismiss={this.handleDismiss} />
     }

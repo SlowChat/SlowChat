@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import DatePicker from 'react-native-datepicker'
 import {
   StyleSheet,
   Text,
@@ -13,23 +12,16 @@ import {
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
+import DatePicker from 'react-native-datepicker'
 import Avatar from '../components/Avatar'
 import Confirm from '../components/Confirm'
-import { post, upload } from '../utils/request'
-import { checkImagePermission, checkVideoPermission } from '../utils/permission'
+import ActionSheet from '../components/ActionSheet'
+import { post, uploadImage } from '../utils/request'
+import { checkImagePermission } from '../utils/permission'
 import ICONS from '../utils/icon'
 
-const SEX_OBJ = {
-  0: '保密',
-  1: '男',
-  2: '女'
-}
+const SEX_OPTIONS = ['保密', '男', '女', '返回']
 
-const SEXID_OBJ = {
-  '保密': "0",
-  '男': "1",
-  '女': "2"
-}
 
 export default class Information extends Component {
   static navigationOptions = ({navigation}) => {
@@ -44,7 +36,7 @@ export default class Information extends Component {
     this.state = {
       switchBtn: true,
       isShow: false,
-      sex: SEX_OBJ[sex] || '',
+      sex: SEX_OPTIONS[sex] || '',
       date: birthday || '1980-01-01',
       username,
       avatar,
@@ -54,17 +46,11 @@ export default class Information extends Component {
     }
   }
 
-  changeSex(itemValue) {
-    this.setState({sex: itemValue})
-    setTimeout(() => {
-      this.setState({isShow: false})
-    }, 1000)
-  }
-
   handleSubmit = () => {
     const { pop } = this.props.navigation;
     const { sex, username, avatar, date } = this.state;
-    post('api/user/userInfo.html', { user_nickname: username, avatar, sex: SEXID_OBJ[sex], birthday: date}).then(res => {
+    const sexKey = SEX_OPTIONS.findIndex(item => item == sex)
+    post('api/user/userInfo.html', { user_nickname: username, avatar, sex: String(sexKey), birthday: date}).then(res => {
       if (res.code == 1) {
         this.refs.toast.show(res.msg);
         setTimeout(() => {
@@ -74,6 +60,18 @@ export default class Information extends Component {
     }).catch(e => {
       this.refs.toast.show(res.msg);
     })
+  }
+
+  openSex = () => {
+    this.actionSheet.show()
+  }
+
+  changeSex = (index) => {
+    if (index < SEX_OPTIONS.length - 1) {
+      this.setState({
+        sex: SEX_OPTIONS[index]
+      })
+    }
   }
 
   onChangeName = () => {
@@ -92,10 +90,12 @@ export default class Information extends Component {
   }
 
   chooseAndUpload = async () => {
-    let nopermission = await checkImagePermission((txt) => {
-      this.refs.toast.show(txt)
-    })
-    if (nopermission) return
+    try {
+      await checkImagePermission()
+    } catch (e) {
+      this.refs.toast.show(e.message)
+      return
+    }
     const options = {
       title: '选择图片',
       cancelButtonTitle: '取消',
@@ -122,7 +122,7 @@ export default class Information extends Component {
         //   file = file.replace('file://', '')
         // }
         console.log(response);
-        const res = await upload(response.uri, response.fileName)
+        const res = await uploadImage(response.uri, response.fileName)
         console.log(res);
         if (res.code == 1) {
           this.setState({ avatar: res.data.url })
@@ -140,44 +140,41 @@ export default class Information extends Component {
       <View style={styles.container}>
         <Avatar avatar={avatar} username={username} level={level} type={type} onPress={this.chooseAndUpload} />
         <View style={styles.link}>
-          <TouchableOpacity style={styles.menu} onPress={() => this.onChangeName()}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.menu} onPress={() => this.onChangeName()}>
             <Text style={styles.label}>昵称</Text>
             <Text style={styles.input}>{this.state.username}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menu} onPress = {() => this.setState({isShow: true})}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.menu} onPress={this.openSex}>
             <Text style={styles.label}>性别</Text>
             <Text style={styles.input}>
-              {this.state.sex}
+              {this.state.sex || '请选择性别'}
             </Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menu}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.menu}>
             <Text style={styles.sexLabel}>生日</Text>
             <DatePicker
               style={{width: '100%', paddingRight: 20, justifyContent: 'flex-end', alignItems: 'flex-end'}}
               date={this.state.date}
               mode="date"
-              placeholder="select date"
+              placeholder="请设置生日"
               format="YYYY-MM-DD"
               minDate="1900-05-01"
               maxDate={new Date()}
               confirmBtnText="确定"
               cancelBtnText="取消"
+              showIcon={false}
               customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0,
-                  width: 0
-                },
                 dateInput: {
-                  marginLeft: 0,
+                  // marginLeft: 0,
                   borderWidth: 0,
                   color: '#B4B4B4',
                   alignItems: 'flex-end',
                 },
+                btnTextConfirm: {
+                  color: '#E24B92',
+                }
               }}
               onDateChange={(date) => {this.setState({date: date})}}
               onOpenModal={() => {this.setState({isShow: false})}}
@@ -191,14 +188,13 @@ export default class Information extends Component {
             <Text style={styles.exitTxt}>保 存</Text>
           </TouchableOpacity>
         </SafeAreaView>
-        <Picker
-          selectedValue={this.state.sex}
-          style={[styles.picker, {display: `${this.state.isShow ? 'flex' : 'none'}`}]}
-          onValueChange={(itemValue, itemIndex) => this.changeSex(itemValue)}>
-          <Picker.Item label="保密" value="保密" />
-          <Picker.Item label="男" value="男" />
-          <Picker.Item label="女" value="女" />
-        </Picker>
+
+        <ActionSheet
+          ref={ref => this.actionSheet = ref}
+          options={SEX_OPTIONS}
+          cancelButtonIndex={3}
+          onPress={this.changeSex}
+        />
 
         <Toast ref="toast" position="center" />
         <Confirm
