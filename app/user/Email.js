@@ -137,6 +137,7 @@ export default class Email extends Component {
         params.state = this.sendState
       }
       const res = await post(this.returnUrl(), params)
+      console.log(res);
       this.loading = false
       if (res.code == 1) {
         const { total, items, total_score, cancel_score } = res.data
@@ -157,21 +158,21 @@ export default class Email extends Component {
           isLoading: false,
           showFoot,
           isShowResult: this.state.searchText !== '',
-          isSpacePage: items && items.length <= 0
+          isSpacePage: dataArray && dataArray.length <= 0
         })
 
       } else if (res.code == 10001) {
-        this.setState({ showLoading: false }, () => {
+        this.setState({ showLoading: false, isShowResult: false }, () => {
           this.props.navigation.navigate('Login')
         })
       } else {
         this.refs.toast.show(res.msg || '慢聊信息飘走了')
-        this.setState({ showFoot: 0, showLoading: false })
+        this.setState({ showFoot: 0, showLoading: false, isShowResult: false })
       }
     } catch (e) {
       this.loading = false
       if (this.state.showLoading) {
-        this.setState({ showLoading: false })
+        this.setState({ showLoading: false, isShowResult: false })
       }
     }
   }
@@ -289,56 +290,22 @@ export default class Email extends Component {
   renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
   }
-  renderData = () => {
-    const { isShowResult, isSpacePage, searchText, dataArray } = this.state
-    const { params } = this.props.navigation.state;
+  renderData() {
+    const { isSpacePage, searchText } = this.state
     const isSearch = Boolean(searchText)
+    if (this.state.isSpacePage) return <Blank searchTxt={isSearch} />
+    const { dataArray } = this.state
+    const { params } = this.props.navigation.state;
     return (
-      <View style={styles.container}>
-        <View style={styles.searchBox}>
-          <Image style={styles.icon} source={require('../images/icon_search.png')} />
-          <TextInput
-            style={styles.search}
-            onChangeText={(text) => this.setState({searchText: text})}
-            placeholder='搜索'
-            value={searchText}
-          />
-          <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
-        </View>
-        {
-          isShowResult &&
-          <Text style={styles.result}>共查到{this.state.total}条结果</Text>
-        }
-        {
-          isSpacePage && <Blank searchTxt={isSearch} />
-        }
-        <FlatList
-          keyExtractor={(item, index) => String(item.id)}
-          data={dataArray}
-          extraData={this.state}
-          renderItem={this.renderItem}
-          onEndReached={this.handleLoadmore}
-          onEndReachedThreshold={0.1}
-          ListFooterComponent={this.renderFooter}
-        />
-        <Toast ref="toast" position="center" />
-        {
-          this.state.isDel && (
-            <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleDelete}>
-              <Text style={styles.exitTxt}>删除</Text>
-            </TouchableOpacity>
-          )
-        }
-        <SuccessModal
-          txt={'取消发送成功'}
-          btn={'返回'}
-          visible={this.state.isSucc}
-          onPress={() => {
-            this.props.navigation.pop() // navigate
-          }}
-          onClose={this.onRequestClose}
-        />
-      </View>
+      <FlatList
+        keyExtractor={(item, index) => String(item.id)}
+        data={dataArray}
+        extraData={this.state}
+        renderItem={this.renderItem}
+        onEndReached={this.handleLoadmore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={this.renderFooter}
+      />
     )
   }
 
@@ -359,7 +326,41 @@ export default class Email extends Component {
       return <ErrorTip onPress={this.initData} />
     }
     // 加载数据
-    return this.renderData()
+    const { searchText } = this.state
+    return <View style={styles.container}>
+      <View style={styles.searchBox}>
+        <Image style={styles.icon} source={require('../images/icon_search.png')} />
+        <TextInput
+          style={styles.search}
+          onChangeText={(text) => this.setState({searchText: text})}
+          placeholder='搜索'
+          // value={searchText}
+        />
+        <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
+      </View>
+      {
+        this.state.isShowResult &&
+        <Text style={styles.result}>共查到{this.state.total}条结果</Text>
+      }
+      {this.renderData()}
+      <SuccessModal
+        txt={'取消发送成功'}
+        btn={'返回'}
+        visible={this.state.isSucc}
+        onPress={() => {
+          this.props.navigation.pop() // navigate
+        }}
+        onClose={this.onRequestClose}
+      />
+      <Toast ref="toast" position="center" />
+      {
+        this.state.isDel && (
+          <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleDelete}>
+            <Text style={styles.exitTxt}>删除</Text>
+          </TouchableOpacity>
+        )
+      }
+    </View>
   }
 }
 
