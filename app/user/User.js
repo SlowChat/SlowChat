@@ -8,8 +8,9 @@ import {
 } from 'react-native';
 
 import ICONS from '../utils/icon'
-import Avatar from '../components/Avatar'
 import { get, post } from '../utils/request'
+import Storage from '../utils/storage'
+import Avatar from '../components/Avatar'
 import SuccessModal from '../components/SuccessModal'
 
 export default class User extends Component {
@@ -65,13 +66,16 @@ export default class User extends Component {
     isLogin: null
   }
 
-  componentWillMount() {
-
+  async componentWillMount() {
     this.viewAppear = this.props.navigation.addListener(
       'willFocus', payload => {
         this.getData()
       }
     )
+    const token = await Storage.getToken()
+    if (!token && this.state.isLogin != false) {
+      this.setState({ isLogin: false })
+    }
   }
 
   componentDidMount() {

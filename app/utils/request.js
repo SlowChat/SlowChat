@@ -30,7 +30,8 @@ export async function get(url, params, unneedLogin) {
     },
     timeout: 10,
   }).then((response) => response.json()).catch((err) => {
-    console.log(eval("("+ err +")"));
+    // console.log(eval("("+ err +")"));
+    console.log(err);
     throw err
   });
 }

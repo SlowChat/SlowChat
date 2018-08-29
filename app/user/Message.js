@@ -109,8 +109,9 @@ export default class Message extends Component<Props> {
   // handleRefresh = () => {
   //   this.initData()
   // }
-  handleGoDetail = (id) => {
-    // this.props.navigation.push('MailDetail', {id})
+  handleGoDetail = (item) => {
+    const { mail_id: id, mail_state: status } = item
+    this.props.navigation.push('MailDetail', {id, status})
   }
   renderItem = (item) => {
     return <MsgItem data={item} onPress={this.handleGoDetail} />

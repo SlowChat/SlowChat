@@ -11,7 +11,7 @@ type Props = {};
 export default class MsgItem extends PureComponent<Props> {
   handlePress = () => {
     const { onPress, data } = this.props
-    onPress && onPress(data.item.id)
+    onPress && onPress(data.item)
   }
   render() {
     const { item } = this.props.data

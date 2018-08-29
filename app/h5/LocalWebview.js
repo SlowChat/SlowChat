@@ -119,7 +119,7 @@ export default class LocalWebview extends Component<Props> {
         {showError && <ErrorTip onPress={this.reload} />}
         <WebView ref={ref => this.webview = ref}
           // source={require('./h5.html')}
-          style={{backgroundColor:'clearColor', opaque:'no'}}
+          style={styles.webview}
           source={Platform.OS == 'ios' ? require('./h5.html') : {uri: 'file:///android_asset/h5.html'}}
           mixedContentMode="compatibility"
           userAgent="com.slowchat"
@@ -137,4 +137,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  webview: {
+    flex: 1,
+    // backgroundColor:'clearColor',
+    // opaque:'no'
+  }
 });
