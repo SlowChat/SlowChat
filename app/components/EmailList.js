@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingTop: 10,
     paddingBottom: 10,
+    marginBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
     borderBottomColor: '#efefef',

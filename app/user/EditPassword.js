@@ -40,7 +40,7 @@ export default class EditPassowrd extends Component {
       userEmail: userEmail || ''
     }
   }
-  
+
   componentDidMount() {
   }
 
@@ -145,7 +145,7 @@ export default class EditPassowrd extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.link} keyboardShouldPersistTaps>
+        <ScrollView style={styles.link} keyboardShouldPersistTaps="always">
           <View style={styles.menu}>
             <Text style={styles.label}>手机号</Text>
             <TextInput
@@ -194,7 +194,7 @@ export default class EditPassowrd extends Component {
             </Text>
           </Text>
         </ScrollView>
-        <Toast ref="toast" position="bottom" />
+        <Toast ref="toast" position="center" />
         <ErrorModal ref="errorModalRef" />
         <SuccessModal
           txt={'密码修改成功'}

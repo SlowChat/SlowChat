@@ -68,6 +68,7 @@ export default class Message extends Component<Props> {
         s: SIZE,
         t: 1
       })
+      console.log(res);
       if (res.code == 1) {
         const { total, items } = res.data
         const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
@@ -147,7 +148,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F6F6F6',
-    padding: 10,
   },
   itemWrap: {
     backgroundColor: '#F6F6F6',
@@ -169,4 +169,7 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: 'bold',
   },
+  flatlist: {
+    padding: 10,
+  }
 });

@@ -42,7 +42,7 @@ export default class FeedBack extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container} keyboardShouldPersistTaps>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
         <Text style={styles.label}>问题与意见</Text>
         <TextInput
           multiline

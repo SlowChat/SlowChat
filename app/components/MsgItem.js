@@ -16,8 +16,8 @@ export default class MsgItem extends PureComponent<Props> {
   render() {
     const { item } = this.props.data
     return (
-      <TouchableWithoutFeedback>
-        <View style={styles.container} onPress={this.handlePress}>
+      <TouchableWithoutFeedback onPress={this.handlePress}>
+        <View style={styles.container}>
           <Image style={styles.icon} source={require('../images/icon_time.png')} />
           <Text style={styles.content}>
             {item.content}

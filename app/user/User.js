@@ -102,7 +102,6 @@ export default class User extends Component {
       const { code, data } = res
       if (code === 1) {
         if (data.sign && data.sign.count) this.setState({ sign: data.sign })
-        console.log(1111,data.user_nickname)
         this.setState({
           isLogin: false,
           msgCount: data.msg_count,

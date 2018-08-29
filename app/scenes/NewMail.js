@@ -316,7 +316,6 @@ export default class NewMail extends Component {
           throw res
         }
       }
-      console.log(attachs);
       return attachs.map(item => ({
         filename: item.name,
         url: item.url,

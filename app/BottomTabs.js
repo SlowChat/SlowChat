@@ -26,7 +26,6 @@ const MimeStack = createStackNavigator({
       backgroundColor: '#FFFFFF',
       borderBottomWidth: 0,
       elevation: 0,
-      alignItems: 'center'
     },
     headerTitleContainerStyle: {
       justifyContent: 'center',
