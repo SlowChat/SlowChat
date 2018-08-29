@@ -246,6 +246,7 @@ export default class Email extends Component {
 
   onPressCancel = (id) => {
     post('api/mail/cancel.html', {id: id}).then(res => {
+      console.log(1111, res)
       const { code } = res
       if (code === 1) {
         // this.refs.toast.show('取消发送成功');
@@ -257,6 +258,8 @@ export default class Email extends Component {
         this.pageNo = 0
         // 删除成功，重新请求接口
         this.fetchData()
+      } else {
+        this.refs.toast.show(res.msg);
       }
     }).catch(e => {
       // console.log(e)

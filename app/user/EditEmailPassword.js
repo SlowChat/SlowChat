@@ -202,7 +202,7 @@ export default class EditPassowrd extends Component {
               <Text style={styles.saveTxt}>提交</Text>
             </View>
           </TouchableWithoutFeedback>
-          <Text style={styles.remind}>没有绑定手机，
+          <Text style={styles.remind}>没有绑定邮箱，
             <Text style={styles.links} onPress={() => this.handleJump()}>
               手机验证修改密码
             </Text>
