@@ -117,6 +117,14 @@ export default class Email extends Component {
     })
   }
 
+  getFetchUrl() {
+    if (this.status === 'draft') {
+      return 'api/mail/getDraftList.html'
+    } else {
+      return 'api/mail/getMyList.html'
+    }
+  }
+
   async fetchData(page = 0) {
     if (this.loading || this.state.showFoot == 1) return
     this.loading = true
@@ -136,8 +144,7 @@ export default class Email extends Component {
       if (this.sendState !== null) {
         params.state = this.sendState
       }
-      const res = await post(this.returnUrl(), params)
-      console.log(res);
+      const res = await post(this.getFetchUrl(), params)
       this.loading = false
       if (res.code == 1) {
         const { total, items, total_score, cancel_score } = res.data
@@ -148,7 +155,7 @@ export default class Email extends Component {
           item.add_time = curr_item == add_date ? add_time : add_date
         })
         const dataArray = this.state.dataArray.concat(items)
-        let showFoot = page > 0 && dataArray.length >= total ? 1 : 0
+        let showFoot = dataArray.length >= total ? 1 : 0
         this.page++
         this.setState({
           total: total,
@@ -307,14 +314,6 @@ export default class Email extends Component {
         ListFooterComponent={this.renderFooter}
       />
     )
-  }
-
-  returnUrl() {
-    if (this.status === 'draft') {
-      return 'api/mail/getDraftList.html'
-    } else {
-      return 'api/mail/getMyList.html'
-    }
   }
 
   render () {
