@@ -346,9 +346,7 @@ export default class Email extends Component {
         txt={'取消发送成功'}
         btn={'返回'}
         visible={this.state.isSucc}
-        onPress={() => {
-          this.props.navigation.pop() // navigate
-        }}
+        onPress={this.onRequestClose}
         onClose={this.onRequestClose}
       />
       <Toast ref="toast" position="center" />
