@@ -10,7 +10,6 @@ import {
 export default class Avatar extends PureComponent {
   render() {
     const { username, avatar, level, onPress, type, isLogin } = this.props;
-    console.log(type)
     let source = avatar ? {uri: avatar} : require('../images/default_avatar_160.png')
     return (
       <TouchableWithoutFeedback onPress={onPress}>
@@ -35,11 +34,11 @@ export default class Avatar extends PureComponent {
                   </View>
                 )
               }
-              
+
             </View>
           )
         }
-        
+
       </TouchableWithoutFeedback>
     )
   }

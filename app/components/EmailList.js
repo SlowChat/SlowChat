@@ -125,7 +125,7 @@ export default class EmailList extends Component {
     }
     const icon = status === 'draft' ? null : <Image style={styles.icon} source={item.type == 1 ? require('../images/icon_hide.png') : require('../images/icon_overt.png')} />
     return (
-        <View>
+        <View style={styles.container}>
           <TouchableWithoutFeedback onPress={this.handleNav}>
             <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
               {icon}
@@ -167,6 +167,9 @@ export default class EmailList extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 10,
+  },
   list: {
     flex: 1,
     flexDirection: 'row',
@@ -201,6 +204,7 @@ const styles = StyleSheet.create({
   time: {
     flexDirection: 'row',
     textAlign: 'right',
+    marginRight: 5,
   },
   timeTxt: {
     color: '#B4B4B4'
@@ -211,7 +215,6 @@ const styles = StyleSheet.create({
     height: 50,
     paddingLeft: 15,
     paddingRight: 15,
-    marginBottom: 10,
     alignItems: 'center',
     backgroundColor: '#fff',
   },

@@ -53,7 +53,7 @@ export default class SaveBtn extends PureComponent {
   render() {
     if (this.props.type == 'bottom') {
       return (
-        <SafeAreaView style={[styles.bottom, styles.saveBtnWrap]}>
+        <SafeAreaView style={[styles.bottom, styles.saveBtnWrap, , {bottom: this.keyboardHeight}]}>
           {this.renderBtn()}
         </SafeAreaView>
       )

@@ -130,6 +130,7 @@ export default class Home extends Component<Props> {
         items.forEach(item => {
           item.send_time = (item.send_time || '').split(' ')[0]
           const [ add_date, add_time ] = item.add_time.split(' ')
+          // add_date.replace(/\-/g, '/')
           item.add_time = curr_item == add_date ? add_time : add_date
         })
         const newData = page == 0 ? items : this.state.items.concat(items)
@@ -139,8 +140,6 @@ export default class Home extends Component<Props> {
           showFoot,
         })
         this.page++
-      } else if (res.code == 10001) {
-        this.props.navigation.navigate('Login')
       } else {
         this.refs.toast.show(res.msg || '慢聊信息飘走了')
         this.setState({ showFoot: 0 })
@@ -149,7 +148,7 @@ export default class Home extends Component<Props> {
       console.log(e)
     } finally {
       this.loading = false
-      if (!this.goLogin && this.state.showLoading) {
+      if (this.state.showLoading) {
         this.setState({ showLoading: false })
       }
     }

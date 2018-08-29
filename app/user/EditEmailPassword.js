@@ -40,7 +40,7 @@ export default class EditPassowrd extends Component {
       isSucc: false,   //成功提示框
     }
   }
-  
+
   componentDidMount() {
   }
 
@@ -160,7 +160,7 @@ export default class EditPassowrd extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.link} keyboardShouldPersistTaps>
+        <ScrollView style={styles.link} keyboardShouldPersistTaps="always">
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
@@ -208,7 +208,7 @@ export default class EditPassowrd extends Component {
             </Text>
           </Text>
         </ScrollView>
-        <Toast ref="toast" position="bottom" />
+        <Toast ref="toast" position="center" />
         <ErrorModal ref="errorModalRef" />
         <SuccessModal
           txt={'邮箱修改成功'}

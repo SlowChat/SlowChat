@@ -39,13 +39,14 @@ class Setting extends Component {
     })
   }
   handleSwitch = (value) => {
+
     this.setState({
       switchBtn: value
     }, async () => {
-      const state = this.stata.switchBtn ? 0 : 1
-      const code = Storage.getPushId()
+      const state = this.state.switchBtn ? 0 : 1
+      const code = Storage.getPushID()
       try {
-        await post('api/user_msg/setPushState.html', { code, state })
+        const res = await post('api/user_msg/setPushState.html', { code, state })
         if (res.code == 1) {
           this.refs.toast.show('设置成功')
         } else if (res.code == 10001) {
@@ -173,7 +174,7 @@ class Setting extends Component {
           </TouchableOpacity>
         </SafeAreaView>
         <Alert ref={ref => this.alert = ref} />
-        <Toast ref="toast" position="bottom" />
+        <Toast ref="toast" position="center" />
       </View>
     );
   }

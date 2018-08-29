@@ -37,7 +37,7 @@ export default class EditEmail extends Component {
       editable: userEmail ? false : true
     }
   }
-  
+
   componentDidMount() {
     if (this.props.navigation.state.params.userEmail !== '') {
       this.setState({
@@ -65,7 +65,7 @@ export default class EditEmail extends Component {
     if (isClick) {
       post(url, { email: email, verification_code: vCode }, false).then((res) => {
         if (res.code == 1) {
-          
+
           if (status === 'check') {
             this.refs.toast.show(res.msg);
             this.setState({
@@ -132,7 +132,7 @@ export default class EditEmail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.link} keyboardShouldPersistTaps>
+        <ScrollView style={styles.link} keyboardShouldPersistTaps="always">
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
@@ -165,7 +165,7 @@ export default class EditEmail extends Component {
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
-        <Toast ref="toast" position="bottom" />
+        <Toast ref="toast" position="center" />
         <SuccessModal
           txt={'邮箱绑定成功'}
           btn={'返回'}

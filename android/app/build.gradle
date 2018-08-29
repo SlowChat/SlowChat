@@ -179,6 +179,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-picker')
     compile project(':react-native-fs')
     compile project(':react-native-doc-viewer')
     compile project(':react-native-file-selector')
@@ -190,7 +191,6 @@ dependencies {
     compile project(':react-native-video')
     compile project(':react-native-splash-screen')
     compile project(':react-native-view-shot')
-    compile project(':react-native-image-picker')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules

@@ -40,13 +40,13 @@ export default class Email extends Component {
 
 
   state = {
-    isLoading: true,
+    isLoading: false,
     // 网络请求状态
     error: false,
     dataArray: [],
     showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
     isRefreshing: false, // 下拉控制
-    isSpacePage: true,
+    isSpacePage: false,
     total: 0,
     searchText: '',
     isShowResult: false,
@@ -63,7 +63,7 @@ export default class Email extends Component {
 
   componentWillMount() {
     this.setDefault()
-    this.fetchData()
+    this.initData()
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -105,6 +105,152 @@ export default class Email extends Component {
     })
   }
 
+  initData(state = {}) {
+    this.setState({ showFoot: 0, dataArray: [], idList: [], ...state }, () => {
+      this.page = 0
+      this.fetchData(0)
+      setTimeout(() => {
+        if (this.loading) {
+          this.setState({ showLoading: true })
+        }
+      }, 300)
+    })
+  }
+
+  getFetchUrl() {
+    if (this.status === 'draft') {
+      return 'api/mail/getDraftList.html'
+    } else {
+      return 'api/mail/getMyList.html'
+    }
+  }
+
+  async fetchData(page = 0) {
+    if (this.loading || this.state.showFoot == 1) return
+    this.loading = true
+    if (page > 0) {
+      this.setState({ showFoot: 2 })
+    }
+    const { keyword = '' } = this
+    try {
+      const params = {
+        p: this.page,
+        s: this.pageSize,
+        keyword: this.state.searchText || ''
+      }
+      if (this.type !== null) {
+        params.type = this.type
+      }
+      if (this.sendState !== null) {
+        params.state = this.sendState
+      }
+      const res = await post(this.getFetchUrl(), params)
+      this.loading = false
+      if (res.code == 1) {
+        const { total, items, total_score, cancel_score } = res.data
+        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+        items.forEach(item => {
+          item.send_time = (item.send_time || '').split(' ')[0]
+          const [ add_date, add_time ] = item.add_time.split(' ')
+          item.add_time = curr_item == add_date ? add_time : add_date
+        })
+        const dataArray = this.state.dataArray.concat(items)
+        let showFoot = dataArray.length >= total ? 1 : 0
+        this.page++
+        this.setState({
+          total: total,
+          dataArray,
+          totalScore: total_score,
+          cancelScore: cancel_score,
+          isLoading: false,
+          showFoot,
+          isShowResult: this.state.searchText !== '',
+          isSpacePage: dataArray && dataArray.length <= 0
+        })
+
+      } else if (res.code == 10001) {
+        this.setState({ showLoading: false, isShowResult: false }, () => {
+          this.props.navigation.navigate('Login')
+        })
+      } else {
+        this.refs.toast.show(res.msg || '慢聊信息飘走了')
+        this.setState({ showFoot: 0, showLoading: false, isShowResult: false })
+      }
+    } catch (e) {
+      this.loading = false
+      if (this.state.showLoading) {
+        this.setState({ showLoading: false, isShowResult: false })
+      }
+    }
+  }
+
+  handleLoadmore = () => {
+    if (this.page > 0) {
+      requestAnimationFrame(() => {
+        this.fetchData(this.page)
+      })
+    }
+  }
+
+  onSelDelItem = (id) => {
+    var newArr = this.state.idList;
+    if (newArr.length >= 1) {
+      for(var i in newArr) {
+        if(newArr.indexOf(id) === -1) {
+          newArr.push(id)
+        }
+      }
+    } else {
+      newArr.push(id)
+    }
+    this.setState({
+      idList: newArr
+    })
+  }
+
+  onPressCancel = (id) => {
+    post('api/mail/cancel.html', {id: id}).then(res => {
+      console.log(1111, res)
+      const { code } = res
+      if (code === 1) {
+        // this.refs.toast.show('取消发送成功');
+        this.initData({ isSucc: true })
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    }).catch(e => {
+      // console.log(e)
+    })
+  }
+
+  handleSearch = () => {
+    this.initData()
+  }
+
+  handleDelete = () => {
+    this.setState({isDelClick: true})
+  }
+
+  handleDelClose = () => {
+    this.setState({isDelClick: false})
+  }
+
+  submitDelete = () => {
+    console.log(this.state.idList)
+    post('api/mail/delDraft.html', {id: this.state.idList}).then(res => {
+      const { code } = res
+      if (code === 1) {
+        this.refs.toast.show('删除成功');
+        // 删除成功，重新请求接口
+        this.initData({ isDelClick: false })
+      } else {
+        this.refs.toast.show(res.msg);
+      }
+    }).catch(e => {
+      // console.log(e)
+    })
+  }
+
   handleCancel = () => {
     this.setDefault()
     this.setState({
@@ -125,62 +271,11 @@ export default class Email extends Component {
     this.setState({isAllSelect: true})
   }
 
-  initData = () => {
-    this.pageNo = 0
-    this.fetchData()
+  onRequestClose = () => {
+    this.setState({ isSucc: false })
   }
 
-  fetchData = () => {
-    const params = {
-      p: this.pageNo,
-      s: this.pageSize,
-      keyword: this.state.searchText || ''
-    }
-    if (this.type !== null) {
-      params.type = this.type
-    }
-    if (this.sendState !== null) {
-      params.state = this.sendState
-    }
-    post(this.returnUrl(), params).then(res => {
-      const { code } = res
-      if (code === 1) {
-        let foot = 0
-        const { total, items, total_score, cancel_score } = res.data
-        if (this.pageNo + 1 >= Math.ceil(total / this.pageSize)) {
-          // listView底部显示没有更多数据了
-          foot = 1
-        }
-
-        if (items && items.length <= 0) {
-          this.setState({
-            isSpacePage: true
-          })
-        }
-        const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
-        items.forEach(item => {
-          item.send_time = (item.send_time || '').split(' ')[0]
-          const [ add_date, add_time ] = item.add_time.split(' ')
-          item.add_time = curr_item == add_date ? add_time : add_date
-        })
-
-        this.state.searchText !== '' ? this.setState({isShowResult: true}) : this.setState({isShowResult: false})
-        this.setState({
-          total: total,
-          dataArray: this.state.dataArray.concat(items),
-          totalScore: total_score,
-          cancelScore: cancel_score,
-          isLoading: false,
-          showFoot: foot,
-          isRefreshing: total / this.pageSize > 1,
-        })
-      }
-    }).catch(e => {
-      // console.log(e)
-    })
-  }
-
-  _renderItem = ({item}) => {
+  renderItem = ({item}) => {
     const { navigate } = this.props.navigation;
     return (
       <EmailList status={this.status}
@@ -199,177 +294,26 @@ export default class Email extends Component {
     )
   }
 
-
-
-  onSelDelItem = (id) => {
-    var newArr = this.state.idList;
-    if (newArr.length >= 1) {
-      for(var i in newArr) {
-        if(newArr.indexOf(id) === -1) {
-          newArr.push(id)
-        }
-      }
-    } else {
-      newArr.push(id)
-    }
-    this.setState({
-      idList: newArr
-    })
-  }
-
-    // 列表底部显示
-  _renderFooter = () => {
+  renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
   }
-    // 下拉加载更多
-  _onEndReached = () => {
-    // 如果是正在加载中或没有更多数据了，则返回
-    if (this.state.showFoot !== 0) {
-      return
-    }
-    // 如果当前页大于或等于总页数，那就是到最后一页了，返回
-    if (this.pageNo + 1 >= Math.ceil(this.state.total_page / this.pageSize)) {
-      return
-    } else {
-      this.pageNo ++
-    }
-    // 底部显示正在加载更多数据
-    this.setState({showFoot: 2})
-    // 获取数据
-    this.fetchData()
-  }
-
-    // 列表分隔线
-  _separator = () => {
-    return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
-  }
-
-  onPressCancel = (id) => {
-    post('api/mail/cancel.html', {id: id}).then(res => {
-      console.log(1111, res)
-      const { code } = res
-      if (code === 1) {
-        // this.refs.toast.show('取消发送成功');
-        this.setState({
-          dataArray: [],
-          idList: [],
-          isSucc: true
-        })
-        this.pageNo = 0
-        // 删除成功，重新请求接口
-        this.fetchData()
-      } else {
-        this.refs.toast.show(res.msg);
-      }
-    }).catch(e => {
-      // console.log(e)
-    })
-  }
-
-  handleSearch = () => {
-    this.setState({
-      dataArray: [],
-      idList: []
-    })
-    this.pageNo = 0
-    this.fetchData()
-  }
-
-  handleDelete = () => {
-    this.setState({isDelClick: true})
-  }
-
-  handleDelClose = () => {
-    this.setState({isDelClick: false})
-  }
-
-  submitDelete = () => {
-    console.log(this.state.idList)
-    post('api/mail/delDraft.html', {id: this.state.idList}).then(res => {
-      const { code } = res
-      if (code === 1) {
-        this.refs.toast.show('删除成功');
-        this.setState({
-          dataArray: [],
-          idList: [],
-          isDelClick: false
-        })
-        this.pageNo = 0
-        // 删除成功，重新请求接口
-        this.fetchData()
-      } else {
-        this.refs.toast.show(res.msg);
-      }
-    }).catch(e => {
-      // console.log(e)
-    })
-  }
-
-  onRequestClose = () => {
-    this.setState({ isSucc: false })
-  }
-
-  renderData = () => {
-    const { isShowResult, searchText } = this.state
-    const { params } = this.props.navigation.state;
+  renderData() {
+    const { isSpacePage, searchText } = this.state
     const isSearch = Boolean(searchText)
+    if (this.state.isSpacePage) return <Blank searchTxt={isSearch} />
+    const { dataArray } = this.state
+    const { params } = this.props.navigation.state;
     return (
-      <View style={styles.container}>
-        <View style={styles.searchBox}>
-          <Image style={styles.icon} source={require('../images/icon_search.png')} />
-          <TextInput
-            style={styles.search}
-            onChangeText={(text) => this.setState({searchText: text})}
-            placeholder='搜索'
-            value={searchText}
-          />
-          <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
-        </View>
-        {
-          isShowResult &&
-          <Text style={styles.result}>共查到{this.state.total}条结果</Text>
-        }
-
-        {
-          this.state.dataArray.length > 0 ? (
-            <FlatList
-              data={this.state.dataArray}
-              renderItem={this._renderItem}
-              onLoad={this.getDataEvent}
-              hasNext={false}
-              extraData={this.state}
-              ListFooterComponent={this._renderFooter}
-              onEndReached={this._onEndReached}
-              onEndReachedThreshold={0.1}
-              keyExtractor={(item, index) => String(item.id)}
-            />
-          ) : this.state.isSpacePage && <Blank searchTxt={isSearch} />
-        }
-        <Toast ref="toast" position="bottom" />
-        {
-          this.state.isDel && (
-            <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleDelete}>
-              <Text style={styles.exitTxt}>删除</Text>
-            </TouchableOpacity>
-          )
-        }
-        <SuccessModal
-          txt={'取消发送成功'}
-          btn={'返回'}
-          visible={this.state.isSucc}
-          onPress={() => {this.onRequestClose}} // navigate
-          onClose={this.onRequestClose}
-        />
-      </View>
+      <FlatList
+        keyExtractor={(item, index) => String(item.id)}
+        data={dataArray}
+        extraData={this.state}
+        renderItem={this.renderItem}
+        onEndReached={this.handleLoadmore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={this.renderFooter}
+      />
     )
-  }
-
-  returnUrl() {
-    if (this.status === 'draft') {
-      return 'api/mail/getDraftList.html'
-    } else {
-      return 'api/mail/getMyList.html'
-    }
   }
 
   render () {
@@ -381,14 +325,48 @@ export default class Email extends Component {
       return <ErrorTip onPress={this.initData} />
     }
     // 加载数据
-    return this.renderData()
+    const { searchText } = this.state
+    return <View style={styles.container}>
+      <View style={styles.searchBox}>
+        <Image style={styles.icon} source={require('../images/icon_search.png')} />
+        <TextInput
+          style={styles.search}
+          onChangeText={(text) => this.setState({searchText: text})}
+          placeholder='搜索'
+          // value={searchText}
+        />
+        <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
+      </View>
+      {
+        this.state.isShowResult &&
+        <Text style={styles.result}>共查到{this.state.total}条结果</Text>
+      }
+      {this.renderData()}
+      <SuccessModal
+        txt={'取消发送成功'}
+        btn={'返回'}
+        visible={this.state.isSucc}
+        onPress={() => {
+          this.props.navigation.pop() // navigate
+        }}
+        onClose={this.onRequestClose}
+      />
+      <Toast ref="toast" position="center" />
+      {
+        this.state.isDel && (
+          <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleDelete}>
+            <Text style={styles.exitTxt}>删除</Text>
+          </TouchableOpacity>
+        )
+      }
+    </View>
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f6f7f8',
+    backgroundColor: '#f6f6f6',
   },
   headerRight: {
     width: 64,

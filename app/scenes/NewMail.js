@@ -146,17 +146,6 @@ export default class NewMail extends Component {
     }
   }
 
-  throttle(fn, delay) {
-    var timer = null;
-    return function(){
-      var context = this, args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(function(){
-        fn.apply(context, args);
-      }, delay);
-    };
-  };
-
   handleDatePicker = (datetime) => {
     let send_time = datetime
     if (datetime.indexOf(':00') == -1) {
@@ -166,37 +155,56 @@ export default class NewMail extends Component {
     this.setParams('send_time', send_time)
   }
 
-  setParams(key, value) {
-      // this.setState({email: value})
+  handleMailChange = (value) => {
+    this.email = value
     let { showSendMe } = this.state
-    if (key == 'email') {
-      if (value == '发给自己' && showSendMe != false) {
-        showSendMe = false
-      } else if (value != '发给自己' && showSendMe != true) {
-        showSendMe = true
-      }
+    if (value == '发给自己' && showSendMe != false) {
+      showSendMe = false
+    } else if (value != '发给自己' && showSendMe != true) {
+      showSendMe = true
     }
+    if (this.state.showSendMe != showSendMe) {
+      this.setState({ showSendMe })
+    }
+    this.setSendStatus(value)
+  }
+  onEndEditMail = (e) => {
+    this.email = e.nativeEvent.text
+  }
+  sendMe = () => {
+    if (this.email == '发给自己') return
+    const { params } = this.state
+    params.email = this.email || ''
+    this.setState({ params }, () => {
+      requestAnimationFrame(() => {
+        this.email = '发给自己'
+        this.setParams('email', '发给自己')
+      })
+    })
+  }
+  setParams(key, value) {
     const { params } = this.state
     params[key] = value
-    this.throttle(() => {
-      this.setState({
-        params,
-        showSendMe }, () => {
-        const sendBtnEnable = this.checkParams()
-        if (this.sendBtnEnable != sendBtnEnable) {
-          this.noupdate = true
-          this.sendBtnEnable = sendBtnEnable
-          this.props.navigation.setParams({
-            enable: sendBtnEnable,
-          })
-        }
+    this.setState({
+      params,
+    }, () => {
+      this.setSendStatus()
+    })
+  }
+  setSendStatus() {
+    const sendBtnEnable = this.checkParams(false)
+    if (this.sendBtnEnable != sendBtnEnable) {
+      this.noupdate = true
+      this.sendBtnEnable = sendBtnEnable
+      this.props.navigation.setParams({
+        enable: sendBtnEnable,
       })
-    }, 100)()
+    }
   }
   checkParams(showTip) {
-    const { title, content, email } = this.state.params
+    const { title, content } = this.state.params
     const tips = []
-    if (!email) tips.push('收件人')
+    if (!this.email) tips.push('收件人')
     //  || !isEmail(email)
     if (!title) tips.push('主题')
     // if (!send_time) tips.push('发信时间')
@@ -222,12 +230,14 @@ export default class NewMail extends Component {
   }
 
   handleSend = () => {
+    console.log(this.email);
     if (this.state.showLoading) return false
     if (this.state.params.send_time < dateFormat()) {
       let tip = '发信时间不符合要求！'
       this.refs.toast.show(tip)
     }
     if (!this.checkParams(true)) return
+
     this.setState({ showLoading: true }, async () => {
       try {
         const params = {...this.state.params}
@@ -306,7 +316,6 @@ export default class NewMail extends Component {
           throw res
         }
       }
-      console.log(attachs);
       return attachs.map(item => ({
         filename: item.name,
         url: item.url,
@@ -358,9 +367,10 @@ export default class NewMail extends Component {
             <Text style={styles.label}>收件人：</Text>
             <TextInput autoFocus style={styles.input}
               value={params.email}
-              onChangeText={(text) => this.setParams('email', text)}
+              onChangeText={this.handleMailChange}
+              onEndEditing={this.onEndEditMail}
               autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={() => this.setState({params:{'email': '发给自己'}})}>
+            <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={this.sendMe}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
           </View>
