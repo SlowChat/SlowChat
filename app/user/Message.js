@@ -50,7 +50,7 @@ export default class Message extends Component<Props> {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
 

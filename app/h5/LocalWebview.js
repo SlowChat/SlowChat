@@ -87,7 +87,7 @@ export default class LocalWebview extends Component<Props> {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
   handleLoad = () => {
     this.loaded = true

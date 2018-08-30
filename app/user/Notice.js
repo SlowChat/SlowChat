@@ -50,7 +50,7 @@ export default class MsgList extends Component<Props> {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
 

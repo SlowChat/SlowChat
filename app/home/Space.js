@@ -74,7 +74,7 @@ export default class Space extends Component<Props> {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
   async getData(page = 0) {

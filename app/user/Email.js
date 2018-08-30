@@ -113,7 +113,7 @@ export default class Email extends Component {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
 

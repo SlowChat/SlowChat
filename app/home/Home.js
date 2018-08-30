@@ -60,7 +60,7 @@ export default class Home extends Component<Props> {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
   fadeInOrOut(fadeIn) {
@@ -74,14 +74,14 @@ export default class Home extends Component<Props> {
     }
     Animated.timing(this.state.fadeInOpacity, {
       toValue: toValue, // 目标值
-      duration: 300, // 动画时间
+      duration: 250, // 动画时间
       easing: fadeIn ? Easing.easeIn : Easing.easeOut // 缓动函数
     }).start();
     this.timer = setTimeout(() => {
       if (!fadeIn) {
         this.hasHeader = false
       }
-    }, 300)
+    }, 250)
     // this.noupdate = true
     // this.props.navigation.setParams({
     //   opacity: this.fadeInOpacity

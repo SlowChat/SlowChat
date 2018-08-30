@@ -82,7 +82,7 @@ export default class Regist extends Component {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
 
   handleLogin = async (username, password) => {

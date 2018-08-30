@@ -65,7 +65,7 @@ export default class DraftDetail extends Component {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
 
   closeConfirm = () => {

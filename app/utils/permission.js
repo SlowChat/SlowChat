@@ -10,7 +10,7 @@ export const checkFilePermission = async (onTip) => {
       ],
       {
         title: '权限申请',
-        message: '慢聊需要访问你的文件系统'
+        message: '慢聊需要读取手机外部存储'
       },
     );
     if (!checkGranted(granted)) {

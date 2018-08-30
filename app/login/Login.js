@@ -84,7 +84,7 @@ export default class Login extends PureComponent<Props> {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
 
   goBack = () => {
