@@ -10,7 +10,6 @@ import {
   CameraRoll,
   TouchableOpacity,
   ImageBackground,
-  PermissionsAndroid
 } from 'react-native';
 
 import JShareModule from 'jshare-react-native'
@@ -21,6 +20,7 @@ import Toast from 'react-native-easy-toast'
 import ICONS from '../utils/icon'
 import Storage from '../utils/storage'
 import { post } from '../utils/request'
+import { checkSavePermission } from '../utils/permission'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
@@ -157,26 +157,12 @@ export default class Share extends PureComponent<Props> {
   }
 
   handleSave = async () => {
-    let cannotSave = false
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: '相册权限申请',
-            message: '慢聊保存截图，需要访问你的相册'
-          },
-        );
-        if (granted != PermissionsAndroid.RESULTS.GRANTED) {
-          cannotSave = true
-          this.refs.toast.show('授权拒绝，无法保存截图')
-        }
-      } catch (err) {
-        cannotSave = true
-        this.refs.toast.show('授权失败，无法保存截图')
-      }
+    try {
+      await checkSavePermission()
+    } catch (e) {
+      this.refs.toast.show(e.message)
+      return
     }
-    if (cannotSave) return
     try {
       let uri = this.uri
       if (!uri) {

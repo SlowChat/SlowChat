@@ -85,12 +85,16 @@ export default class DraftDetail extends Component {
       this.props.navigation.navigate('Login')
     } else {
       this.refs.alert.hide()
-      this.refs.toast.show(res.msg || '请稍后重试')
+      this.showToast(res.msg || '请稍后重试')
     }
   }
   handleEdit = () => {
     const id = this.getId()
     this.props.navigation.push('NewMail', {id})
+  }
+
+  showToast = (txt) => {
+    this.refs.toast.show(txt)
   }
 
   // this.props.navigation.setParams({
@@ -128,7 +132,7 @@ export default class DraftDetail extends Component {
             <Image style={styles.attachment} source={require('../images/icon_attachment.png')} />
             <Text style={styles.attachmentNum}>{hasAttach ? `${attachs.length}个附件` : ''}</Text>
           </View>
-          <Attachment items={attachs} />
+          <Attachment items={attachs} onTip={this.showToast} />
         </ScrollView>
         <SafeAreaView style={styles.bottom} forceInset={{top: 'never', bottom: 'always'}}>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.openDelete}>

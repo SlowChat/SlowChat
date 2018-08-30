@@ -20,7 +20,7 @@ import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
 import SaveBtn from '../components/SaveBtn'
 import HeaderTip from '../components/HeaderTip'
-import ImageChoose from '../components/ImageChoose'
+import FileChoose from '../components/FileChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 import Loading from '../components/Loading'
@@ -114,9 +114,9 @@ export default class NewMail extends Component {
 
   keyboardHide = (e) => {
     this.keyboardShow = false
-    if (this.showChooseImage) {
+    if (this.showChooseFile) {
       this.setState({ pickerModal: true })
-      this.showChooseImage = false
+      this.showChooseFile = false
     }
   }
 
@@ -344,13 +344,16 @@ export default class NewMail extends Component {
           throw res
         }
       }
-      return attachs.map(item => ({
-        filename: item.filename,
-        url: item.url,
-        thumb: item.thumb || '',
-        size: item.size,
-        ext: item.ext
-      }))
+      return attachs.map(item => {
+        const filename = item.filename ? item.filename.substring(filename.lastIndexOf('/') + 1) : ''
+        return {
+          filename,
+          url: item.url,
+          thumb: item.thumb || '',
+          size: item.size,
+          ext: item.ext
+        }
+      })
     } catch (e) {
       console.log(e);
       throw e
@@ -371,13 +374,13 @@ export default class NewMail extends Component {
   handelSuccClose = () => {
     this.setState({ isSucc: false })
   }
-  handleImageChoose = (items) => {
+  handleFileChoose = (items) => {
     this.setState({ attachs: items })
   }
-  openImageChoose = () => {
+  openFileChoose = () => {
     if (this.keyboardShow) {
       Keyboard.dismiss()
-      this.showChooseImage = true
+      this.showChooseFile = true
       // requestAnimationFrame(() => {
       //   this.setState({ pickerModal: true })
       // })
@@ -385,7 +388,7 @@ export default class NewMail extends Component {
       this.setState({ pickerModal: true })
     }
   }
-  closeImageChoose = (open = false) => {
+  closeFileChoose = (open = false) => {
     this.setState({ pickerModal: open })
   }
 
@@ -416,7 +419,7 @@ export default class NewMail extends Component {
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>附件：</Text>
-            <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
+            <TouchableOpacity style={styles.itemTouch} onPress={this.openFileChoose}>
               <View style={styles.icons}>
                 <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
               </View>
@@ -458,13 +461,13 @@ export default class NewMail extends Component {
         <SaveBtn type="bottom" onPress={this.handleSave} />
         {
           this.state.pickerModal &&
-            <Text style={styles.imgchoosebg} onPress={this.closeImageChoose.bind(this, false)}></Text>
+            <Text style={styles.imgchoosebg} onPress={this.closeFileChoose.bind(this, false)}></Text>
         }
-        <ImageChoose visible={this.state.pickerModal}
+        <FileChoose visible={this.state.pickerModal}
           initValue={initAttaches}
           onSave={this.handleSave}
-          onChange={this.handleImageChoose}
-          onClose={this.closeImageChoose}
+          onChange={this.handleFileChoose}
+          onClose={this.closeFileChoose}
           onError={this.showErrorModal} />
         <Toast ref="toast" position="center" />
         <SuccessModal

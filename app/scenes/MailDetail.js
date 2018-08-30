@@ -275,6 +275,9 @@ export default class MailDetail extends Component {
   handleLoadmore = () => {
 
   }
+  showToast = (txt) => {
+    this.refs.toast.show(txt)
+  }
   render() {
     const { status, activeTab, detail, comments, showLoading } = this.state
     return (
@@ -294,7 +297,7 @@ export default class MailDetail extends Component {
           keyExtractor={(item) => item.id + ''}
           renderItem={(item) => <ReplyItem key={item.id} data={item} onReply={this.handleSubReply} />}
           ListHeaderComponent={() => (<View onLayout={this.flatListHeaderLayout}>
-            <MailContent data={detail} />
+            <MailContent data={detail} onTip={this.showToast} />
             {
               detail.looks ? (
                 <View style={styles.replyHeader}>

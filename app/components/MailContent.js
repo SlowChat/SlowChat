@@ -11,7 +11,7 @@ import Attachment from './Attachment'
 
 export default class MailContent extends PureComponent {
   render() {
-    const { data } = this.props
+    const { data, onTip } = this.props
     return (
       <View style={styles.container}>
         <AvatarHeader data={data} />
@@ -19,7 +19,7 @@ export default class MailContent extends PureComponent {
         <View style={styles.contentWrap}>
           <Text style={styles.content}>{data.content}</Text>
         </View>
-        <Attachment items={data.attach} />
+        <Attachment items={data.attach} onTip={onTip} />
       </View>
     )
   }

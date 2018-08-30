@@ -1,5 +1,27 @@
 import { Platform, PermissionsAndroid } from 'react-native';
 
+export const checkSavePermission = async (onTip) => {
+  if (Platform.OS == 'ios') return
+  try {
+    // PermissionsAndroid.PERMISSIONS.CAMERA
+    const granted = await PermissionsAndroid.requestMultiple(
+      [
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      ],
+      {
+        title: '权限申请',
+        message: '慢聊保存图片，需要访问你的相册'
+      },
+    );
+    if (!checkGranted(granted)) {
+      throw new Error('授权拒绝，无法保存图片')
+    }
+  } catch (err) {
+    console.log(err)
+    throw new Error('授权拒绝，无法保存图片')
+  }
+}
+
 export const checkFilePermission = async (onTip) => {
   if (Platform.OS == 'ios') return
   try {
@@ -10,15 +32,15 @@ export const checkFilePermission = async (onTip) => {
       ],
       {
         title: '权限申请',
-        message: '慢聊需要读取手机外部存储'
+        message: '慢聊需要访问您的文件夹'
       },
     );
     if (!checkGranted(granted)) {
-      throw new Error('授权拒绝，无法获取图片')
+      throw new Error('授权拒绝，无法获取文件夹')
     }
   } catch (err) {
     console.log(err)
-    throw new Error('授权失败，无法获取图片')
+    throw new Error('授权拒绝，无法获取文件夹')
   }
 }
 
