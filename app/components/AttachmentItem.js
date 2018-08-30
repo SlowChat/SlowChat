@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 
-import Video from 'react-native-video'
+// import Video from 'react-native-video'
 
 function formatFileSize(fileSize) {
   if (fileSize > 1024 * 1024) {

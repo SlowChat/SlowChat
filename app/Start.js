@@ -41,7 +41,6 @@ export default class Start extends PureComponent {
     this.addPushListener()
   }
 
-
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
     AppState.removeEventListener('change', this.handleChange)
@@ -56,7 +55,7 @@ export default class Start extends PureComponent {
     JPushModule.getRegistrationID(registrationId => {
       if (registrationId && Global.token && Global.user && !Global.user.registrationId) {
         Global.pushId = registrationId
-        post('api/mail/setPushCode.html', {
+        post('api/user/setPushCode.html', {
           code: registrationId
         })
       }
@@ -77,20 +76,16 @@ export default class Start extends PureComponent {
     // 打开通知
     JPushModule.addReceiveOpenNotificationListener((map) => {
       console.log(map)
-      const { url } = map.extras || {}
-      if (!url) return
-      let routeName = ''
-      let params = {}
-      if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
-        routeName = 'Webview'
-        params.url = url
-      } else if (url.indexOf('/') == 0) {
-        const { uri, query } = URL.parse(url)
-        routeName = uri
-        params = query
+      const { mail_id, mail_state } = map.extras || {}
+      if (mail_id) {
+        const params = {
+          id: mail_id,
+          status: mail_state
+        }
+        const pushAction = StackActions.push({ 'MailDetail', params })
+        this.navRef.dispatch(pushAction)
       }
-      const pushAction = StackActions.push({ routeName, params })
-      this.navRef.dispatch(pushAction)
+
     });
   }
 
@@ -142,3 +137,19 @@ export default class Start extends PureComponent {
     // return <AppNavigator ref={this.getNavRef} onNavigationStateChange={this.navigationStateChange} />
   }
 }
+
+
+// const { url } = map.extras || {}
+// if (!url) return
+// let routeName = ''
+// let params = {}
+// if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
+//   routeName = 'Webview'
+//   params.url = url
+// } else if (url.indexOf('/') == 0) {
+//   const { uri, query } = URL.parse(url)
+//   routeName = uri
+//   params = query
+// }
+// const pushAction = StackActions.push({ routeName, params })
+// this.navRef.dispatch(pushAction)

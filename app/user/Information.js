@@ -32,7 +32,7 @@ export default class Information extends Component {
   }
   constructor(props) {
     super(props)
-    const { avatar, thumb, birthday, username, sex, level, type } = this.props.navigation.state.params || {}
+    const { avatar, birthday, username, sex, level, type } = this.props.navigation.state.params || {}
     this.state = {
       switchBtn: true,
       isShow: false,
@@ -40,7 +40,6 @@ export default class Information extends Component {
       date: birthday || '1980-01-01',
       username,
       avatar,
-      thumb: thumb || avatar,
       level,
       type,
       isSucc: false
@@ -129,7 +128,7 @@ export default class Information extends Component {
         })
         console.log(res);
         if (res.code == 1) {
-          this.setState({ avatar: res.data.url, thumb: res.data.thumb })
+          this.setState({ avatar: res.data.thumb || res.data.url })
         } else {
           this.refs.toast.show('上传失败，稍后重试！')
         }
@@ -139,10 +138,10 @@ export default class Information extends Component {
 
   render() {
     const { params } = this.props.navigation.state;
-    const { avatar, thumb, username, level, type } = this.state
+    const { avatar, username, level, type } = this.state
     return (
       <View style={styles.container}>
-        <Avatar avatar={thumb} username={username} level={level} type={type} onPress={this.chooseAndUpload} />
+        <Avatar avatar={avatar} username={username} level={level} type={type} onPress={this.chooseAndUpload} />
         <View style={styles.link}>
           <TouchableOpacity activeOpacity={0.8} style={styles.menu} onPress={() => this.onChangeName()}>
             <Text style={styles.label}>昵称</Text>

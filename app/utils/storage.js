@@ -6,7 +6,7 @@ import Global from './global'
 let storage = new Storage({
     size: 100,
     storageBackend: AsyncStorage,
-    defaultExpires: 1000 * 3600 * 24,
+    defaultExpires: null, // 1000 * 3600 * 24,
     enableCache: true,
 });
 
