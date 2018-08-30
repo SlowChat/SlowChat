@@ -1,5 +1,27 @@
 import { Platform, PermissionsAndroid } from 'react-native';
 
+export const checkFilePermission = async (onTip) => {
+  if (Platform.OS == 'ios') return
+  try {
+    // PermissionsAndroid.PERMISSIONS.CAMERA
+    const granted = await PermissionsAndroid.requestMultiple(
+      [
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ],
+      {
+        title: '权限申请',
+        message: '慢聊需要访问你的文件系统'
+      },
+    );
+    if (!checkGranted(granted)) {
+      throw new Error('授权拒绝，无法获取图片')
+    }
+  } catch (err) {
+    console.log(err)
+    throw new Error('授权失败，无法获取图片')
+  }
+}
+
 export const checkImagePermission = async (onTip) => {
   if (Platform.OS == 'ios') return
   try {

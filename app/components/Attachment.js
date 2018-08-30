@@ -35,14 +35,14 @@ export default class Attachment extends PureComponent {
     this.opening = true
     const { items } = this.props
     const item = items[index]
-    const { filename, url, ext } = item
+    const { filename, url, thumb, ext } = item
     setTimeout(() => {
       if (this.opening) {
         this.setState({ showLoading: true })
       }
     }, 200)
     try {
-      await openFile(url, filename)
+      await openFile(url || thumb, filename)
     } catch (e) {
       this.refs.toast.show('文件打开失败！')
     }

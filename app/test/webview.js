@@ -24,16 +24,11 @@ export default class H5Webview extends PureComponent<Props> {
     this.props.navigation.setParams({
       title: e.title,
     })
-    // this.setState({
-    //   title: e.title,
-    //   //设置是否要以返回上级页面
-    //   canBack: e.canGoBack
-    // })
   }
   render() {
-    const { url } = this.props.navigation.state.params || {}
     return (
-      <WebView style={{width:'100%',height:'100%'}} source={{uri: url}}
+      <WebView style={{width:'100%',height:'100%'}}
+        source={require('./h5.html')}
         mixedContentMode="compatibility"
         userAgent="com.slowchat"
         scalesPageToFit

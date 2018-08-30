@@ -5,12 +5,12 @@ import {
   Text,
   View,
   Image,
-  Modal,
   TextInput,
   Switch,
   ScrollView,
   Keyboard,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 // import { openFile } from '../utils/opendoc'
@@ -83,8 +83,10 @@ export default class NewMail extends Component {
     this.props.navigation.setParams({
       rightOnPress: this.handleSend
     })
+    this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
+    this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardShow)
+    this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardHide)
   }
-
 
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -92,6 +94,30 @@ export default class NewMail extends Component {
       return false
     }
     return true
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSub.remove()
+    this.keyboardShowSub.remove()
+    this.keyboardHideSub.remove()
+  }
+
+  keyboardWillShow = (e) => {
+    if (this.state.pickerModal) {
+      this.setState({ pickerModal: false })
+    }
+  }
+
+  keyboardShow = (e) => {
+    this.keyboardShow = true
+  }
+
+  keyboardHide = (e) => {
+    this.keyboardShow = false
+    if (this.showChooseImage) {
+      this.setState({ pickerModal: true })
+      this.showChooseImage = false
+    }
   }
 
   getSendTime(send_time) {
@@ -230,7 +256,6 @@ export default class NewMail extends Component {
   }
 
   handleSend = () => {
-    console.log(this.email);
     if (this.state.showLoading) return false
     if (this.state.params.send_time < dateFormat()) {
       let tip = '发信时间不符合要求！'
@@ -241,8 +266,11 @@ export default class NewMail extends Component {
     this.setState({ showLoading: true }, async () => {
       try {
         const params = {...this.state.params}
+        params.email = this.email
+        params.self = '发给自己' == this.email ? 1 : 0
         params.attach = await this.uploadFile()
         const res = await post('api/mail/add.html', params)
+        console.log(res);
         if (res.code == 10001) {
           this.setState({showLoading: false}, () => {
             this.props.navigation.navigate('Login')
@@ -264,14 +292,12 @@ export default class NewMail extends Component {
       }
     })
   }
-  handleSave = () => {
+  handleSave = async () => {
     if (this.state.params.send_time < dateFormat()) {
       let tip = '发信时间不符合要求！'
       this.refs.toast.show(tip)
       return
     }
-    // rnfsUpload(this.state.attachs)
-    // return
     if (this.state.showLoading) return
     if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
@@ -298,6 +324,7 @@ export default class NewMail extends Component {
         }
       }
     })
+
   }
 
   async uploadFile() {
@@ -309,7 +336,8 @@ export default class NewMail extends Component {
         if (item.url.indexOf('http') == 0) {
           continue
         }
-        const res = await upload(item.url, item.filename)
+        const res = await upload(item)
+        console.log(res);
         if (res.code == 1) {
           attachs[index] = {...res.data, ext: item.ext}
         } else {
@@ -317,8 +345,9 @@ export default class NewMail extends Component {
         }
       }
       return attachs.map(item => ({
-        filename: item.name,
+        filename: item.filename,
         url: item.url,
+        thumb: item.thumb || '',
         size: item.size,
         ext: item.ext
       }))
@@ -346,9 +375,15 @@ export default class NewMail extends Component {
     this.setState({ attachs: items })
   }
   openImageChoose = () => {
-    // openFile()
-    Keyboard.dismiss()
-    this.setState({ pickerModal: true })
+    if (this.keyboardShow) {
+      Keyboard.dismiss()
+      this.showChooseImage = true
+      // requestAnimationFrame(() => {
+      //   this.setState({ pickerModal: true })
+      // })
+    } else {
+      this.setState({ pickerModal: true })
+    }
   }
   closeImageChoose = (open = false) => {
     this.setState({ pickerModal: open })
@@ -501,10 +536,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 30,
     borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#B4B4B4',
   },
   btn: {
     fontSize: 16,
@@ -514,8 +549,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 30,
     borderRadius: 2,
-    borderWidth: 1,
-    // borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#B4B4B4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -559,5 +593,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: 'rgba(0,0,0,0.2)',
   }
 });

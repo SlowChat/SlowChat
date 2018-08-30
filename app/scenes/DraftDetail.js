@@ -189,28 +189,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#999999',
   },
-  btnWrap: {
-    width: 80,
-    height: 30,
-    borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btn: {
-    fontSize: 16,
-    color: '#686868',
-  },
-  icons: {
-    width: 40,
-    height: 30,
-    borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   attachment: {
     width: 30,
     height: 30,
@@ -243,19 +221,6 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
-  saveBtn: {
-    width: 90,
-    height: 30,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E24B92',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveBtnTxt: {
-    fontSize: 16,
-    color: '#E24B92',
-  },
   bottomIconWrap: {
     flex: 1,
     alignItems: 'center',
@@ -266,15 +231,4 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain'
   },
-  confirmView: {
-    paddingTop: 24,
-    paddingBottom: 24,
-  },
-  confirmTxt: {
-    height: 22,
-    fontSize: 16,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#333333',
-    lineHeight: 22
-  }
 });

@@ -2,17 +2,17 @@ import React, {Component} from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import LoginScreen from './login/Login'
+// import LoginScreen from './login/Login'
 import HomeScreen from './home/Home'
 // import SpaceScreen from './home/Space'
 // import NewScreen from './home/New'
 // import ShareScreen from './home/Share'
 // import MimeScreen from './user/User'
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-  // Login: LoginScreen,
-})
+// const HomeStack = createStackNavigator({
+//   Home: HomeScreen,
+//   // Login: LoginScreen,
+// })
 // const SpaceStack = createStackNavigator({
 //   Space: require('./home/Space').default,
 // })
@@ -45,7 +45,7 @@ const MimeStack = createStackNavigator({
 export default createBottomTabNavigator(
   {
     Home: {
-      screen: HomeStack,
+      screen: HomeScreen,
       navigationOptions: {
         tabBarIcon:({focused,tintColor}) => (
           <Image style={styles.icon} source={

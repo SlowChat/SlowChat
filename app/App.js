@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { createStackNavigator, StackViewTransitionConfigs } from 'react-navigation';
 // import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
 
-
 import BottomTabs from './BottomTabs'
 // import LoginScreen from './login/Login'
 
@@ -49,6 +48,7 @@ const StackApp = (isLogin) => createStackNavigator({
   DraftDetail: { screen: require('./scenes/DraftDetail').default },
   Webview: { screen: require('./h5/Webview').default },
   LocalWebview: { screen: require('./h5/LocalWebview').default },
+  TestWebView: { screen: require('./test/webview').default },
   // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
     screen: require('./scenes/Share').default,
@@ -57,7 +57,7 @@ const StackApp = (isLogin) => createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'User',
+  initialRouteName: 'BottomTabs',
   // isLogin ? 'BottomTabs' : 'Login',
   navigationOptions: {
     // headerBackTitleVisible: false,

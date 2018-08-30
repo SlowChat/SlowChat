@@ -11,13 +11,15 @@
 @implementation FileModule
 
 RCT_EXPORT_MODULE();
-RCT_EXPORT_METHOD(getInfo:(NSString *)filePath resolver:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(getInfo:(NSString *)path resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   NSFileManager* manager = [NSFileManager defaultManager];
   NSError *error;
 //  if ([manager fileExistsAtPath:filePath]){
   
+    NSString *filePath = [path stringByReplacingOccurrencesOfString:@"+" withString:@" "];
+    filePath = [path stringByRemovingPercentEncoding];
     NSString *fileName = [manager displayNameAtPath:filePath];
 
     NSFileManager *fileManager = [NSFileManager defaultManager];

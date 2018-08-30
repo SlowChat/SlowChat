@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html style="font-size:37.5px">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="dns-prefetch" href="//h5.dianping.com">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="" />
+  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="email=no" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+  <meta name="renderer" content="webkit">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <meta name="full-screen" content="yes">
+  <meta name="x5-fullscreen" content="true">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no" charSet="UTF-8" />
+  <title>扫街操作指引</title>
+  <style type="text/css">
+  .bg {
+      background-repeat: no-repeat;
+      background-position: 50%;
+      background-size: contain
+  }
+
+  .bg-three,
+  .bg-two {
+      position: relative;
+      display: flex;
+      align-items: center
+  }
+
+  .bg-three>div,
+  .bg-three>image,
+  .bg-two>div,
+  .bg-two>image {
+      position: relative;
+      flex: 1;
+      margin-right: .26666667rem
+  }
+
+  .bg-three>div:last-child,
+  .bg-three>image:last-child,
+  .bg-two>div:last-child,
+  .bg-two>image:last-child {
+      margin-right: 0
+  }
+
+  .bg-three .bottom-tip,
+  .bg-two .bottom-tip {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      margin: 0!important;
+      top: 2.2rem;
+      height: .93333333rem;
+      opacity: .5;
+      background: #000;
+      color: #fff;
+      line-height: .93333333rem;
+      font-size: .4rem
+  }
+
+  .bg-three>div,
+  .bg-three>image {
+      width: 2.89333333rem;
+      height: 3.46666667rem
+  }
+
+  .bg-two>div,
+  .bg-two>image {
+      width: 4.46666667rem;
+      height: 5.33333333rem
+  }
+
+  .bg1 {
+      height: 7.73333333rem
+  }
+
+  .bg1,
+  .bg2 {
+      margin-bottom: .93333333rem
+  }
+
+  .bg2 {
+      height: 10.26666667rem
+  }
+
+  .bg3,
+  .bg4,
+  .bg5 {
+      margin-bottom: .93333333rem;
+      height: 7.73333333rem;
+  }
+
+
+  .bg6 {
+      height: 7.7333333rem;
+      margin-bottom: .8rem
+  }
+
+  .bg7-two {
+      margin-bottom: 1.06666667rem
+  }
+
+  .bg7 {
+      margin-bottom: .2rem
+  }
+
+  .bg7-2 {
+      margin-bottom: .8rem
+  }
+
+  .bg7,
+  .bg7-2 {
+      height: 3.46666667rem
+  }
+
+  .nowebp .bg1 {
+      background-image: url("https://p0.meituan.net/mogu/b3f27901f77efdadd9bb1aa14799e4c571040.png")
+  }
+
+  .webp .bg1 {
+      background-image: url("https://p0.meituan.net/mogu/b3f27901f77efdadd9bb1aa14799e4c571040.png.webp")
+  }
+
+  .nowebp .bg2 {
+      background-image: url("https://p0.meituan.net/mogu/9db55f54449ba697275e4a1b6dcf3dff50689.png")
+  }
+
+  .webp .bg2 {
+      background-image: url("https://p0.meituan.net/mogu/9db55f54449ba697275e4a1b6dcf3dff50689.png.webp")
+  }
+
+  .webp .bg23 {
+      background-image: url("https://p1.meituan.net/mogu/2e1c1dc540ea97ee4d76410b8cb9acfe46700.png.webp")
+  }
+
+  .nowebp .bg24 {
+      background-image: url("https://p1.meituan.net/mogu/3823b9144c4ae10ca09ddac7c67ea41363852.png")
+  }
+
+  .webp .bg24 {
+      background-image: url("https://p1.meituan.net/mogu/3823b9144c4ae10ca09ddac7c67ea41363852.png.webp")
+  }
+
+
+  .nowebp .bg3 {
+      background-image: url("https://p0.meituan.net/mogu/34990618b59325a8e7a2b291bc2ec073114301.png")
+  }
+
+  .webp .bg3 {
+      background-image: url("https://p0.meituan.net/mogu/34990618b59325a8e7a2b291bc2ec073114301.png.webp")
+  }
+
+
+  .nowebp .bg4 {
+      background-image: url("https://p0.meituan.net/mogu/d1bc24bb467e5ee1149e05a85e00651265690.png")
+  }
+
+  .webp .bg4 {
+      background-image: url("https://p0.meituan.net/mogu/d1bc24bb467e5ee1149e05a85e00651265690.png.webp")
+  }
+
+  .nowebp .bg5 {
+      background-image: url("https://p1.meituan.net/mogu/f099125c2219c36591d587a7b5edcd0249770.png")
+  }
+
+  .webp .bg5 {
+      background-image: url("https://p1.meituan.net/mogu/f099125c2219c36591d587a7b5edcd0249770.png.webp")
+  }
+
+  .nowebp .bg6 {
+      background-image: url("https://p0.meituan.net/mogu/219adfad66a169b481b168869c1451d849181.png")
+  }
+
+  .webp .bg6 {
+      background-image: url("https://p0.meituan.net/mogu/219adfad66a169b481b168869c1451d849181.png.webp")
+  }
+
+  .nowebp .bg7 {
+      background-image: url("https://p0.meituan.net/mogu/a4ce03b382f98c8796c192987ea7682e84128.png")
+  }
+
+  .webp .bg7 {
+      background-image: url("https://p0.meituan.net/mogu/a4ce03b382f98c8796c192987ea7682e84128.png.webp")
+  }
+
+
+  body,
+  html {
+      min-height: 100%;
+      -webkit-text-size-adjust: 100%
+  }
+
+  body {
+      position: relative;
+      padding: 0;
+      margin: 0;
+      font-family: PingFangSC-Regular, Helvetica, sans-serif;
+      font-weight: 400
+  }
+
+  [data-dpr="1"] body {
+      font-size: .32rem
+  }
+
+  [data-dpr="2"] body {
+      font-size: .64rem
+  }
+
+  [data-dpr="3"] body {
+      font-size: .96rem
+  }
+
+  blockquote,
+  dd,
+  div,
+  dl,
+  dt,
+  fieldset,
+  form,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  legend,
+  li,
+  ol,
+  p,
+  td,
+  textarea,
+  th,
+  ul {
+      padding: 0;
+      margin: 0
+  }
+
+  a,
+  body,
+  div,
+  img,
+  span {
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none
+  }
+
+  a {
+      display: block;
+      color: #000;
+      text-decoration: none
+  }
+
+  a:-webkit-any-link {
+      text-decoration: none
+  }
+
+  a:focus {
+      outline: none
+  }
+
+  ol,
+  ul {
+      list-style: none
+  }
+
+  .clearfix:after {
+      display: block;
+      height: 0;
+      clear: both;
+      line-height: 0;
+      visibility: hidden;
+      content: ""
+  }
+
+  .tabs {
+      top: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      height: 1.06666667rem;
+      font-family: PingFangSC-Regular;
+      font-size: .4rem;
+      color: #525f66;
+      background: #fff;
+      box-shadow: 0 .05333rem .26667rem 0 rgba(72, 114, 138, .1)
+  }
+
+  .tabs .tab {
+      text-align: center;
+      flex: 1
+  }
+
+  .step .part-item1 {
+      margin-bottom: .8rem
+  }
+
+  .step .part-item2 {
+      margin-bottom: .53333333rem
+  }
+
+  .step .part2 .header-comment {
+      margin-top: 0.466667rem;
+      margin-bottom: .53333333rem
+  }
+
+  .case-title {
+      color: #566369;
+      margin-bottom: .13333333rem
+  }
+
+  .case-content,
+  .case-title {
+      font-size: .37333333rem;
+      line-height: .50666667rem
+  }
+
+  .case-content {
+      color: #8a9399;
+      letter-spacing: 0
+  }
+
+  .case-content,
+  .part-item .sub-header {
+      text-align: justify;
+      margin-bottom: .26666667rem
+  }
+
+  .part-item .sub-header {
+      margin-top: .26666667rem;
+      font-size: .4rem;
+      color: #566369;
+      line-height: .56rem
+  }
+
+  .income ul {
+      margin-bottom: .53333333rem
+  }
+
+  .income .part2 .part-item1,
+  .income .part2 .part-item3,
+  .income .part2 .part-item4,
+  .income .part-item1 .comment {
+      margin-bottom: 1.06666667rem
+  }
+
+  .content {
+      padding: 0 .4rem
+  }
+
+  .content .header {
+      margin-top: .8rem;
+      margin-bottom: .53333333rem;
+      font-size: .48rem;
+      color: #29a0e6
+  }
+
+  .content .header,
+  .content h3 {
+      font-family: PingFangSC-Medium;
+      font-weight: 700
+  }
+
+  .content h3 {
+      margin-bottom: .26666667rem;
+      font-size: .4rem;
+      color: #222d33
+  }
+
+  .content .ul {
+      padding-left: .4rem;
+      list-style: disc
+  }
+
+  .ul-item,
+  .ul-item-header {
+      margin-bottom: .26666667rem
+  }
+
+  .ul-item-header {
+      font-size: .37333333rem;
+      color: #525f66;
+      text-align: justify;
+      line-height: .56rem;
+      display: flex
+  }
+
+  .ul-item-header .index {
+      font-size: .34666667rem;
+      color: #525f66;
+      line-height: .50666667rem;
+      margin-right: .10666667rem
+  }
+
+  .content .small,
+  .content ul.small {
+      color: #8a9399;
+      font-size: .34666667rem;
+      line-height: .50666667rem
+  }
+
+  .content .middle,
+  .content ul.middle {
+      font-size: .37333333rem;
+      color: #8a9399
+  }
+
+  .content .middle li,
+  .content ul.middle li {
+      margin-bottom: .13333333rem
+  }
+
+  .content ul {
+      font-size: .4rem;
+      line-height: .56rem;
+      color: #525f66
+  }
+
+  .content ul li {
+      margin-bottom: .26666667rem
+  }
+
+  .content ul.disabled {
+      font-size: .34666667rem;
+      color: #8d8d94;
+      letter-spacing: 0;
+      line-height: .50666667rem
+  }
+
+  .content ul.disabled strong {
+      font-family: PingFangSC-Medium;
+      font-size: .34666667rem;
+      color: #999;
+      line-height: .50666667rem
+  }
+
+  .content .desc {
+      color: #525f66
+  }
+
+  .content .comment,
+  .content .desc {
+      margin-bottom: .26666667rem;
+      font-size: .4rem;
+      line-height: .56rem
+  }
+
+  .content .comment {
+      color: #8a9399
+  }
+
+  .content .comment.small {
+      font-size: .34666667rem;
+      line-height: .50666667rem;
+      color: #8a9399;
+      letter-spacing: 0
+  }
+
+  .content .comment strong {
+      font-family: PingFangSC-Medium;
+      font-size: .34666667rem;
+      color: #999;
+      line-height: .50666667rem
+  }
+
+  .content .subheader {
+      margin-bottom: .13333333rem;
+      font-size: .4rem;
+      color: #222d33
+  }
+
+  .content .emphasize {
+      color: #ff7729
+  }
+
+  .content .suggest {
+      font-size: .34666667rem;
+      line-height: .50666667rem;
+      color: #525f66
+  }
+
+  .content .notice-header {
+      margin-bottom: .13333333rem;
+      font-size: .4rem;
+      color: #222d33
+  }
+
+  .content .notice-item {
+      display: flex;
+      margin-bottom: 1.06666667rem;
+      font-size: .37333333rem;
+      line-height: .50666667rem;
+      color: #8a9399;
+      align-items: flex-start
+  }
+
+  .content .notice-item-icon {
+      width: .34666667rem;
+      min-width: .34666667rem;
+      margin-right: .10666667rem
+  }
+
+  .part-item-last {
+      margin-bottom: 1.6rem
+  }
+
+  .h3-subheader {
+      font-size: .4rem;
+      color: #222d33;
+      line-height: .56rem;
+      margin-bottom: 0.266666rem;
+  }
+  </style>
+  </header>
+
+  <body>
+    <div id="step" class="content step nowebp">
+      <div class="part part2">
+        <ul class="header-comment">
+          <li>任务流程：发现-领取-执行-编辑-提交，如下：</li>
+        </ul>
+        <div class="part-item part-item3">
+          <h3>发现任务</h3>
+          <ul class="ul">
+            <li>
+              点击“扫街任务”，可查看周边任务分布
+            </li>
+          </ul>
+          <div class="bg bg1"></div>
+        </div>
+        <div class="part-item part-item4">
+          <h3>领取任务</h3>
+          <ul class="ul">
+            <li>
+              每次仅能领取一个任务。“领取任务”后，请及时进行任务拍摄、编辑、提交
+            </li>
+          </ul>
+          <div class="bg bg2"></div>
+        </div>
+        <div class="part-item part-item5">
+          <h3>执行任务</h3>
+          <ul class="ul">
+            <li>
+              从任务道路一端的位置，朝向箭头指示的道路一侧，点击“开始拍摄”开始任务。完成拍摄后，点击“拍摄完成”结束
+            </li>
+            <li>
+              若中途遇到无法继续拍摄的情况，可点击右上方“报错”反馈
+            </li>
+          </ul>
+          <div class="bg bg3"></div>
+        <div class="part-item part-item6">
+          <h3>编辑任务</h3>
+          <ul class="ul">
+            <li>
+              完成拍摄后，需编辑道路所有的商户名称
+            </li>
+            <li>
+              商户照片需编辑店名，非商户照片需勾选“此照片不是商户”
+            </li>
+          </ul>
+          <div class="bg bg4"></div>
+        </div>
+      </div>
+      <div class="part-item part-item7">
+        <h3>提交任务</h3>
+        <ul class="ul">
+          <li>
+            返回照片列表页，点击“提交任务”。可在“待提交”列表中进行单个或多个任务的批量提交
+          </li>
+        </ul>
+        <div class="bg bg5"></div>
+      </div>
+      <div class="part-item part-item7" style="margin-bottom:0.8rem;">
+        <h3>任务攻略</h3>
+        <ul class="ul">
+          <li>
+            更多扫街操作详情及注意事项，请前往：个人中心→新手攻略→扫街攻略 进行了解
+          </li>
+        </ul>
+      </div>
+    </div>
+</html>

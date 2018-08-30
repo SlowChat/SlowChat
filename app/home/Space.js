@@ -150,7 +150,7 @@ export default class Space extends Component<Props> {
     return <View style={styles.divider}></View>
   }
   renderFooter = () => {
-    return <Footer showFoot={this.state.showFoot} />
+    return <Footer safe={false} showFoot={this.state.showFoot} />
   }
   render() {
     const { showLoading, showError, showBlank } = this.state

@@ -25,17 +25,6 @@ const SIZE = 10
 
 type Props = {};
 export default class Home extends Component<Props> {
-  static navigationOptions = ({navigation}) => {
-    // const { params = {} } = navigation.state
-    // const opacity = params.opacity || new Animated.Value(0)
-    return {
-      header: null,
-      // () => (<SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
-      //   style={[styles.header, {opacity}]}>
-      //   <Text style={styles.headerTxt}>首页</Text>
-      // </SafeAreaView>),
-    }
-  }
   state = {
     images: [],
     items: [],
@@ -196,7 +185,7 @@ export default class Home extends Component<Props> {
     return (<Swiper items={images} onNav={this.handleNav} showError={showError} onError={this.handleRefresh} />)
   }
   renderFooter = () => {
-    return <Footer showFoot={this.state.showFoot} />
+    return <Footer safe={false} showFoot={this.state.showFoot} />
   }
   render() {
     const { fadeInOpacity, showLoading, showError, images, items } = this.state

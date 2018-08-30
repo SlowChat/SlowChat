@@ -53,7 +53,7 @@ export default class AttachmentItem extends PureComponent {
     const { url, ext } = item
     if (!url) return null
     if (ext == 'image') {
-      return <Image source={{uri: item.url}} style={styles.image}></Image>
+      return <Image source={{uri: item.thumb || item.url}} style={styles.image}></Image>
     } else if (ext == 'video') {
       const { paused, rate } = this.state
       return <Video ref={(ref) => this.player = ref } paused={paused} playWhenInactive
