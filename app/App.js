@@ -48,7 +48,6 @@ const StackApp = (isLogin) => createStackNavigator({
   DraftDetail: { screen: require('./scenes/DraftDetail').default },
   Webview: { screen: require('./h5/Webview').default },
   LocalWebview: { screen: require('./h5/LocalWebview').default },
-  TestWebView: { screen: require('./test/webview').default },
   // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
     screen: require('./scenes/Share').default,
