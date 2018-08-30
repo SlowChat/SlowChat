@@ -82,7 +82,7 @@ export default class Start extends PureComponent {
           id: mail_id,
           status: mail_state
         }
-        const pushAction = StackActions.push({ 'MailDetail', params })
+        const pushAction = StackActions.push('MailDetail', params)
         this.navRef.dispatch(pushAction)
       }
 
