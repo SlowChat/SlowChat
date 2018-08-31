@@ -28,6 +28,12 @@ import { checkImagePermission, checkFilePermission, checkVideoPermission } from 
 
 const TRANSLATE_Y = 320
 const DURATION = 320
+const FILE_TYPES = {
+  image: ['jpg', 'png', 'jpeg', 'gif'],
+  file: ['txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar'],
+  audio: ['mp3', 'wma', 'wav'],
+  video: ['mp4', 'mov', 'avi', 'wmv', 'rm', 'rmvb', 'mkv']
+}
 
 export default class ImageChoose extends PureComponent {
   state = {
@@ -148,13 +154,13 @@ export default class ImageChoose extends PureComponent {
   }
   checkExt(fileName) {
     const ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase()
-    if (['jpg', 'png', 'jpeg', 'gif'].indexOf(ext) > -1) {
+    if (FILE_TYPES.image.indexOf(ext) > -1) {
       return 'image'
-    } else if (['txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar'].indexOf(ext) > -1) {
+    } else if (FILE_TYPES.file.indexOf(ext) > -1) {
       return 'file'
-    } else if (['mp3', 'wma', 'wav'].indexOf(ext) > -1) {
+    } else if (FILE_TYPES.audio.indexOf(ext) > -1) {
       return 'audio'
-    } else if (['mp4', 'mov', 'avi', 'wmv', 'rm', 'rmvb', 'mkv'].indexOf(ext) > -1) {
+    } else if (FILE_TYPES.video.indexOf(ext) > -1) {
       return 'video'
     }
     return ''
@@ -196,6 +202,7 @@ export default class ImageChoose extends PureComponent {
     }
     RNFileSelector.Show({
       title: '文件选择',
+      // filter: '.*\\.(txt|pdf)$',
       onDone: async (path) => {
         path = path.replace('file://', '')
         try {
