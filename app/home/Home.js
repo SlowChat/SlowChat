@@ -132,9 +132,15 @@ export default class Home extends Component<Props> {
       } else {
         this.refs.toast.show(res.msg || '慢聊信息飘走了')
         this.setState({ showFoot: 0 })
+        if (this.page == 0) {
+          this.setState({showError: true })
+        }
       }
     } catch (e) {
       console.log(e)
+      if (this.page == 0) {
+        this.setState({showError: true })
+      }
     } finally {
       this.loading = false
       if (this.state.showLoading) {
@@ -188,7 +194,7 @@ export default class Home extends Component<Props> {
     return <Footer safe={false} showFoot={this.state.showFoot} />
   }
   render() {
-    const { fadeInOpacity, showLoading, showError, images, items } = this.state
+    const { fadeInOpacity, showLoading, images, items } = this.state
     return (
       <View style={styles.container}>
         <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
@@ -199,6 +205,7 @@ export default class Home extends Component<Props> {
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
           data={items}
+          extraData={this.state.showError}
           renderItem={this.renderItem}
           initialNumToRender={5}
           keyExtractor={(item, index) => String(item.id)}

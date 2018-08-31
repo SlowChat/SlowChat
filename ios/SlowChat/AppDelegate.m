@@ -20,7 +20,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "RNSplashScreen.h" // 导入启动屏包
 #import <RCTJShareModule.h>
-
+#import "BaiduMobStat.h"
 
 @implementation AppDelegate
 
@@ -76,11 +76,13 @@
 
 
     #ifdef DEBUG
-//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.103:8081/index.bundle?platform=ios&dev=true"];
-        jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.104:8081/index.bundle?platform=ios&dev=true"];
+//        jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     #else
         jsCodeLocation = [CodePush bundleURL];
     #endif
+  
+  [[BaiduMobStat defaultStat] startWithAppId:@"xxx"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"SlowChat"

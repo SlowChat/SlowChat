@@ -10,6 +10,7 @@
     "build-android": "npm run bundle-android && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
+    "baidumobstat-react-native": "^1.1.4",
     "jcore-react-native": "^1.2.9",
     "jpush-react-native": "^2.2.9",
     "jshare-react-native": "^1.3.8",

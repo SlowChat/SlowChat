@@ -3,6 +3,7 @@ package com.slowchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.baidu.reactnativemobstat.RNBaiduMobStatPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.rnfs.RNFSPackage;
 import com.reactlibrary.RNReactNativeDocViewerPackage;
@@ -49,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNBaiduMobStatPackage(),
             new RNFSPackage(),
             new RNReactNativeDocViewerPackage(),
           new RNFileSelectorPackage(),

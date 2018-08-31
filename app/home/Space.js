@@ -127,7 +127,7 @@ export default class Space extends Component<Props> {
   }
   dealError() {
     const state = {}
-    if (this.state.data.length == 0) {
+    if (this.page == 0) {
       state.showError = true
     } else {
       // this.refs.toast.show(res.msg || '慢聊飘走了')
