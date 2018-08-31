@@ -206,6 +206,8 @@ export default class Information extends Component {
           rightBtnTxt='确定'
           autoView={
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               style={styles.nickInput}
               onChangeText={(text) => this.setState({inputname: text})}
               placeholder='请输入填写您的用户名'
