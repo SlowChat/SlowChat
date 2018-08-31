@@ -7,6 +7,7 @@ import {
   Button,
   FlatList,
   TextInput,
+  Keyboard,
   TouchableOpacity,
 } from 'react-native';
 import EmailList from '../components/EmailList'
@@ -224,6 +225,7 @@ export default class Email extends Component {
   }
 
   handleSearch = () => {
+    Keyboard.dismiss()
     this.initData()
   }
 
@@ -333,9 +335,16 @@ export default class Email extends Component {
           style={styles.search}
           onChangeText={(text) => this.setState({searchText: text})}
           placeholder='搜索'
+          autoCorrect={false}
+          autoCapitalize="none"
+          returnKeyType="search"
+          underlineColorAndroid='transparent'
+          clearButtonMode="while-editing"
+          placeholderColor="#D8D8D8"
+          onSubmitEditing={this.handleSearch}
           // value={searchText}
         />
-        <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
+        <Text style={styles.btn} onPress={this.handleSearch}>搜索</Text>
       </View>
       {
         this.state.isShowResult &&

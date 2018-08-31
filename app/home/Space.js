@@ -67,7 +67,7 @@ export default class Space extends Component<Props> {
     this.init({activeTab: index})
   }
   init = (state = {}) => {
-    this.setState({ showFoot: 0, items: [], ...state }, () => {
+    this.setState({ showFoot: 0, items: [], showBlank: false, ...state }, () => {
       this.page = 0
       this.getData(0)
       setTimeout(() => {

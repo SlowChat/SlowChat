@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   contentWrap: {
-    marginBottom: 10,
+    paddingBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
   },
