@@ -21,6 +21,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.slowchat.file.FileReactPackage;
+import com.slowchat.setting.SettingReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNViewShotPackage(),
           new ImagePickerPackage(),
           new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
-              new FileReactPackage()
+              new FileReactPackage(),
+              new SettingReactPackage()
       );
     }
 

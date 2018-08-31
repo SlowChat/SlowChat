@@ -45,7 +45,7 @@ export const openFile = (path, filename) => {
 
 export const downFile = async (url) => {
   if (Platform.OS == 'ios') {
-    return CameraRoll.saveToCameraRoll(url)
+    return CameraRoll.saveToCameraRoll(url, 'photo')
   } else {
     try {
       await checkSavePermission()
@@ -63,7 +63,7 @@ export const downFile = async (url) => {
     try {
       await RNFS.downloadFile(options).promise
       console.log('file://' + downloadDest)
-      return CameraRoll.saveToCameraRoll(downloadDest)
+      return CameraRoll.saveToCameraRoll(downloadDest, 'photo')
     } catch (e) {
       console.log("err", e)
       if (typeof e == 'string') {

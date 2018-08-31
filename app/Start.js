@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { View, BackHandler, ToastAndroid, AppState, Platform, TouchableOpacity } from 'react-native'
+import { BackHandler, ToastAndroid, AppState, Platform, TouchableOpacity } from 'react-native'
 import { StackActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen'
 import Storage from './utils/storage'
@@ -53,7 +53,8 @@ export default class Start extends PureComponent {
       JPushModule = require('jpush-react-native').default
     }
     JPushModule.getRegistrationID(registrationId => {
-      if (registrationId && Global.token && Global.user && !Global.user.registrationId) {
+      console.log(registrationId)
+      if (registrationId && Global.token && Global.user && Global.user.registrationId !== registrationId) {
         Global.pushId = registrationId
         post('api/user/setPushCode.html', {
           code: registrationId
@@ -75,17 +76,21 @@ export default class Start extends PureComponent {
     });
     // 打开通知
     JPushModule.addReceiveOpenNotificationListener((map) => {
-      console.log(map)
-      const { mail_id, mail_state } = map.extras || {}
-      if (mail_id) {
-        const params = {
-          id: mail_id,
-          status: mail_state
+      let extras = map.extras || {}
+      if (extras && typeof extras == 'string') {
+        const { mail_id, mail_state } = JSON.parse(extras) || {}
+        if (mail_id) {
+          const params = { id: Number(mail_id) }
+          if (status) {
+            params.status = mail_state
+          }
+          const pushAction = StackActions.push({
+            routeName: 'MailDetail',
+            params,
+          })
+          this.navRef.dispatch(pushAction)
         }
-        const pushAction = StackActions.push('MailDetail', params)
-        this.navRef.dispatch(pushAction)
       }
-
     });
   }
 

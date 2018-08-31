@@ -170,7 +170,7 @@ export default class Share extends PureComponent<Props> {
         this.uri = uri
       }
       try {
-        await CameraRoll.saveToCameraRoll(uri)
+        await CameraRoll.saveToCameraRoll(uri, 'photo')
         this.refs.toast.show('图片已保存到相册')
       } catch (e) {
         this.refs.toast.show('图片已保存失败')
