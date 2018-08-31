@@ -164,6 +164,8 @@ export default class EditPassowrd extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               editable={this.state.editable}
               style={styles.input}
               onChangeText={(text) => this.handleChangeEmail(text)}
@@ -181,6 +183,8 @@ export default class EditPassowrd extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               style={styles.input}
               onChangeText={(text) => this.inputVcode(text)}
               placeholder='请输入您的验证码'
@@ -190,6 +194,8 @@ export default class EditPassowrd extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>新密码</Text>
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               secureTextEntry
               style={styles.input}
               onChangeText={(text) => this.inputNewPassword(text)}
