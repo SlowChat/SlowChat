@@ -9,7 +9,7 @@ export const checkSavePermission = async () => {
       ],
       {
         title: '权限申请',
-        message: '慢聊保存图片，需要访问你的相册'
+        message: '慢邮保存图片，需要访问你的相册'
       },
     );
     if (!checkGranted(granted)) {
@@ -31,7 +31,7 @@ export const checkFilePermission = async () => {
       ],
       {
         title: '权限申请',
-        message: '慢聊需要读取手机存储'
+        message: '慢邮需要读取手机存储'
       },
     );
     if (!checkGranted(granted)) {
@@ -54,7 +54,7 @@ export const checkImagePermission = async () => {
         PermissionsAndroid.PERMISSIONS.CAMERA ],
       {
         title: '权限申请',
-        message: '慢聊需要访问你的相机和相册'
+        message: '慢邮需要访问你的相机和相册'
       },
     );
     if (!checkGranted(granted)) {
@@ -76,7 +76,7 @@ export const checkVideoPermission = async () => {
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       ], {
         title: '权限申请',
-        message: '慢聊需要访问你的视频文件和录制视频'
+        message: '慢邮需要访问你的视频文件和录制视频'
       },
     );
     console.log(granted);

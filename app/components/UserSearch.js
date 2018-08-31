@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: '#fff',
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#CCCCCC',
   },
   btn: {

@@ -61,7 +61,11 @@ export default class MailDetail extends Component {
     }
     this.status = status
     this.setState({ status, top })
-    this.getData()
+    this.viewAppear = this.props.navigation.addListener(
+      'willFocus', payload => {
+        this.getData()
+      }
+    )
   }
   componentDidMount() {
     if (this.status != null) {
@@ -159,29 +163,42 @@ export default class MailDetail extends Component {
       const url = this.status == null ? 'api/mail/getInfo.html' : 'api/mail/getMyInfo.html'
       const res = await post(url, { id })
       console.log(res);
+      this.loading = false
       if (res.code == 1) {
         const { comment, ...items } = res.data.items
         const comments = comment && comment.length > 0 ? comment : []
         this.setState({
           detail: items,
           comments,
+          showLoading: false,
         }, () => {
           this.ispub = this.state.detail.type == 2
           this.setEye()
         })
+      } else if (res.code == 10001) {
+        this.props.navigation.replace('Login', {
+          url: 'MailDetail',
+          params: { id, status: this.status }
+        })
       } else {
-
+        this.dealError(res.msg || '慢邮信号飘走了，稍后尝试')
       }
     } catch (e) {
       console.log(e)
-    } finally {
       this.loading = false
-      this.setState({ showLoading: false })
+      this.dealError('慢邮信号飘走了，稍后尝试')
     }
     this.timer = setTimeout(() => {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
+    }, 200)
+  }
+
+  dealError(msg) {
+    this.refs.toast.show(msg || '慢邮信号飘走了，稍后尝试')
+    setTimeout(() => {
+      this.props.navigation.goBack()
     }, 200)
   }
 

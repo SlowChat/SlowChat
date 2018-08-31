@@ -52,8 +52,15 @@ export default class Start extends PureComponent {
     if (!JPushModule) {
       JPushModule = require('jpush-react-native').default
     }
+    if (Platform.OS == 'ios') {
+      JPushModule.setupPush()
+    } else if (Platform.OS == 'android') {
+      JPushModule.notifyJSDidLoad((resultCode) => {
+          if (resultCode === 0) {}
+      });
+    }
     JPushModule.getRegistrationID(registrationId => {
-      console.log(registrationId)
+      console.log("==registrationId===" + registrationId)
       if (registrationId && Global.token && Global.user && Global.user.registrationId !== registrationId) {
         Global.pushId = registrationId
         post('api/user/setPushCode.html', {
@@ -61,11 +68,6 @@ export default class Start extends PureComponent {
         })
       }
     })
-    if (Platform.OS == 'android') {
-      JPushModule.notifyJSDidLoad((resultCode) => {
-          if (resultCode === 0) {}
-      });
-    }
     // 接收自定义消息
     JPushModule.addReceiveCustomMsgListener((message) => {
       console.log("addReceiveCustomMsgListener===", message);
@@ -76,20 +78,23 @@ export default class Start extends PureComponent {
     });
     // 打开通知
     JPushModule.addReceiveOpenNotificationListener((map) => {
-      let extras = map.extras || {}
-      if (extras && typeof extras == 'string') {
-        const { mail_id, mail_state } = JSON.parse(extras) || {}
-        if (mail_id) {
-          const params = { id: Number(mail_id) }
-          if (status) {
-            params.status = mail_state
-          }
-          const pushAction = StackActions.push({
-            routeName: 'MailDetail',
-            params,
-          })
-          this.navRef.dispatch(pushAction)
+      console.log("addReceiveOpenNotificationListener", )
+      if (!map.extras) return
+      let extras = map.extras
+      if (typeof extras == 'string') {
+        extras = JSON.parse(extras)
+      }
+      const { mail_id, mail_state } = extras || {}
+      if (typeof mail_id != 'undefined') {
+        const params = { id: Number(mail_id) }
+        if (extras.mail_state) {
+          params.status = mail_state
         }
+        const pushAction = StackActions.push({
+          routeName: 'MailDetail',
+          params,
+        })
+        this.navRef.dispatch(pushAction)
       }
     });
   }

@@ -88,7 +88,7 @@ export default class Integral extends Component {
           showBlank: dataArray && dataArray.length <= 0
         })
       } else {
-        this.refs.toast.show(res.msg || '慢聊信息飘走了')
+        this.refs.toast.show(res.msg || '慢邮信息飘走了')
         this.dealError({showFoot: 0})
       }
     } catch (e) {

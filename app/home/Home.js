@@ -130,7 +130,7 @@ export default class Home extends Component<Props> {
         })
         this.page++
       } else {
-        this.refs.toast.show(res.msg || '慢聊信息飘走了')
+        this.refs.toast.show(res.msg || '慢邮信息飘走了')
         this.setState({ showFoot: 0 })
         if (this.page == 0) {
           this.setState({showError: true })
