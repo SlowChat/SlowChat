@@ -392,6 +392,10 @@ export default class NewMail extends Component {
     this.setState({ pickerModal: open })
   }
 
+  showToast = (txt) => {
+    this.refs.toast.show(txt)
+  }
+
   render() {
     // keyboardType="email-address"
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
@@ -468,7 +472,8 @@ export default class NewMail extends Component {
           onSave={this.handleSave}
           onChange={this.handleFileChoose}
           onClose={this.closeFileChoose}
-          onError={this.showErrorModal} />
+          onError={this.showErrorModal}
+          onTip={this.showToast} />
         <Toast ref="toast" position="center" />
         <SuccessModal
           txt={`信件${tipTxt}成功`}

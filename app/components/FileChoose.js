@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
-import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 // import ImageViewer from 'react-native-image-zoom-viewer'
 import RNFileSelector from 'react-native-file-selector'
@@ -75,7 +74,7 @@ export default class ImageChoose extends PureComponent {
     try {
       await checkImagePermission()
     } catch (e) {
-      this.refs.toast.show(e.message)
+      // this.refs.toast.show(e.message)
       return
     }
     const options = {
@@ -126,7 +125,7 @@ export default class ImageChoose extends PureComponent {
     try {
       await checkVideoPermission()
     } catch (e) {
-      this.refs.toast.show(e.message)
+      // this.refs.toast.show(e.message)
       return
     }
     const options = {
@@ -197,7 +196,7 @@ export default class ImageChoose extends PureComponent {
     try {
       await checkFilePermission()
     } catch (e) {
-      this.refs.toast.show(e.message)
+      // this.refs.toast.show(e.message)
       return
     }
     RNFileSelector.Show({
@@ -210,7 +209,7 @@ export default class ImageChoose extends PureComponent {
           this.dealSucc(path, { fileName, fileSize })
         } catch (e) {
           console.log(e)
-          this.refs.toast.show('文件选择失败')
+          this.showTip('文件选择失败')
         }
       },
     })
@@ -231,7 +230,7 @@ export default class ImageChoose extends PureComponent {
           const { items } = this.state
           items.splice(index, 1)
           this.setState({ items: [...items] }, () => {
-            this.refs.toast.show('附件删除成功')
+            this.showTip('附件删除成功')
           })
         }
       })
@@ -245,7 +244,7 @@ export default class ImageChoose extends PureComponent {
         // }
         await openFile(path || url, filename)
       } catch (e) {
-        this.refs.toast.show('打开文件失败')
+        this.showTip('打开文件失败')
       }
     }
   }
@@ -265,6 +264,10 @@ export default class ImageChoose extends PureComponent {
   closeImageChoose = () => {
     const { onClose } = this.props
     onClose && onClose(false)
+  }
+  showTip(txt) {
+    const { onTip } = this.props
+    onTip && onTip(txt)
   }
   renderActionSheet() {
     return <ActionSheet
@@ -331,7 +334,6 @@ export default class ImageChoose extends PureComponent {
         {this.renderImageChoose()}
         {this.renderActionSheet()}
         <Alert ref={ref => this.alert = ref} />
-        <Toast ref="toast" position="center" />
       </View>
     )
   }
