@@ -142,13 +142,14 @@ export default class NewMail extends Component {
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
-          showSendMe: items.email == '发给自己',
+          showSendMe: items.email != '发给自己',
           params: {
             id: items.id,
             email: items.email,
             title: items.title,
             content: items.content,
             send_time: items.send_time,
+            type: items.type || 2,
           },
           defaultValue: {
             email: items.email,
@@ -158,11 +159,7 @@ export default class NewMail extends Component {
           attachs: items.attach,
           initAttaches: items.attach,
         }, () => {
-          this.noupdate = true
-          this.sendBtnEnable = true
-          this.props.navigation.setParams({
-            enable: true,
-          })
+          this.setSendStatus(false)
         })
       }
     } catch (e) {
@@ -234,7 +231,7 @@ export default class NewMail extends Component {
     //  || !isEmail(email)
     if (!title) tips.push('主题')
     // if (!send_time) tips.push('发信时间')
-    // if (!content) tips.push('内容')
+    if (!content) tips.push('内容')
     let tip = ''
     if (tips.length > 0) {
       tip = '请保证' + tips.join('，') + '填写正确！'
@@ -260,6 +257,7 @@ export default class NewMail extends Component {
     if (this.state.params.send_time < dateFormat()) {
       let tip = '发信时间不符合要求！'
       this.refs.toast.show(tip)
+      return
     }
     if (!this.checkParams(true)) return
 
@@ -269,7 +267,8 @@ export default class NewMail extends Component {
         params.email = this.email
         params.self = '发给自己' == this.email ? 1 : 0
         params.attach = await this.uploadFile()
-        const res = await post('api/mail/add.html', params)
+        const url = params.id ? 'api/mail/update.html' : 'api/mail/add.html'
+        const res = await post(url, params)
         console.log(res);
         if (res.code == 10001) {
           this.setState({showLoading: false}, () => {
@@ -345,14 +344,19 @@ export default class NewMail extends Component {
         }
       }
       return attachs.map(item => {
-        const filename = item.filename ? item.filename.substring(filename.lastIndexOf('/') + 1) : ''
-        return {
+        let filename = item.filename ? item.filename.substring(item.filename.lastIndexOf('/') + 1) : ''
+        filename = filename || item.url.substring(item.url.lastIndexOf('/') + 1)
+        const attach = {
           filename,
           url: item.url,
           thumb: item.thumb || '',
           size: item.size,
           ext: item.ext
         }
+        if (item.ext == 'image') {
+          attach.thumb = attach.thumb || attach.url
+        }
+        return attach
       })
     } catch (e) {
       console.log(e);

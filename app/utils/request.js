@@ -47,7 +47,10 @@ export async function post(url, params, unneedLogin) {
     },
     body: JSON.stringify(params),
     timeout: 10,
-  }).then((response) => response.json())
+  }).then((response) => {
+    console.log(response._bodyText)
+    return response.json()
+  })
   // .catch((err) => {
   //   // console.log(eval("("+ err +")"));
   //   throw err
