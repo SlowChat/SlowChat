@@ -42,7 +42,7 @@ export default class EditEmail extends Component {
 
   componentDidMount() {
     const { userEmail } = this.props.navigation.state.params || {}
-    if (userEmail !== '') {
+    if (userEmail) {
       this.setState({
         btnText: '验证后绑定新邮箱',
         status: 'check'
