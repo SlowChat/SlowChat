@@ -61,8 +61,8 @@ export default class Start extends PureComponent {
     }
     JPushModule.getRegistrationID(registrationId => {
       console.log("==registrationId===" + registrationId)
+      Global.pushId = registrationId
       if (registrationId && Global.token && Global.user && Global.user.registrationId !== registrationId) {
-        Global.pushId = registrationId
         post('api/user/setPushCode.html', {
           code: registrationId
         })
