@@ -7,6 +7,7 @@ import {
   ScrollView
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
+import { get, post } from '../utils/request'
 
 export default class Rule extends Component {
   static navigationOptions = ({navigation}) => {
@@ -15,11 +16,29 @@ export default class Rule extends Component {
       title: '积分规则',
     }
   }
+  state = {
+    scoreInfo: []
+  }
   componentDidMount() {
+    this.getData()
+  }
 
+  getData() {
+    get('api/common/getScoreInfo.html').then(res => {
+      const { code, data } = res
+      console.log(111111, data.score)
+      if (code === 1) {
+        this.setState({scoreInfo: data.score})
+      }
+    }).catch(e => {
+      console.log(e)
+    })
   }
 
   render() {
+    const { scoreInfo } = this.state;
+    console.log(scoreInfo.length)
+    if (scoreInfo.length <= 0) return null
     return (
       <ScrollView style={styles.container} forceInset={{top: 'never', bottom: 'always'}}>
         <View style={styles.ruleBox}>
@@ -30,37 +49,37 @@ export default class Rule extends Component {
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>新用户注册</Text>
-            <Text style={styles.focus}>+20分</Text>
+            <Text style={styles.focus}>{scoreInfo[0].score}</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>发信（公开）</Text>
-            <Text style={styles.focus}>+50分</Text>
+            <Text style={styles.focus}>{scoreInfo[4].score}</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>发信（不公开）</Text>
-            <Text style={styles.focus}>+15分</Text>
+            <Text style={styles.focus}>{scoreInfo[5].score}</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>发表评论</Text>
-            <Text style={styles.focus}>+10分</Text>
+            <Text style={styles.focus}>{scoreInfo[6].score}</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>分享</Text>
-            <Text style={styles.focus}>+30分</Text>
+            <Text style={styles.focus}>{scoreInfo[7].score}</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>完善个人资料</Text>
-            <Text style={styles.focus}>+30分</Text>
+            <Text style={styles.focus}>{scoreInfo[1].score}</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>打卡</Text>
-            <Text style={styles.focus}>+1至31分/天（按日累进）</Text>
+            <Text style={styles.focus}>{scoreInfo[2].score}至{scoreInfo[3].score}分/天（按日累进）</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.remind}>每月重新起算每天一次，连续签到天数越多，可获得的积分值越高，一旦断签，签到积分从1开始累计计算</Text>
@@ -68,7 +87,7 @@ export default class Rule extends Component {
           <View style={styles.info}>
             <Text style={styles.focus}>*</Text>
             <Text style={styles.txt}>删除未发送邮件</Text>
-            <Text style={styles.focus}>-1000分</Text>
+            <Text style={styles.focus}>{scoreInfo[8].score}</Text>
           </View>
         </View>
         <View style={styles.ruleBox}>
