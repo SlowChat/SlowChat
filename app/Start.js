@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { View, BackHandler, ToastAndroid, AppState, Platform, TouchableOpacity } from 'react-native'
+import { BackHandler, ToastAndroid, AppState, Platform, TouchableOpacity } from 'react-native'
 import { StackActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen'
 import Storage from './utils/storage'
@@ -41,7 +41,6 @@ export default class Start extends PureComponent {
     this.addPushListener()
   }
 
-
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
     AppState.removeEventListener('change', this.handleChange)
@@ -53,20 +52,22 @@ export default class Start extends PureComponent {
     if (!JPushModule) {
       JPushModule = require('jpush-react-native').default
     }
-    JPushModule.getRegistrationID(registrationId => {
-      console.log(registrationId, "==getRegistrationID====");
-      if (Global.token && Global.user && !Global.user.registrationId) {
-        Global.pushId = registrationId
-        post('api/mail/setPushCode.html', {
-          code: registrationId
-        })
-      }
-    })
-    if (Platform.OS == 'android') {
+    if (Platform.OS == 'ios') {
+      JPushModule.setupPush()
+    } else if (Platform.OS == 'android') {
       JPushModule.notifyJSDidLoad((resultCode) => {
           if (resultCode === 0) {}
       });
     }
+    JPushModule.getRegistrationID(registrationId => {
+      console.log("==registrationId===" + registrationId)
+      if (registrationId && Global.token && Global.user && Global.user.registrationId !== registrationId) {
+        Global.pushId = registrationId
+        post('api/user/setPushCode.html', {
+          code: registrationId
+        })
+      }
+    })
     // 接收自定义消息
     JPushModule.addReceiveCustomMsgListener((message) => {
       console.log("addReceiveCustomMsgListener===", message);
@@ -77,21 +78,24 @@ export default class Start extends PureComponent {
     });
     // 打开通知
     JPushModule.addReceiveOpenNotificationListener((map) => {
-      console.log(map)
-      const { url } = map.extras || {}
-      if (!url) return
-      let routeName = ''
-      let params = {}
-      if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
-        routeName = 'Webview'
-        params.url = url
-      } else if (url.indexOf('/') == 0) {
-        const { uri, query } = URL.parse(url)
-        routeName = uri
-        params = query
+      console.log("addReceiveOpenNotificationListener", )
+      if (!map.extras) return
+      let extras = map.extras
+      if (typeof extras == 'string') {
+        extras = JSON.parse(extras)
       }
-      const pushAction = StackActions.push({ routeName, params })
-      this.navRef.dispatch(pushAction)
+      const { mail_id, mail_state } = extras || {}
+      if (typeof mail_id != 'undefined') {
+        const params = { id: Number(mail_id) }
+        if (extras.mail_state) {
+          params.status = mail_state
+        }
+        const pushAction = StackActions.push({
+          routeName: 'MailDetail',
+          params,
+        })
+        this.navRef.dispatch(pushAction)
+      }
     });
   }
 
@@ -143,3 +147,19 @@ export default class Start extends PureComponent {
     // return <AppNavigator ref={this.getNavRef} onNavigationStateChange={this.navigationStateChange} />
   }
 }
+
+
+// const { url } = map.extras || {}
+// if (!url) return
+// let routeName = ''
+// let params = {}
+// if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
+//   routeName = 'Webview'
+//   params.url = url
+// } else if (url.indexOf('/') == 0) {
+//   const { uri, query } = URL.parse(url)
+//   routeName = uri
+//   params = query
+// }
+// const pushAction = StackActions.push({ routeName, params })
+// this.navRef.dispatch(pushAction)

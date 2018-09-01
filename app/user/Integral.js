@@ -29,20 +29,19 @@ export default class Integral extends Component {
     }
   }
   state = {
-    isLoading: true,
+    showLoading: true,
     // 网络请求状态
-    error: false,
+    showError: false,
     dataArray: [],
     showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
-    isRefreshing: false, // 下拉控制
-    isSpacePage: true,
+    showBlank: true,
     total: 0
   }
-  pageNo = 0
+  page = 0
   pageSize = 10
 
   componentDidMount() {
-    this.fetchData()
+    this.initData()
   }
 
   componentWillUnmount(){
@@ -51,38 +50,67 @@ export default class Integral extends Component {
     };
   }
 
-  initData = () => {
-    this.pageNo = 0
-    this.fetchData()
+  initData(state = {}) {
+    this.setState({ showFoot: 0, dataArray: [], ...state }, () => {
+      this.page = 0
+      this.fetchData(0)
+      setTimeout(() => {
+        if (this.loading) {
+          this.setState({ showLoading: true })
+        }
+      }, 200)
+    })
   }
 
-  fetchData = () => {
-    post('api/user/score_log.html', { p:this.pageNo, s:this.pageSize}).then(res => {
-      const { code, data } = res
-      console.log(res)
-      if (code === 1) {
-        let foot = 0
-        if (this.pageNo + 1 >= Math.ceil(data.total_page / this.pageSize)) {
-          // listView底部显示没有更多数据了
-          foot = 1
-        }
-        if (data.log && data.log.length <= 0) {
-          this.setState({
-            isSpacePage: true
-          })
-        }
-        this.setState({
-          total: data.total,
-          dataArray: this.state.dataArray.concat(data.log),
-          isLoading: false,
-          showFoot: foot,
-          isRefreshing: data.total_page / this.pageSize > 1,
-        })
-
+  async fetchData() {
+    if (this.loading || this.state.showFoot == 1) return
+    this.loading = true
+    if (page > 0) {
+      this.setState({ showFoot: 2 })
+    }
+    try {
+      const params = {
+        p: this.page,
+        s: this.pageSize,
       }
-    }).catch(e => {
-      console.log(e)
+      const res = await post('api/user/score_log.html', params)
+      this.loading = false
+      if (res.code == 1) {
+        const { total, items } = res.data
+        const dataArray = this.state.dataArray.concat(items)
+        let showFoot = dataArray.length >= total ? 1 : 0
+        this.page++
+        this.setState({
+          total,
+          dataArray,
+          showLoading: false,
+          showFoot,
+          showBlank: dataArray && dataArray.length <= 0
+        })
+      } else {
+        this.refs.toast.show(res.msg || '慢邮信息飘走了')
+        this.dealError({showFoot: 0})
+      }
+    } catch (e) {
+      this.setState(state)
+    }
+  }
+
+  dealError(state = {}) {
+    this.loading = false
+    this.setState({
+      showLoading: false,
+      showError: this.page == 0,
+      ...state
     })
+  }
+
+  handleLoadmore = () => {
+    if (this.page > 0) {
+      requestAnimationFrame(() => {
+        this.fetchData(this.page)
+      })
+    }
   }
 
   _renderItem = ({item}) => {
@@ -99,81 +127,40 @@ export default class Integral extends Component {
     )
   }
 
-    // 列表底部显示
   _renderFooter = () => {
     return <Footer showFoot={this.state.showFoot} />
   }
 
-    // 下拉加载更多
-  _onEndReached = () => {
-    // 如果是正在加载中或没有更多数据了，则返回
-    if (this.state.showFoot !== 0) {
-      return
+  renderData() {
+    if (this.state.showBlank) {
+      return <Blank />
     }
-    // 如果当前页大于或等于总页数，那就是到最后一页了，返回
-    if (this.pageNo + 1 >= Math.ceil(this.state.total_page / this.pageSize)) {
-      return
-    } else {
-      this.pageNo ++
-    }
-    // 底部显示正在加载更多数据
-    this.setState({showFoot: 2})
-    // 获取数据
-    this.fetchData()
-  }
-
-    // 列表分隔线
-  // _separator = () => {
-  //   return <View style={{height: 1, backgroundColor: '#e0e0e0'}} />
-  // }
-
-    // 加载失败view
-  renderErrorView = () => {
-    return (
-      <View style={styles.container}>
-        <Image style={styles.spaceImg} source={require('../images/icon_error.png')} />
-        <Text>您遇到网络问题</Text>
-      </View>
-    )
-  }
-
-  renderData = () => {
-    return (
-      <View style={styles.container}>
-        <View style={styles.integralBox}>
-          <Text style={styles.tit}>我的积分</Text>
-          <Text style={styles.score}>{this.state.total}</Text>
-        </View>
-        {
-          this.state.dataArray.length > 0 ? (
-            <FlatList
-              data={this.state.dataArray}
-              renderItem={this._renderItem}
-              onLoad={this.getDataEvent}
-              hasNext={false}
-              extraData={this.state}
-              ListFooterComponent={this._renderFooter}
-              onEndReached={this._onEndReached}
-              onEndReachedThreshold={0.1}
-              ItemSeparatorComponent={this._separator}
-              // keyExtractor={(item, index) => item}
-            />
-          ) : this.state.isSpacePage && <Blank />
-        }
-      </View>
-    )
+    return (<FlatList
+      // keyExtractor={(item) => String(item.id)}
+      data={this.state.dataArray}
+      renderItem={this._renderItem}
+      ListFooterComponent={this._renderFooter}
+      onEndReached={this.handleLoadmore}
+      onEndReachedThreshold={0.1}
+    />)
   }
 
   render () {
     // 第一次加载等待的view
-    if (this.state.isLoading && !this.state.error) {
+    if (this.state.showLoading) {
       return <Loading />
-    } else if (this.state.error) {
+    } else if (this.state.showError) {
       // 请求失败view
       return <ErrorTip onPress={this.initData}  />
     }
     // 加载数据
-    return this.renderData()
+    return <View style={styles.container}>
+      <View style={styles.integralBox}>
+        <Text style={styles.tit}>我的积分</Text>
+        <Text style={styles.score}>{this.state.total}</Text>
+      </View>
+      {this.renderData()}
+    </View>
   }
 
 }

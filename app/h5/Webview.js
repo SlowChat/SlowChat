@@ -31,7 +31,7 @@ export default class H5Webview extends PureComponent<Props> {
     // })
   }
   render() {
-    const { url } = this.props.navigation.state.params
+    const { url } = this.props.navigation.state.params || {}
     return (
       <WebView style={{width:'100%',height:'100%'}} source={{uri: url}}
         mixedContentMode="compatibility"

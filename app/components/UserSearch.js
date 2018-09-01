@@ -14,7 +14,7 @@ export default class UserSearch extends PureComponent {
   }
 
   onPressSearch() {
-    
+
   }
 
   render() {
@@ -28,6 +28,8 @@ export default class UserSearch extends PureComponent {
     alignItems: 'center',}}>
             <Image style={styles.icon} source={require('../images/icon_search.png')} />
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               style={styles.search}
               onChangeText={(text) => this.setState({text})}
               placeholder='搜索'
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: '#fff',
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#CCCCCC',
   },
   btn: {

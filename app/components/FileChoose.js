@@ -14,21 +14,25 @@ import {
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
-import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
-import ImageViewer from 'react-native-image-zoom-viewer'
+// import ImageViewer from 'react-native-image-zoom-viewer'
 import RNFileSelector from 'react-native-file-selector'
 // import ActionSheet from 'react-native-actionsheet'
 import ActionSheet from './ActionSheet'
-// import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 import AttachmentItem from './AttachmentItem'
 import SaveBtn from './SaveBtn'
 import Alert from './Alert'
-// import { upload } from '../utils/request'
 import { openFile } from '../utils/opendoc'
-import { checkImagePermission, checkVideoPermission } from '../utils/permission'
+import { checkImagePermission, checkFilePermission, checkVideoPermission } from '../utils/permission'
 
 const TRANSLATE_Y = 320
+const DURATION = 320
+const FILE_TYPES = {
+  image: ['jpg', 'png', 'jpeg', 'gif'],
+  file: ['txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar'],
+  audio: ['mp3', 'wma', 'wav'],
+  video: ['mp4', 'mov', 'avi', 'wmv', 'rm', 'rmvb', 'mkv']
+}
 
 export default class ImageChoose extends PureComponent {
   state = {
@@ -44,16 +48,24 @@ export default class ImageChoose extends PureComponent {
       this.setState({ items: nextProps.initValue })
     }
     if (nextProps.visible != this.props.visible) {
-      if (nextProps.visible) {
-        Animated.timing(this.chooseY, {
-          toValue: 0,
-          duration: 250,
-        }).start()
+      if (Platform.OS == 'ios') {
+        if (nextProps.visible) {
+          Animated.timing(this.chooseY, {
+            toValue: 0,
+            duration: DURATION,
+          }).start()
+        } else {
+          Animated.timing(this.chooseY, {
+            toValue: this.chooseHeight,
+            duration: DURATION,
+          }).start()
+        }
       } else {
-        Animated.timing(this.chooseY, {
-          toValue: TRANSLATE_Y,
-          duration: 250,
-        }).start()
+        if (nextProps.visible) {
+          this.chooseY = new Animated.Value(0)
+        } else {
+          this.chooseY = new Animated.Value(this.chooseHeight)
+        }
       }
     }
   }
@@ -62,7 +74,7 @@ export default class ImageChoose extends PureComponent {
     try {
       await checkImagePermission()
     } catch (e) {
-      this.refs.toast.show(e.message)
+      // this.refs.toast.show(e.message)
       return
     }
     const options = {
@@ -80,10 +92,10 @@ export default class ImageChoose extends PureComponent {
       angle: 0,
       allowsEditing: false,
       noData: true,
-      storageOptions: {
-        skipBackup: true,
-        // path: 'images'
-      }
+      // storageOptions: {
+      //   skipBackup: true,
+      //   // path: 'images'
+      // }
     }
     ImagePicker.showImagePicker(options, (response) => {
       console.log(response);
@@ -113,7 +125,7 @@ export default class ImageChoose extends PureComponent {
     try {
       await checkVideoPermission()
     } catch (e) {
-      this.refs.toast.show(e.message)
+      // this.refs.toast.show(e.message)
       return
     }
     const options = {
@@ -122,28 +134,41 @@ export default class ImageChoose extends PureComponent {
       chooseFromLibraryButtonTitle: '选择视频',
       cancelButtonTitle: '取消',
       mediaType: 'video',
-      videoQuality: 'medium'
+      videoQuality: 'medium',
+      // storageOptions: {
+      //   skipBackup: true,
+      // }
     }
     ImagePicker.showImagePicker(options, async (response) => {
+      console.log(response);
       if (response.uri) {
         let file = response.uri
         const path = file.replace('file://', '')
         const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
         response.fileName = fileName
         response.fileSize = fileSize
-        this.dealSucc(file, response, 'video')
+        this.dealSucc(file, response)
       }
     });
   }
   checkExt(fileName) {
-    return true
-    const ext = fileName.substring(fileName.lastIndexOf('.') + 1)
-    return ['jpg', 'png', 'gif', 'doc', 'docs', 'xls', 'pdf', 'txt'].indexOf(ext) > -1
+    const ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase()
+    if (FILE_TYPES.image.indexOf(ext) > -1) {
+      return 'image'
+    } else if (FILE_TYPES.file.indexOf(ext) > -1) {
+      return 'file'
+    } else if (FILE_TYPES.audio.indexOf(ext) > -1) {
+      return 'audio'
+    } else if (FILE_TYPES.video.indexOf(ext) > -1) {
+      return 'video'
+    }
+    return ''
   }
-  dealSucc(uri, response, type = 'image') {
+  dealSucc(uri, response) {
     console.log(response)
     let { fileName, fileSize, path } = response
-    if (!this.checkExt(fileName || uri)) {
+    const ext = this.checkExt(fileName || uri)
+    if (!ext) {
       const { onError } = this.props
       onError && onError('附件格式不支持上传')
       return
@@ -154,7 +179,7 @@ export default class ImageChoose extends PureComponent {
       {
         url: uri,
         filename: fileName,
-        ext: type,
+        ext,
         size: fileSize,
         path: path || uri
       }
@@ -167,23 +192,26 @@ export default class ImageChoose extends PureComponent {
   chooseFile = () => {
     this.showFSelector()
   }
-  showFSelector() {
+  async showFSelector() {
+    try {
+      await checkFilePermission()
+    } catch (e) {
+      // this.refs.toast.show(e.message)
+      return
+    }
     RNFileSelector.Show({
       title: '文件选择',
+      // filter: '.*\\.(txt|pdf)$',
       onDone: async (path) => {
-        // if (Platform.OS == 'ios') {
-        //   const { onClose } = this.props
-        //   onClose && onClose(null, true)
-        //   path = path.replace('file://', '')
-        // }
-        // path = path.replace('file://', '')
-        const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
-        const type = fileName.substring(fileName.lastIndexOf('.') + 1)
-        this.dealSucc(path, { fileName, fileSize }, type)
+        path = path.replace('file://', '')
+        try {
+          const { fileName, fileSize } = await NativeModules.FileModule.getInfo(path)
+          this.dealSucc(path, { fileName, fileSize })
+        } catch (e) {
+          console.log(e)
+          this.showTip('文件选择失败')
+        }
       },
-      onCancel: () => {
-        console.log('cancelled')
-      }
     })
   }
   handlePress = (item) => {
@@ -202,7 +230,7 @@ export default class ImageChoose extends PureComponent {
           const { items } = this.state
           items.splice(index, 1)
           this.setState({ items: [...items] }, () => {
-            this.refs.toast.show('附件删除成功')
+            this.showTip('附件删除成功')
           })
         }
       })
@@ -216,7 +244,7 @@ export default class ImageChoose extends PureComponent {
         // }
         await openFile(path || url, filename)
       } catch (e) {
-        this.refs.toast.show('打开文件失败')
+        this.showTip('打开文件失败')
       }
     }
   }
@@ -237,8 +265,11 @@ export default class ImageChoose extends PureComponent {
     const { onClose } = this.props
     onClose && onClose(false)
   }
+  showTip(txt) {
+    const { onTip } = this.props
+    onTip && onTip(txt)
+  }
   renderActionSheet() {
-    console.log(this.state.current.filename);
     return <ActionSheet
       ref={ref => this.actionSheet = ref}
       title={this.state.current.filename}
@@ -255,13 +286,19 @@ export default class ImageChoose extends PureComponent {
       />
   }
 
+  chooseLayout = (e) => {
+    const {height} = e.nativeEvent.layout
+    this.chooseHeight = height + 5
+    this.chooseY = new Animated.Value(this.chooseHeight)
+  }
+
   renderImageChoose() {
     const { items } = this.state
     const { visible } = this.props
     // <TouchableOpacity style={styles.imgchoosebg} onPress={this.closeImageChoose}></TouchableOpacity>
     // <Modal style={styles.wrap} visible={visible} transparent
     //   animationType="slide" onRequestClose={this.closeImageChoose}>
-    return <Animated.View style={[styles.imgchoose, {transform: [{translateY: this.chooseY }]}]}>
+    return <Animated.View style={[styles.imgchoose, {transform: [{translateY: this.chooseY }]}]} onLayout={this.chooseLayout}>
       <SaveBtn onPress={this.props.onSave} />
       <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} style={styles.content}>
         <View style={styles.header}>
@@ -285,31 +322,31 @@ export default class ImageChoose extends PureComponent {
   }
   // <SafeAreaView style={{backgroundColor: '#F6F6F6'}} />
 
-  renderImageViewer() {
-    const { images } = this.state
-    return <Modal visible={images.length > 0} transparent={true} onRequestClose={this.closeImageViewer}>
-      <ImageViewer enableImageZoom imageUrls={images} onClick={this.closeImageViewer} />
-    </Modal>
-  }
+  // renderImageViewer() {
+  //   const { images } = this.state
+  //   return <Modal visible={images.length > 0} transparent={true} onRequestClose={this.closeImageViewer}>
+  //     <ImageViewer enableImageZoom imageUrls={images} onClick={this.closeImageViewer} />
+  //   </Modal>
+  // }
   render() {
     return (
       <View>
         {this.renderImageChoose()}
         {this.renderActionSheet()}
-        {this.renderImageViewer()}
         <Alert ref={ref => this.alert = ref} />
-        <Toast ref="toast" position="center" />
       </View>
     )
   }
 }
 
+// {this.renderImageViewer()}
+
 const styles = StyleSheet.create({
-  wrap: {
-    flex: 1,
-    justifyContent:'flex-end',
-    // backgroundColor: '#F6F6F6',
-  },
+  // wrap: {
+  //   flex: 1,
+  //   justifyContent:'flex-end',
+  //   // backgroundColor: '#F6F6F6',
+  // },
   content: {
     backgroundColor: '#F6F6F6',
   },

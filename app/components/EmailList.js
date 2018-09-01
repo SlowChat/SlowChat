@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     width: '30%',
     height: 32,
     borderRadius: 15,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderColor: '#666',
     justifyContent: 'center',

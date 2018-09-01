@@ -6,7 +6,7 @@ import Global from './global'
 let storage = new Storage({
     size: 100,
     storageBackend: AsyncStorage,
-    defaultExpires: 1000 * 3600 * 24,
+    defaultExpires: null, // 1000 * 3600 * 24,
     enableCache: true,
 });
 
@@ -25,34 +25,32 @@ export default {
       expires: 1000 * 3600 * 24 * 30,
     })
   },
-  getToken: async (force) => {
-    if (Global.token && !force) return Global.token
-    try {
-      const res = await storage.load({
+  getToken: (force) => {
+    return new Promise((resolve, reject) => {
+      if (Global.token && !force) return resolve(Global.token)
+      storage.load({
         key: 'slowchattoken',
         autoSync: true,
         syncInBackground: true,
-      })
-      Global.token = res.token
-      Global.user = res.user || {}
-      return res.token
-    } catch (e) {
-      return ''
-    }
+      }).then(res => {
+        Global.token = res.token
+        Global.user = res.user || {}
+        resolve(res.token)
+      }).catch(() => resolve(''))
+    })
   },
   getUser: async (force) => {
-    if (Global.user && Global.user.id) return Global.user
-    try {
-      const res = await storage.load({
+    return new Promise((resolve, reject) => {
+      if (Global.user && Global.user.id) return resolve(Global.user)
+      storage.load({
         key: 'slowchattoken',
         autoSync: true,
         syncInBackground: true,
-      })
-      Global.user = res.user || {}
-      return res.user || {}
-    } catch (e) {
-      return {}
-    }
+      }).then(res => {
+        Global.user = res.user || {}
+        resolve(res.user)
+      }).catch(() => resolve(''))
+    })
   },
   getPushID: () => {
     return Global.pushId

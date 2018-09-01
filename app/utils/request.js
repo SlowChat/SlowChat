@@ -5,7 +5,6 @@ import URL from './url'
 
 const BASE_URL = DOMAIN + '/'
 
-
 const getHeaders = async (unneed) => {
   if (unneed) {
     return {}
@@ -13,11 +12,10 @@ const getHeaders = async (unneed) => {
   const token = await Storage.getToken()
   return {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    'MY-Token': await Storage.getToken(),
+    'MY-Token': token,
     'MY-Device-Type': Platform.OS == 'ios' ? 'iphone' : 'android'
   }
 }
-// 'Content-Type': 'application/x-www-form-urlencoded',
 
 export async function get(url, params, unneedLogin) {
   const geturl = URL.stringify(BASE_URL + url, params)
@@ -49,26 +47,39 @@ export async function post(url, params, unneedLogin) {
     },
     body: JSON.stringify(params),
     timeout: 10,
-  }).then((response) => response.json())
+  }).then((response) => {
+    // console.log(response._bodyText)
+    return response.json()
+  })
   // .catch((err) => {
   //   // console.log(eval("("+ err +")"));
   //   throw err
   // });
 }
 
-export function uploadImage(uri, fileName) {
-  const serverUrl = BASE_URL + 'api/upload/image.html'
-  return upload(uri, fileName, serverUrl)
-}
-export async function upload(uri, fileName, serverUrl) {
+export async function upload(item) {
+  let serverUrl = BASE_URL + 'api/upload/image.html'
+  const { url, path, filename, ext } = item
+  let uri = url || path
+  if (Platform.OS == 'android') {
+    if (uri.indexOf('file://') == -1 && uri.indexOf('content://') == -1) {
+      uri = `file://${uri}`
+    }
+  } else {
+    uri = uri.replace('file://', '')
+  }
+  const name = encodeURIComponent(filename || uri.substring(uri.lastIndexOf('/') + 1))
+  // uri = 'assets-library://asset/asset.JPG?id=2BC4E5C9-7080-4E0D-8F0E-AD570DF614E8&ext=JPG'
+  let file = {uri, type: 'multipart/form-data', name}
   let formData = new FormData();
-  const name = fileName || uri.substring(uri.lastIndexOf('/') + 1, uri.length)
-  uri = uri.replace('file://', '')
-  let file = {uri: uri, type: 'multipart/form-data', name: name};
   formData.append('file', file);
+  if (ext && ext != 'image') {
+    serverUrl = BASE_URL + 'api/upload/files.html'
+    formData.append('filetype', ext);
+  }
   const headers = await getHeaders()
-  // return fetch(BASE_URL + 'api/upload/image.html', {
-  serverUrl = serverUrl || BASE_URL + 'api/upload/files.html'
+  console.log(headers)
+  console.log(file);
   return fetch(serverUrl, {
     method: 'POST',
     headers: {
@@ -76,7 +87,13 @@ export async function upload(uri, fileName, serverUrl) {
       ...headers
     },
     body: formData,
-  }).then((response) => response.json())
+  }).then((response) => {
+    // try {
+    //   console.log(response._bodyText)
+    // } catch (e) {
+    // }
+    return response.json()
+  })
 }
 
 import RNFS from 'react-native-fs'
@@ -84,12 +101,14 @@ import RNFS from 'react-native-fs'
 export async function rnfsUpload(uploadFiles, onProgress) {
   if (!uploadFiles || uploadFiles.length == 0) return []
 
-  const files = uploadFiles.map(item => ({
-    name: item.filename.substring(0, item.filename.lastIndexOf('.')),
-    filename: item.filename,
-    filepath: item.url.replace('file://', ''),
-    filetype: 'image/png',
-  }))
+  const files = uploadFiles.map(item => {
+    return {
+      name: item.filename.substring(0, item.filename.lastIndexOf('.')),
+      filename: item.filename,
+      filepath: item.url.replace('file://', ''),
+      filetype: item.ext || item.url.substring(item.url.lastIndexOf('.') + 1),
+    }
+  })
 
 
   const uploadBegin = (response) => {

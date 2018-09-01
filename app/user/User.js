@@ -174,6 +174,26 @@ export default class User extends Component {
     }
   }
 
+  testPush = () => {
+    if (__DEV__) {
+      post('api/common/pushTest.html', {
+        id: "101d8559091283ad799", //"13065ffa4e532ca9f43",
+        title: "测试推送",
+        info: {
+          id: 9,
+          user_id: 2,
+          add_time: "2018-08-26 11:52",
+          content: "【打卡提醒】今日完成打卡，即可领取积分",
+          is_read: 1,
+          type: 2,
+          mail_id: 92,
+          mail_state: 1,
+          desc: "打卡提醒"
+        }
+      })
+    }
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const { draftCount, unsendCount, sentCount, publicCount } = this.state.count
@@ -261,6 +281,15 @@ export default class User extends Component {
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
+          {
+            __DEV__ && <TouchableWithoutFeedback onPress={this.testPush}>
+              <View style={styles.menu} >
+                <Image style={styles.menuImg} source={require('../images/icon_info.png')} />
+                <Text style={styles.menuTxt}>推送测试</Text>
+                <Image style={styles.forward} source={ICONS.forward} />
+              </View>
+            </TouchableWithoutFeedback>
+          }
         </View>
         <SuccessModal
           icon={require('../images/daka_l.png')}

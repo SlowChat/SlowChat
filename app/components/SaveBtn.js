@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 30,
     borderRadius: 16,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#E24B92',
     alignItems: 'center',
     justifyContent: 'center',

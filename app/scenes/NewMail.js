@@ -5,12 +5,12 @@ import {
   Text,
   View,
   Image,
-  Modal,
   TextInput,
   Switch,
   ScrollView,
   Keyboard,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 
 // import { openFile } from '../utils/opendoc'
@@ -20,7 +20,7 @@ import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
 import SaveBtn from '../components/SaveBtn'
 import HeaderTip from '../components/HeaderTip'
-import ImageChoose from '../components/ImageChoose'
+import FileChoose from '../components/FileChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 import Loading from '../components/Loading'
@@ -83,8 +83,10 @@ export default class NewMail extends Component {
     this.props.navigation.setParams({
       rightOnPress: this.handleSend
     })
+    this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
+    this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardShow)
+    this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardHide)
   }
-
 
   shouldComponentUpdate() {
     if (this.noupdate) {
@@ -92,6 +94,30 @@ export default class NewMail extends Component {
       return false
     }
     return true
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSub.remove()
+    this.keyboardShowSub.remove()
+    this.keyboardHideSub.remove()
+  }
+
+  keyboardWillShow = (e) => {
+    if (this.state.pickerModal) {
+      this.setState({ pickerModal: false })
+    }
+  }
+
+  keyboardShow = (e) => {
+    this.keyboardShow = true
+  }
+
+  keyboardHide = (e) => {
+    this.keyboardShow = false
+    if (this.showChooseFile) {
+      this.setState({ pickerModal: true })
+      this.showChooseFile = false
+    }
   }
 
   getSendTime(send_time) {
@@ -116,13 +142,14 @@ export default class NewMail extends Component {
       if (res.code == 1) {
         const { items } = res.data
         this.setState({
-          showSendMe: items.email == '发给自己',
+          showSendMe: items.email != '发给自己',
           params: {
             id: items.id,
             email: items.email,
             title: items.title,
             content: items.content,
             send_time: items.send_time,
+            type: items.type || 2,
           },
           defaultValue: {
             email: items.email,
@@ -132,11 +159,7 @@ export default class NewMail extends Component {
           attachs: items.attach,
           initAttaches: items.attach,
         }, () => {
-          this.noupdate = true
-          this.sendBtnEnable = true
-          this.props.navigation.setParams({
-            enable: true,
-          })
+          this.setSendStatus(false)
         })
       }
     } catch (e) {
@@ -204,11 +227,15 @@ export default class NewMail extends Component {
   checkParams(showTip) {
     const { title, content } = this.state.params
     const tips = []
-    if (!this.email) tips.push('收件人')
+    if (Platform.OS == 'ios') {
+      if (!this.email) tips.push('收件人')
+    } else {
+      if (!this.state.params.email) tips.push('收件人')
+    }
     //  || !isEmail(email)
     if (!title) tips.push('主题')
     // if (!send_time) tips.push('发信时间')
-    // if (!content) tips.push('内容')
+    if (!content) tips.push('内容')
     let tip = ''
     if (tips.length > 0) {
       tip = '请保证' + tips.join('，') + '填写正确！'
@@ -230,19 +257,24 @@ export default class NewMail extends Component {
   }
 
   handleSend = () => {
-    console.log(this.email);
     if (this.state.showLoading) return false
     if (this.state.params.send_time < dateFormat()) {
       let tip = '发信时间不符合要求！'
       this.refs.toast.show(tip)
+      return
     }
     if (!this.checkParams(true)) return
 
     this.setState({ showLoading: true }, async () => {
       try {
         const params = {...this.state.params}
+        const email = Platform.OS == 'ios' ? this.email : params.email
+        params.email = email
+        params.self = '发给自己' == email ? 1 : 0
         params.attach = await this.uploadFile()
-        const res = await post('api/mail/add.html', params)
+        const url = params.id ? 'api/mail/update.html' : 'api/mail/add.html'
+        const res = await post(url, params)
+        console.log(res);
         if (res.code == 10001) {
           this.setState({showLoading: false}, () => {
             this.props.navigation.navigate('Login')
@@ -264,19 +296,20 @@ export default class NewMail extends Component {
       }
     })
   }
-  handleSave = () => {
+  handleSave = async () => {
     if (this.state.params.send_time < dateFormat()) {
       let tip = '发信时间不符合要求！'
       this.refs.toast.show(tip)
       return
     }
-    // rnfsUpload(this.state.attachs)
-    // return
     if (this.state.showLoading) return
     if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
       try {
         const params = {...this.state.params}
+        const email = Platform.OS == 'ios' ? this.email : params.email
+        params.email = email
+        // params.self = '发给自己' == email ? 1 : 0
         params.attach = await this.uploadFile()
         const res = await post('api/mail/save.html', params)
         if (res.code == 10001) {
@@ -298,6 +331,7 @@ export default class NewMail extends Component {
         }
       }
     })
+
   }
 
   async uploadFile() {
@@ -309,19 +343,29 @@ export default class NewMail extends Component {
         if (item.url.indexOf('http') == 0) {
           continue
         }
-        const res = await upload(item.url, item.filename)
+        const res = await upload(item)
+        console.log(res);
         if (res.code == 1) {
           attachs[index] = {...res.data, ext: item.ext}
         } else {
           throw res
         }
       }
-      return attachs.map(item => ({
-        filename: item.name,
-        url: item.url,
-        size: item.size,
-        ext: item.ext
-      }))
+      return attachs.map(item => {
+        let filename = item.filename ? item.filename.substring(item.filename.lastIndexOf('/') + 1) : ''
+        filename = filename || item.url.substring(item.url.lastIndexOf('/') + 1)
+        const attach = {
+          filename,
+          url: item.url,
+          thumb: item.thumb || '',
+          size: item.size,
+          ext: item.ext
+        }
+        if (item.ext == 'image') {
+          attach.thumb = attach.thumb || attach.url
+        }
+        return attach
+      })
     } catch (e) {
       console.log(e);
       throw e
@@ -342,18 +386,27 @@ export default class NewMail extends Component {
   handelSuccClose = () => {
     this.setState({ isSucc: false })
   }
-  handleImageChoose = (items) => {
+  handleFileChoose = (items) => {
     this.setState({ attachs: items })
   }
-  openImageChoose = () => {
-    // openFile()
-    Keyboard.dismiss()
-    this.setState({ pickerModal: true })
+  openFileChoose = () => {
+    if (this.keyboardShow) {
+      Keyboard.dismiss()
+      this.showChooseFile = true
+      // requestAnimationFrame(() => {
+      //   this.setState({ pickerModal: true })
+      // })
+    } else {
+      this.setState({ pickerModal: true })
+    }
   }
-  closeImageChoose = (open = false) => {
+  closeFileChoose = (open = false) => {
     this.setState({ pickerModal: open })
   }
 
+  showToast = (txt) => {
+    this.refs.toast.show(txt)
+  }
   render() {
     // keyboardType="email-address"
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
@@ -365,11 +418,18 @@ export default class NewMail extends Component {
           <HeaderTip tip="爱慢邮——让我们回到未来" />
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
-            <TextInput autoFocus style={styles.input}
-              value={params.email}
-              onChangeText={this.handleMailChange}
-              onEndEditing={this.onEndEditMail}
-              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            {
+              Platform.OS == 'ios' ?
+                <TextInput autoFocus style={styles.input}
+                  value={params.email}
+                  onChangeText={this.handleMailChange}
+                  onEndEditing={this.onEndEditMail}
+                  autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+              : <TextInput autoFocus style={styles.input}
+                value={params.email}
+                onChangeText={(text) => this.setParams('email', text)}
+                autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            }
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={this.sendMe}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
@@ -381,7 +441,7 @@ export default class NewMail extends Component {
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>附件：</Text>
-            <TouchableOpacity style={styles.itemTouch} onPress={this.openImageChoose}>
+            <TouchableOpacity style={styles.itemTouch} onPress={this.openFileChoose}>
               <View style={styles.icons}>
                 <Image style={styles.attachment} source={require('../images/icon_attachment2.png')} />
               </View>
@@ -423,14 +483,15 @@ export default class NewMail extends Component {
         <SaveBtn type="bottom" onPress={this.handleSave} />
         {
           this.state.pickerModal &&
-            <Text style={styles.imgchoosebg} onPress={this.closeImageChoose.bind(this, false)}></Text>
+            <Text style={styles.imgchoosebg} onPress={this.closeFileChoose.bind(this, false)}></Text>
         }
-        <ImageChoose visible={this.state.pickerModal}
+        <FileChoose visible={this.state.pickerModal}
           initValue={initAttaches}
           onSave={this.handleSave}
-          onChange={this.handleImageChoose}
-          onClose={this.closeImageChoose}
-          onError={this.showErrorModal} />
+          onChange={this.handleFileChoose}
+          onClose={this.closeFileChoose}
+          onError={this.showErrorModal}
+          onTip={this.showToast} />
         <Toast ref="toast" position="center" />
         <SuccessModal
           txt={`信件${tipTxt}成功`}
@@ -501,10 +562,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 30,
     borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#B4B4B4',
   },
   btn: {
     fontSize: 16,
@@ -514,8 +575,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 30,
     borderRadius: 2,
-    borderWidth: 1,
-    // borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#B4B4B4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -559,5 +619,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: 'rgba(0,0,0,0.2)',
   }
 });

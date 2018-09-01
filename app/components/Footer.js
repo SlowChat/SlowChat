@@ -9,9 +9,12 @@ import {
 import {SafeAreaView} from 'react-navigation'
 
 export default class Footer extends PureComponent {
+  static defaultProps = {
+    safe: true
+  };
   render() {
-    const { showFoot } = this.props
-    const forceInset = {top: 'never', bottom: 'always'}
+    const { showFoot, safe } = this.props
+    const forceInset = safe ? {top: 'never', bottom: 'always'} : {top: 'never', bottom: 'never'}
     if (showFoot === 1) {
       return (
         <SafeAreaView forceInset={forceInset} style={styles.nomore}>

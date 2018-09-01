@@ -45,6 +45,8 @@ export default class FeedBack extends Component {
       <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
         <Text style={styles.label}>问题与意见</Text>
         <TextInput
+          autoCapitalize="none"
+          underlineColorAndroid='transparent'
           multiline
           style={styles.textArea}
           onChangeText={(text) => this.setState({content: text})}
@@ -53,6 +55,8 @@ export default class FeedBack extends Component {
         />
         <Text style={styles.label}>联系方式</Text>
         <TextInput
+          autoCapitalize="none"
+          underlineColorAndroid='transparent'
           style={styles.input}
           onChangeText={(text) => this.setState({contact: text})}
           placeholder='选填，便于我们与您联系'

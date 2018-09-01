@@ -67,14 +67,14 @@ export default class Space extends Component<Props> {
     this.init({activeTab: index})
   }
   init = (state = {}) => {
-    this.setState({ showFoot: 0, items: [], ...state }, () => {
+    this.setState({ showFoot: 0, items: [], showBlank: false, ...state }, () => {
       this.page = 0
       this.getData(0)
       setTimeout(() => {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
   async getData(page = 0) {
@@ -127,10 +127,10 @@ export default class Space extends Component<Props> {
   }
   dealError() {
     const state = {}
-    if (this.state.data.length == 0) {
+    if (this.page == 0) {
       state.showError = true
     } else {
-      // this.refs.toast.show(res.msg || '慢聊飘走了')
+      // this.refs.toast.show(res.msg || '慢邮飘走了')
     }
     state.showFoot = 0
     this.setState({ state })
@@ -150,7 +150,7 @@ export default class Space extends Component<Props> {
     return <View style={styles.divider}></View>
   }
   renderFooter = () => {
-    return <Footer showFoot={this.state.showFoot} />
+    return <Footer safe={false} showFoot={this.state.showFoot} />
   }
   render() {
     const { showLoading, showError, showBlank } = this.state
@@ -161,7 +161,7 @@ export default class Space extends Component<Props> {
         <SafeAreaView style={styles.header} forceInset={{ top: 'always', horizontal: 'never' }}>
           <SearchBox onPress={this.searchBoxPress} />
         </SafeAreaView>
-        <HeaderTip tip="发送的邮件提交时选择公开，会在漫友圈显示" />
+        <HeaderTip tip="发送的邮件提交时选择公开，会在慢友圈显示" />
         <TopTab index={activeTab} items={ITEMS} onPress={this.tabSwitch} />
         { showLoading && <Loading /> }
         { showBlank && <Blank searchTxt={isSearch} /> }

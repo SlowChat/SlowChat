@@ -41,7 +41,8 @@ export default class EditEmail extends Component {
   }
 
   componentDidMount() {
-    if (this.props.navigation.state.params.userEmail !== '') {
+    const { userEmail } = this.props.navigation.state.params || {}
+    if (userEmail !== '') {
       this.setState({
         btnText: '验证后绑定新邮箱',
         status: 'check'
@@ -140,6 +141,8 @@ export default class EditEmail extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               editable={this.state.editable}
               style={styles.input}
               onChangeText={(text) => this.handleChangeEmail(text)}
@@ -157,6 +160,8 @@ export default class EditEmail extends Component {
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               style={styles.input}
               onChangeText={(text) => this.inputVcode(text)}
               placeholder='请输入您的验证码'

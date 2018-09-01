@@ -87,7 +87,7 @@ export default class LocalWebview extends Component<Props> {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
   handleLoad = () => {
     this.loaded = true
@@ -123,7 +123,7 @@ export default class LocalWebview extends Component<Props> {
           source={Platform.OS == 'ios' ? require('./h5.html') : {uri: 'file:///android_asset/h5.html'}}
           mixedContentMode="compatibility"
           userAgent="com.slowchat"
-          scalesPageToFit
+          originWhitelist={["*"]}
           domStorageEnabled
           javaScriptEnabled
           onLoadEnd={this.handleLoad} />

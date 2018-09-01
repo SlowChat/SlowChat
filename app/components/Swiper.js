@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  ImageBackground,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Platform,
@@ -38,23 +37,22 @@ export default class SwiperComponent extends PureComponent<Props> {
   }
 
   render() {
-    const { items, showLoading, showError } = this.props
+    const { items, showError } = this.props
     const dot = (<View style={styles.dot} />)
     const activeDot = (<View style={[styles.dot, styles.activeDot]} />)
-    if (!items || items.length == 0) return <View style={styles.image} />
     return (
       <View>
         <View style={styles.wrapper} >
           {
+            items && items.length > 1 ?
             <Swiper autoplay autoplayTimeout={3} paginationStyle={styles.pagination} dotStyle={styles.dot} activeDotStyle={styles.activeDot}>
               {items.map((item, index) =>
-                <ImageBackground key={index} style={styles.image} source={require('../images/banner_placeholder.png')}>
-                  <TouchableWithoutFeedback onPress={() => this.handlePress(item)}>
-                    <Image source={{uri:item.image}} style={styles.image} />
+                  <TouchableWithoutFeedback key={index} onPress={() => this.handlePress(item)}>
+                    <Image defaultSource={require('../images/banner_placeholder.png')} source={{uri:item.image}} style={styles.image} />
                   </TouchableWithoutFeedback>
-                </ImageBackground>
               )}
             </Swiper>
+            : <Image source={require('../images/banner_placeholder.png')} style={styles.image} />
           }
         </View>
         <TouchableOpacity activeOpacity={0.6} style={styles.tipWraper} onPress={this.handleGoNew}>

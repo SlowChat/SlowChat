@@ -16,7 +16,7 @@ import DatePicker from 'react-native-datepicker'
 import Avatar from '../components/Avatar'
 import Confirm from '../components/Confirm'
 import ActionSheet from '../components/ActionSheet'
-import { post, uploadImage } from '../utils/request'
+import { post, upload } from '../utils/request'
 import { checkImagePermission } from '../utils/permission'
 import ICONS from '../utils/icon'
 
@@ -122,10 +122,13 @@ export default class Information extends Component {
         //   file = file.replace('file://', '')
         // }
         console.log(response);
-        const res = await uploadImage(response.uri, response.fileName)
+        const res = await upload({
+          url: response.uri,
+          filename: response.fileName
+        })
         console.log(res);
         if (res.code == 1) {
-          this.setState({ avatar: res.data.url })
+          this.setState({ avatar: res.data.thumb || res.data.url })
         } else {
           this.refs.toast.show('上传失败，稍后重试！')
         }
@@ -203,6 +206,8 @@ export default class Information extends Component {
           rightBtnTxt='确定'
           autoView={
             <TextInput
+              autoCapitalize="none"
+              underlineColorAndroid='transparent'
               style={styles.nickInput}
               onChangeText={(text) => this.setState({inputname: text})}
               placeholder='请输入填写您的用户名'

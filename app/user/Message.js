@@ -50,7 +50,7 @@ export default class Message extends Component<Props> {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
 
@@ -87,7 +87,7 @@ export default class Message extends Component<Props> {
       } else if (res.code == 10001) {
         this.props.navigation.navigate('Login')
       } else {
-        this.refs.toast.show(res.msg || '慢聊信息飘走了')
+        this.refs.toast.show(res.msg || '慢邮信息飘走了')
         this.setState({ showFoot: 0 })
       }
     } catch (e) {

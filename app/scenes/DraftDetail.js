@@ -65,7 +65,7 @@ export default class DraftDetail extends Component {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
 
   closeConfirm = () => {
@@ -85,12 +85,16 @@ export default class DraftDetail extends Component {
       this.props.navigation.navigate('Login')
     } else {
       this.refs.alert.hide()
-      this.refs.toast.show(res.msg || '请稍后重试')
+      this.showToast(res.msg || '请稍后重试')
     }
   }
   handleEdit = () => {
     const id = this.getId()
     this.props.navigation.push('NewMail', {id})
+  }
+
+  showToast = (txt) => {
+    this.refs.toast.show(txt)
   }
 
   // this.props.navigation.setParams({
@@ -128,7 +132,7 @@ export default class DraftDetail extends Component {
             <Image style={styles.attachment} source={require('../images/icon_attachment.png')} />
             <Text style={styles.attachmentNum}>{hasAttach ? `${attachs.length}个附件` : ''}</Text>
           </View>
-          <Attachment items={attachs} />
+          <Attachment items={attachs} onTip={this.showToast} />
         </ScrollView>
         <SafeAreaView style={styles.bottom} forceInset={{top: 'never', bottom: 'always'}}>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.openDelete}>
@@ -189,28 +193,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#999999',
   },
-  btnWrap: {
-    width: 80,
-    height: 30,
-    borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btn: {
-    fontSize: 16,
-    color: '#686868',
-  },
-  icons: {
-    width: 40,
-    height: 30,
-    borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   attachment: {
     width: 30,
     height: 30,
@@ -243,19 +225,6 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
   },
-  saveBtn: {
-    width: 90,
-    height: 30,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E24B92',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveBtnTxt: {
-    fontSize: 16,
-    color: '#E24B92',
-  },
   bottomIconWrap: {
     flex: 1,
     alignItems: 'center',
@@ -266,15 +235,4 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain'
   },
-  confirmView: {
-    paddingTop: 24,
-    paddingBottom: 24,
-  },
-  confirmTxt: {
-    height: 22,
-    fontSize: 16,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#333333',
-    lineHeight: 22
-  }
 });

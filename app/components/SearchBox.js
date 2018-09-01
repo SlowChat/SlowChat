@@ -5,6 +5,7 @@ import {
   View,
   Image,
   TextInput,
+  Keyboard,
   TouchableOpacity
 } from 'react-native';
 
@@ -13,10 +14,8 @@ export default class HomeItem extends PureComponent<Props> {
   handleChange = (text) => {
     this.search = text
   }
-  handleSubmit = () => {
-    this.handleSearch()
-  }
   handleSearch = () => {
+    Keyboard.dismiss()
     const { onPress } = this.props
     onPress && onPress(this.search)
   }
@@ -25,9 +24,10 @@ export default class HomeItem extends PureComponent<Props> {
       <View style={styles.container}>
         <Text style={styles.txt}>慢友圈</Text>
         <View style={styles.search}>
-          <TextInput style={styles.input} onChangeText={this.handleChange} onSubmitEditing={this.handleSubmit}
+          <TextInput style={styles.input} onChangeText={this.handleChange} onSubmitEditing={this.handleSearch}
             returnKeyType="search" placeholder="查找您感兴趣的内容" placeholderColor="#D8D8D8"
-            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent'
+            clearButtonMode="while-editing" />
           <TouchableOpacity activeOpacity={0.8} onPress={this.handleSearch}>
             <Image style={styles.icon} source={require('../images/icon_search.png')} />
           </TouchableOpacity>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#CCCCCC',
   },
   input: {

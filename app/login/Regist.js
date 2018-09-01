@@ -82,7 +82,7 @@ export default class Regist extends Component {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
-    }, 300)
+    }, 200)
   }
 
   handleLogin = async (username, password) => {
@@ -165,7 +165,8 @@ export default class Regist extends Component {
     const { checked, username, password, verification_code, activeTab } = this.state
     const verifyStyle = username.trim() ? [styles.verifyTxt, styles.activeVerifyTxt] : styles.verifyTxt
     const placeholder = activeTab == 0 ? '请输入手机号' : '请输入邮箱'
-    const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
+    // const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
+    // keyboardType={keyboardType}
     const registBtnStyle = (!checked || this.isDisable()) ? [styles.registBtn, styles.disabled] : styles.registBtn
     return (
       <View style={styles.container}>
@@ -178,8 +179,9 @@ export default class Regist extends Component {
           {this.renderTabs()}
           <View style={styles.wrap}>
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
-              <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({username: text})}
-               keyboardType={keyboardType} autoCapitalize="none" underlineColorAndroid='transparent' />
+              <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC"
+               onChangeText={(text) => this.setState({username: text})}
+               autoCapitalize="none" underlineColorAndroid='transparent' />
               <View style={styles.divider}></View>
               <VerifyCode type="regist" reset={this.state.resetVertify} username={username} onTip={this.showTip} />
             </ImageBackground>

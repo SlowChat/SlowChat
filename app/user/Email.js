@@ -7,6 +7,7 @@ import {
   Button,
   FlatList,
   TextInput,
+  Keyboard,
   TouchableOpacity,
 } from 'react-native';
 import EmailList from '../components/EmailList'
@@ -40,13 +41,12 @@ export default class Email extends Component {
 
 
   state = {
-    isLoading: false,
+    showLoading: false,
     // 网络请求状态
-    error: false,
+    showError: false,
     dataArray: [],
     showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
-    isRefreshing: false, // 下拉控制
-    isSpacePage: false,
+    showBlank: false,
     total: 0,
     searchText: '',
     isShowResult: false,
@@ -106,14 +106,14 @@ export default class Email extends Component {
   }
 
   initData(state = {}) {
-    this.setState({ showFoot: 0, dataArray: [], idList: '', ...state }, () => {
+    this.setState({ showFoot: 0, dataArray: [], idList: '', isShowResult: false, ...state }, () => {
       this.page = 0
       this.fetchData(0)
       setTimeout(() => {
         if (this.loading) {
           this.setState({ showLoading: true })
         }
-      }, 300)
+      }, 200)
     })
   }
 
@@ -162,26 +162,28 @@ export default class Email extends Component {
           dataArray,
           totalScore: total_score,
           cancelScore: cancel_score,
-          isLoading: false,
+          showLoading: false,
           showFoot,
           isShowResult: this.state.searchText !== '',
-          isSpacePage: dataArray && dataArray.length <= 0
-        })
-
-      } else if (res.code == 10001) {
-        this.setState({ showLoading: false, isShowResult: false }, () => {
-          this.props.navigation.navigate('Login')
+          showBlank: dataArray && dataArray.length <= 0
         })
       } else {
-        this.refs.toast.show(res.msg || '慢聊信息飘走了')
-        this.setState({ showFoot: 0, showLoading: false, isShowResult: false })
+        this.refs.toast.show(res.msg || '慢邮信息飘走了')
+        this.dealError({showFoot: 0})
       }
     } catch (e) {
-      this.loading = false
-      if (this.state.showLoading) {
-        this.setState({ showLoading: false, isShowResult: false })
-      }
+      this.setState(state)
     }
+  }
+
+  dealError(state = {}) {
+    this.loading = false
+    this.setState({
+      showLoading: false,
+      showBlank: false,
+      showError: this.page == 0,
+      ...state
+    })
   }
 
   handleLoadmore = () => {
@@ -227,6 +229,7 @@ export default class Email extends Component {
   }
 
   handleSearch = () => {
+    Keyboard.dismiss()
     this.initData()
   }
 
@@ -303,9 +306,9 @@ export default class Email extends Component {
     return <Footer showFoot={this.state.showFoot} />
   }
   renderData() {
-    const { isSpacePage, searchText } = this.state
+    const { showBlank, searchText } = this.state
     const isSearch = Boolean(searchText)
-    if (this.state.isSpacePage) return <Blank searchTxt={isSearch} />
+    if (this.state.showBlank) return <Blank searchTxt={isSearch} />
     const { dataArray } = this.state
     const { params } = this.props.navigation.state;
     return (
@@ -323,9 +326,9 @@ export default class Email extends Component {
 
   render () {
     // 第一次加载等待的view
-    if (this.state.isLoading && !this.state.error) {
+    if (this.state.showLoading) {
       return <Loading />
-    } else if (this.state.error) {
+    } else if (this.state.showError) {
       // 请求失败view
       return <ErrorTip onPress={this.initData} />
     }
@@ -338,9 +341,16 @@ export default class Email extends Component {
           style={styles.search}
           onChangeText={(text) => this.setState({searchText: text})}
           placeholder='搜索'
+          autoCorrect={false}
+          autoCapitalize="none"
+          returnKeyType="search"
+          underlineColorAndroid='transparent'
+          clearButtonMode="while-editing"
+          placeholderColor="#D8D8D8"
+          onSubmitEditing={this.handleSearch}
           // value={searchText}
         />
-        <Text style={styles.btn} onPress={() => this.handleSearch()}>搜索</Text>
+        <Text style={styles.btn} onPress={this.handleSearch}>搜索</Text>
       </View>
       {
         this.state.isShowResult &&

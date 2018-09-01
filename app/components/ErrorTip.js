@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   btn: {
     width: 170,
     height: 36,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#E24B92',
     justifyContent:'center',
     alignItems:'center',
