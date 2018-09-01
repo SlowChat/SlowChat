@@ -82,7 +82,8 @@
         jsCodeLocation = [CodePush bundleURL];
     #endif
   
-  [[BaiduMobStat defaultStat] startWithAppId:@"xxx"];
+  [[BaiduMobStat defaultStat] startWithAppId:@"489d643251"];
+  [[BaiduMobStat defaultStat] setEnableDebugOn:YES];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"SlowChat"

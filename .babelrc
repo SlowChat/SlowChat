@@ -1,8 +1,8 @@
 {
   "presets": ["react-native"],
   "env": {
-   "production": {
-     "plugins": ["transform-remove-console"]
-   }
- }
+     "production": {
+       "plugins": ["transform-remove-console"]
+     }
+  }
 }

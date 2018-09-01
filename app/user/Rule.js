@@ -4,91 +4,67 @@ import {
   Text,
   View,
   Image,
-  ScrollView
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
-import { get, post } from '../utils/request'
+import ErrorTip from '../components/ErrorTip'
+import Loading from '../components/Loading'
+import { post } from '../utils/request'
 
 export default class Rule extends Component {
-  static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    return {
-      title: '积分规则',
-    }
+  static navigationOptions = {
+    title: '积分规则',
   }
   state = {
-    scoreInfo: []
+    items: [],
+    showLoading: true,
+    showError: false,
   }
   componentDidMount() {
     this.getData()
   }
 
-  getData() {
-    get('api/common/getScoreInfo.html').then(res => {
-      const { code, data } = res
-      console.log(111111, data.score)
-      if (code === 1) {
-        this.setState({scoreInfo: data.score})
+  getData = async () => {
+    this.setState({ showLoading: true })
+    try {
+      const res = await post('api/common/getScoreInfo.html')
+      this.setState({ showLoading: false })
+      if (res.code === 1) {
+        this.setState({items: res.data, showError: false })
+      } else {
+        this.setState({ showError: true })
       }
-    }).catch(e => {
-      console.log(e)
-    })
+    } catch (e) {
+      this.setState({ showError: true, showLoading: false })
+    }
   }
 
   render() {
-    const { scoreInfo } = this.state;
-    console.log(scoreInfo.length)
-    if (scoreInfo.length <= 0) return null
+    const { showLoading, showError } = this.state;
+    if (showLoading) return <Loading />
+    if (showError) return <ErrorTip onPress={this.getData} />
+    const { items } = this.state
+    console.log(items);
     return (
-      <ScrollView style={styles.container} forceInset={{top: 'never', bottom: 'always'}}>
+      <SafeAreaView style={styles.container} forceInset={{top: 'never', bottom: 'always'}}>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
             <Image style={styles.icon} source={require('../images/icon_info.png')} />
             <Text style={styles.titTxt}>如何获得积分</Text>
           </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>新用户注册</Text>
-            <Text style={styles.focus}>{scoreInfo[0].score}</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>发信（公开）</Text>
-            <Text style={styles.focus}>{scoreInfo[4].score}</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>发信（不公开）</Text>
-            <Text style={styles.focus}>{scoreInfo[5].score}</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>发表评论</Text>
-            <Text style={styles.focus}>{scoreInfo[6].score}</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>分享</Text>
-            <Text style={styles.focus}>{scoreInfo[7].score}</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>完善个人资料</Text>
-            <Text style={styles.focus}>{scoreInfo[1].score}</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>打卡</Text>
-            <Text style={styles.focus}>{scoreInfo[2].score}至{scoreInfo[3].score}分/天（按日累进）</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.remind}>每月重新起算每天一次，连续签到天数越多，可获得的积分值越高，一旦断签，签到积分从1开始累计计算</Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={styles.focus}>*</Text>
-            <Text style={styles.txt}>删除未发送邮件</Text>
-            <Text style={styles.focus}>{scoreInfo[8].score}</Text>
-          </View>
+          {
+            items.map((item, index) => {
+              return <View key={index}>
+                <View style={styles.info}>
+                  <Text style={styles.focus}>*</Text>
+                  <Text style={styles.txt}>{item.label}</Text>
+                  <Text style={styles.focus}>{item.score}</Text>
+                </View>
+                {item.desc ? <View style={styles.info}>
+                  <Text style={[styles.remind]}>{item.desc}</Text>
+                </View> : null}
+              </View>
+            })
+          }
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
@@ -117,8 +93,7 @@ export default class Rule extends Component {
             <Text style={styles.txt}>已经提交等待发送的邮件想要撤回删除时，每一次消耗1000积分，若积分累计不足时无法撤回删除</Text>
           </View>
         </View>
-        <SafeAreaView style={{backgroundColor: '#FFFFFF'}} forceInset={{top: 'never', bottom: 'always'}} />
-      </ScrollView>
+      </SafeAreaView>
     );
   }
 }

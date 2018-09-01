@@ -40,8 +40,6 @@ const MimeStack = createStackNavigator({
   }
 })
 
-
-
 export default createBottomTabNavigator(
   {
     Home: {
