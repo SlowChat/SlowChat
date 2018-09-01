@@ -40,7 +40,7 @@ export default class Integral extends Component {
   page = 0
   pageSize = 10
 
-  componentDidMount() {
+  componentWillMount() {
     this.initData()
   }
 
@@ -53,7 +53,7 @@ export default class Integral extends Component {
   initData(state = {}) {
     this.setState({ showFoot: 0, dataArray: [], ...state }, () => {
       this.page = 0
-      this.fetchData(0)
+      this.fetchData()
       setTimeout(() => {
         if (this.loading) {
           this.setState({ showLoading: true })
@@ -65,7 +65,7 @@ export default class Integral extends Component {
   async fetchData() {
     if (this.loading || this.state.showFoot == 1) return
     this.loading = true
-    if (page > 0) {
+    if (this.page > 0) {
       this.setState({ showFoot: 2 })
     }
     try {
@@ -75,10 +75,11 @@ export default class Integral extends Component {
       }
       const res = await post('api/user/score_log.html', params)
       this.loading = false
+      console.log(res);
       if (res.code == 1) {
-        const { total, items } = res.data
-        const dataArray = this.state.dataArray.concat(items)
-        let showFoot = dataArray.length >= total ? 1 : 0
+        const { total, total_page, log } = res.data
+        const dataArray = this.state.dataArray.concat(log || [])
+        let showFoot = dataArray.length >= total_page ? 1 : 0
         this.page++
         this.setState({
           total,
@@ -113,7 +114,7 @@ export default class Integral extends Component {
     }
   }
 
-  _renderItem = ({item}) => {
+  _renderItem({item}) {
     return (
       <View style={styles.list}>
         <View style={styles.left}>
@@ -136,7 +137,7 @@ export default class Integral extends Component {
       return <Blank />
     }
     return (<FlatList
-      // keyExtractor={(item) => String(item.id)}
+      keyExtractor={(item, index) => String(index)}
       data={this.state.dataArray}
       renderItem={this._renderItem}
       ListFooterComponent={this._renderFooter}
