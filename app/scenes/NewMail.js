@@ -133,17 +133,17 @@ export default class NewMail extends Component {
     this.user_email = ''
     try {
       const res = await get('api/user/userInfo.html')
-      this.unLogin = true
+      this.unLogin = false
       if (res.code === 1) {
         this.user_email = res.data.user_email
         if (this.state.showSendMe && this.isMyEmail()) {
           this.setState({ showSendMe: false })
         }
       } else if (res.code == 10001) {
-        this.unLogin = false
+        this.unLogin = true
       }
     } catch (e) {
-      this.unLogin = true
+      this.unLogin = false
     }
   }
 
@@ -221,7 +221,7 @@ export default class NewMail extends Component {
   }
   sendMe = () => {
     if (this.isMyEmail(this.email)) return
-    if (!this.unLogin) {
+    if (this.unLogin) {
       this.props.navigation.navigate('Login')
       return
     }
@@ -308,6 +308,10 @@ export default class NewMail extends Component {
   }
 
   checkPre() {
+    if (this.unLogin) {
+      this.props.navigation.navigate('Login')
+      return false
+    }
     const tips = []
     const email = Platform.OS == 'ios' ? this.email : this.state.params.email
     if (!email || !isEmail(email)) {
