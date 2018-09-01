@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderStyle: 'solid',
     borderTopColor: '#eee',
-    
   },
   leftBtn: {
     flexDirection: 'row',
@@ -78,12 +77,14 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems:'center',
     justifyContent: 'center',
+    fontSize: 18,
   },
   leftBtnTxt: {
     color: '#777',
-    borderRightWidth: 1,
+    borderTopWidth: 1,
     borderStyle: 'solid',
-    borderRightColor: '#eee' 
+    borderTopColor: '#eee',
+    fontSize: 18,
   },
   rightBtn: {
     flexDirection: 'row',
@@ -91,8 +92,10 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems:'center',
     justifyContent: 'center',
+    fontSize: 18,
   },
   rightBtnTxt: {
-    color: '#E24B92'
+    color: '#E24B92',
+    fontSize: 18,
   }
 })

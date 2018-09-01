@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   },
   leftBtnTxt: {
     color: '#777',
+    fontSize: 18
   },
   rightBtn: {
     flex: 1,
@@ -156,6 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rightBtnTxt: {
-    color: '#E24B92'
+    color: '#E24B92',
+    fontSize: 18
   }
 })

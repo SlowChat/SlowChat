@@ -25,8 +25,8 @@ export default class EmailList extends Component {
   }
 
   onLeftPress = () => {
-    const { item, onPress, totalScore, navigate } = this.props;
-    if (totalScore >= 10) {
+    const { item, onPress, totalScore, navigate, cancelScore } = this.props;
+    if (totalScore >= cancelScore) {
       onPress(item.id)
     } else {
       navigate('Rule')
@@ -122,7 +122,7 @@ export default class EmailList extends Component {
     let leftBtxTxt = ''
     if (status === 'draft') {
       leftBtxTxt = '取消'
-    } else if (status === 'reservation' && totalScore >=10) {
+    } else if (status === 'reservation' && totalScore >= cancelScore) {
       leftBtxTxt = '取消发送'
     } else {
       leftBtxTxt = '查看积分规则'
@@ -152,7 +152,7 @@ export default class EmailList extends Component {
               status === 'reservation' ? (
                 <View style={styles.cont}>
                   <Text style={{color: '#999', marginBottom: 10}}>取消发送将从您的积分账户中扣除{cancelScore}积分</Text>
-                  <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>{totalScore >= 10 ? `我的积分：${totalScore}` : `当前积分：${totalScore}（不足）`}</Text>
+                  <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>{totalScore >= cancelScore ? `我的积分：${totalScore}` : `当前积分：${totalScore}（不足）`}</Text>
                 </View>
               ) : (
                 <View style={styles.cont}>
