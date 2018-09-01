@@ -47,7 +47,7 @@ export default class AwardTip extends PureComponent {
         animationType='fade'
         transparent
         visible={visible}
-        onRequestClose={() => {this.onRequestClose()}}
+        onRequestClose={this.hide}
       >
         <TouchableWithoutFeedback onPress={this.hide}>
           <View style={styles.awardViewWrap}>

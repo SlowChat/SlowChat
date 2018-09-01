@@ -130,29 +130,28 @@ export default class Share extends PureComponent<Props> {
       uri = uri.replace('file://', '')
       this.uri = uri
     }
-    post('api/user/addShareScore.html')
+    try {
+      await post('api/user/addShareScore.html')
+      this.shareSucc = true
+    } catch (e) {
+    }
     const message = {
       type: 'image',
       platform,
       imagePath: this.uri,
       imageArray: [this.uri]
     }
-    JShareModule.share(message, ({ state }) => {
-      if (state == 'success') {
-        this.shareSucc = true
-      } else if (state == 'fail') {
-        this.refs.toast.show('分享失败')
-      }
-      console.log("share succeed, map: ", state);
-    }, (map) => {
-      console.log("share failed, map: ", map);
-      if (this.state.moreModal) {
-        this.setState({ moreModal: false }, () => {
-          this.refs.toast.show('分享失败')
-        })
-      } else {
-        this.refs.toast.show('分享失败')
-      }
+    this.setState({ moreModal: false }, () => {
+      JShareModule.share(message, ({ state }) => {
+        // if (state == 'success') {
+        // } else if (state == 'fail') {
+        //   // this.refs.toast.show('分享失败')
+        // }
+        console.log("share succeed, map: ", state);
+      }, (map) => {
+        console.log("share failed, map: ", map);
+        // this.refs.toast.show('分享失败')
+      })
     })
   }
 
@@ -231,7 +230,7 @@ export default class Share extends PureComponent<Props> {
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
             <View style={styles.moreModal}>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleWechat('wechat_timeline')}>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleWechat('wechat_timeLine')}>
                 <Text style={styles.moreTxt}>微信朋友圈</Text>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qq')}>

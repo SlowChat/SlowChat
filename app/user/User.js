@@ -177,7 +177,7 @@ export default class User extends Component {
   testPush = () => {
     if (__DEV__) {
       post('api/common/pushTest.html', {
-        id: "101d8559091283ad799", //"13065ffa4e532ca9f43",
+        id: Storage.getPushID(), // "101d8559091283ad799", //"13065ffa4e532ca9f43",
         title: "测试推送",
         info: {
           id: 9,
