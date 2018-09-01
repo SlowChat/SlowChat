@@ -72,7 +72,6 @@ class Setting extends Component {
     })
   }
   handleSwitch = (value) => {
-
     this.setState({
       switchBtn: value
     }, async () => {

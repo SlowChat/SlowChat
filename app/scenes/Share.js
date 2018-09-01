@@ -48,6 +48,10 @@ export default class Share extends PureComponent<Props> {
   }
 
   async componentDidMount() {
+    if (Platform.OS == 'ios') {
+      JShareModule.setup()
+    }
+
     AppState.addEventListener('change', this.handleAppStateChange)
   }
   componentWillUnmount() {
