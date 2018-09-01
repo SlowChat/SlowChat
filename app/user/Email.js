@@ -53,7 +53,7 @@ export default class Email extends Component {
     isDel: false,
     isAllSelect: false,
     isDelClick: false,
-    idList: [], // 全选删除id
+    idList: '', // 全选删除id
     isSucc: false
   }
   sendState = null //邮件状态 1 待发送 2已发送 3取消
@@ -93,7 +93,7 @@ export default class Email extends Component {
     this.setState({
       isDel: true
     })
-    let title = `已选择${this.state.idList.length}邮件`
+    let title = `已选择${this.state.idList.split(',').length}邮件`
     this.props.navigation.setParams({
       title,
       headerLeft: (
@@ -106,7 +106,7 @@ export default class Email extends Component {
   }
 
   initData(state = {}) {
-    this.setState({ showFoot: 0, dataArray: [], idList: [], ...state }, () => {
+    this.setState({ showFoot: 0, dataArray: [], idList: '', ...state }, () => {
       this.page = 0
       this.fetchData(0)
       setTimeout(() => {
@@ -193,15 +193,18 @@ export default class Email extends Component {
   }
 
   onSelDelItem = (id) => {
-    var newArr = this.state.idList;
-    if (newArr.length >= 1) {
-      for(var i in newArr) {
-        if(newArr.indexOf(id) === -1) {
-          newArr.push(id)
-        }
+    let newArr = this.state.idList;
+    console.log(newArr)
+    if (this.state.idList.split(',').length >= 1){
+      if (this.state.idList.indexOf(id) === -1) {
+        console.log(1111111)
+        newArr = newArr + id + ','
+      } else {
+        newArr = newArr.replace(`${id.toString()},`, '')
+        console.log(newArr)
       }
     } else {
-      newArr.push(id)
+      newArr = id
     }
     this.setState({
       idList: newArr
@@ -236,8 +239,9 @@ export default class Email extends Component {
   }
 
   submitDelete = () => {
-    console.log(this.state.idList)
-    post('api/mail/delDraft.html', {id: this.state.idList}).then(res => {
+    const { idList } = this.state;
+    const id = idList.substring(0, idList.length-1)
+    post('api/mail/delDraft.html', {id: id}).then(res => {
       const { code } = res
       if (code === 1) {
         this.refs.toast.show('删除成功');
@@ -256,14 +260,15 @@ export default class Email extends Component {
     this.setState({
       isAllSelect: false,
       isDel: false,
-      idList: []
+      idList: ''
     })
   }
 
   handleAllSelect = () => {
     this.state.dataArray.map((item, index) => (
       this.setState({
-        idList: this.state.idList.push(item.id)
+        // idList: this.state.idList.push(item.id)
+        idList: `${this.state.idList},${item.id}`
       })
 
     ))
@@ -388,18 +393,21 @@ const styles = StyleSheet.create({
     left: 20,
     width: 30,
     height: 30,
-    zIndex: 10
+    zIndex: 10,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderColor: '#CCC',
   },
   search: {
     flexDirection: 'row',
     width: '87%',
     alignItems: 'center',
-    paddingLeft: 35,
+    paddingLeft: 40,
     height: 32,
     backgroundColor: '#fff',
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#CCCCCC',
+    fontSize: 16,
     padding: 0
   },
   result: {

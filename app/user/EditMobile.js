@@ -33,7 +33,8 @@ export default class EditMobile extends Component {
       isVcodeClick: false,
       initStatus: false,  //验证手机
       isSucc: false,   //成功提示框
-      editable: mobile ? false : true
+      editable: mobile ? false : true,
+      resetVertify: false,
     }
   }
   componentDidMount() {
@@ -75,6 +76,8 @@ export default class EditMobile extends Component {
               btnText: '绑定',
               isClick: false,
               initStatus: true,
+              editable: true,
+              resetVertify: !this.state.resetVertify,
             })
           } else {
             this.setState({isSucc: true})
@@ -147,7 +150,7 @@ export default class EditMobile extends Component {
               value={this.state.mobile}
               maxLength={11}
             />
-          <VerifyCode username={this.state.mobile} onTip={this.showTip}  />
+          <VerifyCode reset={this.state.resetVertify} username={this.state.mobile} onTip={this.showTip}  />
           </View>
           <View style={styles.menu}>
             <Text style={styles.label}>验证码</Text>

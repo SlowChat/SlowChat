@@ -13,7 +13,7 @@ import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
 import Alert from '../components/Alert'
 import Storage from '../utils/storage'
-import { post } from '../utils/request'
+import { post, get } from '../utils/request'
 
 import { CODE_PUSH_KEY } from '../constants'
 import codePush from 'react-native-code-push'
@@ -31,8 +31,41 @@ class Setting extends Component {
   }
   state = {
     appVersion: '1.0.0',
-    switchBtn: true
+    switchBtn: true,
+    mobile: '',
+    userEmail: '',
+    username: '',
+    avatar: '',
+    level: '',
   }
+
+  async componentWillMount() {
+    this.viewAppear = this.props.navigation.addListener(
+      'willFocus', payload => {
+        this.getData()
+      }
+    )
+  }
+
+  getData() {
+    get('api/user/userInfo.html').then(res => {
+      console.log(res);
+      const { code, data } = res
+      if (code === 1) {
+        if (data.sign && data.sign.count) this.setState({ sign: data.sign })
+        this.setState({
+          mobile: data.mobile,
+          userEmail: data.user_email,
+          username: data.user_nickname,
+          avatar: data.avatar,
+          level: data.level,
+        })
+      }
+    }).catch(e => {
+      console.log(e)
+    })
+  }
+
   componentDidMount() {
     this.setState({
       appVersion: DeviceInfo.getVersion()
@@ -132,21 +165,22 @@ class Setting extends Component {
     const { switchBtn } = this.state
     const { navigate } = this.props.navigation;
     const { params = {} } = this.props.navigation.state;
+    const { username, level, avatar, mobile, userEmail } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar username={params.username} level={params.level} avatar={params.avatar} />
+        <Avatar username={username} level={level} avatar={avatar} />
         <View style={styles.link}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditMobile', { mobile: params.mobile })}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditMobile', { mobile: mobile })}>
             <Text style={styles.label}>绑定手机号</Text>
-            <Text style={styles.text}>{params.mobile}</Text>
+            <Text style={styles.text}>{mobile}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditEmail', { userEmail: params.userEmail })}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditEmail', { userEmail: userEmail })}>
             <Text style={styles.label}>绑定邮箱</Text>
-            <Text style={styles.text}>{params.userEmail}</Text>
+            <Text style={styles.text}>{userEmail}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditPassword', { mobile: params.mobile, userEmail: params.userEmail })}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditPassword', { mobile: mobile, userEmail: userEmail })}>
             <Text style={styles.label}>修改密码</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>

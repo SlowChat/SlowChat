@@ -77,6 +77,10 @@ export default class EmailList extends Component {
       return (
         <View style={styles.status}>
           <View style={styles.statusLeft}>
+            <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
+            <Text style={styles.num}>{item.looks}</Text>
+            <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
+            <Text style={styles.num}>{item.comments}</Text>
           </View>
           <TouchableOpacity style={styles.btn} onPress={this.cancel}>
             <Text style={styles.btnTxt}>取消发送</Text>
@@ -207,7 +211,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   timeTxt: {
-    color: '#B4B4B4'
+    color: '#B4B4B4',
+    textAlign: 'right',
   },
   status: {
     flex: 1,
@@ -260,7 +265,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnTxt: {
-    color: '#666'
+    color: '#666',
+    fontSize: 16
   },
   cont: {
     padding: 30,

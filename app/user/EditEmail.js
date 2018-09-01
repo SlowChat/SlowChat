@@ -13,6 +13,7 @@ import { get, post } from '../utils/request'
 import { isEmail } from '../utils/util'
 import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
+import ErrorModal from '../components/ErrorModal'
 
 
 export default class EditEmail extends Component {
@@ -34,7 +35,8 @@ export default class EditEmail extends Component {
       isVcodeClick: false,
       initStatus: false,  //验证手机
       isSucc: false,   //成功提示框
-      editable: userEmail ? false : true
+      editable: userEmail ? false : true,
+      resetVertify: false,
     }
   }
 
@@ -65,7 +67,6 @@ export default class EditEmail extends Component {
     if (isClick) {
       post(url, { email: email, verification_code: vCode }, false).then((res) => {
         if (res.code == 1) {
-
           if (status === 'check') {
             this.refs.toast.show(res.msg);
             this.setState({
@@ -76,13 +77,16 @@ export default class EditEmail extends Component {
               btnText: '绑定',
               isClick: false,
               initStatus: true,
-              isVcodeClick: false
+              editable: true,
+              resetVertify: !this.state.resetVertify,
             })
           } else {
             this.setState({isSucc: true})
           }
         } else {
-          this.refs.toast.show(res.msg);
+          this.refs.errorModalRef.show({
+            txt: res.msg
+          })
         }
       })
     }
@@ -143,7 +147,7 @@ export default class EditEmail extends Component {
               placeholder='请输入您的邮箱'
               value={this.state.email}
             />
-            <VerifyCode username={this.state.email} onTip={this.showTip}  />
+            <VerifyCode reset={this.state.resetVertify} username={this.state.email} onTip={this.showTip}  />
             {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
               <View style={styles.btn}>
                 <Text style={styles.btnTxt}>获取验证码</Text>
@@ -166,6 +170,7 @@ export default class EditEmail extends Component {
           </TouchableWithoutFeedback>
         </ScrollView>
         <Toast ref="toast" position="center" />
+        <ErrorModal ref="errorModalRef" />
         <SuccessModal
           txt={'邮箱绑定成功'}
           btn={'返回'}
