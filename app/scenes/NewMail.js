@@ -348,7 +348,7 @@ export default class NewMail extends Component {
         const res = await post(url, params)
         console.log(res);
         if (res.code == 10001) {
-          this.setState({showLoading: false}, () => {
+          this.setState({showLoading: false, attachs: params.attach}, () => {
             this.props.navigation.navigate('Login')
           })
         } else if (res.code == 1) {
@@ -387,7 +387,7 @@ export default class NewMail extends Component {
         }
       } catch (e) {
         if (e.code == 10001) {
-          this.setState({showLoading: false}, () => {
+          this.setState({showLoading: false, attachs: params.attach}, () => {
             this.props.navigation.navigate('Login')
           })
         } else {
