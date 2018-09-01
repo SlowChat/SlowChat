@@ -10,7 +10,7 @@ import {
   ScrollView,
   Keyboard,
   TouchableOpacity,
-  Alert,
+  Platform,
 } from 'react-native';
 
 // import { openFile } from '../utils/opendoc'
@@ -227,7 +227,11 @@ export default class NewMail extends Component {
   checkParams(showTip) {
     const { title, content } = this.state.params
     const tips = []
-    if (!this.email) tips.push('收件人')
+    if (Platform.OS == 'ios') {
+      if (!this.email) tips.push('收件人')
+    } else {
+      if (!this.state.params.email) tips.push('收件人')
+    }
     //  || !isEmail(email)
     if (!title) tips.push('主题')
     // if (!send_time) tips.push('发信时间')
@@ -264,8 +268,9 @@ export default class NewMail extends Component {
     this.setState({ showLoading: true }, async () => {
       try {
         const params = {...this.state.params}
-        params.email = this.email
-        params.self = '发给自己' == this.email ? 1 : 0
+        const email = Platform.OS == 'ios' ? this.email : params.email
+        params.email = email
+        params.self = '发给自己' == email ? 1 : 0
         params.attach = await this.uploadFile()
         const url = params.id ? 'api/mail/update.html' : 'api/mail/add.html'
         const res = await post(url, params)
@@ -302,6 +307,9 @@ export default class NewMail extends Component {
     this.setState({ showLoading: true }, async () => {
       try {
         const params = {...this.state.params}
+        const email = Platform.OS == 'ios' ? this.email : params.email
+        params.email = email
+        // params.self = '发给自己' == email ? 1 : 0
         params.attach = await this.uploadFile()
         const res = await post('api/mail/save.html', params)
         if (res.code == 10001) {
@@ -399,7 +407,6 @@ export default class NewMail extends Component {
   showToast = (txt) => {
     this.refs.toast.show(txt)
   }
-
   render() {
     // keyboardType="email-address"
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
@@ -411,11 +418,18 @@ export default class NewMail extends Component {
           <HeaderTip tip="爱慢邮——让我们回到未来" />
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
-            <TextInput autoFocus style={styles.input}
-              value={params.email}
-              onChangeText={this.handleMailChange}
-              onEndEditing={this.onEndEditMail}
-              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            {
+              Platform.OS == 'ios' ?
+                <TextInput autoFocus style={styles.input}
+                  value={params.email}
+                  onChangeText={this.handleMailChange}
+                  onEndEditing={this.onEndEditMail}
+                  autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+              : <TextInput autoFocus style={styles.input}
+                value={params.email}
+                onChangeText={(text) => this.setParams('email', text)}
+                autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+            }
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={this.sendMe}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
