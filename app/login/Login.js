@@ -26,8 +26,8 @@ export default class Login extends PureComponent<Props> {
     header: null,
   }
   state = {
-    username: '15216748429',
-    password: '123456',
+    username: '', // 15216748429
+    password: '', // 123456
     showLoading: false
   }
   componentWillUnmount() {
