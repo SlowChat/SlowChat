@@ -1,7 +1,12 @@
 package com.slowchat;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 
+import com.baidu.mobstat.MtjConfig;
+import com.baidu.mobstat.StatService;
 import com.facebook.react.ReactApplication;
 import com.baidu.reactnativemobstat.RNBaiduMobStatPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -85,5 +90,39 @@ public class MainApplication extends Application implements ReactApplication {
     // 在 Init 之前调用，设置为 true，则会打印 debug 级别日志，否则只会打印 warning 级别以上的日志
     // JShareInterface.setDebugMode(true);
     JShareInterface.init(this);             //   <-- Init here
+    StatService.setDebugOn(true);
+//    StatService.setTrackEnabled(true);
+    String JPUSH_APPKEY = getMetaDataValue(this, "JPUSH_APPKEY",
+            "c4d58ccfd28897a5d21e93ea");
+    StatService.setPushId(this, MtjConfig.PushPlatform.JIGUANG, JPUSH_APPKEY);
+    StatService.autoTrace(this, true, true);
+    StatService.start(this);
+  }
+
+  public static String getMetaDataValue(Context context, String name,
+                                        String def) {
+    String value = getMetaDataValue(context, name);
+    return (value == null) ? def : value;
+  }
+
+  public static String getMetaDataValue(Context context, String name) {
+    Object value = null;
+    PackageManager packageManager = context.getPackageManager();
+    ApplicationInfo applicationInfo;
+    try {
+      applicationInfo = packageManager.getApplicationInfo(
+              context.getPackageName(), PackageManager.GET_META_DATA);
+      if (applicationInfo != null && applicationInfo.metaData != null) {
+        value = applicationInfo.metaData.get(name);
+      }
+    } catch (PackageManager.NameNotFoundException e) {
+      throw new RuntimeException(
+              "Could not read the name in the manifest file.", e);
+    }
+    if (value == null) {
+      throw new RuntimeException("The name '" + name
+              + "' is not defined in the manifest file's meta data.");
+    }
+    return value.toString();
   }
 }

@@ -1,5 +1,5 @@
-export default [
-  // "app.json",
+const modulePaths = [
+  "app.json",
   "app/App.js",
   "app/BottomTabs.js",
   "app/Start.js",
@@ -33,3 +33,5 @@ export default [
   "app/utils/url_stringify.js",
   "index.js"
 ]
+
+module.exports = modulePaths
