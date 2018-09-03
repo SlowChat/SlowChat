@@ -23,6 +23,12 @@ public class MainActivity extends ReactActivity {
         SplashScreen.show(this);
       super.onCreate(savedInstanceState);
       JPushInterface.init(this);
+
+//        // 获取测试设备ID
+//        String testDeviceId = StatService.getTestDeviceId(this.getApplicationContext());
+//// 日志输出
+//        android.util.Log.d("BaiduMobStat", "Test DeviceId : " + testDeviceId);
+
     }
 
     @Override

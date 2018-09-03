@@ -45,19 +45,27 @@ export default class VerifyCode extends PureComponent {
     this.clearTimer()
   }
 
-  onVrfyCode = () => {
+  onVrfyCode = async () => {
     if (this.loading) return
     const { username } = this.props;
     this.loading = true
     if (this.isActive) {
-      post('api/verification_code/send.html', { username: username }, true).then((res) => {
-        if (res.code == 1) {
-          this.startTimer()
-        }
+      this.startTimer()
+      try {
+        const res = await post('api/verification_code/send.html', { username }, true)
         this.loading = false
         const { onTip } = this.props
         onTip && onTip(res.msg)
-      })
+      } catch (e) {
+        this.loading = false
+        this.clearTimer()
+        this.setState({
+          vrfyText: '获取验证码',
+          isVrfy: true
+        })
+        const { onTip } = this.props
+        onTip && onTip('验证码发送失败')
+      }
     }
   }
 
@@ -80,7 +88,7 @@ export default class VerifyCode extends PureComponent {
           isVrfy: true
         });
         time = 0;
-        this.timer && clearInterval(this.timer)
+        this.clearTimer()
       }
     }, 1000);
   }

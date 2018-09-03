@@ -7,7 +7,7 @@ import {name as appName} from './app.json';
 
 AppRegistry.registerComponent(appName, () => App);
 
-
+//
 // const modules = require.getModules();
 // const moduleIds = Object.keys(modules);
 // const loadedModuleNames = moduleIds

@@ -27,7 +27,7 @@ const StackApp = (isLogin) => createStackNavigator({
   Regist: { screen: require('./login/Regist').default },
   RegistSucc: { screen: require('./login/RegistSucc').default },
   // ErrorTip: { screen: ErrorTipScreen },
-  User: { screen: require('./user/User').default },
+  // User: { screen: require('./user/User').default },
   Setting: { screen: require('./user/Setting').default },
   Email: { screen: require('./user/Email').default },
   Information: { screen: require('./user/Information').default },
@@ -37,7 +37,6 @@ const StackApp = (isLogin) => createStackNavigator({
   EditEmailPassword: { screen: require('./user/EditEmailPassword').default },
   About: { screen: require('./user/About').default },
   Rule: { screen: require('./user/Rule').default },
-  // Protocol: { screen: require('./user/Protocol').default },
   Push: { screen: require('./user/Push').default },
   Notice: { screen: require('./user/Notice').default },
   Message: { screen: require('./user/Message').default },
@@ -48,7 +47,6 @@ const StackApp = (isLogin) => createStackNavigator({
   DraftDetail: { screen: require('./scenes/DraftDetail').default },
   Webview: { screen: require('./h5/Webview').default },
   LocalWebview: { screen: require('./h5/LocalWebview').default },
-  // ReserveDetail: { screen: ReserveDetailScreen },
   Share: {
     screen: require('./scenes/Share').default,
     navigationOptions: {

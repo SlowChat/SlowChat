@@ -26,8 +26,8 @@ export default class Login extends PureComponent<Props> {
     header: null,
   }
   state = {
-    username: '15216748429',
-    password: '123456',
+    username: '', // 15216748429
+    password: '', // 123456
     showLoading: false
   }
   componentWillUnmount() {
@@ -61,6 +61,7 @@ export default class Login extends PureComponent<Props> {
       params.code = code
     }
     try {
+      this.startLoading()
       this.loading = true
       const res = await post('api/user/login.html', params, true)
       if (res.code == 1) {
@@ -80,13 +81,14 @@ export default class Login extends PureComponent<Props> {
       console.log(err);
       this.dealError()
     }
+  }
+  startLoading() {
     this.timer = setTimeout(() => {
       if (this.loading) {
         this.setState({ showLoading: true })
       }
     }, 200)
   }
-
   goBack = () => {
     this.props.navigation.goBack()
   }

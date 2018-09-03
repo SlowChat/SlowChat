@@ -6,13 +6,13 @@
  */
 
 #import "AppDelegate.h"
-#import <CodePush/CodePush.h>
+//#import <CodePush/CodePush.h>
 #import <RCTJPushModule.h>
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
 #endif
 
-//#import "CodePush.h"
+#import "CodePush.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -69,20 +69,31 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [JPUSHService setupWithOption:launchOptions appKey:@"c4d58ccfd28897a5d21e93ea"
-                        channel:nil apsForProduction:nil];
 
   NSURL *jsCodeLocation;
-
-
+  Boolean isProduction = YES;
     #ifdef DEBUG
-//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.104:8081/index.bundle?platform=ios&dev=true"];
+//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.100:8081/index.bundle?platform=ios&dev=true"];
         jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+    isProduction = NO;
     #else
         jsCodeLocation = [CodePush bundleURL];
     #endif
   
-  [[BaiduMobStat defaultStat] startWithAppId:@"xxx"];
+  NSString* registrationID = @"c4d58ccfd28897a5d21e93ea";
+  [JPUSHService setupWithOption:launchOptions appKey:registrationID
+                           channel:nil apsForProduction:isProduction];
+  
+//  [JPUSHService setupWithOption:launchOptions appKey:registrationID
+//                        channel:nil apsForProduction:nil];
+  
+  
+//  [[BaiduMobStat defaultStat] setEnableDebugOn:YES];
+//  [[BaiduMobStat defaultStat] getTestDeviceId];
+  [[BaiduMobStat defaultStat] setPushId:[JPUSHService registrationID] platform:BaiduMobStatPushPlatformJiGuang];
+  
+  [[BaiduMobStat defaultStat] setEnableDebugOn:YES];
+  [[BaiduMobStat defaultStat] startWithAppId:@"489d643251"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"SlowChat"

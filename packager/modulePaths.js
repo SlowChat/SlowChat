@@ -1,3 +1,37 @@
-export default [
-  
+const modulePaths = [
+  "app.json",
+  "app/App.js",
+  "app/BottomTabs.js",
+  "app/Start.js",
+  "app/components/Avatar.js",
+  "app/components/Blank.js",
+  "app/components/ErrorTip.js",
+  "app/components/Footer.js",
+  "app/components/HeaderTip.js",
+  "app/components/HomeItem.js",
+  "app/components/Loading.js",
+  "app/components/SearchBox.js",
+  "app/components/SuccessModal.js",
+  "app/components/Swiper.js",
+  "app/components/TopTab.js",
+  "app/constants.js",
+  "app/home/Home.js",
+  "app/home/Null.js",
+  "app/home/Space.js",
+  "app/images/default_avatar_80.png",
+  "app/images/icon_comment.png",
+  "app/images/icon_eyes.png",
+  "app/images/icon_forward.png",
+  "app/user/User.js",
+  "app/utils/date.js",
+  "app/utils/global.js",
+  "app/utils/icon.js",
+  "app/utils/query.js",
+  "app/utils/request.js",
+  "app/utils/storage.js",
+  "app/utils/url.js",
+  "app/utils/url_stringify.js",
+  "index.js"
 ]
+
+module.exports = modulePaths

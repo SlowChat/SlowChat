@@ -61,6 +61,7 @@ export default class Regist extends Component {
       this.showErrorModal('请同意慢邮Manyou.info网站软件许可使用协议')
       return
     }
+    this.startLoading()
     this.loading = true
     const { username, password, verification_code } = this.state
     const params = {
@@ -78,6 +79,9 @@ export default class Regist extends Component {
     }).catch(e => {
       this.dealError()
     })
+  }
+
+  startLoading() {
     this.timer = setTimeout(() => {
       if (this.loading) {
         this.setState({ showLoading: true })

@@ -17,11 +17,8 @@ import ErrorModal from '../components/ErrorModal'
 
 
 export default class EditEmail extends Component {
-  static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    return {
-      title: '修改绑定邮箱',
-    }
+  static navigationOptions = {
+    title: '修改绑定邮箱',
   }
   constructor(props) {
     super(props)
@@ -42,7 +39,7 @@ export default class EditEmail extends Component {
 
   componentDidMount() {
     const { userEmail } = this.props.navigation.state.params || {}
-    if (userEmail !== '') {
+    if (userEmail) {
       this.setState({
         btnText: '验证后绑定新邮箱',
         status: 'check'

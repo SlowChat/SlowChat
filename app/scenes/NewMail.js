@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 // import { openFile } from '../utils/opendoc'
-
+import {HeaderBackButton} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
@@ -23,20 +23,23 @@ import HeaderTip from '../components/HeaderTip'
 import FileChoose from '../components/FileChoose'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
+import Alert from '../components/Alert'
 import Loading from '../components/Loading'
 import ICONS from '../utils/icon'
 import dateFormat from '../utils/date'
-import { post, upload, rnfsUpload } from '../utils/request'
+// rnfsUpload
+import { get, post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
+const nullFn = () => {}
 export default class NewMail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
-    if (!params.rightOnPress) {
-      params.rightOnPress = () => {}
-    }
+    params.leftOnPress = params.leftOnPress || nullFn
+    params.rightOnPress = params.rightOnPress || nullFn
     return {
       title: '写信',
+      headerLeft: (<HeaderBackButton tintColor="#E24B92" onPress={params.leftOnPress} />),
       headerRight: (
         <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
           <Text style={[{color: params.enable ? '#E24B92' : '#F9DBE9'}, styles.headerRightTxt]}>发送</Text>
@@ -51,7 +54,7 @@ export default class NewMail extends Component {
       // ),
     }
   }
-
+  email = ''
   state = {
     isSend: true,
     isSucc: false,
@@ -65,7 +68,8 @@ export default class NewMail extends Component {
       title: '',
       content: '',
       email: '',
-      send_time: this.getSendTime(),
+      send_date: dateFormat(new Date(), 'yyyy-MM-dd'),
+      send_time: dateFormat(new Date(), 'hh:mm'),
       type: 2,
     },
     defaultValue: {
@@ -77,15 +81,21 @@ export default class NewMail extends Component {
 
   componentWillMount() {
     this.getData()
+    this.viewAppear = this.props.navigation.addListener(
+      'willFocus', payload => {
+        this.getUserInfo()
+      }
+    )
   }
 
   componentDidMount() {
-    this.props.navigation.setParams({
-      rightOnPress: this.handleSend
-    })
     this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
     this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardShow)
     this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardHide)
+    this.props.navigation.setParams({
+      rightOnPress: this.handleSend,
+      leftOnPress: this.customBack
+    })
   }
 
   shouldComponentUpdate() {
@@ -97,6 +107,7 @@ export default class NewMail extends Component {
   }
 
   componentWillUnmount() {
+    this.viewAppear.remove()
     this.keyboardWillShowSub.remove()
     this.keyboardShowSub.remove()
     this.keyboardHideSub.remove()
@@ -120,15 +131,41 @@ export default class NewMail extends Component {
     }
   }
 
-  getSendTime(send_time) {
-    let curr = send_time || dateFormat()
-    if (curr.indexOf(':00') > -1) {
-      return curr
+  customBack = () => {
+    this.alert.show({
+      title: '提示',
+      txt: '是否需要保存草稿',
+      leftBtnTxt: '返回',
+      rightBtnTxt: '保存草稿',
+      onOk: () => {
+        this.alert.hide()
+        this.handleSave()
+      },
+      onCancel: () => {
+        this.alert.hide()
+        requestAnimationFrame(() => {
+          this.props.navigation.goBack()
+        })
+      }
+    })
+  }
+
+  async getUserInfo() {
+    this.user_email = ''
+    try {
+      const res = await get('api/user/userInfo.html')
+      this.unLogin = false
+      if (res.code === 1) {
+        this.user_email = res.data.user_email
+        if (this.state.showSendMe && this.isMyEmail()) {
+          this.setState({ showSendMe: false })
+        }
+      } else if (res.code == 10001) {
+        this.unLogin = true
+      }
+    } catch (e) {
+      this.unLogin = false
     }
-    curr = curr.replace(/\-/g, '/')
-    const timesample = new Date(curr).getTime()
-    const next_hour = Math.ceil(timesample / 1000 / 3600) * 1000 * 3600
-    return dateFormat(new Date(next_hour))
   }
 
   async getData() {
@@ -141,14 +178,17 @@ export default class NewMail extends Component {
       console.log(res);
       if (res.code == 1) {
         const { items } = res.data
+        const [ send_date, send_time ] = items.send_time
+        this.email = items.email
         this.setState({
-          showSendMe: items.email != '发给自己',
+          showSendMe: this.isMyEmail(items.email),
           params: {
             id: items.id,
             email: items.email,
             title: items.title,
             content: items.content,
-            send_time: items.send_time,
+            send_date,
+            send_time,
             type: items.type || 2,
           },
           defaultValue: {
@@ -169,21 +209,27 @@ export default class NewMail extends Component {
     }
   }
 
-  handleDatePicker = (datetime) => {
-    let send_time = datetime
-    if (datetime.indexOf(':00') == -1) {
-      this.refs.toast.show('邮件发送时间为整点，将自动调整为下一时刻整点')
-      send_time = this.getSendTime(datetime)
+  isMyEmail(email) {
+    if (!email) {
+      email = Platform.OS == 'ios' ? this.email : this.state.params.email
     }
-    this.setParams('send_time', send_time)
+    return email && this.user_email && email == this.user_email
+  }
+
+  handleDatePicker = (date) => {
+    this.setParams('send_date', date)
+  }
+
+  handleTimePicker = (time) => {
+    this.setParams('send_time', time)
   }
 
   handleMailChange = (value) => {
     this.email = value
     let { showSendMe } = this.state
-    if (value == '发给自己' && showSendMe != false) {
+    if (this.isMyEmail(value) && showSendMe != false) {
       showSendMe = false
-    } else if (value != '发给自己' && showSendMe != true) {
+    } else if (!this.isMyEmail(value) && showSendMe != true) {
       showSendMe = true
     }
     if (this.state.showSendMe != showSendMe) {
@@ -195,20 +241,46 @@ export default class NewMail extends Component {
     this.email = e.nativeEvent.text
   }
   sendMe = () => {
-    if (this.email == '发给自己') return
-    const { params } = this.state
-    params.email = this.email || ''
-    this.setState({ params }, () => {
-      requestAnimationFrame(() => {
-        this.email = '发给自己'
-        this.setParams('email', '发给自己')
+    if (this.isMyEmail(this.email)) return
+    if (this.unLogin) {
+      this.props.navigation.navigate('Login')
+      return
+    }
+    if (!this.user_email) {
+      this.alert.show({
+        title: '提示',
+        txt: '您的邮箱尚未绑定',
+        leftBtnTxt: '再想想',
+        rightBtnTxt: '去绑定',
+        onOk: () => {
+          this.alert.hide()
+          this.props.navigation.navigate('EditEmail')
+        }
       })
-    })
+      return
+    }
+    if (Platform.OS == 'ios') {
+      const { params } = this.state
+      params.email = this.email || ''
+      this.setState({ params }, () => {
+        requestAnimationFrame(() => {
+          this.email = this.user_email
+          this.setParams('email', this.user_email)
+        })
+      })
+    } else {
+      this.setParams('email', this.user_email)
+    }
   }
   setParams(key, value) {
+    let showSendMe = this.state.showSendMe
+    if (key == 'email') {
+      showSendMe = !this.isMyEmail(value)
+    }
     const { params } = this.state
     params[key] = value
     this.setState({
+      showSendMe,
       params,
     }, () => {
       this.setSendStatus()
@@ -256,27 +328,54 @@ export default class NewMail extends Component {
     return false
   }
 
-  handleSend = () => {
-    if (this.state.showLoading) return false
-    if (this.state.params.send_time < dateFormat()) {
-      let tip = '发信时间不符合要求！'
-      this.refs.toast.show(tip)
-      return
+  checkPre(isSave) {
+    if (this.unLogin) {
+      this.props.navigation.navigate('Login')
+      return false
     }
-    if (!this.checkParams(true)) return
+    const tips = []
+    if (!isSave) {
+      const email = Platform.OS == 'ios' ? this.email : this.state.params.email
+      if (!email || !isEmail(email)) {
+        tips.push('邮箱格式错误')
+      }
+    }
+    const { send_time, send_date } =  this.state.params
+    const datetime = send_date + ' ' + send_time
+    if (datetime < dateFormat()) {
+      tips.push('发信时间不符合要求')
+    }
+    if (tips.length > 0) {
+      const tip = tips.join('，') + '!'
+      this.refs.toast.show(tip)
+      return false
+    }
+    return true
+  }
 
+  async getParams() {
+    const params = {...this.state.params}
+    const email = Platform.OS == 'ios' ? this.email : params.email
+    params.email = email
+    // params.self = '发给自己' == email ? 1 : 0
+    params.attach = await this.uploadFile()
+    params.send_time = params.send_date + ' ' + params.send_time
+    delete params.send_date
+    return params
+  }
+
+  handleSend = () => {
+    if (this.state.showLoading) return
+    if (!this.checkPre()) return
+    if (!this.checkParams(true)) return
     this.setState({ showLoading: true }, async () => {
       try {
-        const params = {...this.state.params}
-        const email = Platform.OS == 'ios' ? this.email : params.email
-        params.email = email
-        params.self = '发给自己' == email ? 1 : 0
-        params.attach = await this.uploadFile()
+        const params = await this.getParams()
         const url = params.id ? 'api/mail/update.html' : 'api/mail/add.html'
         const res = await post(url, params)
         console.log(res);
         if (res.code == 10001) {
-          this.setState({showLoading: false}, () => {
+          this.setState({showLoading: false, attachs: params.attach}, () => {
             this.props.navigation.navigate('Login')
           })
         } else if (res.code == 1) {
@@ -296,21 +395,13 @@ export default class NewMail extends Component {
       }
     })
   }
-  handleSave = async () => {
-    if (this.state.params.send_time < dateFormat()) {
-      let tip = '发信时间不符合要求！'
-      this.refs.toast.show(tip)
-      return
-    }
+  handleSave = () => {
     if (this.state.showLoading) return
-    if (!this.checkSave()) return
+    if (!this.checkPre(true)) return
+    // if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
       try {
-        const params = {...this.state.params}
-        const email = Platform.OS == 'ios' ? this.email : params.email
-        params.email = email
-        // params.self = '发给自己' == email ? 1 : 0
-        params.attach = await this.uploadFile()
+        const params = await this.getParams()
         const res = await post('api/mail/save.html', params)
         if (res.code == 10001) {
           this.setState({showLoading: false}, () => {
@@ -323,7 +414,7 @@ export default class NewMail extends Component {
         }
       } catch (e) {
         if (e.code == 10001) {
-          this.setState({showLoading: false}, () => {
+          this.setState({showLoading: false, attachs: params.attach}, () => {
             this.props.navigation.navigate('Login')
           })
         } else {
@@ -331,7 +422,6 @@ export default class NewMail extends Component {
         }
       }
     })
-
   }
 
   async uploadFile() {
@@ -449,10 +539,10 @@ export default class NewMail extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.item}>
-            <Text style={styles.label}>发信时间：</Text>
-            <DatePicker style={styles.datepicker} date={params.send_time}
-              locale="zh" is24Hour mode="datetime" format="YYYY-MM-DD HH:mm"
-              minuteInterval={30} minDate={new Date()}
+            <Text style={styles.label}>发信日期：</Text>
+            <DatePicker style={styles.datepicker} date={params.send_date}
+              locale="zh" mode="date" format="YYYY-MM-DD"
+              minDate={new Date()}
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {
@@ -466,6 +556,26 @@ export default class NewMail extends Component {
                 }
               }}
               onDateChange={this.handleDatePicker} />
+            <Image style={styles.arrow} source={ICONS.forward} />
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>发信时间：</Text>
+            <DatePicker style={styles.datepicker} date={params.send_time}
+              locale="zh" is24Hour mode="time" format="HH:mm"
+              minDate={new Date()}
+              confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
+              customStyles={{
+                dateInput: {
+                  // marginLeft: 0,
+                  borderWidth: 0,
+                  color: '#333333',
+                  alignItems: 'flex-start',
+                },
+                btnTextConfirm: {
+                  color: '#E24B92',
+                }
+              }}
+              onDateChange={this.handleTimePicker} />
             <Image style={styles.arrow} source={ICONS.forward} />
           </View>
           <View style={styles.item}>
@@ -502,9 +612,9 @@ export default class NewMail extends Component {
           }}
         />
         <ErrorModal ref="errorModalRef" />
+        <Alert ref={ref => this.alert = ref} />
         {showLoading && <Loading />}
       </View>
-
     )
   }
 }
@@ -599,8 +709,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EEEEEE',
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: '#EEEEEE',
   },
   textarea: {
     padding: 0,
