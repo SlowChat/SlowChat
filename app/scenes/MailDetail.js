@@ -11,6 +11,7 @@ import {
   Easing,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import SendTip from '../components/SendTip'
 import TopTab from '../components/TopTab'
@@ -64,6 +65,7 @@ export default class MailDetail extends Component {
     this.viewAppear = this.props.navigation.addListener(
       'willFocus', payload => {
         this.getData()
+        this.startLoading()
       }
     )
   }
@@ -86,6 +88,17 @@ export default class MailDetail extends Component {
     if (this.timer) {
       clearTimeout(this.timer)
     }
+  }
+
+  startLoading() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+    this.timer = setTimeout(() => {
+      if (this.loading) {
+        this.setState({ showLoading: true })
+      }
+    }, 200)
   }
 
   handleScroll = (e) => {
@@ -188,11 +201,6 @@ export default class MailDetail extends Component {
       this.loading = false
       this.dealError('慢邮信号飘走了，稍后尝试')
     }
-    this.timer = setTimeout(() => {
-      if (this.loading) {
-        this.setState({ showLoading: true })
-      }
-    }, 200)
   }
 
   dealError(msg) {
@@ -298,7 +306,7 @@ export default class MailDetail extends Component {
   render() {
     const { status, activeTab, detail, comments, showLoading } = this.state
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container} forceInset={{top: 'never', bottom: 'always'}}>
         <Animated.View style={[styles.topbar, {top: this.state.top}, {transform: [{translateY: this.state.translateValue}]}]}>
           <TopTab index={activeTab} items={ITEMS} onPress={this.switchTab} />
         </Animated.View>
@@ -330,11 +338,10 @@ export default class MailDetail extends Component {
         <ErrorModal ref="errorModalRef" />
         {showLoading && <Loading />}
         <Toast ref="toast" position="center" />
-      </View>
+      </SafeAreaView>
     )
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -345,8 +352,7 @@ const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
     backgroundColor: '#F6F6F6',
-    paddingBottom: 10,
-    paddingBottom: 50,
+    marginBottom: 60,
   },
 
   topbar: {

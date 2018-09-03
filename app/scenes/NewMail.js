@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 // import { openFile } from '../utils/opendoc'
-
+import {HeaderBackButton} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-easy-toast'
 import DatePicker from 'react-native-datepicker'
@@ -31,14 +31,15 @@ import dateFormat from '../utils/date'
 import { get, post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
+const nullFn = () => {}
 export default class NewMail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
-    if (!params.rightOnPress) {
-      params.rightOnPress = () => {}
-    }
+    params.leftOnPress = params.leftOnPress || nullFn
+    params.rightOnPress = params.rightOnPress || nullFn
     return {
       title: '写信',
+      headerLeft: (<HeaderBackButton tintColor="#E24B92" onPress={params.leftOnPress} />),
       headerRight: (
         <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
           <Text style={[{color: params.enable ? '#E24B92' : '#F9DBE9'}, styles.headerRightTxt]}>发送</Text>
@@ -92,7 +93,8 @@ export default class NewMail extends Component {
     this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardShow)
     this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardHide)
     this.props.navigation.setParams({
-      rightOnPress: this.handleSend
+      rightOnPress: this.handleSend,
+      leftOnPress: this.customBack
     })
   }
 
@@ -127,6 +129,25 @@ export default class NewMail extends Component {
       this.setState({ pickerModal: true })
       this.showChooseFile = false
     }
+  }
+
+  customBack = () => {
+    this.alert.show({
+      title: '提示',
+      txt: '是否需要保存草稿',
+      leftBtnTxt: '返回',
+      rightBtnTxt: '保存草稿',
+      onOk: () => {
+        this.alert.hide()
+        this.handleSave()
+      },
+      onCancel: () => {
+        this.alert.hide()
+        requestAnimationFrame(() => {
+          this.props.navigation.goBack()
+        })
+      }
+    })
   }
 
   async getUserInfo() {
@@ -307,15 +328,17 @@ export default class NewMail extends Component {
     return false
   }
 
-  checkPre() {
+  checkPre(isSave) {
     if (this.unLogin) {
       this.props.navigation.navigate('Login')
       return false
     }
     const tips = []
-    const email = Platform.OS == 'ios' ? this.email : this.state.params.email
-    if (!email || !isEmail(email)) {
-      tips.push('邮箱格式错误')
+    if (!isSave) {
+      const email = Platform.OS == 'ios' ? this.email : this.state.params.email
+      if (!email || !isEmail(email)) {
+        tips.push('邮箱格式错误')
+      }
     }
     const { send_time, send_date } =  this.state.params
     const datetime = send_date + ' ' + send_time
@@ -374,8 +397,8 @@ export default class NewMail extends Component {
   }
   handleSave = () => {
     if (this.state.showLoading) return
-    if (!this.checkPre()) return
-    if (!this.checkSave()) return
+    if (!this.checkPre(true)) return
+    // if (!this.checkSave()) return
     this.setState({ showLoading: true }, async () => {
       try {
         const params = await this.getParams()

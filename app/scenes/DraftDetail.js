@@ -41,6 +41,7 @@ export default class DraftDetail extends Component {
   }
   async getData() {
     if (this.loading) return
+    this.startLoading()
     this.loading = true
     try {
       const id = this.getId()
@@ -61,6 +62,9 @@ export default class DraftDetail extends Component {
       this.loading = false
       this.setState({ showLoading: false })
     }
+  }
+
+  startLoading() {
     this.timer = setTimeout(() => {
       if (this.loading) {
         this.setState({ showLoading: true })

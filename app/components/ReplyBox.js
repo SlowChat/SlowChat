@@ -12,7 +12,7 @@ import {
   Animated,
 } from 'react-native';
 
-import {SafeAreaView} from 'react-navigation'
+// import {SafeAreaView} from 'react-navigation'
 
 export default class ReplyBox extends PureComponent {
   state = {
@@ -62,13 +62,13 @@ export default class ReplyBox extends PureComponent {
   }
   returnBox() {
     const { content } = this.state
-    return <SafeAreaView style={styles.box}>
+    return <View style={styles.box} forceInset={{top: 'never', bottom: 'always'}}>
       <TextInput ref="input" value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
         autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
       <TouchableOpacity style={styles.btn} activeOpacity={0.6} onPress={this.handleReply}>
         <Text style={styles.btnTxt}>发送</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    // </View>
   }
   render() {
     if (Platform.OS == 'android') {
