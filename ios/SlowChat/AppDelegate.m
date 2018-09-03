@@ -71,17 +71,21 @@
 {
 
   NSURL *jsCodeLocation;
-
+  Boolean isProduction = YES;
     #ifdef DEBUG
 //  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.100:8081/index.bundle?platform=ios&dev=true"];
         jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+    isProduction = NO;
     #else
         jsCodeLocation = [CodePush bundleURL];
     #endif
   
   NSString* registrationID = @"c4d58ccfd28897a5d21e93ea";
   [JPUSHService setupWithOption:launchOptions appKey:registrationID
-                        channel:nil apsForProduction:nil];
+                           channel:nil apsForProduction:isProduction];
+  
+//  [JPUSHService setupWithOption:launchOptions appKey:registrationID
+//                        channel:nil apsForProduction:nil];
   
   
 //  [[BaiduMobStat defaultStat] setEnableDebugOn:YES];
