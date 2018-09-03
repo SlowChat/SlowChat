@@ -12,7 +12,7 @@ import {
   Animated,
 } from 'react-native';
 
-// import {SafeAreaView} from 'react-navigation'
+import {SafeAreaView} from 'react-navigation'
 
 export default class ReplyBox extends PureComponent {
   state = {
@@ -62,13 +62,13 @@ export default class ReplyBox extends PureComponent {
   }
   returnBox() {
     const { content } = this.state
-    return <View style={styles.box} forceInset={{top: 'never', bottom: 'always'}}>
+    return <View style={styles.box}>
       <TextInput ref="input" value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
         autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
       <TouchableOpacity style={styles.btn} activeOpacity={0.6} onPress={this.handleReply}>
         <Text style={styles.btnTxt}>发送</Text>
       </TouchableOpacity>
-    // </View>
+    </View>
   }
   render() {
     if (Platform.OS == 'android') {
@@ -77,9 +77,9 @@ export default class ReplyBox extends PureComponent {
       </View>
     }
     return (
-      <Animated.View style={[styles.container, {bottom: this.keyboardHeight}]}>
+      <SafeAreaView style={[styles.container, {bottom: this.keyboardHeight}]} forceInset={{top: 'never', bottom: 'always'}}>
         {this.returnBox()}
-      </Animated.View>
+      </SafeAreaView>
     )
   }
 }
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: '#FFFFFF'
   },
   box: {
     height: 50,

@@ -96,8 +96,19 @@ export default class EmailList extends Component {
             <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
             <Text style={styles.num}>{item.comments}</Text>
           </View>
+          {
+            item.state == 2 ?
+              <View style={styles.statusRight}>
+                <Image style={styles.finish} source={require('../images/icon_finish.png')} />
+                <Text style={styles.rightTxt}>已完成发送</Text>
+              </View> :
+              <View style={styles.statusRight}>
+                <Image style={styles.finish} source={require('../images/icon_fail.png')} />
+                <Text style={styles.rightTxt}>发送失败</Text>
+              </View>
+          }
           <View style={styles.statusRight}>
-          <Image style={styles.finish} source={require('../images/icon_finish.png')} />
+            <Image style={styles.finish} source={require('../images/icon_finish.png')} />
             <Text style={styles.rightTxt}>已完成发送</Text>
           </View>
         </View>

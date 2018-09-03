@@ -14,12 +14,14 @@ const ICONS = {
   1: require('../images/icon_ing.png'),
   2: require('../images/icon_ed.png'),
   3: require('../images/icon_cancel.png'),
+  4: require('../images/icon_fail.png'),
 }
 
 const STATUS = {
   1: '待发送',
   2: '已完成发送',
   3: '已取消发送',
+  4: '发送失败',
 }
 
 
@@ -28,10 +30,11 @@ export default class SendTip extends PureComponent {
   render() {
     const { type, onPress } = this.props
     if (type == null || typeof type == 'undefined') return null
+    const style = type == 4 ? styles.fail : null
     return (
-      <ImageBackground source={require('../images/condition_bar.png')} style={styles.container}>
+      <ImageBackground source={require('../images/condition_bar.png')} style={[styles.container, style]}>
         <Image style={styles.icon} source={ICONS[type]} />
-        <Text style={styles.txt}>{STATUS[type]}</Text>
+        <Text style={[styles.txt]}>{STATUS[type]}</Text>
         {
           type == 1 && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
             <View style={styles.btnWrap}>
@@ -54,6 +57,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 20,
     backgroundColor: '#FB4BBA',
+  },
+  fail: {
+    color: '#F2F2F2',
+    backgroundColor: '#F2F2F2',
   },
   icon: {
     width: 20,
