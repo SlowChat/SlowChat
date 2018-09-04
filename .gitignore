@@ -58,3 +58,4 @@ buck-out/
 **.bak
 release
 release/**
+*.zip

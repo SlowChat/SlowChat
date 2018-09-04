@@ -179,6 +179,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-easy-upgrade')
     compile project(':baidumobstat-react-native')
     compile project(':react-native-image-picker')
     compile project(':react-native-fs')

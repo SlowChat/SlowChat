@@ -18,7 +18,7 @@ import { post, get } from '../utils/request'
 import { CODE_PUSH_KEY } from '../constants'
 import codePush from 'react-native-code-push'
 import DeviceInfo from 'react-native-device-info'
-
+// import RNEasyUpgrade from 'react-native-easy-upgrade'
 
 import ICONS from '../utils/icon'
 
@@ -48,7 +48,22 @@ class Setting extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      appVersion: DeviceInfo.getVersion()
+    })
     codePush.notifyAppReady()
+
+    // this.easyUpgrade = new RNEasyUpgrade({
+    //   iOSAppId: '1428357149',
+    //   downloadTitle: '安装包下载',
+    //   downloadDescription: '安装包正在下载中...',
+    //   downloadApkEnd: () => {
+    //     this.easyUpgrade.installApk();
+    //   },
+    //   onError: () => {
+    //     console.log('downloadApkError');
+    //   }
+    // })
   }
 
   getData() {
@@ -70,11 +85,6 @@ class Setting extends Component {
     })
   }
 
-  componentDidMount() {
-    this.setState({
-      appVersion: DeviceInfo.getVersion()
-    })
-  }
   handleSwitch = (value) => {
     this.setState({
       switchBtn: value
@@ -127,6 +137,31 @@ class Setting extends Component {
       }
     })
   }
+
+  // checkUpgrade = async () {
+  //   let updateInfo = {
+  //     latestVersion: '1.0.1',
+  //     hasNewVersion: false,
+  //     apkUrl: 'http://{remoteApkDownloadUrl}'
+  //   };
+  //   if (isAndroid) {
+  //     updateInfo = await fetch('http://{remoteUrl}/updateInfo.json')
+  //   } else {
+  //     updateInfo = await this.easyUpgrade.checkAppVersionIOS()
+  //   }
+  //   const updateInfo = await this.getUpdateInfo();
+  //   if (updateInfo.hasNewVersion) {
+  //     this.alert.show({
+  //       title: '是否升级APP',
+  //       txt: '发现新版本: ' + updateInfo.latestVersion,
+  //       leftBtnTxt: '稍后',
+  //       rightBtnTxt: '立即更新',
+  //       onOk: () => {
+  //         this.alert.hide()
+  //       }
+  //     })
+  //   }
+  // }
   checkUpdate = async () => {
     try {
       const update = await codePush.checkForUpdate(CODE_PUSH_KEY)

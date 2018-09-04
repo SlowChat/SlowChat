@@ -47,6 +47,7 @@
 		5FFA112C271E49058D466C6A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BED244896DA94D37AA0ADE02 /* UIKit.framework */; };
 		6016191402244AFEA2429D24 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A4F8647D24F449BB20CC486 /* libz.tbd */; };
 		65B9D23E99734A12A64E6160 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED746A592214EF88E1EA095 /* libRNDeviceInfo.a */; };
+		783350F591F14ADAA39032D9 /* libRNEasyUpgrade.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5700F37DFA1043E497E2F547 /* libRNEasyUpgrade.a */; };
 		7A3F3D26526F451896523405 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76B17E47A0314CDD991BD196 /* CoreLocation.framework */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		862B58636D394DEB8E4405F7 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F40F74674334F1FB71CEE8F /* libSplashScreen.a */; };
@@ -426,6 +427,13 @@
 			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
 			remoteInfo = RCTCameraRoll;
 		};
+		F2B60DAD213E7EE800E2160B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D1C865654D1490788D5F50C /* RNEasyUpgrade.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNEasyUpgrade;
+		};
 		F2BF4F92211C9465009DDBCB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7DD3529C5F3D42DDAE90FBB7 /* SplashScreen.xcodeproj */;
@@ -529,7 +537,9 @@
 		46439593ECB745D5BBB8DBBB /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		469BA555D6CA4B729408EEDE /* libRNReactNativeDocViewer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeDocViewer.a; sourceTree = "<group>"; };
 		479D7080116549D79B1B45D8 /* libRNViewShot.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNViewShot.a; sourceTree = "<group>"; };
+		5700F37DFA1043E497E2F547 /* libRNEasyUpgrade.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNEasyUpgrade.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		6D1C865654D1490788D5F50C /* RNEasyUpgrade.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNEasyUpgrade.xcodeproj; path = "../node_modules/react-native-easy-upgrade/ios/RNEasyUpgrade.xcodeproj"; sourceTree = "<group>"; };
 		6F8632FFEA7F44EEAA59C7B3 /* CoreFoundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		76B17E47A0314CDD991BD196 /* CoreLocation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -625,6 +635,7 @@
 				FB36F33ED0BB47AE9EC37657 /* libRNFS.a in Frameworks */,
 				334D5320A48D4951858CCACC /* libRNImagePicker.a in Frameworks */,
 				9C6B8A3126A741BAAA41B893 /* libRCTBaiduMobStat.a in Frameworks */,
+				783350F591F14ADAA39032D9 /* libRNEasyUpgrade.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,6 +857,7 @@
 				7C9F23B051794B7C8EAC76D6 /* RNFS.xcodeproj */,
 				888DA462188041D588EACA27 /* RNImagePicker.xcodeproj */,
 				B5A338467CA64FA0A8128041 /* RCTBaiduMobStat.xcodeproj */,
+				6D1C865654D1490788D5F50C /* RNEasyUpgrade.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -962,6 +974,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F2B60DAA213E7EE800E2160B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F2B60DAE213E7EE800E2160B /* libRNEasyUpgrade.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F2BF4F8F211C9464009DDBCB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1020,6 +1040,7 @@
 				053D03299CFD489AB5D35A45 /* libRNFS.a */,
 				434189FE1C944780B62905B7 /* libRNImagePicker.a */,
 				E4CD9DD8F8184A998D6D4CF5 /* libRCTBaiduMobStat.a */,
+				5700F37DFA1043E497E2F547 /* libRNEasyUpgrade.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1237,6 +1258,10 @@
 				{
 					ProductGroup = F20DC2B32127E4A5005C0468 /* Products */;
 					ProjectRef = 2657AD1785704A5EB77D8ED0 /* RNDeviceInfo.xcodeproj */;
+				},
+				{
+					ProductGroup = F2B60DAA213E7EE800E2160B /* Products */;
+					ProjectRef = 6D1C865654D1490788D5F50C /* RNEasyUpgrade.xcodeproj */;
 				},
 				{
 					ProductGroup = F20DC3562127F381005C0468 /* Products */;
@@ -1610,6 +1635,13 @@
 			remoteRef = F2216DC121172DC4006BF1FC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		F2B60DAE213E7EE800E2160B /* libRNEasyUpgrade.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNEasyUpgrade.a;
+			remoteRef = F2B60DAD213E7EE800E2160B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		F2BF4F93211C9465009DDBCB /* libSplashScreen.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1816,12 +1848,14 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = SlowChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1858,12 +1892,14 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = SlowChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1906,6 +1942,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1953,6 +1990,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2001,11 +2039,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -2051,11 +2091,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -2098,11 +2140,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -2144,11 +2188,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -2306,6 +2352,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = SlowChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2348,12 +2395,14 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = SlowChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -2396,11 +2445,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -2443,11 +2494,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/baidumobstat-react-native/ios/RCTBaiduMobStat/**",
+					"$(SRCROOT)/../node_modules/react-native-easy-upgrade/ios",
 				);
 				INFOPLIST_FILE = "SlowChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);

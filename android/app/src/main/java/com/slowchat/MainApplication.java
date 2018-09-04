@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import com.baidu.mobstat.MtjConfig;
 import com.baidu.mobstat.StatService;
 import com.facebook.react.ReactApplication;
+import org.hstar.reactnative.easyupgrade.RNEasyUpgradePackage;
 import com.baidu.reactnativemobstat.RNBaiduMobStatPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.rnfs.RNFSPackage;
@@ -55,6 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNEasyUpgradePackage(),
             new RNBaiduMobStatPackage(),
             new RNFSPackage(),
             new RNReactNativeDocViewerPackage(),
