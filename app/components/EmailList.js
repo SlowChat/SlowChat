@@ -107,10 +107,6 @@ export default class EmailList extends Component {
                 <Text style={styles.rightTxt}>发送失败</Text>
               </View>
           }
-          <View style={styles.statusRight}>
-            <Image style={styles.finish} source={require('../images/icon_finish.png')} />
-            <Text style={styles.rightTxt}>已完成发送</Text>
-          </View>
         </View>
       )
     } else if (status === 'public') {

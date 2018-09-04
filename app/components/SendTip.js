@@ -30,11 +30,18 @@ export default class SendTip extends PureComponent {
   render() {
     const { type, onPress } = this.props
     if (type == null || typeof type == 'undefined') return null
-    const style = type == 4 ? styles.fail : null
+    if (type == 4) {
+      return (
+        <View style={[styles.container, styles.fail]}>
+          <Image style={styles.icon} source={ICONS[type]} />
+          <Text style={[styles.txt, styles.fail]}>{STATUS[type]}</Text>
+        </View>
+      )
+    }
     return (
-      <ImageBackground source={require('../images/condition_bar.png')} style={[styles.container, style]}>
+      <ImageBackground source={require('../images/condition_bar.png')} style={styles.container}>
         <Image style={styles.icon} source={ICONS[type]} />
-        <Text style={[styles.txt]}>{STATUS[type]}</Text>
+        <Text style={styles.txt}>{STATUS[type]}</Text>
         {
           type == 1 && <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
             <View style={styles.btnWrap}>
@@ -57,9 +64,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 20,
     backgroundColor: '#FB4BBA',
+    marginBottom: -10,
   },
   fail: {
-    color: '#F2F2F2',
+    color: '#B4B4B4',
     backgroundColor: '#F2F2F2',
   },
   icon: {
