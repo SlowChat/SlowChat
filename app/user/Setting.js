@@ -47,6 +47,10 @@ class Setting extends Component {
     )
   }
 
+  componentDidMount() {
+    codePush.notifyApplicationReady()
+  }
+
   getData() {
     get('api/user/userInfo.html').then(res => {
       console.log(res);
@@ -125,6 +129,7 @@ class Setting extends Component {
   }
   checkUpdate = async () => {
     const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
+    console.log("checkUpdate", update)
     if (!update) {
       this.alert.show({
         type: 'alert',
@@ -152,7 +157,8 @@ class Setting extends Component {
         case codePush.SyncStatus.INSTALLING_UPDATE:
           console.log(" INSTALLING_UPDATE");
           break;
-        case CodePush.SyncStatus.UPDATE_INSTALLED:
+        case codePush.SyncStatus.UPDATE_INSTALLED:
+          console.log(" UPDATE_INSTALLED");
           codePush.notifyAppReady();
           break;
       }
