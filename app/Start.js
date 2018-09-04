@@ -148,6 +148,10 @@ export default class Start extends PureComponent {
   }
 }
 
+// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+// export default codePush(codePushOptions)(Start);
+
+
 
 // const { url } = map.extras || {}
 // if (!url) return

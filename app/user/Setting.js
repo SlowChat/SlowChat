@@ -48,7 +48,7 @@ class Setting extends Component {
   }
 
   componentDidMount() {
-    codePush.notifyApplicationReady()
+    codePush.notifyAppReady()
   }
 
   getData() {
@@ -128,25 +128,32 @@ class Setting extends Component {
     })
   }
   checkUpdate = async () => {
-    const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
-    console.log("checkUpdate", update)
-    if (!update) {
-      this.alert.show({
-        type: 'alert',
-        title: '提示',
-        txt: '已是最新版本',
-      })
+    try {
+      const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
+      console.log("checkUpdate", update)
+      if (!update) {
+        this.alert.show({
+          type: 'alert',
+          title: '提示',
+          txt: '已是最新版本',
+        })
+        return
+      }
+    } catch (e) {
+      console.log(e)
       return
     }
     codePush.sync({
       deploymentKey: CODE_PUSH_KEY,
       updateDialog: {
+        title: '更新提示',
         appendReleaseDescription: true,
         descriptionPrefix:'\n',
         optionalIgnoreButtonLabel: '稍后',
         optionalInstallButtonLabel: '立即更新',
         optionalUpdateMessage: '有新版本了，是否更新？',
-        title: '更新提示'
+        mandatoryContinueButtonLabel: '立即更新',
+        mandatoryUpdateMessage: '发现新版本',
       },
       installMode: codePush.InstallMode.IMMEDIATE
     }, (status) => {
