@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  ScrollView,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation'
 import ErrorTip from '../components/ErrorTip'
@@ -13,6 +14,12 @@ import { post } from '../utils/request'
 export default class Rule extends Component {
   static navigationOptions = {
     title: '积分规则',
+    headerStyle: {
+      backgroundColor: '#FFFFFF',
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: '#EEEEEE',
+      elevation: 0,
+    },
   }
   state = {
     items: [],
@@ -43,12 +50,11 @@ export default class Rule extends Component {
     if (showLoading) return <Loading />
     if (showError) return <ErrorTip onPress={this.getData} />
     const { items } = this.state
-    console.log(items);
     return (
-      <SafeAreaView style={styles.container} forceInset={{top: 'never', bottom: 'always'}}>
-        <View style={styles.ruleBox}>
-          <View style={styles.tit}>
-            <Image style={styles.icon} source={require('../images/icon_info.png')} />
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <View style={styles.jifenBox}>
+          <View style={styles.jifenTit}>
+            <Image style={styles.icon} source={require('../images/question.png')} />
             <Text style={styles.titTxt}>如何获得积分</Text>
           </View>
           {
@@ -68,7 +74,7 @@ export default class Rule extends Component {
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={require('../images/icon_info.png')} />
+            <Image style={styles.icon} source={require('../images/question.png')} />
             <Text style={styles.titTxt}>积分存在有效期？</Text>
           </View>
           <View style={styles.info}>
@@ -77,7 +83,7 @@ export default class Rule extends Component {
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={require('../images/icon_info.png')} />
+            <Image style={styles.icon} source={require('../images/question.png')} />
             <Text style={styles.titTxt}>严禁用作弊方法获得积分？</Text>
           </View>
           <View style={styles.info}>
@@ -86,50 +92,67 @@ export default class Rule extends Component {
         </View>
         <View style={styles.ruleBox}>
           <View style={styles.tit}>
-            <Image style={styles.icon} source={require('../images/icon_info.png')} />
+            <Image style={styles.icon} source={require('../images/question.png')} />
             <Text style={styles.titTxt}>积分可以用来做什么？</Text>
           </View>
           <View style={styles.info}>
             <Text style={styles.txt}>已经提交等待发送的邮件想要撤回删除时，每一次消耗1000积分，若积分累计不足时无法撤回删除</Text>
           </View>
         </View>
-      </SafeAreaView>
+        <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} />
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-  ruleBox: {
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 10,
+  },
+  jifenBox: {
+    paddingTop: 25,
     paddingBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
-    borderBottomColor: '#eee'
+    borderBottomColor: '#eee',
+  },
+  ruleBox: {
+    paddingTop: 30,
+    paddingBottom: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderStyle: 'solid',
+    borderBottomColor: '#eee',
   },
   icon: {
     width: 20,
     height: 20,
-    marginRight: 5
+    marginRight: 10
+  },
+  jifenTit: {
+    paddingLeft: 5,
+    flexDirection: 'row',
+    marginBottom: 20,
+    alignItems:'center',
   },
   tit: {
+    paddingLeft: 5,
     flexDirection: 'row',
-    marginBottom: 10,
-    marginTop: 15,
+    marginBottom: 7,
     alignItems:'center',
   },
   titTxt: {
     color: '#E24B92',
     fontSize: 16,
+    fontFamily: 'PingFang-SC-Semibold',
+    fontWeight: 'normal',
   },
   info: {
     flexDirection: 'row',
     marginLeft: 25,
-    marginBottom: 20,
+    marginBottom: 15,
     alignItems:'center',
   },
   remind: {
@@ -149,7 +172,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#666',
     marginLeft: 5,
-    marginRight: 5,
+    marginRight: 7,
     fontSize: 16,
   }
 });

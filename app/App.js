@@ -65,6 +65,8 @@ const StackApp = (isLogin) => createStackNavigator({
     headerStyle: {
       backgroundColor: '#FFFFFF',
       borderBottomWidth: 0,
+      // borderBottomWidth: StyleSheet.hairlineWidth,
+      // borderBottomColor: '#EEEEEE',
       elevation: 0,
     },
     headerTitleContainerStyle: {
