@@ -19,6 +19,7 @@ export default class ReplyBox extends PureComponent {
     content: '',
   }
   componentWillMount () {
+    this.content = ''
     if (Platform.OS == 'ios') {
       this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
       this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide)
@@ -51,20 +52,39 @@ export default class ReplyBox extends PureComponent {
     this.refs.input.focus()
   }
   clear() {
-    this.setState({ content: '' })
+    this.content = ''
+    if (Platform.OS == 'ios') {
+      this.setState({ content: this.content }, () => {
+        this.setState({ content: '' })
+      })
+    } else {
+      this.setState({ content: '' })
+    }
   }
   handleChange = (txt) => {
-    this.setState({ content: txt })
+    if (Platform.OS == 'ios') {
+      this.content = txt
+    } else {
+      this.setState({ content: txt })
+    }
   }
   handleReply = () => {
     const { onReply } = this.props
-    onReply && onReply(this.state.content)
+    const content = Platform.OS == 'ios' ? this.content : this.state.content
+    onReply && onReply(content)
   }
+
+  handleEndEditMail = (e) => {
+    this.content = e.nativeEvent.text
+  }
+
   returnBox() {
     const { content } = this.state
     return <View style={styles.box}>
-      <TextInput ref="input" value={content} style={styles.input} placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
-        autoCapitalize="none" underlineColorAndroid='transparent' onChangeText={this.handleChange} />
+      <TextInput ref="input" value={content} style={styles.input}
+        placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
+        autoCapitalize="none" underlineColorAndroid='transparent'
+        onChangeText={this.handleChange} onEndEditing={this.handleEndEditMail}/>
       <TouchableOpacity style={styles.btn} activeOpacity={0.6} onPress={this.handleReply}>
         <Text style={styles.btnTxt}>发送</Text>
       </TouchableOpacity>

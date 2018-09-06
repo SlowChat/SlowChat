@@ -38,6 +38,7 @@ export default class Regist extends Component {
   }
 
   componentWillUnmount() {
+    Keyboard.dismiss()
     if (this.timer) {
       clearTimeout(this.timer)
     }

@@ -73,7 +73,7 @@
   NSURL *jsCodeLocation;
   Boolean isProduction = YES;
     #ifdef DEBUG
-//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.100:8081/index.bundle?platform=ios&dev=true"];
+//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.107:8081/index.bundle?platform=ios&dev=true"];
         jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     isProduction = NO;
     #else
@@ -92,7 +92,7 @@
 //  [[BaiduMobStat defaultStat] getTestDeviceId];
   [[BaiduMobStat defaultStat] setPushId:[JPUSHService registrationID] platform:BaiduMobStatPushPlatformJiGuang];
   
-  [[BaiduMobStat defaultStat] setEnableDebugOn:YES];
+//  [[BaiduMobStat defaultStat] setEnableDebugOn:YES];
   [[BaiduMobStat defaultStat] startWithAppId:@"489d643251"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation

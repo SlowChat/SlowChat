@@ -31,6 +31,7 @@ export default class Login extends PureComponent<Props> {
     showLoading: false
   }
   componentWillUnmount() {
+    Keyboard.dismiss()
     if (this.timer) {
       clearTimeout(this.timer)
     }

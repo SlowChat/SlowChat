@@ -217,9 +217,9 @@ export default class Share extends PureComponent<Props> {
             <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
             <Text style={styles.iconTxt}>微信</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleWeibo}>
-            <Image style={styles.icon} source={require('../images/icon_weibo.png')}></Image>
-            <Text style={styles.iconTxt}>微博</Text>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_timeLine')}>
+            <Image style={styles.icon} source={require('../images/friends.png')}></Image>
+            <Text style={styles.iconTxt}>朋友圈</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
             <Image style={styles.icon} source={require('../images/icon_save.png')}></Image>
@@ -234,8 +234,8 @@ export default class Share extends PureComponent<Props> {
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
             <View style={styles.moreModal}>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleWechat('wechat_timeLine')}>
-                <Text style={styles.moreTxt}>微信朋友圈</Text>
+              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleWeibo}>
+                <Text style={styles.moreTxt}>微博</Text>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qq')}>
                 <Text style={styles.moreTxt}>QQ</Text>

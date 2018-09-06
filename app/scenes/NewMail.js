@@ -11,8 +11,10 @@ import {
   Keyboard,
   TouchableOpacity,
   Platform,
+  UIManager,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
 // import { openFile } from '../utils/opendoc'
 import {HeaderBackButton} from 'react-navigation'
 // import ImagePicker from 'react-native-image-picker'
@@ -111,11 +113,16 @@ export default class NewMail extends Component {
     this.keyboardWillShowSub.remove()
     this.keyboardShowSub.remove()
     this.keyboardHideSub.remove()
+    Keyboard.dismiss()
   }
 
   keyboardWillShow = (e) => {
     if (this.state.pickerModal) {
       this.setState({ pickerModal: false })
+    }
+    const y = this.inputY[this.focusInput]
+    if (typeof y != 'undefined') {
+      this.scrollView.scrollTo({ y, animated: true });
     }
   }
 
@@ -125,6 +132,7 @@ export default class NewMail extends Component {
 
   keyboardHide = (e) => {
     this.keyboardShow = false
+    this.scrollView.scrollTo({ y: 0, animated: true });
     if (this.showChooseFile) {
       this.setState({ pickerModal: true })
       this.showChooseFile = false
@@ -178,7 +186,7 @@ export default class NewMail extends Component {
       console.log(res);
       if (res.code == 1) {
         const { items } = res.data
-        const [ send_date, send_time ] = items.send_time
+        const [ send_date, send_time ] = items.send_time.split(' ')
         this.email = items.email
         this.setState({
           showSendMe: this.isMyEmail(items.email),
@@ -463,7 +471,7 @@ export default class NewMail extends Component {
   }
 
   dealError(msg, isSend) {
-    let txt = msg || ((isSend ? '发送' : '保存草稿') + '失败，再试一次吧')
+    let txt = msg || ((isSend ? '邮件提交' : '保存草稿') + '失败，再试一次吧')
     this.setState({
       showLoading: false
     }, () => {
@@ -497,15 +505,28 @@ export default class NewMail extends Component {
   showToast = (txt) => {
     this.refs.toast.show(txt)
   }
+  handleLayout = (key, e) => {
+    UIManager.measure(e.target, (x, y, width, height, pageX, pageY) => {
+      this.inputY = this.inputY || {}
+      this.inputY[key] = y
+    })
+  }
+  handleFocus = (key) => {
+    this.focusInput = key
+    // const y = this.inputY[key]
+    // if (typeof y != 'undefined') {
+    //   this.scrollView.scrollTo({ y, animated: true });
+    // }
+  }
   render() {
     // keyboardType="email-address"
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
-    const tipTxt = isSend ? '发送' : '保存草稿'
+    const tipTxt = isSend ? '提交' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
     return (
       <View style={styles.container}>
-        <ScrollView keyboardShouldPersistTaps="always">
-          <HeaderTip tip="爱慢邮——让我们回到未来" />
+        <HeaderTip tip="爱慢邮——让我们回到未来" />
+        <ScrollView ref={ref => this.scrollView = ref} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.item}>
             <Text style={styles.label}>收件人：</Text>
             {
@@ -524,9 +545,11 @@ export default class NewMail extends Component {
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
             </TouchableOpacity>
           </View>
-          <View style={styles.item}>
+          <View style={styles.item} onLayout={this.handleLayout.bind(this, 'title')}>
             <Text style={styles.label}>主题：</Text>
-            <TextInput style={styles.input} defaultValue={defaultValue.title} onChangeText={(text) => this.setParams('title', text)}
+            <TextInput style={styles.input} defaultValue={defaultValue.title}
+              onChangeText={(text) => this.setParams('title', text)}
+              onFocus={this.handleFocus.bind(this, 'title')}
               returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
           <View style={styles.item}>
@@ -584,10 +607,14 @@ export default class NewMail extends Component {
                 this.setParams('type', value ? 2 : 1)
               }} />
           </View>
-          <View style={styles.content}>
-            <TextInput multiline defaultValue={defaultValue.content} placeholder="在此输入正文" style={styles.textarea} onChangeText={(text) => this.setParams('content', text)}
-              autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+          <View style={styles.content} onLayout={this.handleLayout.bind(this, 'content')}>
+            <TextInput multiline defaultValue={defaultValue.content} placeholder="在此输入正文"
+              style={styles.textarea} autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent'
+              onChangeText={(text) => this.setParams('content', text)}
+              onFocus={this.handleFocus.bind(this, 'content')}
+            />
           </View>
+          <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} />
         </ScrollView>
 
         <SaveBtn type="bottom" onPress={this.handleSave} />
@@ -604,7 +631,7 @@ export default class NewMail extends Component {
           onTip={this.showToast} />
         <Toast ref="toast" position="center" />
         <SuccessModal
-          txt={`信件${tipTxt}成功`}
+          txt={`邮件${tipTxt}成功`}
           btn="返回首页"
           visible={this.state.isSucc}
           onPress={() => {
@@ -623,6 +650,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  scroll: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    // paddingBottom: 1000,
   },
   headerRight: {
     width: 64,
@@ -706,15 +738,20 @@ const styles = StyleSheet.create({
     height: 25,
   },
   content: {
-    padding: 20,
+    flex: 1,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 20,
+    paddingRight: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#EEEEEE',
+    marginBottom: 44,
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderBottomColor: '#EEEEEE',
   },
   textarea: {
+    flex: 1,
     padding: 0,
-    height: 88,
     fontSize: 16,
     color: '#333333',
     lineHeight: 22,
