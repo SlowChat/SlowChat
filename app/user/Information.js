@@ -185,13 +185,10 @@ export default class Information extends Component {
             />
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-        </View>
-        <SafeAreaView style={styles.exitWrap} forceInset={{top: 'never', bottom: 'always'}}>
-          <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleSubmit}>
-            <Text style={styles.exitTxt}>保 存</Text>
+          <TouchableOpacity activeOpacity={0.8} style={styles.saveBtn} onPress={this.handleSubmit}>
+            <Text style={styles.saveTxt}>保 存</Text>
           </TouchableOpacity>
-        </SafeAreaView>
-
+        </View>
         <ActionSheet
           ref={ref => this.actionSheet = ref}
           options={SEX_OPTIONS}
@@ -312,5 +309,27 @@ const styles = StyleSheet.create({
   switch: {
     position: 'absolute',
     right: 15,
+  },
+  saveBtn: {
+    marginLeft: 53,
+    marginRight: 53,
+    height: 44,
+    marginTop: 48,
+    backgroundColor: '#D74B80',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 44,
+  },
+  saveTxt: {
+    fontSize: 18,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#FFFFFF',
   }
 });
+
+
+// <SafeAreaView style={styles.exitWrap} forceInset={{top: 'never', bottom: 'always'}}>
+//   <TouchableOpacity style={styles.exit} activeOpacity={0.6} onPress={this.handleSubmit}>
+//     <Text style={styles.exitTxt}>保 存</Text>
+//   </TouchableOpacity>
+// </SafeAreaView>

@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
   },
   attention: {
     flexDirection: 'row',
-    marginTop: 14,
+    marginTop: 10,
+    marginBottom: 7,
     alignItems: 'center',
   },
   eyeIcon: {
@@ -154,7 +155,6 @@ const styles = StyleSheet.create({
     color: '#B4B4B4',
   },
   comments: {
-    marginTop: 9,
   },
   comment: {
     height: 20,
