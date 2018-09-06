@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Platform,
   UIManager,
+  findNodeHandle
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
@@ -58,6 +59,8 @@ export default class NewMail extends Component {
   }
   email = ''
   state = {
+    scrollHeight: null,
+
     isSend: true,
     isSucc: false,
     showLoading: false,
@@ -98,6 +101,16 @@ export default class NewMail extends Component {
       rightOnPress: this.handleSend,
       leftOnPress: this.customBack
     })
+    requestAnimationFrame(() => {
+      if (Platform.OS == 'android') {
+        UIManager.measure(findNodeHandle(this.scrollView), (x, y, width, height, pageX, pageY) => {
+          this.scrollHeight = height
+          if (this.keyboardShow && this.state.scrollHeight == null) {
+            this.setState({ scrollHeight: this.scrollHeight})
+          }
+        })
+      }
+    })
   }
 
   shouldComponentUpdate() {
@@ -113,29 +126,38 @@ export default class NewMail extends Component {
     this.keyboardWillShowSub.remove()
     this.keyboardShowSub.remove()
     this.keyboardHideSub.remove()
-    Keyboard.dismiss()
   }
 
   keyboardWillShow = (e) => {
     if (this.state.pickerModal) {
       this.setState({ pickerModal: false })
     }
-    const y = this.inputY[this.focusInput]
-    if (typeof y != 'undefined') {
-      this.scrollView.scrollTo({ y, animated: true });
-    }
+    // if (Platform.OS == 'ios') {
+      this.scrollToInput()
+    // }
   }
 
   keyboardShow = (e) => {
+    this.keyboardHeight = e.endCoordinates.height
     this.keyboardShow = true
+    if (this.scrollHeight) {
+      this.setState({ scrollHeight: this.scrollHeight })
+    }
   }
 
   keyboardHide = (e) => {
     this.keyboardShow = false
-    this.scrollView.scrollTo({ y: 0, animated: true });
+
     if (this.showChooseFile) {
       this.setState({ pickerModal: true })
       this.showChooseFile = false
+    }
+    if (this.scrollHeight) {
+      this.setState({ scrollHeight: this.scrollHeight }, () => {
+        this.scrollView.scrollTo({ y: 0, animated: true })
+      })
+    } else {
+      this.scrollView.scrollTo({ y: 0, animated: true })
     }
   }
 
@@ -156,6 +178,7 @@ export default class NewMail extends Component {
         })
       }
     })
+    Keyboard.dismiss()
   }
 
   async getUserInfo() {
@@ -508,26 +531,53 @@ export default class NewMail extends Component {
   handleLayout = (key, e) => {
     UIManager.measure(e.target, (x, y, width, height, pageX, pageY) => {
       this.inputY = this.inputY || {}
-      this.inputY[key] = y
+      this.inputY[key] = { y, pageY }
     })
   }
   handleFocus = (key) => {
     this.focusInput = key
-    // const y = this.inputY[key]
-    // if (typeof y != 'undefined') {
-    //   this.scrollView.scrollTo({ y, animated: true });
-    // }
+    if (this.keyboardShow) {
+      this.scrollToInput()
+    }
   }
+  scrollToInput() {
+    if (this.inputY && this.focusInput) {
+      const y = this.inputY[this.focusInput].y
+      if (typeof y != 'undefined') {
+        if (this.focusInput == 'email' || y > 1) {
+          this.scrollView.scrollTo({ y, animated: true });
+        } else {
+          const { pageY } = this.inputY[this.focusInput]
+          this.scrollView.scrollTo({ y: pageY - this.inputY.email.pageY, animated: true });
+        }
+      }
+    }
+  }
+  // onLayout={this.handleScrollView}
+  // handleScrollView = (e) => {
+  //   console.log("==handleScrollView==");
+  //   if (Platform.OS == 'android') {
+  //     this.scrollHeight = e.nativeEvent.layout.height
+  //     console.log("=====this.scrollHeight===", this.scrollHeight);
+  //     if (this.keyboardShow && this.state.scrollHeight == null) {
+  //       this.setState({ scrollHeight: this.scrollHeight + this.keyboardHeight})
+  //     }
+  //   }
+  // }
   render() {
     // keyboardType="email-address"
-    const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches } = this.state
+    const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches, scrollHeight } = this.state
     const tipTxt = isSend ? '提交' : '保存草稿'
     const attachTxt = attachs.length == 0 ? '' : `${attachs.length}个附件`
+    const scrollStyle = scrollHeight ? { height: scrollHeight } : {}
     return (
       <View style={styles.container}>
         <HeaderTip tip="爱慢邮——让我们回到未来" />
-        <ScrollView ref={ref => this.scrollView = ref} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
-          <View style={styles.item}>
+        <ScrollView ref={ref => this.scrollView = ref}
+          contentContainerStyle={[styles.scroll, scrollStyle]}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="always">
+          <View style={styles.item} onLayout={this.handleLayout.bind(this, 'email')}>
             <Text style={styles.label}>收件人：</Text>
             {
               Platform.OS == 'ios' ?
@@ -535,11 +585,13 @@ export default class NewMail extends Component {
                   value={params.email}
                   onChangeText={this.handleMailChange}
                   onEndEditing={this.onEndEditMail}
+                  onFocus={this.handleFocus.bind(this, 'email')}
                   autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
-              : <TextInput autoFocus style={styles.input}
-                value={params.email}
-                onChangeText={(text) => this.setParams('email', text)}
-                autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
+                : <TextInput autoFocus style={styles.input}
+                  value={params.email}
+                  onFocus={this.handleFocus.bind(this, 'email')}
+                  onChangeText={(text) => this.setParams('email', text)}
+                  autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
             }
             <TouchableOpacity style={this.state.showSendMe ? {} : styles.hidden} activeOpacity={0.6} onPress={this.sendMe}>
               <View style={styles.btnWrap}><Text style={styles.btn}>发给自己</Text></View>
@@ -616,7 +668,6 @@ export default class NewMail extends Component {
           </View>
           <SafeAreaView forceInset={{top: 'never', bottom: 'always'}} />
         </ScrollView>
-
         <SaveBtn type="bottom" onPress={this.handleSave} />
         {
           this.state.pickerModal &&
@@ -652,9 +703,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   scroll: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
-    // paddingBottom: 1000,
+    ...Platform.select({
+      ios: {
+        flex: 1,
+      }
+    })
   },
   headerRight: {
     width: 64,

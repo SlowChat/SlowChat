@@ -180,7 +180,7 @@ export default class Regist extends Component {
             <Image style={styles.back} source={require('../images/back_w.png')} />
           </TouchableOpacity>
         </SafeAreaView>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           {this.renderTabs()}
           <View style={styles.wrap}>
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>

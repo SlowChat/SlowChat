@@ -42,7 +42,7 @@ export default class FeedBack extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
         <Text style={styles.label}>问题与意见</Text>
         <TextInput
           autoCorrect={false}
@@ -52,7 +52,6 @@ export default class FeedBack extends Component {
           style={styles.textArea}
           onChangeText={(text) => this.setState({content: text})}
           placeholder='请填写10个字以上的问题描述以便我们提供更好的帮助'
-          value={this.state.content}
         />
         <Text style={styles.label}>联系方式</Text>
         <TextInput
@@ -61,7 +60,6 @@ export default class FeedBack extends Component {
           style={styles.input}
           onChangeText={(text) => this.setState({contact: text})}
           placeholder='选填，便于我们与您联系'
-          value={this.state.contact}
         />
         <TouchableOpacity onPress={() => this.handleSubmit()}>
           <View style={styles.save}>

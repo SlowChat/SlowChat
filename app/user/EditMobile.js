@@ -138,7 +138,7 @@ export default class EditMobile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.link} keyboardShouldPersistTaps="always">
+        <ScrollView style={styles.link} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.menu}>
             <Text style={styles.label}>手机号</Text>
             <TextInput

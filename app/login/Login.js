@@ -119,7 +119,7 @@ export default class Login extends PureComponent<Props> {
              <Image style={styles.close} source={require('../images/close.png')} />
            </TouchableOpacity>
         </SafeAreaView>
-        <ScrollView style={{flex: 1}} keyboardShouldPersistTaps="always">
+        <ScrollView style={{flex: 1}} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.wrap} >
             <Image style={styles.logo} source={require('../images/logo.png')} />
             <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>

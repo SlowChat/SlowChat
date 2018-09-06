@@ -134,7 +134,7 @@ export default class EditEmail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.link} keyboardShouldPersistTaps="always">
+        <ScrollView style={styles.link} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.menu}>
             <Text style={styles.label}>邮箱</Text>
             <TextInput
