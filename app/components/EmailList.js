@@ -63,6 +63,26 @@ export default class EmailList extends Component {
     }
   }
 
+  renderStatusBtn() {
+    const { status, item } = this.props
+    if (item.state == 1) {
+      return <TouchableOpacity style={styles.btn} onPress={this.cancel}>
+          <Text style={styles.btnTxt}>取消发送</Text>
+        </TouchableOpacity>
+    } else if (item.state == 2) {
+      return <View style={styles.statusRight}>
+        <Image style={styles.finish} source={require('../images/icon_finish.png')} />
+        <Text style={styles.rightTxt}>已完成发送</Text>
+      </View>
+    } else if (item.state == 4) {
+      return <View style={styles.statusRight}>
+        <Image style={styles.finish} source={require('../images/icon_fail.png')} />
+        <Text style={styles.rightTxt}>发送失败</Text>
+      </View>
+    }
+    return null
+  }
+
   renderStatus(id) {
     /*
     draft: 草稿
@@ -73,7 +93,7 @@ export default class EmailList extends Component {
     const { status, item } = this.props;
     if (status === 'draft') {
       return null
-    } else if (status === 'reservation') {
+    } else {
       return (
         <View style={styles.status}>
           <View style={styles.statusLeft}>
@@ -82,46 +102,37 @@ export default class EmailList extends Component {
             <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
             <Text style={styles.num}>{item.comments}</Text>
           </View>
-          <TouchableOpacity style={styles.btn} onPress={this.cancel}>
-            <Text style={styles.btnTxt}>取消发送</Text>
-          </TouchableOpacity>
+          {this.renderStatusBtn()}
         </View>
       )
-    } else if (status === 'sent') {
-      return (
-        <View style={styles.status}>
-          <View style={styles.statusLeft}>
-            <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
-            <Text style={styles.num}>{item.looks}</Text>
-            <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
-            <Text style={styles.num}>{item.comments}</Text>
-          </View>
-          {
-            item.state == 2 ?
-              <View style={styles.statusRight}>
-                <Image style={styles.finish} source={require('../images/icon_finish.png')} />
-                <Text style={styles.rightTxt}>已完成发送</Text>
-              </View> :
-              <View style={styles.statusRight}>
-                <Image style={styles.finish} source={require('../images/icon_fail.png')} />
-                <Text style={styles.rightTxt}>发送失败</Text>
-              </View>
-          }
-        </View>
-      )
-    } else if (status === 'public') {
-      return (
-        <View style={styles.status}>
-          <View style={styles.statusLeft}>
-            <Image style={styles.statusIcon} source={require('../images/icon_eyes.png')}/>
-            <Text style={styles.num}>{item.looks}</Text>
-            <Image style={styles.statusIcon} source={require('../images/icon_comment.png')}/>
-            <Text style={styles.num}>{item.comments}</Text>
-          </View>
-          <View style={styles.statusRight}>
+    }
+  }
+  renderContent() {
+    const { item, status, isAllSelect } = this.props;
+    const icon = status === 'draft' ? null : <Image style={styles.icon} source={item.type == 1 ? require('../images/icon_hide.png') : require('../images/icon_overt.png')} />
+    if (status === 'draft') {
+      return <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
+        <View style={styles.header}>
+          <Text style={[styles.name, styles.flex]}>{item.email ? item.email : '无收件人'}</Text>
+          <View style={styles.time}>
+            <Text style={styles.timeTxt}>{item.add_time}</Text>
           </View>
         </View>
-      )
+        <Text style={[styles.name]}>{item.title ? item.title : '无主题'}</Text>
+        <Text style={[styles.sendTime]}>{item.send_time ? `发信时间：${item.send_time}` : '无发信时间'}</Text>
+      </View>
+    } else {
+      return <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
+        <View style={styles.header}>
+          {icon}
+          <Text style={[styles.name, styles.flex]}>{item.email ? item.email : '无收件人'}</Text>
+          <View style={styles.time}>
+            <Text style={styles.timeTxt}>{item.add_time}</Text>
+          </View>
+        </View>
+        <Text style={[styles.name, styles.content]}>{item.title ? item.title : '无主题'}</Text>
+        <Text style={[styles.sendTime, styles.content]}>{item.send_time ? `发信时间：${item.send_time}` : '无发信时间'}</Text>
+      </View>
     }
   }
   render() {
@@ -134,21 +145,10 @@ export default class EmailList extends Component {
     } else {
       leftBtxTxt = '查看积分规则'
     }
-    const icon = status === 'draft' ? null : <Image style={styles.icon} source={item.type == 1 ? require('../images/icon_hide.png') : require('../images/icon_overt.png')} />
     return (
         <View style={styles.container}>
           <TouchableWithoutFeedback onPress={this.handleNav}>
-            <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
-              {icon}
-              <View style={styles.content}>
-                <Text style={styles.name}>{item.email ? item.email : '无收件人'}</Text>
-                <Text style={styles.name}>{item.title ? item.title : '无主题'}</Text>
-                <Text style={styles.sendTime}>{item.send_time ? `发信时间：${item.send_time}` : '无发信时间'}</Text>
-              </View>
-              <View style={styles.time}>
-                <Text style={styles.timeTxt}>{item.add_time}</Text>
-              </View>
-            </View>
+            {this.renderContent()}
           </TouchableWithoutFeedback>
           { this.renderStatus(item.id) }
           <Confirm
@@ -180,37 +180,43 @@ export default class EmailList extends Component {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: '#FFFFFF',
   },
   list: {
     flex: 1,
-    flexDirection: 'row',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 10,
-    paddingBottom: 10,
+    padding: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    justifyContent: 'center',
     borderBottomColor: '#efefef',
-    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  flex:  {
+    flex: 1,
   },
   icon: {
-    flexDirection: 'row',
     width: 20,
-    height: 17,
-    marginRight: 10,
+    height: 20,
+    marginRight: 15,
+    resizeMode: 'cover',
   },
   content: {
-    flex: 1,
-    justifyContent: 'center',
+    paddingLeft: 35,
   },
   name: {
-    marginBottom: 5,
     color: '#333',
     fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
   },
   sendTime: {
     color: '#999',
     fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    marginTop: 5,
   },
   time: {
     flexDirection: 'row',
@@ -224,21 +230,22 @@ const styles = StyleSheet.create({
   status: {
     flex: 1,
     flexDirection: 'row',
-    height: 50,
-    paddingLeft: 15,
-    paddingRight: 15,
+    height: 53,
+    paddingLeft: 10,
+    paddingRight: 10,
     alignItems: 'center',
     backgroundColor: '#fff',
   },
   statusLeft: {
     flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   statusIcon: {
     width: 20,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 20,
+    marginRight: 5,
+    resizeMode: 'cover',
   },
   num: {
     color: '#B4B4B4',
@@ -253,27 +260,28 @@ const styles = StyleSheet.create({
   finish: {
     width: 20,
     height: 20,
-    marginRight: 5,
+    marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   rightTxt: {
-    color: '#B4B4B4'
+    color: '#B4B4B4',
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
   },
   btn: {
-    flexDirection: 'row',
-    width: '30%',
+    width: 90,
     height: 32,
     borderRadius: 15,
     borderWidth: StyleSheet.hairlineWidth,
-    borderStyle: 'solid',
     borderColor: '#666',
     justifyContent: 'center',
     alignItems: 'center',
   },
   btnTxt: {
     color: '#666',
-    fontSize: 16
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
   },
   cont: {
     padding: 30,

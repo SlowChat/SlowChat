@@ -45,6 +45,7 @@ export default class FeedBack extends Component {
       <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
         <Text style={styles.label}>问题与意见</Text>
         <TextInput
+          autoCorrect={false}
           autoCapitalize="none"
           underlineColorAndroid='transparent'
           multiline

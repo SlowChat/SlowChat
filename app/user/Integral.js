@@ -18,7 +18,7 @@ export default class Integral extends Component {
     const { params = {} } = navigation.state
     const { navigate } = navigation;
     return {
-      title: '我的积分',
+      title: '',
       headerRight: (
         <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
           <View style={styles.icon}>
@@ -26,6 +26,12 @@ export default class Integral extends Component {
           </View>
         </TouchableWithoutFeedback>
       ),
+      headerStyle: {
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#EEEEEE',
+        elevation: 0,
+      },
     }
   }
   state = {
@@ -137,6 +143,7 @@ export default class Integral extends Component {
       return <Blank />
     }
     return (<FlatList
+      style={styles.flatlist}
       keyExtractor={(item, index) => String(index)}
       data={this.state.dataArray}
       renderItem={this._renderItem}
@@ -169,7 +176,7 @@ export default class Integral extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efefef',
+    backgroundColor: '#FFFFFF',
   },
   ruleBtn: {
     paddingRight: 15,
@@ -177,27 +184,39 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   integralBox: {
-    paddingTop: 50,
-    paddingBottom: 50,
+    paddingTop: 30,
+    paddingBottom: 20,
     alignItems:'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
   },
   tit: {
+    color: '#666',
     fontSize: 18,
-    color: '#666'
+    fontFamily: 'PingFangSC-Regular',
+    height: 25,
+    lineHeight: 25,
+    marginBottom: 5,
   },
   score: {
     color: '#E24B92',
     fontSize: 40,
+    fontFamily: 'PingFang-SC-Semibold',
+    fontWeight: 'normal',
+    height: 56,
+    lineHeight: 56,
+  },
+  flatlist: {
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   list: {
     flex: 1,
     flexDirection: 'row',
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
     alignItems:'center',
     justifyContent: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -209,12 +228,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   time: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#999',
-    marginBottom: 3
+    height: 20,
+    lineHeight: 20,
   },
   detail: {
-    fontSize: 18
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: 16,
+    color: '#333',
+    height: 22,
+    lineHeight: 22,
   },
   right: {
     flex: 1,

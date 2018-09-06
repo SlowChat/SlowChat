@@ -35,7 +35,13 @@ export default class Email extends Component {
         <TouchableOpacity activeOpacity={0.6} style={styles.headerRight} onPress={params.rightOnPress}>
           <Text style={styles.headerRightTxt}>编辑</Text>
         </TouchableOpacity>
-      ) : <View />
+      ) : <View />,
+      headerStyle: {
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#EEEEEE',
+        elevation: 0,
+      },
     }
   }
 
@@ -145,13 +151,15 @@ export default class Email extends Component {
         params.state = this.sendState
       }
       const res = await post(this.getFetchUrl(), params)
+      console.log(res);
       this.loading = false
       if (res.code == 1) {
         const { total, items, total_score, cancel_score } = res.data
         const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
         items.forEach(item => {
           item.send_time = (item.send_time || '').split(' ')[0]
-          const [ add_date, add_time ] = item.add_time.split(' ')
+          let [ add_date, add_time ] = item.add_time.split(' ')
+          add_date = add_date.replace(/\-/g, '/')
           item.add_time = curr_item == add_date ? add_time : add_date
         })
         const dataArray = this.state.dataArray.concat(items)
@@ -387,12 +395,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   searchBox: {
+    position: 'relative',
     flexDirection: 'row',
     height: 44,
     marginBottom: 10,
-    fontFamily: 'PingFangSC-Regular',
     paddingLeft: 15,
-    paddingRight: 15,
+    paddingRight: 0,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -400,7 +408,7 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     top: 7,
-    left: 20,
+    left: 15,
     width: 30,
     height: 30,
     zIndex: 10,
@@ -408,10 +416,10 @@ const styles = StyleSheet.create({
     borderColor: '#CCC',
   },
   search: {
-    flexDirection: 'row',
-    width: '87%',
+    flex: 1,
+    fontFamily: 'PingFangSC-Regular',
     alignItems: 'center',
-    paddingLeft: 40,
+    paddingLeft: 45,
     height: 32,
     backgroundColor: '#fff',
     borderRadius: 18,
@@ -426,10 +434,9 @@ const styles = StyleSheet.create({
     paddingBottom: 5
   },
   btn: {
-    flexDirection: 'row',
-    width: '13%',
+    width: 57,
     fontSize: 16,
-    textAlign: 'center',
+    paddingLeft: 10,
     color: '#E24B92'
   },
   headerRightTxt: {
