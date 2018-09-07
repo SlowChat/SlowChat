@@ -106,7 +106,8 @@ export default class LocalWebview extends Component<Props> {
     s = s.replace(/&nbsp;/g," ");
     s = s.replace(/&#39;/g,"\'");
     s = s.replace(/&quot;/g,"\"");
-    s = s.replace(/\r?\n/g,"<br />");
+    s = s.replace(/\r?\n/g,"");
+    // s = s.replace(/\r?\n/g,"<br />");
     return s;
   }
 

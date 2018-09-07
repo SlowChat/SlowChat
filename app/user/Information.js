@@ -13,6 +13,7 @@ import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-picker'
 import DatePicker from 'react-native-datepicker'
+import ZhTextInput from '../components/ZhTextInput'
 import Avatar from '../components/Avatar'
 import Confirm from '../components/Confirm'
 import ActionSheet from '../components/ActionSheet'
@@ -86,7 +87,7 @@ export default class Information extends Component {
   }
 
   onRightPress = () => {
-    this.setState({username: this.state.inputname, isSucc: false})
+    this.setState({username: this.inputname || '', isSucc: false})
   }
 
   chooseAndUpload = async () => {
@@ -198,26 +199,20 @@ export default class Information extends Component {
 
         <Toast ref="toast" position="center" />
         <Confirm
-          tit='请输入新的昵称'
           leftBtnTxt='取消'
           rightBtnTxt='确定'
           autoView={
-            <TextInput
-              autoCapitalize="none"
-              underlineColorAndroid='transparent'
-              style={styles.nickInput}
-              onChangeText={(text) => this.setState({inputname: text})}
-              placeholder='请输入填写您的用户名'
-              value={this.state.username}
-            />
+            <View style={styles.confirmWrap}>
+              <Text style={styles.confirmTit}>请输入新的昵称</Text>
+              <ZhTextInput autoFocus style={styles.nickInput} placeholder="请输入填写您的用户名"
+                value={this.state.username} onChange={(text) => this.inputname = text} />
+            </View>
           }
           visible={this.state.isSucc}
           onLeftPress={() => {
             this.onRequestClose()
           }}
-          onRightPress={() => {
-            this.onRightPress() // navigate
-          }}
+          onRightPress={this.onRightPress}
           onRequestClose={this.onRequestClose}
         />
       </View>
@@ -273,15 +268,26 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent: 'flex-end',
   },
-  nickInput: {
-    width: '80%',
-    height: 40,
+  confirmWrap: {
+    alignItems: 'center',
+  },
+  confirmTit: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#777777',
+    lineHeight: 22,
+    marginTop: 26,
     marginBottom: 15,
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 10,
+  },
+  nickInput: {
+    height: 36,
+    marginBottom: 20,
+    width: 215,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 18,
     color: '#333',
-    backgroundColor: '#eee',
+    backgroundColor: '#f7f7f7',
     alignItems:'center',
     justifyContent: 'center',
   },

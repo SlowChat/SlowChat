@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  ImageBackground,
   Button,
   TouchableOpacity,
 } from 'react-native';
@@ -22,12 +23,14 @@ export default class ReplyItem extends PureComponent {
 
     let { avatar } = item.user || {}
     let source = {uri: avatar}
-    if (!avatar || avatar.indexOf('http') != 0) {
-      source = ICONS.head
-    }
+    // if (!avatar || avatar.indexOf('http') != 0) {
+    //   source = ICONS.head
+    // }
     return (
       <View style={styles.wrap}>
-        <Image style={styles.avatar} source={source} />
+        <ImageBackground style={styles.avatar} source={ICONS.head}>
+          <Image style={styles.avatar} source={source} defaultSource={ICONS.head} />
+        </ImageBackground>
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>
           <Text style={styles.content}>{item.content}</Text>

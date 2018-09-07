@@ -152,14 +152,14 @@ export default class EmailList extends Component {
           </TouchableWithoutFeedback>
           { this.renderStatus(item.id) }
           <Confirm
-            tit={status === 'reservation' ? '确定取消发送邮件吗' : '删除草稿'}
+            tit={status === 'reservation' ? '确定取消发送邮件？' : '删除草稿'}
             leftBtnTxt={leftBtxTxt}
             rightBtnTxt={status === 'reservation' ? '再想想' : '确定删除'}
             autoView={
               status === 'reservation' ? (
                 <View style={styles.cont}>
-                  <Text style={{color: '#999', marginBottom: 10}}>取消发送将从您的积分账户中扣除{cancelScore}积分</Text>
-                  <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>{totalScore >= cancelScore ? `我的积分：${totalScore}` : `当前积分：${totalScore}（不足）`}</Text>
+                  <Text style={styles.contTxt}>取消发送将从您的积分账户中扣除{cancelScore}积分</Text>
+                  <Text style={styles.contTip}>{totalScore >= cancelScore ? `当前积分：${totalScore}` : `当前积分：${totalScore}（不足）`}</Text>
                 </View>
               ) : (
                 <View style={styles.cont}>
@@ -284,9 +284,26 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
   },
   cont: {
-    padding: 30,
+    paddingLeft: 33,
+    paddingRight: 33,
+    paddingTop: 13,
+    paddingBottom: 30,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderTopColor: '#d8d8d8'
+  },
+  contTxt: {
+    fontSize: 14,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#999999',
+    lineHeight: 20,
+  },
+  contTip: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
+    lineHeight: 22,
+    textAlign: 'center',
+    marginTop: 10,
   }
 });

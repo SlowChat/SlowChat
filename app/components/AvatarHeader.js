@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  ImageBackground,
 } from 'react-native';
 
 import ICONS from '../utils/icon'
@@ -14,12 +15,14 @@ export default class AvatarHeader extends PureComponent {
     const [send_date, send_time] = (data.send_time || '').split(' ')
     let { avatar, user_nickname } = data.user || {}
     let source = {uri: avatar}
-    if (!avatar || avatar.indexOf('http') != 0) {
-      source = ICONS.head
-    }
+    // if (!avatar || avatar.indexOf('http') != 0) {
+    //   source = ICONS.head
+    // }
     return (
       <View style={styles.avatarWrap}>
-        <Image style={styles.avatar} source={source} />
+        <ImageBackground style={styles.avatar} source={ICONS.head}>
+          <Image style={styles.avatar} source={source} defaultSource={ICONS.head} />
+        </ImageBackground>
         <View style={styles.avatarRight}>
           <View style={styles.nameWrap}>
             <Text style={styles.name}>{user_nickname}</Text>

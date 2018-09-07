@@ -35,6 +35,8 @@ import { get, post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
 const nullFn = () => {}
+const minDate = dateFormat(new Date(), 'yyyy-MM-dd')
+const minTime = dateFormat(new Date(), 'hh:mm')
 export default class NewMail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -73,15 +75,17 @@ export default class NewMail extends Component {
       title: '',
       content: '',
       email: '',
-      send_date: dateFormat(new Date(), 'yyyy-MM-dd'),
-      send_time: dateFormat(new Date(), 'hh:mm'),
+      send_date: minDate,
+      send_time: minTime,
       type: 2,
     },
     defaultValue: {
       title: '',
       content: '',
       email: '',
-    }
+    },
+    minDate,
+    minTime,
   }
 
   componentWillMount() {
@@ -249,6 +253,15 @@ export default class NewMail extends Component {
 
   handleDatePicker = (date) => {
     this.setParams('send_date', date)
+    if (date > minDate) {
+      this.setState({ minTime: null })
+    } else {
+      const minTime = dateFormat(new Date(), 'hh:mm')
+      this.setState({ minTime })
+      if (minTime) {
+        this.setParams('send_time', minTime)
+      }
+    }
   }
 
   handleTimePicker = (time) => {
@@ -617,7 +630,7 @@ export default class NewMail extends Component {
             <Text style={styles.label}>发信日期：</Text>
             <DatePicker style={styles.datepicker} date={params.send_date}
               locale="zh" mode="date" format="YYYY-MM-DD"
-              minDate={new Date()}
+              minDate={this.state.minDate}
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {
@@ -637,7 +650,7 @@ export default class NewMail extends Component {
             <Text style={styles.label}>发信时间：</Text>
             <DatePicker style={styles.datepicker} date={params.send_time}
               locale="zh" is24Hour mode="time" format="HH:mm"
-              minDate={new Date()}
+              minDate={this.state.minTime}
               confirmBtnText="确定" cancelBtnText="取消" showIcon={false}
               customStyles={{
                 dateInput: {

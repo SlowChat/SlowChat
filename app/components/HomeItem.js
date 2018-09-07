@@ -4,10 +4,12 @@ import {
   Text,
   View,
   Image,
+  ImageBackground,
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
 import ICONS from '../utils/icon'
+// import { isImage } from '../utils/util'
 // const ICONS = {
 //   head: require('../images/head_placeholder80.png'),
 //   eye: require('../images/icon_eyes.png'),
@@ -20,17 +22,19 @@ export default class HomeItem extends PureComponent<Props> {
     const { onPress, data } = this.props
     onPress && onPress(data.item.id)
   }
+  handleError = (e) => {
+    this.imageRef.source = ICONS.head
+    // e.target.source = ICONS.head
+  }
   render() {
     const { item } = this.props.data
     let { avatar } = (item || {}).user || {}
-    let source = {uri: avatar}
-    if (!avatar || avatar.indexOf('http') != 0) {
-      source = ICONS.head
-    }
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this.handlePress}>
         <View style={styles.avatarWrap}>
-          <Image style={styles.avatar} source={source} />
+          <ImageBackground style={styles.avatar} source={ICONS.head}>
+            <Image style={styles.avatar} source={{uri: avatar}} defaultSource={ICONS.head} />
+          </ImageBackground>
           <View style={styles.avatarRight}>
             <View style={styles.nameWrap}>
               <Text style={styles.name}>{item.user.user_nickname}</Text>

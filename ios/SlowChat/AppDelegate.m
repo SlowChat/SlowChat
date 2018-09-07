@@ -73,7 +73,7 @@
   NSURL *jsCodeLocation;
   Boolean isProduction = YES;
     #ifdef DEBUG
-//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.105:8081/index.bundle?platform=ios&dev=true"];
+//  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.104:8081/index.bundle?platform=ios&dev=true"];
         jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     isProduction = NO;
     #else

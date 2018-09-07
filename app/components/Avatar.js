@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  ImageBackground,
   TouchableWithoutFeedback
 } from 'react-native';
 
@@ -18,11 +19,19 @@ export default class Avatar extends PureComponent {
           type ? (
             <View style={styles.avatarWrap}>
               <Text style={styles.tit}>头像</Text>
-              <Image defaultSource={defaultSource} style={styles.avatarInfo} source={source} />
+              <View style={styles.avatarBg}>
+                <ImageBackground style={styles.avatarInfo} source={defaultSource}>
+                  <Image defaultSource={defaultSource} style={styles.avatarInfo} source={source} />
+                </ImageBackground>
+              </View>
             </View>
           ) : (
             <View style={styles.avatarWrap}>
-              <Image defaultSource={defaultSource} style={styles.avatar} source={source} />
+              <View style={styles.avatarBg}>
+                <ImageBackground style={styles.avatar} source={defaultSource}>
+                  <Image defaultSource={defaultSource} style={styles.avatar} source={source} />
+                </ImageBackground>
+              </View>
               {
                 isLogin ? (
                   <Text style={styles.login}>登录/注册</Text>
@@ -55,14 +64,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center'
   },
-  avatar: {
+  avatarBg: {
     width: 90,
     height: 90,
     marginRight: 20,
     borderRadius: 45,
-    borderWidth: 5,
-    borderColor: '#F6F6F6',
-    // borderStyle: 'solid'
+    backgroundColor: '#F6F6F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   avatarRight: {
     flex: 1,
@@ -73,14 +87,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   avatarInfo: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    borderWidth: 5,
-    borderColor: '#F6F6F6',
-    // backgroundColor: '#ff0000'
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   name: {
     fontFamily: 'PingFangSC-Regular',
