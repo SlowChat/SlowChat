@@ -70,6 +70,7 @@
 		F2C0D62821311AAB00499DC6 /* RCTJShareConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2C0D62721311AAB00499DC6 /* RCTJShareConfig.plist */; };
 		F2C0D67A21311D8600499DC6 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2C0D67921311D8600499DC6 /* AssetsLibrary.framework */; };
 		F2C0D67C21311E1600499DC6 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2C0D67B21311E1600499DC6 /* QuickLook.framework */; };
+		F2EDD2A821420F59007374B8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2EDD26F21420F59007374B8 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F2FC92582139808200384518 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F2FC92572139808100384518 /* libc++.tbd */; };
 		F2FC925A2139808C00384518 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F2FC92592139808C00384518 /* libicucore.tbd */; };
 		FB36F33ED0BB47AE9EC37657 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 053D03299CFD489AB5D35A45 /* libRNFS.a */; };
@@ -571,6 +572,7 @@
 		F2C0D62721311AAB00499DC6 /* RCTJShareConfig.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = RCTJShareConfig.plist; sourceTree = "<group>"; };
 		F2C0D67921311D8600499DC6 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		F2C0D67B21311E1600499DC6 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
+		F2EDD26F21420F59007374B8 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		F2FC92572139808100384518 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		F2FC92592139808C00384518 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		F327E47530D1447898DF9ABB /* libRNFileSelector.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFileSelector.a; sourceTree = "<group>"; };
@@ -591,6 +593,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2EDD2A821420F59007374B8 /* WebKit.framework in Frameworks */,
 				F2FC925A2139808C00384518 /* libicucore.tbd in Frameworks */,
 				F2FC92582139808200384518 /* libc++.tbd in Frameworks */,
 				F2C0D67C21311E1600499DC6 /* QuickLook.framework in Frameworks */,
@@ -789,6 +792,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F2EDD26F21420F59007374B8 /* WebKit.framework */,
 				F2FC92592139808C00384518 /* libicucore.tbd */,
 				F2FC92572139808100384518 /* libc++.tbd */,
 				F2C0D67B21311E1600499DC6 /* QuickLook.framework */,
