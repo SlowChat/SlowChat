@@ -199,7 +199,6 @@ export default class User extends Component {
     const { draftCount, unsendCount, sentCount, publicCount } = this.state.count
     const { sign, msgCount, score, isLogin, user } = this.state;
     const { username, sex, avatar, birthday, level } = user
-
     return (
       <View style={styles.container}>
         <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />

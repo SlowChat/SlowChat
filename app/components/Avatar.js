@@ -10,18 +10,19 @@ import {
 export default class Avatar extends PureComponent {
   render() {
     const { username, avatar, level, onPress, type, isLogin } = this.props;
-    let source = avatar ? {uri: avatar} : require('../images/default_avatar_160.png')
+    const defaultSource = require('../images/default_avatar_160.png')
+    let source = avatar ? {uri: avatar} : defaultSource
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         {
           type ? (
             <View style={styles.avatarWrap}>
               <Text style={styles.tit}>头像</Text>
-              <Image style={styles.avatarInfo} source={source} />
+              <Image defaultSource={defaultSource} style={styles.avatarInfo} source={source} />
             </View>
           ) : (
             <View style={styles.avatarWrap}>
-              <Image style={styles.avatar} source={source} />
+              <Image defaultSource={defaultSource} style={styles.avatar} source={source} />
               {
                 isLogin ? (
                   <Text style={styles.login}>登录/注册</Text>
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     borderWidth: 5,
     borderColor: '#F6F6F6',
-    backgroundColor: '#ff0000'
+    // backgroundColor: '#ff0000'
   },
   name: {
     fontFamily: 'PingFangSC-Regular',
