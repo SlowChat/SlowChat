@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 12,
     color: '#B4B4B4',
-    lineHeight: 17
+    height: 17
   },
   btn: {
     width: 60,

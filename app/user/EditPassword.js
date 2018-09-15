@@ -25,12 +25,12 @@ export default class EditPassowrd extends Component {
   }
   constructor(props) {
     super(props)
-    const { mobile, userEmail } = this.props.navigation.state.params || {}
+    const { area_code = '+86', mobile, userEmail } = this.props.navigation.state.params || {}
     this.state = {
       mobile: mobile || '',
       vCode: '',
       password: '',
-      area_code: '+86',
+      area_code: area_code,
       isClick: false,
       isVcodeClick: false,
       isSucc: false,   //成功提示框

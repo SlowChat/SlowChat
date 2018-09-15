@@ -46,11 +46,11 @@ export default class HomeItem extends PureComponent<Props> {
         <View style={styles.title}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.titleTxt}>{item.title}</Text>
         </View>
-        
+
         <View style={styles.content}>
           <Text numberOfLines={3} ellipsizeMode="tail" style={styles.contentTxt}>{item.content}</Text>
         </View>
-        
+
         <View style={styles.attention}>
           <Image style={styles.eyeIcon} source={ICONS.eye} />
           <Text style={[styles.num, styles.eyeNum]}>{item.looks}</Text>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   titleTxt: {
-    height: 20,
+    // height: 20,
     fontSize: 14,
     fontFamily: 'PingFangSC-Regular',
     color: '#999999',
@@ -126,12 +126,11 @@ const styles = StyleSheet.create({
     height: 17,
     fontSize: 12,
     color: '#B4B4B4',
-    lineHeight: 17
+    // lineHeight: 17
   },
   titleTxt: {
     fontSize: 15,
     color: '#333333',
-    lineHeight: 21,
   },
   content: {
     paddingBottom: 15,
@@ -142,7 +141,6 @@ const styles = StyleSheet.create({
   contentTxt: {
     fontSize: 14,
     color: '#333333',
-    lineHeight: 21,
   },
   attention: {
     flexDirection: 'row',

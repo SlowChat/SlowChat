@@ -14,7 +14,7 @@ import {
 
 import JShareModule from 'jshare-react-native'
 import QRCode from 'react-native-qrcode'
-import ViewShot from "react-native-view-shot"
+import { captureRef } from "react-native-view-shot"
 import Toast from 'react-native-easy-toast'
 
 import ICONS from '../utils/icon'
@@ -23,16 +23,18 @@ import { post } from '../utils/request'
 import { checkSavePermission } from '../utils/permission'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
+import Loading from '../components/Loading'
 
-const SHARE_URL = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1750833952,2529388352&fm=58&bpow=380&bpoh=380'
+// const SHARE_URL = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1750833952,2529388352&fm=58&bpow=380&bpoh=380'
 // ICONS.bg = require('../images/bg_share.png')
 
 type Props = {};
 export default class Share extends PureComponent<Props> {
   state = {
-    shareUrl: SHARE_URL,
+    shareUrl: '',
     moreModal: false,
-    userName: ''
+    userName: '',
+    showLoading: false
   }
   async componentWillMount() {
     try {
@@ -75,7 +77,7 @@ export default class Share extends PureComponent<Props> {
       console.log(res);
       if (res.code == 1) {
         shareUrl = res.data
-        this.setState({ shareUrl: shareUrl || SHARE_URL })
+        this.setState({ shareUrl })
       } else if (res.code == 10001) {
         this.props.navigation.replace('Login', {url: 'Share'})
       }
@@ -127,13 +129,27 @@ export default class Share extends PureComponent<Props> {
     })
   }
 
-  async share(platform) {
-    let uri = this.uri
-    if (!uri) {
-      uri = await this.viewShot.capture()
+  async capture() {
+    if (this.uri) return
+    try {
+      this.setState({ showLoading: true })
+      let uri = await captureRef(this.viewShot, {
+        // width: this.width * 4,
+        // height: this.height * 4,
+        quality: 1,
+      })
       uri = uri.replace('file://', '')
       this.uri = uri
+      // this.setState({ showLoading: false })
+    } catch (e) {
+      this.refs.toast.show('分享图片获取失败')
+      this.setState({ showLoading: false })
     }
+  }
+
+  async share(platform) {
+    await this.capture()
+    if (!this.uri) return
     try {
       await post('api/user/addShareScore.html')
       this.shareSucc = true
@@ -145,7 +161,7 @@ export default class Share extends PureComponent<Props> {
       imagePath: this.uri,
       imageArray: [this.uri]
     }
-    this.setState({ moreModal: false }, () => {
+    this.setState({ moreModal: false, showLoading: false }, () => {
       JShareModule.share(message, ({ state }) => {
         // if (state == 'success') {
         // } else if (state == 'fail') {
@@ -167,13 +183,11 @@ export default class Share extends PureComponent<Props> {
       return
     }
     try {
-      let uri = this.uri
-      if (!uri) {
-        uri = await this.viewShot.capture()
-        this.uri = uri
-      }
+      await this.capture()
+      this.setState({ showLoading: false })
+      if (!this.uri) return
       try {
-        await CameraRoll.saveToCameraRoll(uri, 'photo')
+        await CameraRoll.saveToCameraRoll(this.uri, 'photo')
         this.refs.toast.show('图片已保存到相册')
       } catch (e) {
         this.refs.toast.show('图片已保存失败')
@@ -183,34 +197,43 @@ export default class Share extends PureComponent<Props> {
     }
   }
 
+  handleShotLayout = ({ nativeEvent: { layout: { width, height } } }) => {
+    this.width = width
+    this.height = height
+  }
+
   render() {
     // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
-    const { userName, avatar } = this.state
+    const { userName, avatar, shareUrl } = this.state
     return (
       <View style={styles.container}>
-        <ViewShot ref={ref => this.viewShot = ref}>
+        <View ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
           <View style={styles.shot}>
             <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
               <View style={styles.avatarWrap}>
                 <ImageBackground style={styles.avatar} source={ICONS.head}>
                   <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
                 </ImageBackground>
-                <View style={styles.avatarRight}>
-                  <View style={styles.nameWrap}>
-                    <Text numberOfLines={1} style={styles.name}>{userName}</Text>
-                    <Text style={styles.desc}>邀请你来慢邮~</Text>
-                  </View>
-                  <Text style={styles.title}>让我们 回到未来 回忆现在</Text>
-                </View>
+                {
+                  userName ? <View style={styles.avatarRight}>
+                    <View style={styles.nameWrap}>
+                      <Text numberOfLines={1} style={styles.name}>{userName}</Text>
+                      <Text style={styles.desc}>邀请你来慢邮~</Text>
+                    </View>
+                    <Text style={styles.title}>让我们回到未来回忆现在</Text>
+                  </View> : null
+                }
               </View>
               <View style={styles.qrcodeWrap}>
-                <Image source={{uri: SHARE_URL}} style={{width: 160, height: 160}} />
+              {
+                shareUrl ? <Image source={{uri: shareUrl }} style={{width: 160, height: 160}} /> : null
+              }
               </View>
             </ImageBackground>
             <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
           </View>
-        </ViewShot>
+        </View>
         <View style={styles.icons}>
           <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_session')}>
             <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
@@ -254,6 +277,7 @@ export default class Share extends PureComponent<Props> {
             </View>
           </View>
         </Modal>
+        {this.state.showLoading && <Loading />}
         <AwardTip ref={(ref) => this.awardTip = ref} num="30" txt="分享成功" />
         <Toast ref="toast" position="center" />
       </View>

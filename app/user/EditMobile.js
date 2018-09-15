@@ -21,11 +21,11 @@ export default class EditMobile extends Component {
   }
   constructor(props) {
     super(props)
-    const { mobile } = this.props.navigation.state.params || {}
+    const { mobile, area_code } = this.props.navigation.state.params || {}
     this.state = {
       mobile: mobile || '',
       vCode: '',
-      area_code: '+86',
+      area_code: area_code || '+86',
       btnText: '',
       status: '',
       isClick: false,
