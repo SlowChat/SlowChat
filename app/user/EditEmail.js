@@ -136,7 +136,6 @@ export default class EditEmail extends Component {
       <View style={styles.container}>
         <ScrollView style={styles.link} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.menu}>
-            <Text style={styles.label}>邮箱</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -148,14 +147,8 @@ export default class EditEmail extends Component {
               value={this.state.email}
             />
             <VerifyCode reset={this.state.resetVertify} username={this.state.email} onTip={this.showTip}  />
-            {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
-              <View style={styles.btn}>
-                <Text style={styles.btnTxt}>获取验证码</Text>
-              </View>
-            </TouchableWithoutFeedback> */}
           </View>
           <View style={styles.menu}>
-            <Text style={styles.label}>验证码</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -174,8 +167,8 @@ export default class EditEmail extends Component {
         <Toast ref="toast" position="center" />
         <ErrorModal ref="errorModalRef" />
         <SuccessModal
-          txt={'邮箱绑定成功'}
-          btn={'返回'}
+          txt="邮箱绑定成功"
+          btn="返回"
           visible={this.state.isSucc}
           onPress={() => {
             this.props.navigation.pop() // navigate
@@ -190,57 +183,35 @@ export default class EditEmail extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efefef',
   },
   link: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
   },
   menu: {
     flexDirection: 'row',
     height: 44,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: '#fff',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',
   },
-  forward: {
-    position: 'absolute',
-    right: 8,
-    width: 24,
-    height: 24,
-  },
-  label: {
-    width: '20%',
-    color: '#666'
-  },
   input: {
-    width: '50%',
-    textAlign: 'left',
+    flex: 1,
     color: '#333'
-  },
-  btn: {
-    width: '25%',
-    height: 30,
-    backgroundColor: '#E24B92',
-    borderRadius: 15,
-    alignItems:'center',
-    justifyContent: 'center',
   },
   btnTxt: {
     color: '#fff'
   },
   save: {
-    width: '80%',
     height: 50,
-    marginLeft: '10%',
     marginTop: 50,
+    marginLeft: 54,
+    marginRight: 54,
     borderRadius: 25,
-    backgroundColor: '#efefef',
+    backgroundColor: '#e4e4e4',
     alignItems:'center',
     justifyContent: 'center',
   },

@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
     color: '#666666',
     lineHeight: 22,
-    marginLeft: 10,
     marginRight: 15,
   },
   desc: {
@@ -61,7 +60,6 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
     color: '#333333',
     lineHeight: 22,
-    marginLeft: 10,
     marginRight: 15,
   },
   time: {

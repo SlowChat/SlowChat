@@ -115,9 +115,9 @@ export default class VerifyCode extends PureComponent {
 
 const styles = StyleSheet.create({
   btn: {
-    width: '30%',
+    width: 90,
     height: 30,
-    backgroundColor: '#efefef',
+    backgroundColor: '#e4e4e4',
     borderRadius: 15,
     alignItems:'center',
     justifyContent: 'center',

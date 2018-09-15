@@ -157,7 +157,7 @@ export default class Email extends Component {
         const { total, items, total_score, cancel_score } = res.data
         const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
         items.forEach(item => {
-          item.send_time = (item.send_time || '').split(' ')[0]
+          // item.send_time = (item.send_time || '').split(' ')[0]
           let [ add_date, add_time ] = item.add_time.split(' ')
           add_date = add_date.replace(/\-/g, '/')
           item.add_time = curr_item == add_date ? add_time : add_date
@@ -180,7 +180,7 @@ export default class Email extends Component {
         this.dealError({showFoot: 0})
       }
     } catch (e) {
-      this.setState(state)
+      this.dealError({showFoot: 0})
     }
   }
 

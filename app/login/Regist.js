@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Platform,
+  Keyboard,
 } from 'react-native'
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
@@ -32,6 +33,7 @@ export default class Regist extends Component {
     checked: true,
     username: '',
     password: '',
+    area_code: '+86',
     verification_code: '',
     resetVertify: false,
     showLoading: false
@@ -64,11 +66,14 @@ export default class Regist extends Component {
     }
     this.startLoading()
     this.loading = true
-    const { username, password, verification_code } = this.state
+    const { activeTab, username, password, verification_code, area_code } = this.state
     const params = {
       username,
       password,
-      verification_code
+      verification_code,
+    }
+    if (activeTab == 0) {
+      params.area_code = area_code
     }
     post('api/user/register.html', params, true).then(res => {
       if (res.code == 1) {
@@ -119,6 +124,14 @@ export default class Regist extends Component {
     if (this.timer) {
       clearTimeout(this.timer)
     }
+  }
+
+  goAreaCode = () => {
+    this.props.navigation.navigate('AreaCode', {
+      setAreaCode: (code) => {
+        this.setState({ area_code: code })
+      }
+    })
   }
 
   goLogin = () => {
@@ -184,6 +197,10 @@ export default class Regist extends Component {
           {this.renderTabs()}
           <View style={styles.wrap}>
             <ImageBackground style={[styles.inputWrap, styles.verifyWrap]} source={require('../images/login_input.png')}>
+              <TouchableOpacity activeOpacity={0.8} style={[styles.areaCode, activeTab == 1 && styles.hidden]} onPress={this.goAreaCode}>
+              	<Text style={styles.areaCodeTxt}>{this.state.area_code}</Text>
+              	<Image style={styles.triangle} source={require('../images/triangle.png')} />
+              </TouchableOpacity>
               <TextInput value={username} style={[styles.input, styles.verifyInput]} placeholder={placeholder} placeholderTextColor="#CCCCCC"
                onChangeText={(text) => this.setState({username: text})}
                autoCapitalize="none" underlineColorAndroid='transparent' />
@@ -307,9 +324,9 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     marginBottom: 16,
+    paddingLeft: 20,
   },
   input: {
-    paddingLeft: 20,
     paddingRight: 10,
     fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
@@ -380,4 +397,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     height: 44,
   },
+  areaCode: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    minWidth: 57,
+  },
+  areaCodeTxt: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
+  },
+  triangle: {
+    width: 20,
+    height: 20,
+  },
+  hidden: {
+    display: 'none'
+  }
 });

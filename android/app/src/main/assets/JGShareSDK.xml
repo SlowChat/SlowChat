@@ -3,9 +3,9 @@
     <!-- 如果不需要支持某平台，可缺省该平台的配置-->
 
     <SinaWeibo
-        AppKey=""
-        AppSecret=""
-        RedirectUrl=""/>
+        AppKey="1865046692"
+        AppSecret="900d949fc73add3b5191d7dfd8636dbc"
+        RedirectUrl="http://open.weibo.com/apps/1865046692/privilege/oauth"/>
 
     <QQ
         AppId=""

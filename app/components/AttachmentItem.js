@@ -75,14 +75,16 @@ export default class AttachmentItem extends PureComponent {
           {this.renderItem()}
         </TouchableOpacity>
         { item.filename && <View style={styles.file}>
-          <Text numberOfLines={1} style={styles.filename}>{name}</Text>
-          <Text style={styles.fileext}>{ext}</Text>
+          <Text numberOfLines={1} ellipsizeMode="middle" style={styles.filename}>{item.filename}</Text>
         </View>}
         { item.size && <Text style={styles.size}>{formatFileSize(item.size)}</Text> }
       </View>
     )
   }
 }
+
+// <Text numberOfLines={1} style={styles.filename}>{name}</Text>
+// <Text style={styles.fileext}>{ext}</Text>
 
 const styles = StyleSheet.create({
   imageItem: {

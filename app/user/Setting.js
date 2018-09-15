@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Switch,
+  Platform,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -18,7 +19,7 @@ import { post, get } from '../utils/request'
 import { CODE_PUSH_KEY } from '../constants'
 import codePush from 'react-native-code-push'
 import DeviceInfo from 'react-native-device-info'
-// import RNEasyUpgrade from 'react-native-easy-upgrade'
+import RNEasyUpgrade from 'react-native-easy-upgrade'
 
 import ICONS from '../utils/icon'
 
@@ -53,17 +54,19 @@ class Setting extends Component {
     })
     codePush.notifyAppReady()
 
-    // this.easyUpgrade = new RNEasyUpgrade({
-    //   iOSAppId: '1428357149',
-    //   downloadTitle: '安装包下载',
-    //   downloadDescription: '安装包正在下载中...',
-    //   downloadApkEnd: () => {
-    //     this.easyUpgrade.installApk();
-    //   },
-    //   onError: () => {
-    //     console.log('downloadApkError');
-    //   }
-    // })
+    if (Platform.OS == 'ios') {
+      this.easyUpgrade = new RNEasyUpgrade({
+        iOSAppId: '1428357149',
+        downloadTitle: '安装包下载',
+        downloadDescription: '安装包正在下载中...',
+        downloadApkEnd: () => {
+          this.easyUpgrade.installApk();
+        },
+        onError: () => {
+          console.log('downloadApkError');
+        }
+      })
+    }
   }
 
   getData() {
@@ -73,6 +76,7 @@ class Setting extends Component {
       if (code === 1) {
         if (data.sign && data.sign.count) this.setState({ sign: data.sign })
         this.setState({
+          area_code: data.area_code,
           mobile: data.mobile,
           userEmail: data.user_email,
           username: data.user_nickname,
@@ -163,6 +167,28 @@ class Setting extends Component {
   //   }
   // }
   checkUpdate = async () => {
+    if (this.easyUpgrade) {
+      // IOS检查APP Store是否有新版本
+      try {
+        let updateInfo = await this.easyUpgrade.checkAppVersionIOS()
+        if (updateInfo.hasNewVersion) {
+          this.alert.show({
+            title: '发现新版本: ' + updateInfo.latestVersion,
+            txt: '是否更新APP',
+            leftBtnTxt: '稍等询问',
+            rightBtnTxt: '更新',
+            onOk: () => {
+              this.easyUpgrade.startAppUpdate(updateInfo.apkUrl)
+            }
+          })
+          return
+        }
+      } catch (e) {
+
+      }
+    }
+
+
     try {
       const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
       console.log("checkUpdate", update)
@@ -212,22 +238,22 @@ class Setting extends Component {
     const { switchBtn } = this.state
     const { navigate } = this.props.navigation;
     const { params = {} } = this.props.navigation.state;
-    const { username, level, avatar, mobile, userEmail } = this.state;
+    const { username, level, avatar, mobile, userEmail, area_code } = this.state;
     return (
       <View style={styles.container}>
         <Avatar username={username} level={level} avatar={avatar} />
         <View style={styles.link}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditMobile', { mobile: mobile })}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditMobile', { mobile, area_code })}>
             <Text style={styles.label}>绑定手机号</Text>
             <Text style={styles.text}>{mobile}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditEmail', { userEmail: userEmail })}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditEmail', { userEmail })}>
             <Text style={styles.label}>绑定邮箱</Text>
             <Text style={styles.text}>{userEmail}</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditPassword', { mobile: mobile, userEmail: userEmail })}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditPassword', { mobile, area_code, userEmail })}>
             <Text style={styles.label}>修改密码</Text>
             <Image style={styles.forward} source={ICONS.forward} />
           </TouchableOpacity>

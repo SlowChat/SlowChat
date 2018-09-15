@@ -28,7 +28,8 @@ export default class Login extends PureComponent<Props> {
   state = {
     username: '', // 15216748429
     password: '', // 123456
-    showLoading: false
+    showLoading: false,
+    area_code: '+86',
   }
   componentWillUnmount() {
     Keyboard.dismiss()
@@ -42,19 +43,20 @@ export default class Login extends PureComponent<Props> {
   }
 
   forget = () => {
-    if (this.username.indexOf('@') > -1) {
+    if (this.state.username.indexOf('@') > -1) {
       this.props.navigation.navigate('EditEmail')
     } else {
       this.props.navigation.navigate('EditPassword', {source: 'login'})
     }
   }
   handleLogin = async () => {
-    const { username, password } = this.state
+    const { username, password, area_code } = this.state
     const disabled = !username.trim() || !password.trim()
     if (disabled || this.loading) return
     const params = {
       username: username.trim(),
       password: password.trim(),
+      area_code: area_code,
       device_type: Platform.OS == 'ios' ? 'iphone' : 'android'
     }
     const code = Storage.getPushID()
@@ -107,6 +109,14 @@ export default class Login extends PureComponent<Props> {
     })
   }
 
+  goAreaCode = () => {
+    this.props.navigation.navigate('AreaCode', {
+      setAreaCode: (code) => {
+        this.setState({ area_code: code })
+      }
+    })
+  }
+
   render() {
     const { username, password, showLoading } = this.state
     const disabled = !username.trim() || !password.trim()
@@ -123,6 +133,10 @@ export default class Login extends PureComponent<Props> {
           <View style={styles.wrap} >
             <Image style={styles.logo} source={require('../images/logo.png')} />
             <ImageBackground style={[styles.item, styles.loginInput]} source={require('../images/login_input.png')}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.areaCode} onPress={this.goAreaCode}>
+                <Text style={styles.areaCodeTxt}>{this.state.area_code}</Text>
+                <Image style={styles.triangle} source={require('../images/triangle.png')} />
+              </TouchableOpacity>
               <TextInput value={username} style={styles.input} placeholder="请输入邮箱/手机号" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({ username: text })}
                 autoCapitalize="none" underlineColorAndroid='transparent'/>
             </ImageBackground>
@@ -183,8 +197,26 @@ const styles = StyleSheet.create({
     width: 268,
     height: 44,
   },
+  areaCode: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    minWidth: 57,
+  },
+  areaCodeTxt: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
+  },
+  triangle: {
+    width: 20,
+    height: 20,
+  },
   loginInput: {
     marginBottom: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 18,
   },
   loginBtn: {
     marginTop: 16,
@@ -203,11 +235,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
+    flex: 1,
     fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
     color: '#333333',
     height: 44,
-    paddingLeft: 18,
     justifyContent: 'center',
   },
   bottomBtn: {

@@ -12,7 +12,9 @@ export function dateFormat (timestamp) {
 }
 
 export function isMobileNumberSupport(v) {
-  return /^[1][3456789][0-9]{9}$/.test(v);
+  if (!v) return false
+  return true
+  // return /^[1][3456789][0-9]{9}$/.test(v);
 }
 
 export function isEmail(str){

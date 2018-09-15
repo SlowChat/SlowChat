@@ -19,9 +19,9 @@
 	<key>qqAppKey</key>
 	<string></string>
 	<key>sinaWeiboAppKey</key>
-	<string></string>
+	<string>1865046692</string>
 	<key>sinaWeiboAppSecret</key>
-	<string></string>
+	<string>900d949fc73add3b5191d7dfd8636dbc</string>
 	<key>sinaRedirectUri</key>
 	<string></string>
 	<key>facebookAppId</key>

@@ -7,17 +7,18 @@ import {
   ImageBackground,
 } from 'react-native';
 
+import dateFormat from '../utils/date'
 import ICONS from '../utils/icon'
 
 export default class AvatarHeader extends PureComponent {
   render() {
     const data = this.props.data || {}
-    const [send_date, send_time] = (data.send_time || '').split(' ')
+    // const [send_date, send_time] = (data.send_time || '').split(' ')
     let { avatar, user_nickname } = data.user || {}
     let source = {uri: avatar}
-    // if (!avatar || avatar.indexOf('http') != 0) {
-    //   source = ICONS.head
-    // }
+    const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
+    let [ add_date, add_time ] = (data.add_time || '').split(' ')
+    add_time = curr_item == add_date ? add_time : add_date
     return (
       <View style={styles.avatarWrap}>
         <ImageBackground style={styles.avatar} source={ICONS.head}>
@@ -26,9 +27,9 @@ export default class AvatarHeader extends PureComponent {
         <View style={styles.avatarRight}>
           <View style={styles.nameWrap}>
             <Text style={styles.name}>{user_nickname}</Text>
-            <Text style={styles.time}>{send_time}</Text>
+            <Text style={styles.time}>{add_time}</Text>
           </View>
-          <Text style={styles.date}>发信时间：{send_date}</Text>
+          <Text style={styles.date}>预定发送：{data.send_time}</Text>
         </View>
       </View>
     )

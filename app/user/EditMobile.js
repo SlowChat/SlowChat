@@ -3,9 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
   ScrollView,
   TextInput,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from 'react-native';
 
 import Toast from 'react-native-easy-toast'
@@ -15,11 +16,8 @@ import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
 
 export default class EditMobile extends Component {
-  static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    return {
-      title: '修改绑定手机号',
-    }
+  static navigationOptions = {
+    title: '修改绑定手机号',
   }
   constructor(props) {
     super(props)
@@ -27,6 +25,7 @@ export default class EditMobile extends Component {
     this.state = {
       mobile: mobile || '',
       vCode: '',
+      area_code: '+86',
       btnText: '',
       status: '',
       isClick: false,
@@ -38,7 +37,8 @@ export default class EditMobile extends Component {
     }
   }
   componentDidMount() {
-    if (this.props.navigation.state.params.mobile !== '') {
+    const { mobile } = this.props.navigation.state.params || {}
+    if (mobile !== '') {
       this.setState({
         btnText: '验证后绑定新手机',
         status: 'check',
@@ -54,7 +54,7 @@ export default class EditMobile extends Component {
 
   handleSubmit = () => {
     const { navigate, pop } = this.props.navigation;
-    const { mobile, vCode, status, isClick } = this.state;
+    const { mobile, vCode, status, area_code, isClick } = this.state;
     let url = ''
     if (status=== 'bind') {
       url = 'api/user/bind_mobile.html'
@@ -64,7 +64,7 @@ export default class EditMobile extends Component {
       url = 'api/user/edit_mobile.html'
     }
     if  (isClick) {
-      post(url, { mobile: mobile, verification_code: vCode }).then((res) => {
+      post(url, { mobile, verification_code: vCode, area_code }).then((res) => {
         console.log(res)
         if (res.code == 1) {
           if (status === 'check') {
@@ -135,12 +135,23 @@ export default class EditMobile extends Component {
     this.refs.toast.show(msg)
   }
 
+  goAreaCode = () => {
+    this.props.navigation.navigate('AreaCode', {
+      setAreaCode: (code) => {
+        this.setState({ area_code: code })
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.link} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.menu}>
-            <Text style={styles.label}>手机号</Text>
+            <TouchableOpacity activeOpacity={0.8} style={styles.areaCode} onPress={this.goAreaCode}>
+              <Text style={styles.areaCodeTxt}>{this.state.area_code}</Text>
+              <Image style={styles.triangle} source={require('../images/triangle.png')} />
+            </TouchableOpacity>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -155,7 +166,6 @@ export default class EditMobile extends Component {
           <VerifyCode reset={this.state.resetVertify} username={this.state.mobile} onTip={this.showTip}  />
           </View>
           <View style={styles.menu}>
-            <Text style={styles.label}>验证码</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -165,16 +175,14 @@ export default class EditMobile extends Component {
               value={this.state.vCode}
             />
           </View>
-          <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={[styles.save, this.state.isClick ? styles.active : '']}>
-              <Text style={styles.saveTxt}>{this.state.btnText}</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <TouchableOpacity activeOpacity={0.8} style={[styles.save, this.state.isClick ? styles.active : '']} onPress={() => this.handleSubmit()}>
+            <Text style={styles.saveTxt}>{this.state.btnText}</Text>
+          </TouchableOpacity>
         </ScrollView>
         <Toast ref="toast" position="center" />
         <SuccessModal
-          txt={'手机号绑定成功'}
-          btn={'返回'}
+          txt="手机号绑定成功"
+          btn="返回"
           visible={this.state.isSucc}
           onPress={() => {
             this.props.navigation.pop() // navigate
@@ -189,41 +197,30 @@ export default class EditMobile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efefef',
+    backgroundColor: '#F6F6F6',
   },
   link: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
   },
   menu: {
     flexDirection: 'row',
     height: 44,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: '#fff',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',
   },
-  forward: {
-    position: 'absolute',
-    right: 8,
-    width: 24,
-    height: 24,
-  },
-  label: {
-    width: '20%',
-    color: '#666'
-  },
   input: {
-    width: '50%',
-    textAlign: 'left',
+    flex: 1,
     color: '#333'
   },
   btn: {
-    width: '25%',
+    marginLeft: 54,
+    marginRight: 54,
     height: 30,
     backgroundColor: '#efefef',
     borderRadius: 15,
@@ -234,12 +231,12 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   save: {
-    width: '80%',
     height: 50,
-    marginLeft: '10%',
     marginTop: 50,
+    marginLeft: 54,
+    marginRight: 54,
     borderRadius: 25,
-    backgroundColor: '#efefef',
+    backgroundColor: '#e4e4e4',
     alignItems:'center',
     justifyContent: 'center',
   },
@@ -250,5 +247,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
-
+  areaCode: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    minWidth: 57,
+  },
+  areaCodeTxt: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
+  },
+  triangle: {
+    width: 20,
+    height: 20,
+  },
 });

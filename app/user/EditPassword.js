@@ -5,7 +5,8 @@ import {
   View,
   ScrollView,
   TextInput,
-  TouchableWithoutFeedback
+  Image,
+  TouchableOpacity
 } from 'react-native';
 
 import { post } from '../utils/request'
@@ -14,10 +15,6 @@ import { isMobileNumberSupport } from '../utils/util'
 import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
-
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
 
 export default class EditPassowrd extends Component {
   static navigationOptions = ({navigation}) => {
@@ -33,6 +30,7 @@ export default class EditPassowrd extends Component {
       mobile: mobile || '',
       vCode: '',
       password: '',
+      area_code: '+86',
       isClick: false,
       isVcodeClick: false,
       isSucc: false,   //成功提示框
@@ -46,7 +44,7 @@ export default class EditPassowrd extends Component {
 
   handleSubmit = () => {
     const { pop } = this.props.navigation;
-    const { mobile, vCode, password, isClick } = this.state;
+    const { mobile, vCode, password, area_code, isClick } = this.state;
     // const { params = {} } = this.props.navigation.state;
     // console.log(params.source)
     let url = '', token = true
@@ -61,7 +59,8 @@ export default class EditPassowrd extends Component {
       post(url,
         { username: mobile,
           verification_code: vCode,
-          password: password
+          password: password,
+          area_code
         }, token).then((res) => {
         if (res.code === 1) {
           // this.refs.toast.show(res.msg);
@@ -142,12 +141,23 @@ export default class EditPassowrd extends Component {
     navigate('EditEmailPassword', {userEmail: this.state.userEmail})
   }
 
+  goAreaCode = () => {
+    this.props.navigation.navigate('AreaCode', {
+      setAreaCode: (code) => {
+        this.setState({ area_code: code })
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.link} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.menu}>
-            <Text style={styles.label}>手机号</Text>
+            <TouchableOpacity activeOpacity={0.8} style={styles.areaCode} onPress={this.goAreaCode}>
+              <Text style={styles.areaCodeTxt}>{this.state.area_code}</Text>
+              <Image style={styles.triangle} source={require('../images/triangle.png')} />
+            </TouchableOpacity>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -159,15 +169,9 @@ export default class EditPassowrd extends Component {
               value={this.state.mobile}
               maxLength={11}
             />
-          <VerifyCode username={this.state.mobile} onTip={this.showTip}/>
-            {/* <TouchableWithoutFeedback onPress={() => this.handleVcode()}>
-              <View style={styles.btn}>
-                <Text style={styles.btnTxt}>获取验证码</Text>
-              </View>
-            </TouchableWithoutFeedback> */}
+            <VerifyCode username={this.state.mobile} onTip={this.showTip}/>
           </View>
           <View style={styles.menu}>
-            <Text style={styles.label}>验证码</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -178,7 +182,6 @@ export default class EditPassowrd extends Component {
             />
           </View>
           <View style={styles.menu}>
-            <Text style={styles.label}>新密码</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -189,11 +192,9 @@ export default class EditPassowrd extends Component {
               value={this.state.password}
             />
           </View>
-          <TouchableWithoutFeedback onPress={() => this.handleSubmit()}>
-            <View style={[styles.save, this.state.isClick ? styles.active : '']}>
-              <Text style={styles.saveTxt}>提交</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <TouchableOpacity style={[styles.save, this.state.isClick ? styles.active : '']} onPress={() => this.handleSubmit()}>
+            <Text style={styles.saveTxt}>提交</Text>
+          </TouchableOpacity>
           <Text style={styles.remind}>没有绑定手机，
             <Text style={styles.links} onPress={() => this.handleJump()}>
               邮箱验证修改密码
@@ -219,57 +220,37 @@ export default class EditPassowrd extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efefef',
+    backgroundColor: '#F6F6F6',
   },
   link: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
   },
   menu: {
     flexDirection: 'row',
     height: 44,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: '#fff',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',
   },
-  forward: {
-    position: 'absolute',
-    right: 8,
-    width: 24,
-    height: 24,
-  },
-  label: {
-    width: '20%',
-    color: '#666'
-  },
   input: {
-    width: '50%',
+    flex: 1,
     textAlign: 'left',
     color: '#333'
-  },
-  btn: {
-    width: '25%',
-    height: 30,
-    backgroundColor: '#E24B92',
-    borderRadius: 15,
-    alignItems:'center',
-    justifyContent: 'center',
   },
   btnTxt: {
     color: '#fff'
   },
   save: {
-    width: '80%',
     height: 50,
-    marginLeft: '10%',
     marginTop: 50,
+    marginLeft: 54,
+    marginRight: 54,
     borderRadius: 25,
-    backgroundColor: '#efefef',
+    backgroundColor: '#e4e4e4',
     alignItems:'center',
     justifyContent: 'center',
   },
@@ -289,5 +270,20 @@ const styles = StyleSheet.create({
     color: '#E24B92',
     fontSize: 16,
     textDecorationLine: 'underline'
-  }
+  },
+  areaCode: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    minWidth: 57,
+  },
+  areaCodeTxt: {
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#333333',
+  },
+  triangle: {
+    width: 20,
+    height: 20,
+  },
 });

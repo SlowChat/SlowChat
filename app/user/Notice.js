@@ -66,8 +66,9 @@ export default class MsgList extends Component<Props> {
       const res = await post('api/user_msg/getList.html', {
         p: page,
         s: SIZE,
-        t: 0
+        t: 2
       })
+      console.log(res);
       if (res.code == 1) {
         const { total, items } = res.data
         const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')

@@ -14,6 +14,7 @@ const StackApp = (isLogin) => createStackNavigator({
       header: null
     }
   },
+  AreaCode: {screen: require('./login/AreaCode').default},
   Login: {
     // screen: LoginScreen,
     screen: require('./login/Login').default,

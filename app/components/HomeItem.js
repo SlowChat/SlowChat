@@ -40,12 +40,17 @@ export default class HomeItem extends PureComponent<Props> {
               <Text style={styles.name}>{item.user.user_nickname}</Text>
               <Text style={styles.time}>{item.add_time}</Text>
             </View>
-            <Text style={styles.date}>发信时间：{item.send_time}</Text>
+            <Text style={styles.date}>预定发送：{item.send_time}</Text>
           </View>
         </View>
-        <View style={styles.content}>
-          <Text style={styles.contentTxt}>{item.title}</Text>
+        <View style={styles.title}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.titleTxt}>{item.title}</Text>
         </View>
+        
+        <View style={styles.content}>
+          <Text numberOfLines={3} ellipsizeMode="tail" style={styles.contentTxt}>{item.content}</Text>
+        </View>
+        
         <View style={styles.attention}>
           <Image style={styles.eyeIcon} source={ICONS.eye} />
           <Text style={[styles.num, styles.eyeNum]}>{item.looks}</Text>
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 10,
+    marginBottom: 5,
   },
   titleTxt: {
     height: 20,
@@ -122,6 +128,11 @@ const styles = StyleSheet.create({
     color: '#B4B4B4',
     lineHeight: 17
   },
+  titleTxt: {
+    fontSize: 15,
+    color: '#333333',
+    lineHeight: 21,
+  },
   content: {
     paddingBottom: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -129,7 +140,7 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
   },
   contentTxt: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#333333',
     lineHeight: 21,
   },

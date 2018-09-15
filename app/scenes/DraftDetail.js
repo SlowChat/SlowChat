@@ -123,7 +123,7 @@ export default class DraftDetail extends Component {
             <Text style={styles.txt}>{data.title}</Text>
           </View>
           <View style={styles.item}>
-            <Text style={styles.label}>发信时间：</Text>
+            <Text style={styles.label}>预定发送：</Text>
             <Text style={styles.txt}>{data.send_time}</Text>
           </View>
           <View style={styles.content}>

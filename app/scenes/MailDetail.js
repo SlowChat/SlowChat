@@ -175,7 +175,6 @@ export default class MailDetail extends Component {
       const id = this.getId()
       const url = this.status == null ? 'api/mail/getInfo.html' : 'api/mail/getMyInfo.html'
       const res = await post(url, { id })
-      console.log(res);
       this.loading = false
       if (res.code == 1) {
         const { comment, ...items } = res.data.items

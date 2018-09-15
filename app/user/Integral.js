@@ -81,9 +81,13 @@ export default class Integral extends Component {
       }
       const res = await post('api/user/score_log.html', params)
       this.loading = false
-      console.log(res);
       if (res.code == 1) {
         const { total, total_page, log } = res.data
+        log.forEach(item => {
+          if (item.score > 0) {
+            item.score = `+${item.score}`
+          }
+        })
         const dataArray = this.state.dataArray.concat(log || [])
         let showFoot = dataArray.length >= total_page ? 1 : 0
         this.page++
@@ -99,7 +103,7 @@ export default class Integral extends Component {
         this.dealError({showFoot: 0})
       }
     } catch (e) {
-      this.setState(state)
+      this.dealError({showFoot: 0})
     }
   }
 
@@ -128,7 +132,7 @@ export default class Integral extends Component {
           <Text style={styles.detail}>{item.item}</Text>
         </View>
         <Text style={styles.right}>
-          +{item.score}
+          {item.score}
         </Text>
       </View>
     )

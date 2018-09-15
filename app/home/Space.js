@@ -96,7 +96,7 @@ export default class Space extends Component<Props> {
         const { total, items } = res.data
         const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
         items.forEach(item => {
-          item.send_time = (item.send_time || '').split(' ')[0]
+          // item.send_time = (item.send_time || '').split(' ')[0]
           const [ add_date, add_time ] = item.add_time.split(' ')
           item.add_time = curr_item == add_date ? add_time : add_date
         })

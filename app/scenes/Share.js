@@ -24,7 +24,7 @@ import { checkSavePermission } from '../utils/permission'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 
-const SHARE_URL = 'https://www.baidu.com'
+const SHARE_URL = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1750833952,2529388352&fm=58&bpow=380&bpoh=380'
 // ICONS.bg = require('../images/bg_share.png')
 
 type Props = {};
@@ -187,14 +187,15 @@ export default class Share extends PureComponent<Props> {
     // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
     const { userName, avatar } = this.state
-    const source = avatar ? { uri: avatar } : ICONS.head
     return (
       <View style={styles.container}>
         <ViewShot ref={ref => this.viewShot = ref}>
           <View style={styles.shot}>
             <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
               <View style={styles.avatarWrap}>
-                <Image style={styles.avatar} source={source} />
+                <ImageBackground style={styles.avatar} source={ICONS.head}>
+                  <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
+                </ImageBackground>
                 <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>
                     <Text numberOfLines={1} style={styles.name}>{userName}</Text>
@@ -204,10 +205,8 @@ export default class Share extends PureComponent<Props> {
                 </View>
               </View>
               <View style={styles.qrcodeWrap}>
-                  <View style={styles.qrcode}>
-                    <QRCode value={this.state.shareUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
-                  </View>
-                </View>
+                <Image source={{uri: SHARE_URL}} style={{width: 160, height: 160}} />
+              </View>
             </ImageBackground>
             <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
           </View>
@@ -262,6 +261,8 @@ export default class Share extends PureComponent<Props> {
   }
 }
 
+// <QRCode value={this.state.shareUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+
 const styles = StyleSheet.create({
   container : {
     flex: 1,
@@ -284,10 +285,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  qrcode: {
-    padding: 2,
-    backgroundColor: '#FFFFFF',
-  },
+  // qrcode: {
+  //   padding: 2,
+  //   backgroundColor: '#FFFFFF',
+  // },
   shareTxt: {
     marginTop: 41,
     marginBottom: 25,
@@ -324,12 +325,12 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingBottom: 11,
     backgroundColor: '#FFFFFF',
+    marginLeft: 25,
   },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginLeft: 25,
     marginRight: 15,
   },
   avatarRight: {

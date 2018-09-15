@@ -119,7 +119,7 @@ export default class EmailList extends Component {
           </View>
         </View>
         <Text style={[styles.name]}>{item.title ? item.title : '无主题'}</Text>
-        <Text style={[styles.sendTime]}>{item.send_time ? `发信时间：${item.send_time}` : '无发信时间'}</Text>
+        <Text style={[styles.sendTime]}>{item.send_time ? `预定发送：${item.send_time}` : '无发信时间'}</Text>
       </View>
     } else {
       return <View style={[styles.list, this.state.isDelSel || isAllSelect ? {backgroundColor: '#eee'} : '']}>
@@ -131,7 +131,7 @@ export default class EmailList extends Component {
           </View>
         </View>
         <Text style={[styles.name, styles.content]}>{item.title ? item.title : '无主题'}</Text>
-        <Text style={[styles.sendTime, styles.content]}>{item.send_time ? `发信时间：${item.send_time}` : '无发信时间'}</Text>
+        <Text style={[styles.sendTime, styles.content]}>{item.send_time ? `预定发送：${item.send_time}` : '无预定发送时间'}</Text>
       </View>
     }
   }

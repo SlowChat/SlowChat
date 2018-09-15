@@ -17,6 +17,9 @@ const DATA = {
   protocal: {
     url: 'api/common/agreement.html',
     title: '网站软件许可使用协议'
+  },
+  article: {
+    url: 'api/common/articleInfo.html'
   }
 }
 
@@ -24,9 +27,9 @@ type Props = {};
 export default class LocalWebview extends Component<Props> {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
-    const source = params.source || 'faq'
+    const source = params.source
     return {
-      title: DATA[source].title || '',
+      title: DATA[source].title || params.title || '',
     }
   }
   state = {
@@ -35,11 +38,14 @@ export default class LocalWebview extends Component<Props> {
   }
 
   componentWillMount() {
-    console.log(this.props.navigation.state);
-    let { source = 'faq' } = this.props.navigation.state.params || {}
-    const keys = Object.keys(DATA)
-    if (keys.indexOf(source) == -1) {
-      source = 'faq'
+    let { source } = this.props.navigation.state.params || {}
+    // const keys = Object.keys(DATA)
+    // if (keys.indexOf(source) == -1) {
+    //   source = 'faq'
+    // }
+    if (!source) {
+      this.props.navigation.goBack()
+      return
     }
     this.source = source
     this.getData()
@@ -58,10 +64,15 @@ export default class LocalWebview extends Component<Props> {
     if (this.post_content) return this.post_content
     try {
       this.loading = true
-      const { url } = DATA[this.source]
-      const res = await post(url)
+      const { url, title } = DATA[this.source]
+      const params = {}
+      if (this.source == 'article') {
+        params.id = this.props.navigation.state.params.id
+      }
+      const res = await post(url, params)
       if (res.code == 1) {
         this.post_content = this.htmlDecodeByRegExp(res.data.post_content)
+        console.log(this.post_content);
         if (this.loaded) {
           this.postMessage()
         }
@@ -69,6 +80,11 @@ export default class LocalWebview extends Component<Props> {
           showLoading: false,
           showError: false
         })
+        if (!title) {
+          this.props.navigation.setParams({
+            title: res.data.post_title,
+          })
+        }
       } else {
         this.setState({
           showLoading: false,

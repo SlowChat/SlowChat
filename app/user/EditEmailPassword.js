@@ -16,16 +16,9 @@ import VerifyCode from '../components/VerifyCode'
 import SuccessModal from '../components/SuccessModal'
 import ErrorModal from '../components/ErrorModal'
 
-const ICONS = {
-  forward: require('../images/icon_forward.png'),
-}
-
 export default class EditPassowrd extends Component {
-  static navigationOptions = ({navigation}) => {
-    const { params = {} } = navigation.state
-    return {
-      title: '修改登录密码',
-    }
+  static navigationOptions = {
+    title: '修改登录密码',
   }
   constructor(props) {
     super(props)
@@ -162,7 +155,6 @@ export default class EditPassowrd extends Component {
       <View style={styles.container}>
         <ScrollView style={styles.link} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
           <View style={styles.menu}>
-            <Text style={styles.label}>邮箱</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -181,7 +173,6 @@ export default class EditPassowrd extends Component {
             </TouchableWithoutFeedback> */}
           </View>
           <View style={styles.menu}>
-            <Text style={styles.label}>验证码</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -192,7 +183,6 @@ export default class EditPassowrd extends Component {
             />
           </View>
           <View style={styles.menu}>
-            <Text style={styles.label}>新密码</Text>
             <TextInput
               autoCapitalize="none"
               underlineColorAndroid='transparent'
@@ -217,8 +207,8 @@ export default class EditPassowrd extends Component {
         <Toast ref="toast" position="center" />
         <ErrorModal ref="errorModalRef" />
         <SuccessModal
-          txt={'邮箱修改成功'}
-          btn={'返回'}
+          txt="邮箱修改成功"
+          btn="返回"
           visible={this.state.isSucc}
           onPress={() => {
             this.props.navigation.pop() // navigate
@@ -233,41 +223,28 @@ export default class EditPassowrd extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efefef',
+    backgroundColor: '#F6F6F6',
   },
   link: {
     flex: 1,
     marginTop: 10,
-    backgroundColor: '#fff',
   },
   menu: {
     flexDirection: 'row',
     height: 44,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: '#fff',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderStyle: 'solid',
     borderBottomColor: '#eee',
     alignItems:'center',
   },
-  forward: {
-    position: 'absolute',
-    right: 8,
-    width: 24,
-    height: 24,
-  },
-  label: {
-    width: '20%',
-    color: '#666'
-  },
   input: {
-    width: '50%',
-    textAlign: 'left',
+    flex: 1,
     color: '#333'
   },
   btn: {
-    width: '25%',
+    width: 90,
     height: 30,
     backgroundColor: '#E24B92',
     borderRadius: 15,
@@ -278,12 +255,12 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   save: {
-    width: '80%',
+    marginLeft: 50,
+    marginRight: 50,
     height: 50,
-    marginLeft: '10%',
     marginTop: 50,
     borderRadius: 25,
-    backgroundColor: '#efefef',
+    backgroundColor: '#e4e4e4',
     alignItems:'center',
     justifyContent: 'center',
   },
