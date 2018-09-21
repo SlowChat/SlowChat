@@ -15,9 +15,9 @@
 	<key>wechatAppSecret</key>
 	<string>4e6d5732a4d2403f4c95f318a7df2455</string>
 	<key>qqAppId</key>
-	<string></string>
+  <string>1107494954</string>
 	<key>qqAppKey</key>
-	<string></string>
+	<string>69ewZaEKy8tQBN5k</string>
 	<key>sinaWeiboAppKey</key>
 	<string>1865046692</string>
 	<key>sinaWeiboAppSecret</key>
@@ -25,9 +25,9 @@
 	<key>sinaRedirectUri</key>
 	<string></string>
 	<key>facebookAppId</key>
-	<string></string>
+	<string>753350991699672</string>
 	<key>facebookDisplayName</key>
-	<string></string>
+	<string>4dd6d2a49e59e57077c76781066591ad</string>
 	<key>isSupportWebSina</key>
 	<true/>
 </dict>

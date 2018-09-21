@@ -44,7 +44,7 @@ export default class HomeItem extends PureComponent<Props> {
           </View>
         </View>
         <View style={styles.title}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.titleTxt}>{item.title}</Text>
+          <Text style={styles.titleTxt}>{item.title}</Text>
         </View>
 
         <View style={styles.content}>
@@ -73,9 +73,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
     paddingBottom: 6,
-    fontFamily: 'PingFangSC-Regular',
-    marginBottom: 10,
-    backgroundColor: '#FFFFFF'
+    // marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    borderBottomColor: '#EEEEEE',
+    borderBottomWidth: 1,
   },
   avatarWrap: {
     flexDirection: 'row',
@@ -91,17 +92,6 @@ const styles = StyleSheet.create({
   },
   avatarRight: {
     flex: 1,
-  },
-  title: {
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  titleTxt: {
-    // height: 20,
-    fontSize: 14,
-    fontFamily: 'PingFangSC-Regular',
-    color: '#999999',
-    lineHeight: 20,
   },
   nameWrap: {
     marginBottom: 2,
@@ -123,13 +113,19 @@ const styles = StyleSheet.create({
     lineHeight: 17
   },
   date: {
+    fontFamily: 'PingFangSC-Regular',
     height: 17,
     fontSize: 12,
     color: '#B4B4B4',
-    // lineHeight: 17
+    lineHeight: 17
+  },
+  title: {
+    // marginBottom: 5,
   },
   titleTxt: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 15,
+    lineHeight: 21,
     color: '#333333',
   },
   content: {
@@ -139,8 +135,10 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
   },
   contentTxt: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#333333',
+    lineHeight: 20,
   },
   attention: {
     flexDirection: 'row',
@@ -164,12 +162,14 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   num: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#B4B4B4',
   },
   comments: {
   },
   comment: {
+    fontFamily: 'PingFangSC-Regular',
     height: 20,
     fontSize: 14,
     color: '#666666',

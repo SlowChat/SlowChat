@@ -819,6 +819,7 @@ const styles = StyleSheet.create({
   textarea: {
     flex: 1,
     padding: 0,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 16,
     color: '#333333',
     lineHeight: 22,

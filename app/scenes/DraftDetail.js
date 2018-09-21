@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#EEEEEE',
   },
   textarea: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 16,
     color: '#333333',
     lineHeight: 22,

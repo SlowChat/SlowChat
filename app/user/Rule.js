@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   remind: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#999',
@@ -168,6 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   txt: {
+    fontFamily: 'PingFangSC-Regular',
     flexDirection: 'row',
     lineHeight: 24,
     color: '#666',

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   Modal,
   AppState,
@@ -10,8 +11,10 @@ import {
   CameraRoll,
   TouchableOpacity,
   ImageBackground,
+  Dimensions,
 } from 'react-native';
 
+import {SafeAreaView} from 'react-navigation'
 import JShareModule from 'jshare-react-native'
 import QRCode from 'react-native-qrcode'
 import { captureRef } from "react-native-view-shot"
@@ -27,11 +30,13 @@ import Loading from '../components/Loading'
 
 // const SHARE_URL = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1750833952,2529388352&fm=58&bpow=380&bpoh=380'
 // ICONS.bg = require('../images/bg_share.png')
-
+const { width: winWidth } = Dimensions.get('window');
 type Props = {};
 export default class Share extends PureComponent<Props> {
   state = {
-    shareUrl: '',
+    imageUrl: '',
+    imageHeight: 413,
+    imageWidth: winWidth,
     moreModal: false,
     userName: '',
     showLoading: false
@@ -54,6 +59,8 @@ export default class Share extends PureComponent<Props> {
       JShareModule.setup()
     }
 
+    console.log(Dimensions.get('window'));
+
     AppState.addEventListener('change', this.handleAppStateChange)
   }
   componentWillUnmount() {
@@ -71,17 +78,22 @@ export default class Share extends PureComponent<Props> {
   }
 
   async getData() {
-    let shareUrl = ''
     try {
-      const res = await post('api/user/getShareUrl.html')
-      console.log(res);
+      const res = await post('api/common/getShareImg.html')
       if (res.code == 1) {
-        shareUrl = res.data
-        this.setState({ shareUrl })
+        let imageUrl = res.data
+        this.setState({ imageUrl })
+        Image.getSize(imageUrl, (width, height) => {
+          this.setState({
+            imageUrl,
+            imageHeight: parseInt(winWidth / width * height)
+          })
+        })
       } else if (res.code == 10001) {
         this.props.navigation.replace('Login', {url: 'Share'})
       }
     } catch (e) {
+      console.log(e);
     }
   }
 
@@ -106,7 +118,13 @@ export default class Share extends PureComponent<Props> {
   }
 
   handleWeibo = () => {
-    this.share('sina_weibo')
+    JShareModule.isSinaWeiBoInstalled((isInstalled) => {
+      if (isInstalled === true) {
+        this.share('sina_weibo')
+      } else {
+        this.refs.toast.show('您尚未安装微博客户端')
+      }
+    })
   }
 
   handleTwitter = () => {
@@ -205,53 +223,33 @@ export default class Share extends PureComponent<Props> {
   render() {
     // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
-    const { userName, avatar, shareUrl } = this.state
+    const { userName, avatar, imageUrl, imageWidth, imageHeight } = this.state
     return (
       <View style={styles.container}>
-        <View ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
-          <View style={styles.shot}>
-            <ImageBackground source={require('../images/bg_share.png')} style={styles.wrap}>
-              <View style={styles.avatarWrap}>
-                <ImageBackground style={styles.avatar} source={ICONS.head}>
-                  <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
-                </ImageBackground>
-                {
-                  userName ? <View style={styles.avatarRight}>
-                    <View style={styles.nameWrap}>
-                      <Text numberOfLines={1} style={styles.name}>{userName}</Text>
-                      <Text style={styles.desc}>邀请你来慢邮~</Text>
-                    </View>
-                    <Text style={styles.title}>让我们回到未来回忆现在</Text>
-                  </View> : null
-                }
-              </View>
-              <View style={styles.qrcodeWrap}>
+        <ScrollView style={[{ display: userName ? 'flex' : 'none'}, styles.scrollview]} onLayout={(e) => console.log(e.nativeEvent.layout, "======")}>
+          <View style={styles.shot} ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
+            <Image source={require('../images/sharebar1.png')} style={styles.sharebar1} />
+            <View style={styles.avatarWrap}>
+              <ImageBackground style={styles.avatar} source={ICONS.head}>
+                <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
+              </ImageBackground>
               {
-                shareUrl ? <Image source={{uri: shareUrl }} style={{width: 160, height: 160}} /> : null
+                userName ? <View style={styles.avatarRight}>
+                  <View style={styles.nameWrap}>
+                    <Text numberOfLines={1} style={styles.name}>{userName}</Text>
+                    <Text style={styles.desc}>邀请你来慢邮~</Text>
+                  </View>
+                  <Text style={styles.title}>让我们回到未来回忆现在</Text>
+                </View> : null
               }
-              </View>
-            </ImageBackground>
-            <Text style={styles.shareTxt}>分享二维码，邀请好友加入慢邮吧</Text>
+            </View>
+            {
+              imageUrl ? <Image source={{uri: imageUrl }} style={{width: imageWidth, height: imageHeight}} />
+               : null
+            }
           </View>
-        </View>
-        <View style={styles.icons}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_session')}>
-            <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
-            <Text style={styles.iconTxt}>微信</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_timeLine')}>
-            <Image style={styles.icon} source={require('../images/friends.png')}></Image>
-            <Text style={styles.iconTxt}>朋友圈</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
-            <Image style={styles.icon} source={require('../images/icon_save.png')}></Image>
-            <Text style={styles.iconTxt}>保存</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.setState({moreModal: true})}>
-            <Image style={styles.icon} source={require('../images/icon_more.png')}></Image>
-            <Text style={styles.iconTxt}>更多</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
+        
         <Modal visible={this.state.moreModal} transparent={true}
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
@@ -285,37 +283,49 @@ export default class Share extends PureComponent<Props> {
   }
 }
 
-// <QRCode value={this.state.shareUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
+// <QRCode value={this.state.imageUrl} size={160} fgColor="#000000" bgColor="#FFFFFF" />
 
 const styles = StyleSheet.create({
-  container : {
+  container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
   shot: {
-    alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
-  wrap: {
-    marginTop: 50,
-    // marginLeft: 30,
-    // marginRight: 30,
-    padding: 5,
-    width: 315,
-    height: 300,
+  // wrap: {
+  //   marginTop: 50,
+  //   // marginLeft: 30,
+  //   // marginRight: 30,
+  //   padding: 5,
+  //   width: 315,
+  //   height: 300,
+  // },
+  sharebar1: {
+    height: 5,
   },
-  qrcodeWrap: {
-    height: 210,
-    alignItems: 'center',
-    justifyContent: 'center',
+  scrollview: {
+    height: 481,
+    backgroundColor: 'red'
+  },
+  sharebar2: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 39,
+    bottom: 0,
+    // backgroundColor: 'red'
+  },
+  sharebar2Wrap: {
+    position: 'relative',
   },
   // qrcode: {
   //   padding: 2,
   //   backgroundColor: '#FFFFFF',
   // },
   shareTxt: {
-    marginTop: 41,
-    marginBottom: 25,
+    // marginTop: 41,
+    marginBottom: 10,
     fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#666666',
@@ -326,6 +336,7 @@ const styles = StyleSheet.create({
   icons: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginBottom: 60,
   },
   iconWrap: {
     marginLeft: 15,
@@ -334,7 +345,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 50,
     height: 50,
-
   },
   iconTxt: {
     height: 17,
@@ -346,10 +356,11 @@ const styles = StyleSheet.create({
   },
   avatarWrap: {
     flexDirection: 'row',
-    paddingTop: 25,
-    paddingBottom: 11,
+    paddingTop: 14,
+    paddingBottom: 14,
     backgroundColor: '#FFFFFF',
-    marginLeft: 25,
+    marginLeft: 60,
+    marginRight: 60,
   },
   avatar: {
     width: 40,

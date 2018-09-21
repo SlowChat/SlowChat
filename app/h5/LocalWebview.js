@@ -72,7 +72,6 @@ export default class LocalWebview extends Component<Props> {
       const res = await post(url, params)
       if (res.code == 1) {
         this.post_content = this.htmlDecodeByRegExp(res.data.post_content)
-        console.log(this.post_content);
         if (this.loaded) {
           this.postMessage()
         }
@@ -137,6 +136,7 @@ export default class LocalWebview extends Component<Props> {
         <WebView ref={ref => this.webview = ref}
           // source={require('./h5.html')}
           style={styles.webview}
+          // source={{html: Content}}
           source={Platform.OS == 'ios' ? require('./h5.html') : {uri: 'file:///android_asset/h5.html'}}
           mixedContentMode="compatibility"
           userAgent="com.slowchat"

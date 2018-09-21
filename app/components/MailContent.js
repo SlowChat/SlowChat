@@ -16,7 +16,7 @@ export default class MailContent extends PureComponent {
         <AvatarHeader data={data} />
         <Text style={styles.header}>{data.title}</Text>
         <View style={styles.contentWrap}>
-          <Text style={styles.content}>{data.content}</Text>
+          <Text style={styles.content} selectable>{data.content}</Text>
         </View>
         <Attachment items={data.attach} onTip={onTip} />
       </View>
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   header: {
     width: 345,
     height: 20,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#999999',
     lineHeight: 20,
@@ -50,6 +51,7 @@ const styles = StyleSheet.create({
   },
   content: {
     width: 345,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 15,
     color: '#333333',
     lineHeight: 21,
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
   },
   imageName: {
     height: 17,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#333333',
     lineHeight: 17,
@@ -77,6 +80,7 @@ const styles = StyleSheet.create({
   },
   imageSize: {
     height: 14,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 10,
     color: '#B4B4B4',
     lineHeight: 14,

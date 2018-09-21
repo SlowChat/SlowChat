@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
   filename: {
     flex: 1,
     height: 17,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#333333',
     lineHeight: 17,
@@ -112,12 +113,14 @@ const styles = StyleSheet.create({
   },
   fileext: {
     height: 17,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#333333',
     lineHeight: 17,
   },
   size: {
     height: 14,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 10,
     color: '#B4B4B4',
     lineHeight: 14,

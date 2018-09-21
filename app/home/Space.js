@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
   },
   tip: {
     height: 17,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#8E8E93',
     lineHeight: 17,

@@ -38,7 +38,6 @@ export async function post(url, params, unneedLogin) {
   const headers = await getHeaders(unneedLogin)
   console.log(url)
   console.log(params)
-  console.log(headers);
   return fetch(BASE_URL + url, {
     method: 'POST',
     headers: {
@@ -78,7 +77,6 @@ export async function upload(item) {
     formData.append('filetype', ext);
   }
   const headers = await getHeaders()
-  console.log(headers)
   console.log(file);
   return fetch(serverUrl, {
     method: 'POST',

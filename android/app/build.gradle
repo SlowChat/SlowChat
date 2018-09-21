@@ -109,7 +109,9 @@ android {
         manifestPlaceholders = [
                 JPUSH_APPKEY: "c4d58ccfd28897a5d21e93ea",
                 APP_CHANNEL : "default",
-                TENCENT_APPID: "1107494954"
+                TENCENT_APPID: "1107494954",
+                FACEBOOK_APPID: "753350991699672"
+
         ]
         multiDexEnabled true //Howard 2017-08-31 解决方法数超过65536的问题
 

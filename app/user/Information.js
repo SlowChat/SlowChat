@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
   input: {
     flex:1,
     flexDirection: 'row',
+    fontFamily: 'PingFangSC-Regular',
     height: 40,
     lineHeight: 40,
     paddingRight: 20,

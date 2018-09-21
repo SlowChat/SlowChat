@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   spaceTxt: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#999',
     textAlign: 'center',

@@ -5,7 +5,8 @@
     <SinaWeibo
         AppKey="1865046692"
         AppSecret="900d949fc73add3b5191d7dfd8636dbc"
-        RedirectUrl="http://open.weibo.com/apps/1865046692/privilege/oauth"/>
+        RedirectUrl=""/>
+        <!-- http://open.weibo.com/apps/1865046692/privilege/oauth -->
 
     <QQ
         AppId=""
@@ -16,8 +17,13 @@
         AppSecret="4e6d5732a4d2403f4c95f318a7df2455"/>
 
     <Facebook
-        AppId=""
-        AppName=""
+        AppId="753350991699672"
+        AppName="4dd6d2a49e59e57077c76781066591ad"
+    />
+
+    <Twitter
+        ConsumerKey=""
+        ConsumerSecret=""
     />
 
 </DevInfor>

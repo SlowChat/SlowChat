@@ -41,6 +41,8 @@ export default class FeedBack extends Component {
   }
 
   render() {
+    const content = (this.state.content || '').replace(/(^\s*)|(\s*$)/g, '')
+    const isDisabled = content.length < 11
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
         <Text style={styles.label}>问题与意见</Text>
@@ -61,10 +63,8 @@ export default class FeedBack extends Component {
           onChangeText={(text) => this.setState({contact: text})}
           placeholder='选填，便于我们与您联系'
         />
-        <TouchableOpacity onPress={() => this.handleSubmit()}>
-          <View style={styles.save}>
-            <Text style={styles.saveTxt}>提交</Text>
-          </View>
+        <TouchableOpacity activeOpacity={0.8} style={[styles.save, isDisabled ? styles.disabled : {}]} onPress={() => this.handleSubmit()}>
+          <Text style={styles.saveTxt}>提交</Text>
         </TouchableOpacity>
         <Toast ref="toast" position="center" />
       </ScrollView>
@@ -102,9 +102,12 @@ const styles = StyleSheet.create({
     marginLeft: 54,
     marginRight: 54,
     borderRadius: 25,
-    backgroundColor: '#e4e4e4',
+    backgroundColor: '#D74B80',
     alignItems:'center',
     justifyContent: 'center',
+  },
+  disabled: {
+    backgroundColor: '#e4e4e4',
   },
   saveTxt: {
     color: '#fff',

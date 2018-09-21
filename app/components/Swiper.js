@@ -23,11 +23,16 @@ export default class SwiperComponent extends PureComponent<Props> {
   handlePress({ url = '' }) {
     const { onNav } = this.props
     if (!url || !onNav) return
-    if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
-      onNav('Webview', { url })
-    } else if (url.indexOf('/') == 0) {
-      const { uri, query } = URL.parse(url)
-      onNav(uri, query)
+    if (/^[1-9]+[0-9]*]*$/.test(url)) {
+      onNav('LocalWebview', {source: 'article', id: url})
+    } else if (typeof url == 'string') {
+      if (url.indexOf('http://manyou.0lz.net') == 0 || url.indexOf('https://') == 0) {
+        onNav('Webview', { url })
+      }
+      //  else if (url.indexOf('/') == 0) {
+      //   const { uri, query } = URL.parse(url)
+      //   onNav(uri, query)
+      // }
     }
   }
 

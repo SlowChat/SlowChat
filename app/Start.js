@@ -59,6 +59,7 @@ export default class Start extends PureComponent {
           if (resultCode === 0) {}
       });
     }
+    // JPushModule.setBadge(10, success => {})
     JPushModule.getRegistrationID(registrationId => {
       console.log("==registrationId===" + registrationId)
       Global.pushId = registrationId
@@ -94,7 +95,16 @@ export default class Start extends PureComponent {
           routeName: 'MailDetail',
           params,
         })
-        this.navRef.dispatch(pushAction)
+        if (Platform.OS == 'ios') {
+          JPushModule.getBadge(badge => {
+            if (badge > 0) {
+              JPushModule.setBadge(badge - 1, success => {})
+            }
+            this.navRef.dispatch(pushAction)
+          })
+        } else {
+          this.navRef.dispatch(pushAction)
+        }
       }
     });
   }

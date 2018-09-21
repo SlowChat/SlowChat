@@ -7,6 +7,8 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
+import JPushModule from 'jpush-react-native'
+
 import ICONS from '../utils/icon'
 import { get, post } from '../utils/request'
 import Storage from '../utils/storage'
@@ -21,25 +23,23 @@ export default class User extends Component {
     return {
       title: '个人中心',
       headerLeft: (
-        <View style={styles.icon}>
-          <TouchableWithoutFeedback onPress={params.leftOnPress}>
+        <TouchableWithoutFeedback onPress={params.leftOnPress}>
+          <View style={styles.icon}>
             <Image style={styles.set} source={require('../images/icon_set.png')} />
-          </TouchableWithoutFeedback>
-        </View>
+          </View>
+        </TouchableWithoutFeedback>
       ),
       headerRight: (
-        <View style={styles.icon}>
-          <TouchableWithoutFeedback onPress={params.rightOnPress}>
-            <View>
-              <Image style={styles.info} source={require('../images/icon_info.png')} />
-              {
-                msgCount ? (
-                  <View style={styles.msgCount}><Text style={styles.msgCountTxt}>{msgCount}</Text></View>
-                ) : null
-              }
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
+        <TouchableWithoutFeedback onPress={params.rightOnPress}>
+          <View style={styles.icon}>
+            <Image style={styles.info} source={require('../images/icon_info.png')} />
+            {
+              msgCount ? (
+                <View style={styles.infoCount}><Text style={styles.msgCountTxt}>{msgCount}</Text></View>
+              ) : null
+            }
+          </View>
+        </TouchableWithoutFeedback>
       ),
     }
   }
@@ -125,6 +125,9 @@ export default class User extends Component {
         this.props.navigation.setParams({
           msgCount: data.msg_count
         })
+        if (Platform.OS == 'ios') {
+          JPushModule.setBadge(data.msg_count, success => {})
+        }
       } else if (code == 10001) {
         this.setState({isLogin: true})
         // this.props.navigation.navigate('Login')
@@ -311,20 +314,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
   },
   icon: {
-    width: 50,
-    height: 50,
+    position: 'relative',
+    // width: 50,
+    // height: 50,
   },
   set: {
     width: 30,
     height: 30,
-    marginLeft: 8,
-    marginTop: 6,
+    marginLeft: 15,
   },
   info: {
     width: 30,
     height: 30,
-    marginLeft: 15,
-    marginTop: 6,
+    marginRight: 15,
+  },
+  infoCount: {
+    position: 'absolute',
+    top: 0,
+    left: 16,
+    width: 14,
+    height: 14,
+    borderRadius: 14,
+    padding: 0,
+    backgroundColor: '#EC3632',
+    alignItems:'center',
   },
   remind: {
     flexDirection: 'row',
@@ -375,6 +388,7 @@ const styles = StyleSheet.create({
   },
   punchRight: {
     width: '23%',
+    fontFamily: 'PingFangSC-Regular',
     height: 30,
     lineHeight: 30,
     color: '#fff',

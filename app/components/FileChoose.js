@@ -34,6 +34,25 @@ const FILE_TYPES = {
   video: ['mp4', 'mov', 'avi', 'wmv', 'rm', 'rmvb', 'mkv']
 }
 
+// let FILE_FILTER = ''
+function getFileFilter() {
+  if (Platform.OS == 'ios') {
+    return []
+  } else if (Platform.OS == 'android') {
+    let FILE_TYPE_ARR = [].concat(FILE_TYPES.file).concat(FILE_TYPES.audio)
+    return '.*\\.(' + FILE_TYPE_ARR.join('|') + ')$'
+  }
+  return ''
+  // if (!FILE_FILTER) {
+  //   let FILE_TYPE_ARR = []
+  //   for (let key in FILE_TYPES) {
+  //     FILE_TYPE_ARR = FILE_TYPE_ARR.concat(FILE_TYPES[key])
+  //   }
+  //   FILE_FILTER = '.*\\.' + FILE_TYPE_ARR.join('|') + '$'
+  // }
+  // return FILE_FILTER
+}
+
 export default class ImageChoose extends PureComponent {
   state = {
     items: [],
@@ -164,6 +183,9 @@ export default class ImageChoose extends PureComponent {
     }
     return ''
   }
+  checkSize(fileSize) {
+    return fileSize < 50 * 1024 * 1024
+  }
   dealSucc(uri, response) {
     console.log(response)
     let { fileName, fileSize, path } = response
@@ -173,7 +195,9 @@ export default class ImageChoose extends PureComponent {
       onError && onError('附件格式不支持上传')
       return
     }
+    if (this.checkSize(response.fileSize)) {
 
+    }
     let { items } = this.state
     items = items.concat([
       {
@@ -202,6 +226,7 @@ export default class ImageChoose extends PureComponent {
     RNFileSelector.Show({
       title: '文件选择',
       // filter: '.*\\.(txt|pdf)$',
+      // filter: getFileFilter(),
       onDone: async (path) => {
         path = path.replace('file://', '')
         try {
@@ -304,12 +329,15 @@ export default class ImageChoose extends PureComponent {
         <View style={styles.header}>
           <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
             <Image style={styles.icon} source={require('../images/picture.png')}></Image>
+            <Text style={styles.txt}>图片</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} onPress={this.chooseFile}>
             <Image style={styles.icon} source={require('../images/document.png')}></Image>
+            <Text style={styles.txt}>文件</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.6} onPress={this.chooseVideo}>
             <Image style={styles.icon} source={require('../images/video.png')}></Image>
+            <Text style={styles.txt}>视频</Text>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal contentContainerStyle={styles.body} showsHorizontalScrollIndicator={false}>
@@ -364,6 +392,14 @@ const styles = StyleSheet.create({
     height: 30,
     marginLeft: 25,
     marginRight: 25,
+    marginTop: 5,
+  },
+  txt: {
+    fontSize: 10,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#7E7E7E',
+    lineHeight: 14,
+    textAlign: 'center'
   },
   body: {
     height: 156,

@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
   },
   date: {
     flex: 1,
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 12,
     color: '#B4B4B4',
     height: 17
