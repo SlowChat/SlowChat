@@ -59,8 +59,6 @@ export default class Share extends PureComponent<Props> {
       JShareModule.setup()
     }
 
-    console.log(Dimensions.get('window'));
-
     AppState.addEventListener('change', this.handleAppStateChange)
   }
   componentWillUnmount() {
@@ -82,6 +80,7 @@ export default class Share extends PureComponent<Props> {
       const res = await post('api/common/getShareImg.html')
       if (res.code == 1) {
         let imageUrl = res.data
+        // imageUrl = 'https://gw.alicdn.com/tfs/TB1DK2ZsHSYBuNjSspiXXXNzpXa-480-800.jpg'
         this.setState({ imageUrl })
         Image.getSize(imageUrl, (width, height) => {
           this.setState({
@@ -226,30 +225,51 @@ export default class Share extends PureComponent<Props> {
     const { userName, avatar, imageUrl, imageWidth, imageHeight } = this.state
     return (
       <View style={styles.container}>
-        <ScrollView style={[{ display: userName ? 'flex' : 'none'}, styles.scrollview]} onLayout={(e) => console.log(e.nativeEvent.layout, "======")}>
-          <View style={styles.shot} ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
-            <Image source={require('../images/sharebar1.png')} style={styles.sharebar1} />
-            <View style={styles.avatarWrap}>
-              <ImageBackground style={styles.avatar} source={ICONS.head}>
-                <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
-              </ImageBackground>
-              {
-                userName ? <View style={styles.avatarRight}>
+        <View style={[{ display: userName ? 'flex' : 'none' }, styles.scrollview]}>
+          <ScrollView>
+            <View style={styles.shot} ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
+              <Image source={require('../images/sharebar1.png')} style={styles.sharebar1} />
+              <View style={styles.avatarWrap}>
+                <ImageBackground style={styles.avatar} source={ICONS.head}>
+                  <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
+                </ImageBackground>
+                <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>
                     <Text numberOfLines={1} style={styles.name}>{userName}</Text>
                     <Text style={styles.desc}>邀请你来慢邮~</Text>
                   </View>
                   <Text style={styles.title}>让我们回到未来回忆现在</Text>
-                </View> : null
+                </View>
+              </View>
+              {
+                imageUrl ? <Image source={{uri: imageUrl }} style={{width: imageWidth, height: imageHeight}} />
+                 : null
               }
             </View>
-            {
-              imageUrl ? <Image source={{uri: imageUrl }} style={{width: imageWidth, height: imageHeight}} />
-               : null
-            }
-          </View>
-        </ScrollView>
-        
+          </ScrollView>
+        </View>
+        <View style={styles.sharebar2Wrap}>
+          <Image resizeMode="stretch" source={require('../images/sharebar2.png')} style={styles.sharebar2} />
+        </View>
+        <Text style={styles.shareTxt}>分享APP，邀请好友加入慢邮吧</Text>
+        <SafeAreaView style={styles.icons} forceInset={{top: 'never', bottom: 'always'}}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_session')}>
+            <Image style={styles.icon} source={require('../images/icon_wechat.png')}></Image>
+            <Text style={styles.iconTxt}>微信</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.handleWechat('wechat_timeLine')}>
+            <Image style={styles.icon} source={require('../images/friends.png')}></Image>
+            <Text style={styles.iconTxt}>朋友圈</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={this.handleSave}>
+            <Image style={styles.icon} source={require('../images/icon_save.png')}></Image>
+            <Text style={styles.iconTxt}>保存</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.6} style={styles.iconWrap} onPress={() => this.setState({moreModal: true})}>
+            <Image style={styles.icon} source={require('../images/icon_more.png')}></Image>
+            <Text style={styles.iconTxt}>更多</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
         <Modal visible={this.state.moreModal} transparent={true}
           animationType="fade" onRequestClose={() => this.setState({moreModal: false})}>
           <View style={styles.moreModalWrap}>
@@ -306,7 +326,6 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     height: 481,
-    backgroundColor: 'red'
   },
   sharebar2: {
     position: 'absolute',
@@ -314,7 +333,6 @@ const styles = StyleSheet.create({
     right: 0,
     height: 39,
     bottom: 0,
-    // backgroundColor: 'red'
   },
   sharebar2Wrap: {
     position: 'relative',
