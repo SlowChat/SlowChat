@@ -35,7 +35,7 @@ type Props = {};
 export default class Share extends PureComponent<Props> {
   state = {
     imageUrl: '',
-    imageHeight: 413,
+    imageHeight: 406,
     imageWidth: winWidth,
     moreModal: false,
     userName: '',
@@ -230,8 +230,8 @@ export default class Share extends PureComponent<Props> {
             <View style={styles.shot} ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
               <Image source={require('../images/sharebar1.png')} style={styles.sharebar1} />
               <View style={styles.avatarWrap}>
-                <ImageBackground style={styles.avatar} source={ICONS.head}>
-                  <Image style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
+                <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
+                  <Image resizeMode="cover" style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
                 </ImageBackground>
                 <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>

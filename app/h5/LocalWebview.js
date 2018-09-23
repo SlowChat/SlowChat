@@ -70,6 +70,7 @@ export default class LocalWebview extends Component<Props> {
         params.id = this.props.navigation.state.params.id
       }
       const res = await post(url, params)
+      console.log("=====", res);
       if (res.code == 1) {
         this.post_content = this.htmlDecodeByRegExp(res.data.post_content)
         if (this.loaded) {

@@ -28,8 +28,8 @@ export default class ReplyItem extends PureComponent {
     // }
     return (
       <View style={styles.wrap}>
-        <ImageBackground style={styles.avatar} source={ICONS.head}>
-          <Image style={styles.avatar} source={source} defaultSource={ICONS.head} />
+        <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
+          <Image resizeMode="cover" style={styles.avatar} source={source} defaultSource={ICONS.head} />
         </ImageBackground>
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>

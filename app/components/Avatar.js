@@ -20,16 +20,16 @@ export default class Avatar extends PureComponent {
             <View style={styles.avatarWrap}>
               <Text style={styles.tit}>头像</Text>
               <View style={styles.avatarBg}>
-                <ImageBackground style={styles.avatarInfo} source={defaultSource}>
-                  <Image defaultSource={defaultSource} style={styles.avatarInfo} source={source} />
+                <ImageBackground resizeMode="cover" style={styles.avatarInfo} source={defaultSource}>
+                  <Image resizeMode="cover" defaultSource={defaultSource} style={styles.avatarInfo} source={source} />
                 </ImageBackground>
               </View>
             </View>
           ) : (
             <View style={styles.avatarWrap}>
               <View style={styles.avatarBg}>
-                <ImageBackground style={styles.avatar} source={defaultSource}>
-                  <Image defaultSource={defaultSource} style={styles.avatar} source={source} />
+                <ImageBackground resizeMode="cover" style={styles.avatar} source={defaultSource}>
+                  <Image resizeMode="cover" defaultSource={defaultSource} style={styles.avatar} source={source} />
                 </ImageBackground>
               </View>
               {

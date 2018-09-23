@@ -165,7 +165,6 @@ export default class MailDetail extends Component {
     }).start();
   }
   getId() {
-    return 146;
     const { id } = this.props.navigation.state.params || {}
     return id
   }

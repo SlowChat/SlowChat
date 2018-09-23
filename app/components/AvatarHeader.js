@@ -21,7 +21,7 @@ export default class AvatarHeader extends PureComponent {
     add_time = curr_item == add_date ? add_time : add_date
     return (
       <View style={styles.avatarWrap}>
-        <ImageBackground style={styles.avatar} source={ICONS.head}>
+        <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
           <Image style={styles.avatar} source={source} defaultSource={ICONS.head} />
         </ImageBackground>
         <View style={styles.avatarRight}>

@@ -25,14 +25,13 @@ export default class SwiperComponent extends PureComponent<Props> {
     if (!url || !onNav) return
     if (/^[1-9]+[0-9]*]*$/.test(url)) {
       onNav('LocalWebview', {source: 'article', id: url})
-    } else if (typeof url == 'string') {
+    } else if (typeof url == 'string' && url) {
       if (url.indexOf('http://manyou.0lz.net') == 0 || url.indexOf('https://') == 0) {
         onNav('Webview', { url })
+      } else {
+        const { uri, query } = URL.parse(url)
+        onNav(uri, query)
       }
-      //  else if (url.indexOf('/') == 0) {
-      //   const { uri, query } = URL.parse(url)
-      //   onNav(uri, query)
-      // }
     }
   }
 

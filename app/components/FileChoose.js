@@ -195,9 +195,11 @@ export default class ImageChoose extends PureComponent {
       onError && onError('附件格式不支持上传')
       return
     }
-    if (this.checkSize(response.fileSize)) {
-
-    }
+    // if (!this.checkSize(response.fileSize)) {
+    //   const { onError } = this.props
+    //   onError && onError('文件大小不超过50M')
+    //   return
+    // }
     let { items } = this.state
     items = items.concat([
       {

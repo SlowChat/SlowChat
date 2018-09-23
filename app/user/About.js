@@ -45,12 +45,6 @@ export default class About extends Component {
               <Image style={styles.forward} source={ICONS.forward} />
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => navigate('LocalWebview', {source: 'faq'})}>
-            <View style={styles.menu}>
-              <Text style={styles.label}>常见问题</Text>
-              <Image style={styles.forward} source={ICONS.forward} />
-            </View>
-          </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
             <View style={styles.menu}>
               <Text style={styles.label}>积分规则</Text>
@@ -106,3 +100,11 @@ const styles = StyleSheet.create({
   },
 
 });
+
+
+// <TouchableWithoutFeedback onPress={() => navigate('LocalWebview', {source: 'faq'})}>
+//   <View style={styles.menu}>
+//     <Text style={styles.label}>常见问题</Text>
+//     <Image style={styles.forward} source={ICONS.forward} />
+//   </View>
+// </TouchableWithoutFeedback>

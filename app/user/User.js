@@ -4,7 +4,8 @@ import {
   Text,
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Platform
 } from 'react-native';
 
 import JPushModule from 'jpush-react-native'

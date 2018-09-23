@@ -35,8 +35,6 @@ import { get, post, upload } from '../utils/request'
 import { isEmail } from '../utils/validate'
 
 const nullFn = () => {}
-const minDate = dateFormat(new Date(), 'yyyy-MM-dd')
-const minTime = dateFormat(new Date(), 'hh:mm')
 export default class NewMail extends Component {
   static navigationOptions = ({navigation}) => {
     const { params = {} } = navigation.state
@@ -59,33 +57,39 @@ export default class NewMail extends Component {
       // ),
     }
   }
-  email = ''
-  state = {
-    scrollHeight: null,
+  constructor(props) {
+    super(props)
+    const minDate = dateFormat(new Date(), 'yyyy-MM-dd')
+    const minTime = dateFormat(new Date(), 'hh:mm')
+    this.email = ''
+    this.state = {
+      scrollHeight: null,
 
-    isSend: true,
-    isSucc: false,
-    showLoading: false,
-    showSendMe: true,
-    pickerModal: false,
-    attachs: [],
-    initAttaches: [],
-    images: [],
-    params: {
-      title: '',
-      content: '',
-      email: '',
-      send_date: minDate,
-      send_time: minTime,
-      type: 2,
-    },
-    defaultValue: {
-      title: '',
-      content: '',
-      email: '',
-    },
-    minDate,
-    minTime,
+      isSend: true,
+      isSucc: false,
+      showLoading: false,
+      showSendMe: true,
+      pickerModal: false,
+      attachs: [],
+      initAttaches: [],
+      images: [],
+      showFileTip: false,
+      params: {
+        title: '',
+        content: '',
+        email: '',
+        send_date: minDate,
+        send_time: minTime,
+        type: 2,
+      },
+      defaultValue: {
+        title: '',
+        content: '',
+        email: '',
+      },
+      minDate,
+      minTime,
+    }
   }
 
   componentWillMount() {
@@ -166,23 +170,27 @@ export default class NewMail extends Component {
   }
 
   customBack = () => {
-    this.alert.show({
-      title: '提示',
-      txt: '是否需要保存草稿',
-      leftBtnTxt: '返回',
-      rightBtnTxt: '保存草稿',
-      onOk: () => {
-        this.alert.hide()
-        this.handleSave()
-      },
-      onCancel: () => {
-        this.alert.hide()
-        requestAnimationFrame(() => {
-          this.props.navigation.goBack()
-        })
-      }
-    })
-    Keyboard.dismiss()
+    if (this.checkSave()) {
+      Keyboard.dismiss()
+      this.alert.show({
+        title: '提示',
+        txt: '是否需要保存草稿',
+        leftBtnTxt: '返回',
+        rightBtnTxt: '保存草稿',
+        onOk: () => {
+          this.alert.hide()
+          this.handleSave()
+        },
+        onCancel: () => {
+          this.alert.hide()
+          requestAnimationFrame(() => {
+            this.props.navigation.goBack()
+          })
+        }
+      })
+    } else {
+      this.props.navigation.goBack()
+    }
   }
 
   async getUserInfo() {
@@ -566,6 +574,12 @@ export default class NewMail extends Component {
       }
     }
   }
+  openFileTip = () => {
+    this.setState({ showFileTip: !this.state.showFileTip })
+  }
+  hideFileTip = () => {
+    this.setState({ showFileTip: false })
+  }
   // onLayout={this.handleScrollView}
   // handleScrollView = (e) => {
   //   console.log("==handleScrollView==");
@@ -578,6 +592,7 @@ export default class NewMail extends Component {
   //   }
   // }
   render() {
+    console.log("====this.state.minTime===", this.state.minTime)
     // keyboardType="email-address"
     const { showLoading, attachs, defaultValue, params, isSucc, isSend, initAttaches, scrollHeight } = this.state
     const tipTxt = isSend ? '提交' : '保存草稿'
@@ -617,7 +632,7 @@ export default class NewMail extends Component {
               onFocus={this.handleFocus.bind(this, 'title')}
               returnKeyType="done" autoCorrect={false} autoCapitalize="none" underlineColorAndroid='transparent' />
           </View>
-          <View style={styles.item}>
+          <View style={[styles.item, styles.attachItem]}>
             <Text style={styles.label}>附件：</Text>
             <TouchableOpacity style={styles.itemTouch} onPress={this.openFileChoose}>
               <View style={styles.icons}>
@@ -625,6 +640,11 @@ export default class NewMail extends Component {
               </View>
               <Text style={styles.attachmentNum}>{attachTxt}</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.openFileTip}>
+              <Image style={styles.attachmentTipIcon} source={require('../images/icon_fail.png')} />
+            </TouchableOpacity>
+            { this.state.showFileTip && <Image style={styles.attachmentTip}  source={require('../images/file_tip.png')} /> }
           </View>
           <View style={styles.item}>
             <Text style={styles.label}>发信日期：</Text>
@@ -705,6 +725,7 @@ export default class NewMail extends Component {
         <ErrorModal ref="errorModalRef" />
         <Alert ref={ref => this.alert = ref} />
         {showLoading && <Loading />}
+        { this.state.showFileTip && <TouchableOpacity activeOpacity={0} style={styles.attachmentBg} onPress={this.hideFileTip} /> }
       </View>
     )
   }
@@ -736,6 +757,7 @@ const styles = StyleSheet.create({
     display: 'none'
   },
   item: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     height: 44,
@@ -743,6 +765,9 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
+  },
+  attachItem: {
+    zIndex: 10,
   },
   itemTouch: {
     flex: 1,
@@ -799,6 +824,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'PingFangSC-Regular',
     color: '#333333',
+  },
+  attachmentTipIcon: {
+    marginLeft: 20,
+    width: 20,
+    height: 20,
+  },
+  attachmentTip: {
+    position: 'absolute',
+    top: 34,
+    right: 15,
+    width: 260,
+    height: 100,
+    zIndex: 10,
+  },
+  attachmentBg: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    opacity: 0,
   },
   arrow: {
     width: 25,

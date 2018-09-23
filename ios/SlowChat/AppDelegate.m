@@ -124,13 +124,19 @@
 }
 // work in iOS(9_0)
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+//  NSLog(@"URL scheme:%@", [url scheme]);
+//  NSLog(@"URL query: %@", [url query]);
   [JSHAREService handleOpenUrl:url];
   return YES;
 }
 // work in iOS(9_0,++)
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
   [JSHAREService handleOpenUrl:url];
+//  NSLog(@"URL scheme:%@", [url scheme]);
+//  NSLog(@"URL query: %@", [url query]);
+  
   return YES;
 }
+
 
 @end

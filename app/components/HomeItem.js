@@ -32,8 +32,8 @@ export default class HomeItem extends PureComponent<Props> {
     return (
       <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this.handlePress}>
         <View style={styles.avatarWrap}>
-          <ImageBackground style={styles.avatar} source={ICONS.head}>
-            <Image style={styles.avatar} source={{uri: avatar}} defaultSource={ICONS.head} />
+          <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
+            <Image resizeMode="cover" style={styles.avatar} source={{uri: avatar}} defaultSource={ICONS.head} />
           </ImageBackground>
           <View style={styles.avatarRight}>
             <View style={styles.nameWrap}>
