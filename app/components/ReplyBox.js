@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,9 +14,10 @@ import {
 
 import {SafeAreaView} from 'react-navigation'
 
-export default class ReplyBox extends PureComponent {
+export default class ReplyBox extends Component {
   state = {
     content: '',
+    height: 32,
   }
   componentWillMount () {
     this.content = ''
@@ -52,12 +53,15 @@ export default class ReplyBox extends PureComponent {
     this.refs.input.focus()
   }
   clear() {
-    this.content = ''
     if (Platform.OS == 'ios') {
       this.setState({ content: this.content }, () => {
-        this.setState({ content: '' })
+        setTimeout(() => {
+          this.content = ''
+          this.setState({ content: '' })
+        }, 16)
       })
     } else {
+      this.content = ''
       this.setState({ content: '' })
     }
   }
@@ -77,30 +81,38 @@ export default class ReplyBox extends PureComponent {
   handleEndEditMail = (e) => {
     this.content = e.nativeEvent.text
   }
+  handleContentSize = (e) => {
+    let height = Math.max(32, e.nativeEvent.contentSize.height)
+    height =  Math.min(110, height)
+    this.setState({height: height})
+  }
 
   returnBox() {
-    const { content } = this.state
+    const { content, height } = this.state
     return <View style={styles.box}>
-      <TextInput ref="input" value={content} style={styles.input}
+      <TextInput ref="input" value={content} style={[styles.input, {height}]}
         placeholder="想说点什么？" placeholderTextColor="#B4B4B4"
         autoCapitalize="none" underlineColorAndroid='transparent'
-        onChangeText={this.handleChange} onEndEditing={this.handleEndEditMail}/>
+        onChangeText={this.handleChange} onEndEditing={this.handleEndEditMail}
+        multiline={true}
+        onContentSizeChange={this.handleContentSize}
+      />
       <TouchableOpacity style={styles.btn} activeOpacity={0.6} onPress={this.handleReply}>
         <Text style={styles.btnTxt}>发送</Text>
       </TouchableOpacity>
     </View>
   }
   render() {
-    if (Platform.OS == 'android') {
-      return <View style={styles.container}>
-        {this.returnBox()}
-      </View>
+    if (Platform.OS == 'ios') {
+      return (
+        <SafeAreaView style={[styles.container, {bottom: this.keyboardHeight}]} forceInset={{top: 'never', bottom: 'always'}}>
+          {this.returnBox()}
+        </SafeAreaView>
+      )
     }
-    return (
-      <SafeAreaView style={[styles.container, {bottom: this.keyboardHeight}]} forceInset={{top: 'never', bottom: 'always'}}>
-        {this.returnBox()}
-      </SafeAreaView>
-    )
+    return <View style={styles.container}>
+      {this.returnBox()}
+    </View>
   }
 }
 
@@ -113,23 +125,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF'
   },
   box: {
-    height: 50,
+    // height: 50,
     paddingLeft: 15,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: '#F6F6F6',
+    paddingTop: 9,
+    paddingBottom: 9,
   },
   input: {
     fontFamily: 'PingFangSC-Regular',
     fontSize: 15,
     color: '#333',
     flex: 1,
-    height: 32,
+    alignItems: 'center',
+    // height: 32,
     backgroundColor: '#F6F6F6',
-    paddingTop: 0,
-    paddingBottom: 0,
+    // paddingTop: 0,
+    // paddingBottom: 0,
     borderRadius: 18,
     paddingLeft: 15,
     paddingRight: 15,

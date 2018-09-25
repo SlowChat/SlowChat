@@ -127,6 +127,7 @@ export default class Message extends Component<Props> {
         <FlatList
           style={styles.flatlist}
           data={items}
+          extraData={this.state.showFoot}
           renderItem={this.renderItem}
           initialNumToRender={5}
           keyExtractor={(item, index) => item.id.toString()}

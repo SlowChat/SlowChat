@@ -151,6 +151,7 @@ export default class Integral extends Component {
       keyExtractor={(item, index) => String(index)}
       data={this.state.dataArray}
       renderItem={this._renderItem}
+      extraData={this.state.showFoot}
       ListFooterComponent={this._renderFooter}
       onEndReached={this.handleLoadmore}
       onEndReachedThreshold={0.1}

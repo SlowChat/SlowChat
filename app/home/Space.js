@@ -170,6 +170,7 @@ export default class Space extends Component<Props> {
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
           data={data}
+          extraData={this.state.showFoot}
           renderItem={(item) => <HomeItem key={item.id} data={item} onPress={this.handlePress} />}
           initialNumToRender={5}
           keyExtractor={(item) => String(item.id)}

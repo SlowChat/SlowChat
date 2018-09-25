@@ -25,6 +25,7 @@ export default class About extends Component {
   async fetchData() {
     try {
       const res = await post('api/common/articleList.html')
+      console.log(res);
       if (res.code == 1) {
         this.setState({ articleList: res.data || [] })
       }
@@ -89,13 +90,12 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   forward: {
-    position: 'absolute',
-    right: 8,
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
+    marginLeft: 10,
   },
   label: {
-    width: '60%',
+    flex: 1,
     color: '#666'
   },
 

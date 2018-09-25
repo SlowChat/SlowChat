@@ -11,7 +11,8 @@ import {
 
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
-import ImagePicker from 'react-native-image-picker'
+// import ImagePicker from 'react-native-image-picker'
+import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-datepicker'
 import ZhTextInput from '../components/ZhTextInput'
 import Avatar from '../components/Avatar'
@@ -75,6 +76,18 @@ export default class Information extends Component {
     }
   }
 
+  openAvatar = () => {
+    this.avatarSheet.show()
+  }
+
+  changeAvatar = (index) => {
+    if (index == 0) {
+      this.chooseAndUpload('camera')
+    } else if (index == 1) {
+      this.chooseAndUpload('album')
+    }
+  }
+
   onChangeName = () => {
     this.setState({
       isSucc: true,
@@ -90,42 +103,31 @@ export default class Information extends Component {
     this.setState({username: this.inputname || '', isSucc: false})
   }
 
-  chooseAndUpload = async () => {
+  chooseAndUpload = async (type) => {
     try {
       await checkImagePermission()
     } catch (e) {
       this.refs.toast.show(e.message)
       return
     }
-    const options = {
-      title: '选择图片',
-      cancelButtonTitle: '取消',
-      takePhotoButtonTitle: '拍照',
-      chooseFromLibraryButtonTitle: '选择照片',
-      cameraType: 'back',
-      mediaType: 'photo',
-      videoQuality: 'high',
-      durationLimit: 10,
-      maxWidth: 500,
-      maxHeight: 500,
-      // quality: 0.8,
-      angle: 0,
-      allowsEditing: false,
-      noData: true,
-      storageOptions: {
-        skipBackup: true,
+    
+    try {
+      let image = {}
+      const options = {
+        cropping: true,
+        cropperCircleOverlay: true,
+        cropperChooseText: '选择',
+        cropperCancelText: '取消',
       }
-    }
-    ImagePicker.showImagePicker(options, async (response) => {
-      if (response && response.uri) {
-        let file = response.uri
-        // if(Platform.OS === 'ios'){
-        //   file = file.replace('file://', '')
-        // }
-        console.log(response);
+      if (type == 'camera') {
+        image = await ImagePicker.openCamera(options)
+      } else {
+        image = await ImagePicker.openPicker(options)
+      }
+      if (image.path) {
         const res = await upload({
-          url: response.uri,
-          filename: response.fileName
+          url: image.path,
+          filename: image.filename
         })
         console.log(res);
         if (res.code == 1) {
@@ -134,7 +136,9 @@ export default class Information extends Component {
           this.refs.toast.show('上传失败，稍后重试！')
         }
       }
-    });
+    } catch (e) {
+      // this.refs.toast.show('获取图片失败，稍后重试！')
+    }
   }
 
   render() {
@@ -142,7 +146,7 @@ export default class Information extends Component {
     const { avatar, username, level, type } = this.state
     return (
       <View style={styles.container}>
-        <Avatar avatar={avatar} username={username} level={level} type={type} onPress={this.chooseAndUpload} />
+        <Avatar avatar={avatar} username={username} level={level} type={type} onPress={this.openAvatar} />
         <View style={styles.link}>
           <TouchableOpacity activeOpacity={0.8} style={styles.menu} onPress={() => this.onChangeName()}>
             <Text style={styles.label}>昵称</Text>
@@ -190,11 +194,21 @@ export default class Information extends Component {
             <Text style={styles.saveTxt}>保 存</Text>
           </TouchableOpacity>
         </View>
+
         <ActionSheet
+          title="性别选择"
           ref={ref => this.actionSheet = ref}
           options={SEX_OPTIONS}
           cancelButtonIndex={3}
           onPress={this.changeSex}
+        />
+
+        <ActionSheet
+          title="头像选择"
+          ref={ref => this.avatarSheet = ref}
+          options={['拍照', '选择图片', '取消']}
+          cancelButtonIndex={2}
+          onPress={this.changeAvatar}
         />
 
         <Toast ref="toast" position="center" />

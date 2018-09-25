@@ -35,7 +35,7 @@ export default class ReplyItem extends PureComponent {
           <Text style={styles.name}>{item.user.user_nickname}</Text>
           <Text style={styles.content}>{item.content}</Text>
           <View style={styles.bottom}>
-            <Text style={styles.date}>预定发送：{item.add_time}</Text>
+            <Text style={styles.date}>{item.add_time}</Text>
             <TouchableOpacity activeOpacity={0.7} onPress={this.handleReply}>
               <Text style={styles.btn}>回复</Text>
             </TouchableOpacity>

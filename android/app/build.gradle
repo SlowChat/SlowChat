@@ -114,7 +114,7 @@ android {
 
         ]
         multiDexEnabled true //Howard 2017-08-31 解决方法数超过65536的问题
-
+        vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -181,6 +181,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-crop-picker')
     compile project(':react-native-easy-upgrade')
     compile project(':baidumobstat-react-native')
     compile project(':react-native-image-picker')

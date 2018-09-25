@@ -21,7 +21,7 @@ import ReplyBox from '../components/ReplyBox'
 import AwardTip from '../components/AwardTip'
 import ErrorModal from '../components/ErrorModal'
 import Loading from '../components/Loading'
-
+import dateFormat from '../utils/date'
 import Global from '../utils/global'
 import { post } from '../utils/request'
 
@@ -258,6 +258,7 @@ export default class MailDetail extends Component {
             id: new Date().getTime(),
             user: Global.user,
             content,
+            add_time: dateFormat(new Date(), 'yyyy-MM-dd hh:mm')
           })
         } else {
           const index = comments.findIndex(item => item.id == pid)

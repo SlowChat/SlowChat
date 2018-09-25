@@ -205,7 +205,7 @@ export default class Home extends Component<Props> {
           style={styles.flatlist}
           ref={(flatList)=>this._flatList = flatList}
           data={items}
-          extraData={this.state.showError}
+          extraData={this.state.showError || this.state.showFoot}
           renderItem={this.renderItem}
           initialNumToRender={5}
           keyExtractor={(item, index) => String(item.id)}
