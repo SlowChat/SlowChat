@@ -40,12 +40,6 @@ export default class About extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.link}>
-          <TouchableWithoutFeedback onPress={() => navigate('LocalWebview', {source: 'protocal'})}>
-            <View style={styles.menu}>
-              <Text style={styles.label}>网站软件许可协议</Text>
-              <Image style={styles.forward} source={ICONS.forward} />
-            </View>
-          </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => navigate('Rule')}>
             <View style={styles.menu}>
               <Text style={styles.label}>积分规则</Text>
@@ -101,6 +95,13 @@ const styles = StyleSheet.create({
 
 });
 
+
+// <TouchableWithoutFeedback onPress={() => navigate('LocalWebview', {source: 'protocal'})}>
+//   <View style={styles.menu}>
+//     <Text style={styles.label}>网站软件许可协议</Text>
+//     <Image style={styles.forward} source={ICONS.forward} />
+//   </View>
+// </TouchableWithoutFeedback>
 
 // <TouchableWithoutFeedback onPress={() => navigate('LocalWebview', {source: 'faq'})}>
 //   <View style={styles.menu}>

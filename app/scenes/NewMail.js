@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Platform,
   UIManager,
+  StatusBar,
   findNodeHandle
 } from 'react-native';
 
@@ -99,6 +100,7 @@ export default class NewMail extends Component {
         this.getUserInfo()
       }
     )
+    // StatusBar.setBarStyle('light-content')
   }
 
   componentDidMount() {
@@ -130,6 +132,7 @@ export default class NewMail extends Component {
   }
 
   componentWillUnmount() {
+    // StatusBar.setBarStyle('default')
     this.viewAppear.remove()
     this.keyboardWillShowSub.remove()
     this.keyboardShowSub.remove()
@@ -260,6 +263,8 @@ export default class NewMail extends Component {
   }
 
   handleDatePicker = (date) => {
+    const minDate = dateFormat(new Date(), 'yyyy-MM-dd')
+    const minTime = dateFormat(new Date(), 'hh:mm')
     this.setParams('send_date', date)
     if (date > minDate) {
       this.setState({ minTime: null })
@@ -442,7 +447,7 @@ export default class NewMail extends Component {
             this.props.navigation.navigate('Login')
           })
         } else {
-          this.dealError('', false)
+          this.dealError(e.msg || '', false)
         }
       }
     })
@@ -470,7 +475,7 @@ export default class NewMail extends Component {
             this.props.navigation.navigate('Login')
           })
         } else {
-          this.dealError('', false)
+          this.dealError(e.msg || '', false)
         }
       }
     })
@@ -490,6 +495,7 @@ export default class NewMail extends Component {
         if (res.code == 1) {
           attachs[index] = {...res.data, ext: item.ext}
         } else {
+          res.msg = res.msg || '附件上传失败'
           throw res
         }
       }
@@ -509,7 +515,11 @@ export default class NewMail extends Component {
         return attach
       })
     } catch (e) {
-      console.log(e);
+      if (e) {
+        e.msg = '附件上传失败'
+      } else {
+        e = { msg: '附件上传失败' }
+      }
       throw e
     }
   }

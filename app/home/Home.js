@@ -7,17 +7,23 @@ import {
   FlatList,
   Animated,
   Easing,
+  Modal,
+  ActivityIndicator,
   DeviceEventEmitter,
 } from 'react-native';
 
+
 import {SafeAreaView} from 'react-navigation'
 import Toast from 'react-native-easy-toast'
+import ImageViewer from 'react-native-image-zoom-viewer'
+// import ImageViewer from '../components/ImageViewer'
 import Swiper from '../components/Swiper'
 import HomeItem from '../components/HomeItem'
 import Footer from '../components/Footer'
 import Loading from '../components/Loading'
+import ActionSheet from '../components/ActionSheet'
 
-
+import { downFile } from '../utils/opendoc'
 import { post } from '../utils/request'
 import dateFormat from '../utils/date'
 
@@ -33,6 +39,9 @@ export default class Home extends Component<Props> {
     showError: false,
     refreshing: false,
     fadeInOpacity: new Animated.Value(0),
+    viewerVisible: false,
+    viewerIndex: 0,
+    viewerImages: [],
   }
   componentWillMount() {
     this.initData()
@@ -113,6 +122,7 @@ export default class Home extends Component<Props> {
         p: page,
         s: SIZE,
       })
+      console.log(res);
       if (res.code == 1) {
         const { total, items } = res.data
         const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
@@ -127,6 +137,7 @@ export default class Home extends Component<Props> {
         this.setState({
           items: newData,
           showFoot,
+          showError: false,
         })
         this.page++
       } else {
@@ -180,8 +191,44 @@ export default class Home extends Component<Props> {
   handleGoDetail = (id) => {
     this.props.navigation.push('MailDetail', {id})
   }
+  openViewerModal = (index, images) => {
+    this.setState({ viewerVisible: true, viewerImages: images, viewerIndex: index })
+  }
+  handleViewerClick = () => {
+    this.setState({ viewerVisible: false })
+  }
+  handleViewerChange = (index) => {
+    this.setState({ viewerIndex: index })
+  }
+  handleLongViewerPress = () => {
+    this.actionSheet.show()
+  }
+  handleActionSheet = async (index) => {
+    if (index == 0) {
+      if (this.loading) return
+      this.loading = true
+      this.setState({ showLoading: true })
+      try {
+        const { viewerImages, viewerIndex } = this.state
+        const url = viewerImages[viewerIndex]
+        await downFile(url)
+        this.refs.toast.show('文件保存成功！')
+      } catch (e) {
+        this.refs.toast.show('文件保存失败！')
+      }
+      this.setState({ showLoading: false })
+      this.loading = false
+    }
+  }
+  renderViewerLoading = () => {
+    return <ActivityIndicator
+        animating
+        color='#EC3632'
+        size='large'
+      />
+  }
   renderItem = (item) => {
-    return <HomeItem data={item} onPress={this.handleGoDetail} />
+    return <HomeItem data={item} onPress={this.handleGoDetail} onImgPress={this.openViewerModal} />
   }
   handleNav = (routeName, params = {}) => {
     this.props.navigation.push(routeName, params)
@@ -194,7 +241,7 @@ export default class Home extends Component<Props> {
     return <Footer safe={false} showFoot={this.state.showFoot} />
   }
   render() {
-    const { fadeInOpacity, showLoading, images, items } = this.state
+    const { viewerImages, fadeInOpacity, showLoading, images, items } = this.state
     return (
       <View style={styles.container}>
         <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}
@@ -219,6 +266,16 @@ export default class Home extends Component<Props> {
         />
         { showLoading && <Loading /> }
         <Toast ref="toast" position="center" />
+        <Modal visible={this.state.viewerVisible} transparent={true} onRequestClose={this.handleViewerClick}>
+          <ImageViewer saveToLocalByLongPress={false} index={this.state.viewerIndex} loadingRender={this.renderViewerLoading} enableImageZoom
+            imageUrls={viewerImages} onClick={this.handleViewerClick} onLongPress={this.handleLongViewerPress} onChange={this.handleViewerChange} />
+        </Modal>
+        <ActionSheet
+          ref={ref => this.actionSheet = ref}
+          options={['保存到相册', '取消']}
+          cancelButtonIndex={1}
+          onPress={this.handleActionSheet}
+          />
       </View>
     )
   }
@@ -250,3 +307,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

@@ -41,7 +41,8 @@ export default class Integral extends Component {
     dataArray: [],
     showFoot: 0, // 控制foot， 0：隐藏footer  1：已加载完成,没有更多数据   2 ：显示加载中
     showBlank: true,
-    total: 0
+    total: 0,
+    score_option: {}
   }
   page = 0
   pageSize = 10
@@ -80,9 +81,10 @@ export default class Integral extends Component {
         s: this.pageSize,
       }
       const res = await post('api/user/score_log.html', params)
+      console.log(res);
       this.loading = false
       if (res.code == 1) {
-        const { total, total_page, log } = res.data
+        const { total, total_page, score_option, log } = res.data
         log.forEach(item => {
           if (item.score > 0) {
             item.score = `+${item.score}`
@@ -96,7 +98,8 @@ export default class Integral extends Component {
           dataArray,
           showLoading: false,
           showFoot,
-          showBlank: dataArray && dataArray.length <= 0
+          showBlank: dataArray && dataArray.length <= 0,
+          score_option: score_option,
         })
       } else {
         this.refs.toast.show(res.msg || '慢邮信息飘走了')
@@ -138,24 +141,35 @@ export default class Integral extends Component {
     )
   }
 
-  _renderFooter = () => {
-    return <Footer showFoot={this.state.showFoot} />
+  _renderHeader = () => {
+    const { is_show, score, stock, value } = this.state.score_option
+    return <View>
+      <View style={styles.integralBox}>
+        <Text style={styles.tit}>我的积分</Text>
+        <Text style={styles.score}>{this.state.total}</Text>
+      </View>
+      { is_show == '1' && <Text style={styles.awardLabel}>赚积分享股权活动</Text> }
+      { is_show == '1' &&
+        <View style={styles.awards}>
+          <View style={styles.award}>
+            <View><Text style={styles.awardTitle}>积分占比(%)</Text></View>
+            <View><Text style={styles.awardValue}>{score}</Text></View>
+          </View>
+          <View style={styles.award}>
+            <View><Text style={styles.awardTitle}>股权占比(%)</Text></View>
+            <View><Text style={styles.awardValue}>{stock}</Text></View>
+          </View>
+          <View style={styles.award}>
+            <View><Text style={styles.awardTitle}>市场价值(元)</Text></View>
+            <View><Text style={styles.awardValue}>{value}</Text></View>
+          </View>
+        </View>
+      }
+    </View>
   }
 
-  renderData() {
-    if (this.state.showBlank) {
-      return <Blank />
-    }
-    return (<FlatList
-      style={styles.flatlist}
-      keyExtractor={(item, index) => String(index)}
-      data={this.state.dataArray}
-      renderItem={this._renderItem}
-      extraData={this.state.showFoot}
-      ListFooterComponent={this._renderFooter}
-      onEndReached={this.handleLoadmore}
-      onEndReachedThreshold={0.1}
-    />)
+  _renderFooter = () => {
+    return <Footer showFoot={this.state.showFoot} />
   }
 
   render () {
@@ -166,13 +180,25 @@ export default class Integral extends Component {
       // 请求失败view
       return <ErrorTip onPress={this.initData}  />
     }
+    if (this.state.showBlank) {
+      return <View>
+        {this._renderHeader()}
+        <Blank />
+      </View>
+    }
     // 加载数据
     return <View style={styles.container}>
-      <View style={styles.integralBox}>
-        <Text style={styles.tit}>我的积分</Text>
-        <Text style={styles.score}>{this.state.total}</Text>
-      </View>
-      {this.renderData()}
+      <FlatList
+        style={styles.flatlist}
+        keyExtractor={(item, index) => String(index)}
+        data={this.state.dataArray}
+        renderItem={this._renderItem}
+        extraData={this.state.showFoot}
+        ListHeaderComponent={this._renderHeader}
+        ListFooterComponent={this._renderFooter}
+        onEndReached={this.handleLoadmore}
+        onEndReachedThreshold={0.1}
+      />
     </View>
   }
 
@@ -212,10 +238,10 @@ const styles = StyleSheet.create({
     lineHeight: 56,
   },
   flatlist: {
-    paddingLeft: 10,
-    paddingRight: 10,
   },
   list: {
+    marginLeft: 10,
+    marginRight: 10,
     flex: 1,
     flexDirection: 'row',
     paddingLeft: 15,
@@ -261,5 +287,40 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderStyle: 'solid'
+  },
+  awards: {
+    paddingTop: 14,
+    paddingBottom: 8,
+    backgroundColor: '#E24B92',
+    flexDirection: 'row',
+  },
+  award: {
+    flex: 1,
+  },
+  awardLabel: {
+    height: 20,
+    fontSize: 14,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#E24B92',
+    lineHeight: 20,
+    textAlign: 'center',
+    marginTop: 7,
+    marginBottom: 7,
+  },
+  awardTitle: {
+    height: 20,
+    fontSize: 14,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#D8D8D8',
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  awardValue: {
+    height: 22,
+    fontSize: 16,
+    fontFamily: 'PingFangSC-Regular',
+    color: '#FFFFFF',
+    lineHeight: 22,
+    textAlign: 'center',
   },
 });

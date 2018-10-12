@@ -47,11 +47,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#E24B92'
+    // backgroundColor: '#FFFFFF'
   },
   txt: {
+    fontFamily: 'PingFangSC-Regular',
     fontSize: 18,
-    color: '#333333',
+    color: '#FFFFFF',
     marginRight: 15,
   },
   search: {

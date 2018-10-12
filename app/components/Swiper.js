@@ -71,7 +71,7 @@ export default class SwiperComponent extends PureComponent<Props> {
     )
   }
 }
-
+//
 // !items || items.length == 0 ? <Image source={ICONS.banner} style={styles.image} /> :
 
 const { width } = Dimensions.get('window');

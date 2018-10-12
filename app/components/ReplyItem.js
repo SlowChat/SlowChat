@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import ICONS from '../utils/icon'
+import ImageBg from './ImageBg'
 
 export default class ReplyItem extends PureComponent {
   handleReply = () => {
@@ -22,15 +22,9 @@ export default class ReplyItem extends PureComponent {
     const avatarRightClass = nobord ? styles.avatarRight : [styles.avatarRight, styles.borded]
 
     let { avatar } = item.user || {}
-    let source = {uri: avatar}
-    // if (!avatar || avatar.indexOf('http') != 0) {
-    //   source = ICONS.head
-    // }
     return (
       <View style={styles.wrap}>
-        <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
-          <Image resizeMode="cover" style={styles.avatar} source={source} defaultSource={ICONS.head} />
-        </ImageBackground>
+        <ImageBg src={avatar} />
         <View style={avatarRightClass}>
           <Text style={styles.name}>{item.user.user_nickname}</Text>
           <Text style={styles.content}>{item.content}</Text>

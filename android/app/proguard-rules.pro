@@ -25,3 +25,7 @@
 
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+
+-keep public class com.sina.** {
+    *;
+}

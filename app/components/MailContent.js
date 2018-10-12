@@ -18,7 +18,7 @@ export default class MailContent extends PureComponent {
         <View style={styles.contentWrap}>
           <Text style={styles.content} selectable>{data.content}</Text>
         </View>
-        <Attachment items={data.attach} onTip={onTip} />
+        <Attachment imageviewer showTxt={false} items={data.attach} onTip={onTip} />
       </View>
     )
   }

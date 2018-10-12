@@ -15,6 +15,7 @@ import {
 
 import {SafeAreaView} from 'react-navigation'
 import ImagePicker from 'react-native-image-picker'
+import RNHeicConverter from 'react-native-heic-converter'
 // import ImageViewer from 'react-native-image-zoom-viewer'
 import RNFileSelector from 'react-native-file-selector'
 // import ActionSheet from 'react-native-actionsheet'
@@ -28,7 +29,7 @@ import { checkImagePermission, checkFilePermission, checkVideoPermission } from 
 const TRANSLATE_Y = 320
 const DURATION = 320
 const FILE_TYPES = {
-  image: ['jpg', 'png', 'jpeg', 'gif'],
+  image: ['jpg', 'png', 'jpeg', 'gif', 'heic'],
   file: ['txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar'],
   audio: ['mp3', 'wma', 'wav'],
   video: ['mp4', 'mov', 'avi', 'wmv', 'rm', 'rmvb', 'mkv']
@@ -116,11 +117,26 @@ export default class ImageChoose extends PureComponent {
       //   // path: 'images'
       // }
     }
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       console.log(response);
       if (response && response.uri) {
-        let file = response.uri
-        this.dealSucc(file, response)
+        if (Platform.OS === 'ios' && (response.fileName.endsWith('.heic') || response.fileName.endsWith('.HEIC'))) {
+          const res = await RNHeicConverter.convert({ path: response.origURL })
+          console.log(res);
+          const { success, path, error } = res
+          if(!error && success && path) {
+            response.fileName = response.fileName.replace(".heic", ".jpg")
+            response.fileName = response.fileName.replace(".HEIC", ".jpg")
+            this.dealSucc(path, response)
+          } else {
+            const { onError } = this.props
+            onError && onError('HEIC格式图片选择失败')
+          }
+        } else {
+         let file = response.uri
+         this.dealSucc(file, response)
+        }
+
         // if(Platform.OS === 'ios'){
         //   file = file.replace('file://', '')
         // }

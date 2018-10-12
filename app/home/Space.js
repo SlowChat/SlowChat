@@ -5,11 +5,14 @@ import {
   Text,
   View,
   FlatList,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 
 import {SafeAreaView} from 'react-navigation'
 
 import Toast from 'react-native-easy-toast'
+import ImageViewer from 'react-native-image-zoom-viewer'
 import TopTab from '../components/TopTab'
 import HeaderTip from '../components/HeaderTip'
 import SearchBox from '../components/SearchBox'
@@ -18,7 +21,9 @@ import Footer from '../components/Footer'
 import Blank from '../components/Blank'
 import Loading from '../components/Loading'
 import ErrorTip from '../components/ErrorTip'
+import ActionSheet from '../components/ActionSheet'
 
+import { downFile } from '../utils/opendoc'
 import { post } from '../utils/request'
 import dateFormat from '../utils/date'
 
@@ -44,6 +49,9 @@ export default class Space extends Component<Props> {
     showBlank: false,
     showError: false,
     showLoading: false,
+    viewerVisible: false,
+    viewerIndex: 0,
+    viewerImages: [],
   }
   componentWillMount() {
     this.init()
@@ -146,6 +154,42 @@ export default class Space extends Component<Props> {
   handlePress = (id) => {
     this.props.navigation.push('MailDetail', {id})
   }
+  openViewerModal = (index, images) => {
+    this.setState({ viewerVisible: true, viewerImages: images, viewerIndex: index })
+  }
+  handleViewerClick = () => {
+    this.setState({ viewerVisible: false })
+  }
+  handleViewerChange = (index) => {
+    this.setState({ viewerIndex: index })
+  }
+  handleLongViewerPress = () => {
+    this.actionSheet.show()
+  }
+  handleActionSheet = async (index) => {
+    if (index == 0) {
+      if (this.loading) return
+      this.loading = true
+      this.setState({ showLoading: true })
+      try {
+        const { viewerImages, viewerIndex } = this.state
+        const url = viewerImages[viewerIndex]
+        await downFile(url)
+        this.refs.toast.show('文件保存成功！')
+      } catch (e) {
+        this.refs.toast.show('文件保存失败！')
+      }
+      this.setState({ showLoading: false })
+      this.loading = false
+    }
+  }
+  renderViewerLoading = () => {
+    return <ActivityIndicator
+        animating
+        color='#EC3632'
+        size='large'
+      />
+  }
   renderHeader = () => {
     return <View style={styles.divider}></View>
   }
@@ -171,7 +215,7 @@ export default class Space extends Component<Props> {
           ref={(flatList)=>this._flatList = flatList}
           data={data}
           extraData={this.state.showFoot}
-          renderItem={(item) => <HomeItem key={item.id} data={item} onPress={this.handlePress} />}
+          renderItem={(item) => <HomeItem key={item.id} data={item} onPress={this.handlePress} onImgPress={this.openViewerModal} />}
           initialNumToRender={5}
           keyExtractor={(item) => String(item.id)}
           onEndReachedThreshold={0.5}
@@ -179,6 +223,16 @@ export default class Space extends Component<Props> {
           // ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
         />
+        <Modal visible={this.state.viewerVisible} transparent={true} onRequestClose={this.handleViewerClick}>
+          <ImageViewer saveToLocalByLongPress={false} index={this.state.viewerIndex} loadingRender={this.renderViewerLoading} enableImageZoom
+            imageUrls={this.state.viewerImages} onClick={this.handleViewerClick} onChange={this.handleViewerChange} />
+        </Modal>
+        <ActionSheet
+          ref={ref => this.actionSheet = ref}
+          options={['保存到相册', '取消']}
+          cancelButtonIndex={1}
+          onPress={this.handleActionSheet}
+          />
         <Toast ref="toast" position="center" />
       </View>
     );
@@ -193,7 +247,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
   },
   header: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E24B92',
   },
   tipWrap: {
     height: 25,

@@ -8,22 +8,19 @@ import {
 } from 'react-native';
 
 import dateFormat from '../utils/date'
-import ICONS from '../utils/icon'
+import ImageBg from './ImageBg'
 
 export default class AvatarHeader extends PureComponent {
   render() {
     const data = this.props.data || {}
     // const [send_date, send_time] = (data.send_time || '').split(' ')
     let { avatar, user_nickname } = data.user || {}
-    let source = {uri: avatar}
     const curr_item = dateFormat(new Date(), 'yyyy-MM-dd')
     let [ add_date, add_time ] = (data.add_time || '').split(' ')
     add_time = curr_item == add_date ? add_time : add_date
     return (
       <View style={styles.avatarWrap}>
-        <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
-          <Image style={styles.avatar} source={source} defaultSource={ICONS.head} />
-        </ImageBackground>
+        <ImageBg src={avatar} />
         <View style={styles.avatarRight}>
           <View style={styles.nameWrap}>
             <Text style={styles.name}>{user_nickname}</Text>
@@ -43,12 +40,6 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEEEEE',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-    borderRadius: 20,
   },
   avatarRight: {
     flex: 1,

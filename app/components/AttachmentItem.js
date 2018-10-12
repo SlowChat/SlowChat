@@ -22,6 +22,9 @@ function formatFileSize(fileSize) {
 }
 
 export default class AttachmentItem extends PureComponent {
+  static defaultProps = {
+    show: true,
+  }
   state = {
     rate: 0,
     paused: true
@@ -64,7 +67,7 @@ export default class AttachmentItem extends PureComponent {
     return <Image source={require('../images/picture.png')} style={styles.image}></Image>
   }
   render() {
-    const { item } = this.props
+    const { item, show } = this.props
     const filename = item.filename || ''
     const lastIndex = filename.lastIndexOf('.')
     let name = filename.substring(0, lastIndex)
@@ -74,10 +77,10 @@ export default class AttachmentItem extends PureComponent {
         <TouchableOpacity  activeOpacity={0.8} onPress={this.handleOpen}>
           {this.renderItem()}
         </TouchableOpacity>
-        { item.filename && <View style={styles.file}>
+        { show && item.filename && <View style={styles.file}>
           <Text numberOfLines={1} ellipsizeMode="middle" style={styles.filename}>{item.filename}</Text>
         </View>}
-        { item.size && <Text style={styles.size}>{formatFileSize(item.size)}</Text> }
+        { show && item.size && <Text style={styles.size}>{formatFileSize(item.size)}</Text> }
       </View>
     )
   }

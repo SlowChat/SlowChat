@@ -24,11 +24,13 @@ const styles = StyleSheet.create({
     height: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F6F6F6',
+    backgroundColor: '#E24B92',
+    // backgroundColor: '#F6F6F6',
   },
   tip: {
     fontSize: 12,
     fontFamily: 'PingFangSC-Regular',
-    color: '#8E8E93',
+    color: '#FFFFFF',
+    // color: '#8E8E93',
   },
 });

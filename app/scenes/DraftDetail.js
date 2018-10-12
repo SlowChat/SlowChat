@@ -136,7 +136,7 @@ export default class DraftDetail extends Component {
             <Image style={styles.attachment} source={require('../images/icon_attachment.png')} />
             <Text style={styles.attachmentNum}>{hasAttach ? `${attachs.length}个附件` : ''}</Text>
           </View>
-          <Attachment items={attachs} onTip={this.showToast} />
+          <Attachment imageviewer items={attachs} onTip={this.showToast} />
         </ScrollView>
         <SafeAreaView style={styles.bottom} forceInset={{top: 'never', bottom: 'always'}}>
           <TouchableOpacity activeOpacity={0.7} style={styles.bottomIconWrap} onPress={this.openDelete}>

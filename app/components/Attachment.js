@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   Platform,
+  ActivityIndicator,
 } from 'react-native'
 
 // import Toast from 'react-native-easy-toast'
@@ -15,20 +16,46 @@ import AttachmentItem from './AttachmentItem'
 import Loading from './Loading'
 import ActionSheet from './ActionSheet'
 import { openFile, downFile } from '../utils/opendoc'
+import ImageViewer from 'react-native-image-zoom-viewer'
 
 
 export default class Attachment extends PureComponent {
   state = {
-    visible: false,
+    viewerVisible: false,
     current: 0,
     showLoading: false,
+    viewerIndex: 0,
   }
   handleOpen(index) {
-    this.setState({ current: index }, () => {
-      this.actionSheet.show()
-    })
+    const item = this.props.items[index]
+    if (item.ext == 'image') {
+      this.openImageViewer(item.viewerIndex)
+    } else {
+      this.setState({ current: index }, () => {
+        this.actionSheet.show()
+      })
+    }
   }
   handleActionSheet = async (index) => {
+    if (this.state.viewerVisible) {
+      if (index == 0) {
+        if (this.loading) return
+        this.loading = true
+        const item = this.images[this.state.viewerIndex]
+        const start = Date.now()
+        this.setState({ showLoading: true })
+        try {
+          await downFile(item.url || item.thumb)
+          this.showToast('文件保存成功！')
+        } catch (e) {
+          const txt = '文件保存失败！'
+          this.showToast(txt)
+        }
+        this.setState({ showLoading: false })
+        this.loading = false
+      }
+      return
+    }
     if (index == 0 || index == 1) {
       if (this.loading) return
       this.loading = true
@@ -38,7 +65,11 @@ export default class Attachment extends PureComponent {
       this.setState({ showLoading: true })
       try {
         if (index == 0) {
-          await openFile(url || thumb, filename)
+          if (item.ext == 'image') {
+            this.openImageViewer(item.viewerIndex)
+          } else {
+            await openFile(url || thumb, filename)
+          }
         } else {
           await downFile(url || thumb)
           this.showToast('文件保存成功！')
@@ -55,8 +86,29 @@ export default class Attachment extends PureComponent {
     const { onTip } = this.props
     onTip && onTip(txt)
   }
+  handleChange = (index) => {
+    this.setState({ viewerIndex: index })
+  }
+  handleClick = (index) => {
+    this.setState({ viewerVisible: false })
+  }
+  openImageViewer(index = 0) {
+    this.setState({ viewerVisible: true, viewerIndex: index })
+  }
+  
+  handleLongViewerPress = () => {
+    this.actionSheet.show()
+  }
+  
+  renderViewerLoading = () => {
+    return <ActivityIndicator
+        animating
+        color='#EC3632'
+        size='large'
+      />
+  }
   render() {
-    const { items = [] } = this.props
+    const { items = [], imageviewer, showTxt } = this.props
     if (!items || items.length == 0) {
       return null
     }
@@ -66,19 +118,43 @@ export default class Attachment extends PureComponent {
     } else if (filename.indexOf('/') > -1) {
       filename = filename.substring(filename.lastIndexOf('/') + 1)
     }
+    let images = []
+    if (imageviewer) {
+      items.forEach(item => {
+        if (item.ext == 'image') {
+          item.viewerIndex = images.length
+          images.push(item)
+        }
+      })
+    }
+    this.images = images
+    let sheetOptions = ['预览', '保存到相册', '取消']
+    let cancelButtonIndex = 2
+    if (this.state.viewerVisible) {
+      sheetOptions = ['保存到相册', '取消']
+      cancelButtonIndex = 1
+    }
     return (
       <View>
         <View style={styles.imageList}>
-          { items.map((item, index) => <AttachmentItem key={index} item={item} onPress={() => this.handleOpen(index)} />)}
+          { items.map((item, index) => <AttachmentItem show={showTxt} key={index} item={item} onPress={() => this.handleOpen(index)} />)}
         </View>
         <ActionSheet
           ref={ref => this.actionSheet = ref}
           title={filename}
-          options={['预览', '保存到相册', '返回']}
-          cancelButtonIndex={2}
+          options={sheetOptions}
+          cancelButtonIndex={cancelButtonIndex}
           onPress={this.handleActionSheet}
           />
         { this.state.showLoading && <Loading /> }
+        {
+          imageviewer && images.length && (
+            <Modal visible={this.state.viewerVisible} transparent={true} onRequestClose={this.handleClick}>
+              <ImageViewer saveToLocalByLongPress={false} index={this.state.viewerIndex} loadingRender={this.renderViewerLoading} enableImageZoom 
+                imageUrls={images} onClick={this.handleClick} onChange={this.handleChange} onLongPress={this.handleLongViewerPress} />
+            </Modal>
+          )
+        }
       </View>
     )
   }
@@ -96,13 +172,8 @@ const styles = StyleSheet.create({
 });
 
 
-// handleChange = (index) => {
-//   this.setState({ index })
-// }
-// handleClick = (index) => {
-//   this.setState({ visible: false, images: [] })
-// }
-// import ImageViewer from 'react-native-image-zoom-viewer'
+
+// 
 // let ImageViewer = null
 // <Modal visible={images.length > 0} transparent={true} onRequestClose={this.handleClick}>
 //   <ImageViewer enableImageZoom imageUrls={images} onClick={this.handleClick} />

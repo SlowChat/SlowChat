@@ -35,6 +35,8 @@ export default class Footer extends PureComponent {
   }
 }
 
+// color='#EC3632'
+
 const styles = StyleSheet.create({
   nomore: {
     height: 30,

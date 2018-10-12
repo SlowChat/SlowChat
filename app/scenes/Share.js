@@ -27,6 +27,7 @@ import { checkSavePermission } from '../utils/permission'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
 import Loading from '../components/Loading'
+import ImageBg from '../components/ImageBg'
 
 // const SHARE_URL = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1750833952,2529388352&fm=58&bpow=380&bpoh=380'
 // ICONS.bg = require('../images/bg_share.png')
@@ -39,6 +40,7 @@ export default class Share extends PureComponent<Props> {
     imageWidth: winWidth,
     moreModal: false,
     userName: '',
+    avatar: '',
     showLoading: false
   }
   async componentWillMount() {
@@ -66,8 +68,8 @@ export default class Share extends PureComponent<Props> {
   }
 
   handleAppStateChange = (nextAppState) => {
-    console.log("===handleAppStateChange===", nextAppState)
     if (nextAppState!= null && nextAppState === 'active') {
+      this.platform = null
       if (this.shareSucc) {
         this.awardTip.show()
       }
@@ -121,6 +123,7 @@ export default class Share extends PureComponent<Props> {
       if (isInstalled === true) {
         this.share('sina_weibo')
       } else {
+        this.setState({ moreModal: false })
         this.refs.toast.show('您尚未安装微博客户端')
       }
     })
@@ -131,6 +134,7 @@ export default class Share extends PureComponent<Props> {
       if (isInstalled === true) {
         this.share('twitter')
       } else {
+        this.setState({ moreModal: false })
         this.refs.toast.show('您尚未安装Facebook客户端')
       }
     })
@@ -141,6 +145,7 @@ export default class Share extends PureComponent<Props> {
       if (isInstalled === true) {
         this.share('facebook')
       } else {
+        this.setState({ moreModal: false })
         this.refs.toast.show('您尚未安装Facebook客户端')
       }
     })
@@ -153,7 +158,8 @@ export default class Share extends PureComponent<Props> {
       let uri = await captureRef(this.viewShot, {
         // width: this.width * 4,
         // height: this.height * 4,
-        quality: 1,
+        format: 'jpg',
+        quality: 0.8,
       })
       uri = uri.replace('file://', '')
       this.uri = uri
@@ -165,11 +171,21 @@ export default class Share extends PureComponent<Props> {
   }
 
   async share(platform) {
+    if (!this.imageLoaded) {
+      this.setState({ moreModal: false }, () => {
+        this.refs.toast.show('分享图片尚未加载完成');
+      })
+      return
+    }
+    if (this.state.showLoading) return
     await this.capture()
     if (!this.uri) return
     try {
-      await post('api/user/addShareScore.html')
-      this.shareSucc = true
+      if (this.platform != platform) {
+        await post('api/user/addShareScore.html')
+        this.shareSucc = true
+      }
+      this.platform = platform
     } catch (e) {
     }
     const message = {
@@ -184,8 +200,13 @@ export default class Share extends PureComponent<Props> {
         // } else if (state == 'fail') {
         //   // this.refs.toast.show('分享失败')
         // }
+        this.platform = null
         console.log("share succeed, map: ", state);
       }, (map) => {
+        this.platform = null
+        if (map.description) {
+          this.refs.toast.show(map.description)
+        }
         console.log("share failed, map: ", map);
         // this.refs.toast.show('分享失败')
       })
@@ -219,20 +240,22 @@ export default class Share extends PureComponent<Props> {
     this.height = height
   }
 
+  imageLoadEnd = () => {
+    this.imageLoaded = true
+  }
+
   render() {
     // <Image style={styles.qrcode} source={{uri: QRCode_IMG}} />
     // <QRCode size="160" bgColor="#FFFFFF" />
     const { userName, avatar, imageUrl, imageWidth, imageHeight } = this.state
     return (
       <View style={styles.container}>
-        <View style={[{ display: userName ? 'flex' : 'none' }, styles.scrollview]}>
-          <ScrollView>
+        <View style={styles.scrollview}>
+          <ScrollView style={{ display: userName ? 'flex' : 'none' }}>
             <View style={styles.shot} ref={ref => this.viewShot = ref} onLayout={this.handleShotLayout}>
               <Image source={require('../images/sharebar1.png')} style={styles.sharebar1} />
               <View style={styles.avatarWrap}>
-                <ImageBackground resizeMode="cover" style={styles.avatar} source={ICONS.head}>
-                  <Image resizeMode="cover" style={styles.avatar} defaultSource={ICONS.head} source={{ uri: avatar }} />
-                </ImageBackground>
+                <ImageBg style={styles.avatar} src={avatar} />
                 <View style={styles.avatarRight}>
                   <View style={styles.nameWrap}>
                     <Text numberOfLines={1} style={styles.name}>{userName}</Text>
@@ -242,7 +265,7 @@ export default class Share extends PureComponent<Props> {
                 </View>
               </View>
               {
-                imageUrl ? <Image source={{uri: imageUrl }} style={{width: imageWidth, height: imageHeight}} />
+                imageUrl ? <Image source={{uri: imageUrl }} style={{width: imageWidth, height: imageHeight}} onLoadEnd={this.imageLoadEnd} />
                  : null
               }
             </View>
@@ -277,12 +300,16 @@ export default class Share extends PureComponent<Props> {
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleWeibo}>
                 <Text style={styles.moreTxt}>微博</Text>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qq')}>
-                <Text style={styles.moreTxt}>QQ</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qzone')}>
-                <Text style={styles.moreTxt}>QQ空间</Text>
-              </TouchableOpacity>
+              {
+                Platform.OS == 'ios' ? <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qq')}>
+                  <Text style={styles.moreTxt}>QQ</Text>
+                </TouchableOpacity> : null
+              }
+              {
+                Platform.OS == 'ios' ? <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={() => this.handleQQ('qzone')}>
+                  <Text style={styles.moreTxt}>QQ空间</Text>
+                </TouchableOpacity> : null
+              }
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleTwitter}>
                 <Text style={styles.moreTxt}>Twitter</Text>
               </TouchableOpacity>
@@ -325,7 +352,8 @@ const styles = StyleSheet.create({
     height: 5,
   },
   scrollview: {
-    height: 481,
+    maxHeight: 481,
+    flex: 1,
   },
   sharebar2: {
     position: 'absolute',
@@ -354,7 +382,7 @@ const styles = StyleSheet.create({
   icons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 60,
+    marginBottom: 20,
   },
   iconWrap: {
     marginLeft: 15,

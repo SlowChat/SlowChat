@@ -5,7 +5,8 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import JPushModule from 'jpush-react-native'
@@ -26,14 +27,14 @@ export default class User extends Component {
       headerLeft: (
         <TouchableWithoutFeedback onPress={params.leftOnPress}>
           <View style={styles.icon}>
-            <Image style={styles.set} source={require('../images/icon_set.png')} />
+            <Image style={styles.set} source={require('../images/icon_set2.png')} />
           </View>
         </TouchableWithoutFeedback>
       ),
       headerRight: (
         <TouchableWithoutFeedback onPress={params.rightOnPress}>
           <View style={styles.icon}>
-            <Image style={styles.info} source={require('../images/icon_info.png')} />
+            <Image style={styles.info} source={require('../images/icon_info2.png')} />
             {
               msgCount ? (
                 <View style={styles.infoCount}><Text style={styles.msgCountTxt}>{msgCount}</Text></View>
@@ -42,6 +43,16 @@ export default class User extends Component {
           </View>
         </TouchableWithoutFeedback>
       ),
+      headerStyle: {
+        backgroundColor: '#E24B92',
+        borderBottomWidth: 0,
+        elevation: 0,
+      },
+      headerTitleStyle: {
+        fontSize: 18,
+        fontFamily: 'PingFangSC-Regular',
+        color: '#FFFFFF',
+      },
     }
   }
 
@@ -74,9 +85,10 @@ export default class User extends Component {
       }
     )
     const token = await Storage.getToken()
-    if (!token && this.state.isLogin != false) {
-      this.setState({ isLogin: false })
+    if (!token && this.state.isLogin != true) {
+      this.setState({ isLogin: true })
     }
+    // StatusBar.setBarStyle('light-content')
   }
 
   componentDidMount() {
@@ -91,6 +103,7 @@ export default class User extends Component {
   }
 
   componentWillUnmount() {
+    // StatusBar.setBarStyle('default')
     this.viewAppear.remove()
     this.setState = (state,callback)=>{
       return;
@@ -205,7 +218,7 @@ export default class User extends Component {
     const { username, sex, avatar, birthday, level } = user
     return (
       <View style={styles.container}>
-        <Avatar username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />
+        <Avatar highlight username={username} avatar={avatar} level={level} onPress={this.goInfo} isLogin={isLogin} />
         <View style={styles.remind}>
           <TouchableWithoutFeedback onPress={() => this.handleNav('Email', { status: 'draft' })}>
             <View style={styles.list}>

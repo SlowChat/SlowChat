@@ -64,21 +64,23 @@ const StackApp = (isLogin) => createStackNavigator({
     // headerBackImage: './images/icon_back.png',
     headerRight: <View />,
     headerStyle: {
+      // backgroundColor: '#E24B92',
       backgroundColor: '#FFFFFF',
       borderBottomWidth: 0,
       // borderBottomWidth: StyleSheet.hairlineWidth,
       // borderBottomColor: '#EEEEEE',
       elevation: 0,
     },
+    headerTitleStyle: {
+      fontSize: 18,
+      fontFamily: 'PingFangSC-Regular',
+      // color: '#FFFFFF',
+      color: '#333',
+    },
     headerTitleContainerStyle: {
       justifyContent: 'center',
     },
     // headerLayoutPreset: 'center',
-    headerTitleStyle: {
-      fontSize: 18,
-      fontFamily: 'PingFangSC-Regular',
-      color: '#333',
-    },
     // headerStyle: {
     //   paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
     // }

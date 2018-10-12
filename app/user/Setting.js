@@ -6,6 +6,7 @@ import {
   Image,
   Switch,
   Platform,
+  StatusBar,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -28,6 +29,17 @@ class Setting extends Component {
     const { params = {} } = navigation.state
     return {
       title: '设置',
+      // headerLeft: (<HeaderBackButton pressColorAndroid="#E24B92" tintColor="#FFFFFF" onPress={() => navigation.goBack()} />),
+      // headerStyle: {
+      //   backgroundColor: '#E24B92',
+      //   borderBottomWidth: 0,
+      //   elevation: 0,
+      // },
+      // headerTitleStyle: {
+      //   fontSize: 18,
+      //   fontFamily: 'PingFangSC-Regular',
+      //   color: '#FFFFFF',
+      // },
     }
   }
   state = {
@@ -46,6 +58,7 @@ class Setting extends Component {
         this.getData()
       }
     )
+    // StatusBar.setBarStyle('light-content')
   }
 
   componentDidMount() {
@@ -67,6 +80,10 @@ class Setting extends Component {
         }
       })
     }
+  }
+
+  componentWillUnmount() {
+    // StatusBar.setBarStyle('default')
   }
 
   getData() {
@@ -234,6 +251,9 @@ class Setting extends Component {
       console.log(progress.receivedBytes + " of " + progress.totalBytes + " received.");
     })
   }
+  goInfo = () => {
+    this.props.navigation.navigate('Information', { ...this.state, type: 'Information' })
+  }
   render() {
     const { switchBtn } = this.state
     const { navigate } = this.props.navigation;
@@ -241,7 +261,7 @@ class Setting extends Component {
     const { username, level, avatar, mobile, userEmail, area_code } = this.state;
     return (
       <View style={styles.container}>
-        <Avatar username={username} level={level} avatar={avatar} />
+        <Avatar arrow username={username} level={level} avatar={avatar} onPress={this.goInfo} />
         <View style={styles.link}>
           <TouchableOpacity activeOpacity={0.6} style={styles.menu} onPress={() => navigate('EditMobile', { mobile, area_code })}>
             <Text style={styles.label}>绑定手机号</Text>

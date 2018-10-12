@@ -4,15 +4,15 @@ import {
   Text,
   View,
   Image,
-  ImageBackground,
   TouchableWithoutFeedback
 } from 'react-native';
 
+import ImageBg from './ImageBg'
+
 export default class Avatar extends PureComponent {
   render() {
-    const { username, avatar, level, onPress, type, isLogin } = this.props;
+    const { arrow, username, avatar, level, onPress, type, isLogin, highlight } = this.props;
     const defaultSource = require('../images/default_avatar_160.png')
-    let source = avatar ? {uri: avatar} : defaultSource
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         {
@@ -20,31 +20,27 @@ export default class Avatar extends PureComponent {
             <View style={styles.avatarWrap}>
               <Text style={styles.tit}>头像</Text>
               <View style={styles.avatarBg}>
-                <ImageBackground resizeMode="cover" style={styles.avatarInfo} source={defaultSource}>
-                  <Image resizeMode="cover" defaultSource={defaultSource} style={styles.avatarInfo} source={source} />
-                </ImageBackground>
+                <ImageBg style={styles.avatarInfo} src={avatar} defaultSource={defaultSource} />
               </View>
             </View>
           ) : (
-            <View style={styles.avatarWrap}>
+            <View style={[styles.avatarWrap, highlight && styles.highlight]}>
               <View style={styles.avatarBg}>
-                <ImageBackground resizeMode="cover" style={styles.avatar} source={defaultSource}>
-                  <Image resizeMode="cover" defaultSource={defaultSource} style={styles.avatar} source={source} />
-                </ImageBackground>
+                <ImageBg style={styles.avatar} src={avatar} defaultSource={defaultSource} />
               </View>
               {
                 isLogin ? (
-                  <Text style={styles.login}>登录/注册</Text>
+                  <Text style={[styles.login, , highlight && styles.highlightName]}>登录/注册</Text>
                 ) : (
                   <View style={styles.avatarRight}>
-                    <Text style={styles.name}>{ username }</Text>
+                    <Text style={[styles.name, highlight && styles.highlightName]}>{ username }</Text>
                     <View style={styles.levelWrap}>
                         <Text style={styles.level}>{level}</Text>
                     </View>
                   </View>
                 )
               }
-
+              {arrow && <Image style={styles.forward} source={highlight ? require('../images/icon_forward2.png') : require('../images/icon_forward.png')} />}
             </View>
           )
         }
@@ -63,6 +59,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#EEEEEE',
     backgroundColor: '#fff',
     alignItems: 'center'
+  },
+  highlight: {
+    backgroundColor: '#E24B92',
   },
   avatarBg: {
     width: 90,
@@ -99,6 +98,9 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     marginTop: 0,
   },
+  highlightName: {
+    color: '#FFFFFF',
+  },
   levelWrap: {
     marginTop: 10,
     height: 20,
@@ -120,5 +122,10 @@ const styles = StyleSheet.create({
     color: '#666',
     alignItems: 'center',
     paddingTop: 30,
+  },
+  forward: {
+    width: 25,
+    height: 25,
+    marginRight: -8,
   }
 });
