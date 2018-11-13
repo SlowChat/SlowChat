@@ -104,8 +104,8 @@ android {
         applicationId "com.slowchat"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.2"
+        versionCode 7
+        versionName "1.0.7"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "c4d58ccfd28897a5d21e93ea",
                 APP_CHANNEL : "default",

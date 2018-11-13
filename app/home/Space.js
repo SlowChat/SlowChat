@@ -222,10 +222,11 @@ export default class Space extends Component<Props> {
           onEndReached={this.handleLoadmore}
           // ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
+          keyboardDismissMode="on-drag"
         />
         <Modal visible={this.state.viewerVisible} transparent={true} onRequestClose={this.handleViewerClick}>
           <ImageViewer saveToLocalByLongPress={false} index={this.state.viewerIndex} loadingRender={this.renderViewerLoading} enableImageZoom
-            imageUrls={this.state.viewerImages} onClick={this.handleViewerClick} onChange={this.handleViewerChange} />
+            imageUrls={this.state.viewerImages} onClick={this.handleViewerClick} onLongPress={this.handleLongViewerPress} onChange={this.handleViewerChange} />
         </Modal>
         <ActionSheet
           ref={ref => this.actionSheet = ref}

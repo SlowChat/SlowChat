@@ -15,6 +15,7 @@ import Toast from 'react-native-easy-toast'
 import Avatar from '../components/Avatar'
 import Alert from '../components/Alert'
 import Storage from '../utils/storage'
+import Semver from '../utils/semver'
 import { post, get } from '../utils/request'
 
 import { CODE_PUSH_KEY } from '../constants'
@@ -67,19 +68,18 @@ class Setting extends Component {
     })
     codePush.notifyAppReady()
 
-    if (Platform.OS == 'ios') {
-      this.easyUpgrade = new RNEasyUpgrade({
-        iOSAppId: '1428357149',
-        downloadTitle: '安装包下载',
-        downloadDescription: '安装包正在下载中...',
-        downloadApkEnd: () => {
-          this.easyUpgrade.installApk();
-        },
-        onError: () => {
-          console.log('downloadApkError');
-        }
-      })
-    }
+
+    this.easyUpgrade = new RNEasyUpgrade({
+      iOSAppId: '1428357149',
+      downloadTitle: '安装包下载',
+      downloadDescription: '安装包正在下载中...',
+      downloadApkEnd: () => {
+        this.easyUpgrade.installApk();
+      },
+      onError: () => {
+        console.log('downloadApkError');
+      }
+    })
   }
 
   componentWillUnmount() {
@@ -187,7 +187,20 @@ class Setting extends Component {
     if (this.easyUpgrade) {
       // IOS检查APP Store是否有新版本
       try {
-        let updateInfo = await this.easyUpgrade.checkAppVersionIOS()
+        let updateInfo = {}
+        if (Platform.OS == 'ios') {
+          updateInfo = await this.easyUpgrade.checkAppVersionIOS()
+        } else {
+          if (!this.state.appVersion) return
+          const res = await get('api/common/version.html')
+          if (res.code == 1) {
+            updateInfo = res.data
+            updateInfo.hasNewVersion = Semver(updateInfo.latestVersion, this.state.appVersion) == 1
+          } else {
+            this.refs.toast.show('获取版本信息失败，稍后重试')
+            return
+          }
+        }
         if (updateInfo.hasNewVersion) {
           this.alert.show({
             title: '发现新版本: ' + updateInfo.latestVersion,
@@ -195,17 +208,16 @@ class Setting extends Component {
             leftBtnTxt: '稍等询问',
             rightBtnTxt: '更新',
             onOk: () => {
+              console.log('=======');
               this.easyUpgrade.startAppUpdate(updateInfo.apkUrl)
             }
           })
           return
         }
       } catch (e) {
-
+        console.log(e)
       }
     }
-
-
     try {
       const update = await codePush.checkForUpdate(CODE_PUSH_KEY)
       console.log("checkUpdate", update)

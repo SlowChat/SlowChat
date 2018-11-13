@@ -180,7 +180,7 @@ export default class Regist extends Component {
       )
   }
   render() {
-    const { checked, username, password, verification_code, activeTab } = this.state
+    const { checked, username, password, verification_code, area_code, activeTab } = this.state
     const verifyStyle = username.trim() ? [styles.verifyTxt, styles.activeVerifyTxt] : styles.verifyTxt
     const placeholder = activeTab == 0 ? '请输入手机号' : '请输入邮箱'
     // const keyboardType = activeTab == 0 ? 'numeric' : 'email-address'
@@ -205,7 +205,7 @@ export default class Regist extends Component {
                onChangeText={(text) => this.setState({username: text})}
                autoCapitalize="none" underlineColorAndroid='transparent' />
               <View style={styles.divider}></View>
-              <VerifyCode type="regist" reset={this.state.resetVertify} username={username} onTip={this.showTip} />
+              <VerifyCode type="regist" reset={this.state.resetVertify} area_code={area_code} username={username} onTip={this.showTip} />
             </ImageBackground>
             <ImageBackground style={styles.inputWrap} source={require('../images/login_input.png')}>
               <TextInput value={verification_code} style={[styles.input, styles.password]} placeholder="请输入验证码" placeholderTextColor="#CCCCCC" onChangeText={(text) => this.setState({verification_code: text})}

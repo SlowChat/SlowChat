@@ -14,7 +14,7 @@ import { isMobileNumberSupport, isEmail } from '../utils/util'
 export default class VerifyCode extends PureComponent {
   state = {
     vrfyText: '获取验证码',
-    isVrfy: true
+    isVrfy: true,
   }
 
   // componentDidMount() {
@@ -47,12 +47,13 @@ export default class VerifyCode extends PureComponent {
 
   onVrfyCode = async () => {
     if (this.loading) return
-    const { username } = this.props;
+    const { username, area_code } = this.props;
     this.loading = true
     if (this.isActive) {
       this.startTimer()
       try {
-        const res = await post('api/verification_code/send.html', { username }, true)
+        const res = await post('api/verification_code/send.html', { username, area_code }, true)
+        console.log(res);
         this.loading = false
         const { onTip } = this.props
         onTip && onTip(res.msg)

@@ -20,6 +20,7 @@ import Confirm from '../components/Confirm'
 import ActionSheet from '../components/ActionSheet'
 import { post, upload } from '../utils/request'
 import { checkImagePermission } from '../utils/permission'
+import Storage from '../utils/storage'
 import ICONS from '../utils/icon'
 
 const SEX_OPTIONS = ['保密', '男', '女', '返回']
@@ -52,9 +53,17 @@ export default class Information extends Component {
     const { pop } = this.props.navigation;
     const { sex, username, avatar, date } = this.state;
     const sexKey = SEX_OPTIONS.findIndex(item => item == sex)
-    post('api/user/userInfo.html', { user_nickname: username, avatar, sex: String(sexKey), birthday: date}).then(res => {
+    const params = { user_nickname: username, avatar, sex: String(sexKey), birthday: date}
+    post('api/user/userInfo.html', params).then(async (res) => {
       if (res.code == 1) {
-        this.refs.toast.show(res.msg);
+        try {
+          const token = await Storage.getToken()
+          const user = await Storage.getUser()
+          await Storage.setToken(token, {...user, ...params})
+        } catch (e) {
+
+        }
+        this.refs.toast.show(res.msg)
         setTimeout(() => {
           pop()
         }, 1000)
@@ -89,6 +98,7 @@ export default class Information extends Component {
   }
 
   onChangeName = () => {
+    this.inputname = this.state.username
     this.setState({
       isSucc: true,
       isShow: false
@@ -110,7 +120,7 @@ export default class Information extends Component {
       this.refs.toast.show(e.message)
       return
     }
-    
+
     try {
       let image = {}
       const options = {
@@ -148,7 +158,7 @@ export default class Information extends Component {
       <View style={styles.container}>
         <Avatar avatar={avatar} username={username} level={level} type={type} onPress={this.openAvatar} />
         <View style={styles.link}>
-          <TouchableOpacity activeOpacity={0.8} style={styles.menu} onPress={() => this.onChangeName()}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.menu} onPress={this.onChangeName}>
             <Text style={styles.label}>昵称</Text>
             <Text style={styles.input}>{this.state.username}</Text>
             <Image style={styles.forward} source={ICONS.forward} />

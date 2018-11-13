@@ -95,11 +95,11 @@ export default class Attachment extends PureComponent {
   openImageViewer(index = 0) {
     this.setState({ viewerVisible: true, viewerIndex: index })
   }
-  
+
   handleLongViewerPress = () => {
     this.actionSheet.show()
   }
-  
+
   renderViewerLoading = () => {
     return <ActivityIndicator
         animating
@@ -148,9 +148,9 @@ export default class Attachment extends PureComponent {
           />
         { this.state.showLoading && <Loading /> }
         {
-          imageviewer && images.length && (
+          imageviewer && images.length > 0 && (
             <Modal visible={this.state.viewerVisible} transparent={true} onRequestClose={this.handleClick}>
-              <ImageViewer saveToLocalByLongPress={false} index={this.state.viewerIndex} loadingRender={this.renderViewerLoading} enableImageZoom 
+              <ImageViewer saveToLocalByLongPress={false} index={this.state.viewerIndex} loadingRender={this.renderViewerLoading} enableImageZoom
                 imageUrls={images} onClick={this.handleClick} onChange={this.handleChange} onLongPress={this.handleLongViewerPress} />
             </Modal>
           )
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 
 
 
-// 
+//
 // let ImageViewer = null
 // <Modal visible={images.length > 0} transparent={true} onRequestClose={this.handleClick}>
 //   <ImageViewer enableImageZoom imageUrls={images} onClick={this.handleClick} />

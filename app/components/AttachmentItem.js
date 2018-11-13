@@ -77,10 +77,10 @@ export default class AttachmentItem extends PureComponent {
         <TouchableOpacity  activeOpacity={0.8} onPress={this.handleOpen}>
           {this.renderItem()}
         </TouchableOpacity>
-        { show && item.filename && <View style={styles.file}>
+        { show && Boolean(item.filename) && <View style={styles.file}>
           <Text numberOfLines={1} ellipsizeMode="middle" style={styles.filename}>{item.filename}</Text>
         </View>}
-        { show && item.size && <Text style={styles.size}>{formatFileSize(item.size)}</Text> }
+        { show && item.size > 0 && <Text style={styles.size}>{formatFileSize(item.size)}</Text> }
       </View>
     )
   }

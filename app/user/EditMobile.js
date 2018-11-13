@@ -163,7 +163,7 @@ export default class EditMobile extends Component {
               value={this.state.mobile}
               maxLength={11}
             />
-          <VerifyCode reset={this.state.resetVertify} username={this.state.mobile} onTip={this.showTip}  />
+          <VerifyCode reset={this.state.resetVertify} area_code={this.state.area_code} username={this.state.mobile} onTip={this.showTip}  />
           </View>
           <View style={styles.menu}>
             <TextInput

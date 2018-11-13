@@ -112,7 +112,6 @@ export default class User extends Component {
 
   getData() {
     get('api/user/userInfo.html').then(res => {
-      console.log(res);
       const { code, data } = res
       if (code === 1) {
         if (data.sign && data.sign.count) this.setState({ sign: data.sign })

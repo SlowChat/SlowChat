@@ -169,7 +169,7 @@ export default class EditPassowrd extends Component {
               value={this.state.mobile}
               maxLength={11}
             />
-            <VerifyCode username={this.state.mobile} onTip={this.showTip}/>
+            <VerifyCode username={this.state.mobile} area_code={this.state.area_code} onTip={this.showTip}/>
           </View>
           <View style={styles.menu}>
             <TextInput

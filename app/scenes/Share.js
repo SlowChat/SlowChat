@@ -22,7 +22,7 @@ import Toast from 'react-native-easy-toast'
 
 import ICONS from '../utils/icon'
 import Storage from '../utils/storage'
-import { post } from '../utils/request'
+import { get, post } from '../utils/request'
 import { checkSavePermission } from '../utils/permission'
 import AvatarHeader from '../components/AvatarHeader'
 import AwardTip from '../components/AwardTip'
@@ -45,11 +45,7 @@ export default class Share extends PureComponent<Props> {
   }
   async componentWillMount() {
     try {
-      const user = await Storage.getUser()
-      this.setState({
-        userName: user.user_nickname,
-        avatar: user.avatar
-      })
+      this.getUser()
       this.getData()
     } catch (e) {
       console.log(e);
@@ -75,6 +71,30 @@ export default class Share extends PureComponent<Props> {
       }
       this.shareSucc = false
     }
+  }
+
+  getUser() {
+    get('api/user/userInfo.html').then(res => {
+      const { code, data } = res
+      if (code === 1) {
+        this.setState({
+          userName: data.user_nickname,
+          avatar: data.avatar
+        })
+      } else {
+        this.setUser()
+      }
+    }).catch(e => {
+      this.setUser()
+    })
+  }
+
+  async setUser() {
+    const user = await Storage.getUser()
+    this.setState({
+      userName: user.user_nickname,
+      avatar: user.avatar
+    })
   }
 
   async getData() {
@@ -310,9 +330,6 @@ export default class Share extends PureComponent<Props> {
                   <Text style={styles.moreTxt}>QQ空间</Text>
                 </TouchableOpacity> : null
               }
-              <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleTwitter}>
-                <Text style={styles.moreTxt}>Twitter</Text>
-              </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleFacebook}>
                 <Text style={styles.moreTxt}>Facebook</Text>
               </TouchableOpacity>
@@ -473,3 +490,8 @@ const styles = StyleSheet.create({
     color: '#999999',
   },
 });
+
+
+// <TouchableOpacity activeOpacity={0.6} style={styles.moreBtn} onPress={this.handleTwitter}>
+//   <Text style={styles.moreTxt}>Twitter</Text>
+// </TouchableOpacity>
